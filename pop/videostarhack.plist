@@ -1,0 +1,47 @@
+<plist version="1.0">
+<dict>
+<key>items</key>
+<array>
+<dict>
+<key>assets</key>
+<array>
+<dict>
+<key>kind</key>
+<string>software-package</string>
+<key>url</key>
+<string>https://github.com/ehmedjamil/free/releases/download/serverfree/Video.Star_8.3.2.ipa</string>
+</dict>
+<dict>
+<key>kind</key>
+<string>full-size-image</string>
+<key>needs-shine</key>
+<true/>
+<key>url</key>
+<string>https://imgcdn.stablediffusionweb.com/2024/9/11/cff2538b-c96a-4679-8964-5bccfd25d978.jpg</string>
+</dict>
+<dict>
+<key>kind</key>
+<string>display-image</string>
+<key>needs-shine</key>
+<true/>
+<key>url</key>
+<string>https://imgcdn.stablediffusionweb.com/2024/9/11/cff2538b-c96a-4679-8964-5bccfd25d978.jpg</string>
+</dict>
+</array>
+<key>metadata</key>
+<dict>
+<key>bundle-identifier</key>
+<string>com.frontierdesign.videostar</string>
+<key>bundle-version</key>
+<string>1.1.1</string>
+<key>kind</key>
+<string>software</string>
+<key>subtitle</key>
+<string>CHYA-B free</string>
+<key>title</key>
+<string>Video Star Hack</string>
+</dict>
+</dict>
+</array>
+</dict>
+</plist>
