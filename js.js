@@ -11,7 +11,7 @@ document.getElementById("get-link").addEventListener("click", function() {
             window.location.href = "https://is.gd/ESjR9Y";
             break;
         case "3":
-            window.location.href = "https://drive.google.com/drive/folders/1-8EYKCbzZunynH8G-IqkNwfzwiLGk5wH";
+            window.location.href = "https://github.com/Lightning-X/Files/releases/download/Launcher/LXLauncher.exe";
             break;
         case "4":
             window.location.href = "https://drive.google.com/drive/folders/1-F4kAPUOi3O84m-gEWYAyEpFitMB9xHT";
