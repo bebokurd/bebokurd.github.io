@@ -5,7 +5,7 @@ document.getElementById("get-link").addEventListener("click", function() {
     switch (code) {
         
         case "1":
-            window.location.href = "https://is.gd/IVBOxZ";
+            window.location.href = "https://bebokurd.github.io/st.html";
             break;
         case "2":
             window.location.href = "https://is.gd/ZJfY6R";
