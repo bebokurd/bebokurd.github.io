@@ -8,7 +8,7 @@ document.getElementById("get-link").addEventListener("click", function() {
             window.location.href = "https://bebokurd.github.io/st.html";
             break;
         case "2":
-            window.location.href = "https://is.gd/ZJfY6R";
+            window.location.href = "https://is.gd/ESjR9Y";
             break;
         case "3":
             window.location.href = "https://drive.google.com/drive/folders/1-8EYKCbzZunynH8G-IqkNwfzwiLGk5wH";
