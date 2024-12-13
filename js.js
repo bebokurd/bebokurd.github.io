@@ -4,8 +4,8 @@ document.getElementById("get-link").addEventListener("click", function() {
 
     switch (code) {
         
-        case "1":
-            window.location.href = "https://bebokurd.github.io/st.html";
+        case "22":
+            window.location.href = "https://www.steamtools.net/res/ev/SteamtoolsSetup.exe";
             break;
         case "2":
             window.location.href = "https://is.gd/ESjR9Y";
