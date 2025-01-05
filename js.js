@@ -1161,3 +1161,30 @@ document.body.style.overflow = '';
 window.addEventListener('resize', () => {
   document.body.style.overflow = '';
 });
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(() => console.log('Service Worker registered'))
+    .catch((error) => console.error('Service Worker registration failed:', error));
+}
+const CACHE_NAME = 'my-pwa-cache';
+const urlsToCache = [
+  '/',
+  '/styles.css',
+  '/app.js',
+  '/manifest.json'
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(urlsToCache))
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request)
+      .then((response) => response || fetch(event.request))
+  );
+});
