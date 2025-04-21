@@ -8629,19 +8629,19 @@ $CreateShortcutButton.Add_Click({
 })
 
 $GitHubButton.Add_Click({
-        Start-Process "https://github.com/memstechtips"
+        Start-Process "https://github.com/bebokurd"
     })
 
 $WebsiteButton.Add_Click({
-        Start-Process "https://memstechtips.com"
+        Start-Process "http://chya.fwh.is/
     })
 
 $YouTubeButton.Add_Click({
-        Start-Process "https://youtube.com/@memstechtips"
+        Start-Process "http://chya.fwh.is/"
     })
 
 $SupportButton.Add_Click({
-        Start-Process "https://paypal.me/memstech"
+        Start-Process "http://chya.fwh.is/"
     })
 
 #region 8. Main Execution
