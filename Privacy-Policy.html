@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CineBot Privacy Policy</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0f0f0f;
+      color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #1e1e1e;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid #3a3a3a;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2em;
+      color: #58a6ff;
+    }
+
+    main {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    section {
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      color: #58a6ff;
+    }
+
+    a {
+      color: #58a6ff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
+      color: #999;
+    }
+
+    button {
+      background-color: #58a6ff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #407fcc;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>CineBot - Privacy Policy</h1>
+  </header>
+
+  <main>
+    <section>
+      <p><strong>Last updated:</strong> July 15, 2025</p>
+      <p>
+        Thank you for using <strong>CineBot</strong>, your entertainment companion for Movies, TV Shows, and Anime.
+        This Privacy Policy outlines how we collect, use, and protect data when you interact with the bot on Discord.
+      </p>
+    </section>
+
+    <section>
+      <h2>🔍 What Information We Collect</h2>
+      <ul>
+        <li><strong>Message Content</strong> – only for processing bot commands (e.g., <code>/movie Naruto</code>).</li>
+        <li><strong>User IDs / Server IDs</strong> – for managing favorites and profiles.</li>
+        <li><strong>Interaction Data</strong> – used for buttons and slash commands.</li>
+      </ul>
+      <p>We do <strong>not</strong> collect DMs, sensitive information, or any unrelated content.</p>
+    </section>
+
+    <section>
+      <h2>🛡️ How We Use the Data</h2>
+      <ul>
+        <li>To respond to user commands</li>
+        <li>To manage user favorites, stats, and profiles</li>
+        <li>To improve the bot and debug issues</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>🧹 Data Retention & Storage</h2>
+      <p>Most data is processed in real-time and not stored permanently.</p>
+      <p>Favorites and profiles are stored securely and can be deleted upon user request.</p>
+    </section>
+
+    <section>
+      <h2>🔐 Your Privacy Rights</h2>
+      <p>You can request to delete your data at any time using the bot or by contacting us directly.</p>
+      <button onclick="toggleContact()">Show Contact Info</button>
+      <div id="contact" class="hidden">
+        <p><strong>Developer:</strong> Ronny Barsky</p>
+        <p><strong>Email:</strong> ronnybarsky@protonmail.com</p>
+        <p><strong>GitHub:</strong> <a href="https://github.com/ronnybarsky" target="_blank">github.com/ronnybarsky</a></p>
+      </div>
+    </section>
+
+    <section>
+      <h2>✅ Summary</h2>
+      <p>
+        We care about your privacy. CineBot only uses the minimum data required to give you a great experience,
+        and we never sell, share, or misuse any data.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Ronny Barsky. All rights reserved.
+  </footer>
+
+  <script>
+    function toggleContact() {
+      const contactDiv = document.getElementById('contact');
+      contactDiv.classList.toggle('hidden');
+    }
+  </script>
+</body>
+</html>
