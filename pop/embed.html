@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Embed</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="embed-body">
+    <div class="embed-container">
+        <video 
+            id="embedVideo" 
+            class="embed-video"
+            controls
+            muted
+            playsinline
+            autoplay
+            preload="metadata"
+        >
+            Your browser does not support the video tag.
+        </video>
+        
+        <div id="embedLoadingOverlay" class="embed-loading-overlay">
+            <div class="embed-loading-spinner"></div>
+        </div>
+
+        <div id="embedErrorOverlay" class="embed-error-overlay" style="display: none;">
+            <div class="embed-error-icon">⚠️</div>
+            <p id="embedErrorMessage">Unable to load stream</p>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script src="embed.js"></script>
+</body>
+</html>

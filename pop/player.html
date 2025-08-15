@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Player</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="player-body">
+    <div class="player-container">
+        <div class="player-header">
+            <button id="backBtn" class="back-btn" title="Back to main page">
+                <span>←</span>
+            </button>
+            <h1 class="player-title">Media Player</h1>
+        </div>
+
+        <div class="video-container">
+            <video 
+                id="videoPlayer" 
+                class="video-player"
+                controls
+                muted
+                playsinline
+                autoplay
+                preload="metadata"
+            >
+                Your browser does not support the video tag.
+            </video>
+            
+            <div id="loadingOverlay" class="loading-overlay">
+                <div class="loading-spinner"></div>
+                <p>Loading stream...</p>
+            </div>
+
+            <div id="errorOverlay" class="error-overlay" style="display: none;">
+                <div class="error-icon">⚠️</div>
+                <h3>Stream Error</h3>
+                <p id="errorMessage">Unable to load the stream</p>
+                <button id="retryBtn" class="btn btn-primary">Retry</button>
+            </div>
+        </div>
+
+        <div class="player-controls">
+            <div class="control-group">
+                <label for="volumeSlider" class="control-label">Volume</label>
+                <input 
+                    type="range" 
+                    id="volumeSlider" 
+                    class="volume-slider" 
+                    min="0" 
+                    max="100" 
+                    value="0"
+                >
+            </div>
+            
+            <div class="control-group">
+                <button id="muteBtn" class="control-btn" title="Mute/Unmute">
+                    <span id="muteIcon">🔇</span>
+                </button>
+                <button id="fullscreenBtn" class="control-btn" title="Fullscreen">
+                    <span>⛶</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="stream-info">
+            <h3>Stream Information</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Status:</span>
+                    <span id="streamStatus" class="info-value">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Duration:</span>
+                    <span id="streamDuration" class="info-value">--:--</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Current Time:</span>
+                    <span id="currentTime" class="info-value">--:--</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script src="player.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design-First Media Player</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">🎬 Design-First Media Player</h1>
+            <p class="subtitle">Paste a stream URL, then open the player or an iframe embed</p>
+        </header>
+
+        <main class="main">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="streamUrl" class="label">Stream URL</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="url" 
+                            id="streamUrl" 
+                            class="input" 
+                            placeholder="https://example.com/stream.m3u8"
+                            autocomplete="off"
+                        >
+                        <button id="clearBtn" class="clear-btn" title="Clear URL">×</button>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="openPlayerBtn" class="btn btn-primary" disabled>
+                        <span class="btn-icon">▶️</span>
+                        Open Player
+                    </button>
+                    <button id="openEmbedBtn" class="btn btn-secondary" disabled>
+                        <span class="btn-icon">📺</span>
+                        Open Embed
+                    </button>
+                </div>
+            </div>
+
+            <div class="share-section" id="shareSection" style="display: none;">
+                <h3 class="share-title">Share Link</h3>
+                <div class="share-link-group">
+                    <input type="text" id="shareLink" class="share-input" readonly>
+                    <button id="copyLinkBtn" class="btn btn-small">Copy</button>
+                </div>
+                <p class="share-note">
+                    Note: Encoding the URL only obfuscates it; network tools can still reveal the source. 
+                    Consider signed URLs for real protection.
+                </p>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Design-First</h3>
+                    <p>Beautiful, modern interface with attention to detail</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Optimized</h3>
+                    <p>Works perfectly on iOS Safari with muted autoplay</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3>Easy Sharing</h3>
+                    <p>Generate shareable links with encoded URLs</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Built with ❤️ for reliable media playback</p>
+        </footer>
+    </div>
+
+    <script src="shared.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
