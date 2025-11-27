@@ -273,7 +273,7 @@ PowerShell Version: $($PSVersionTable.PSVersion)
 Show-Header
 
 # URLs Configuration
-$DiscordURL = 'https://discord.gg/qFQaJqv79r'
+$DiscordURL = 'https://discord.gg/arVdGh76wj'
 $CHYAProfileURL = 'https://bebokurd.github.io/'
 $AudioURL = 'https://r2.guns.lol/cb3828fe-a491-44bb-a4ef-cb70c9e628b6.mp3'
 
