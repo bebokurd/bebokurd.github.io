@@ -1,5 +1,3 @@
-
- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,36 +7,32 @@
   <meta name="keywords" content="CHYA LUQMAN, social media, Instagram, TikTok, Discord, Snapchat">
   <meta name="author" content="CHYA LUQMAN">
   <title>sh4 - Connect With Me</title>
-  <script src="https://kit.fontawesome.com/d394e20126.js" crossorigin="anonymous"></script>
+  
+  <!-- Fonts and Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
-    
     :root {
-      /* --- Dark Blue Theme --- */
+      /* --- Deep Blue Midnight Theme --- */
       --primary-gradient: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
       --secondary-gradient: linear-gradient(135deg, #3b82f6 0%, #93c5fd 100%);
       --accent-gradient: linear-gradient(135deg, #60a5fa 0%, #bfdbfe 100%);
       
-      --background-color: #0d1117; /* Deep dark blue */
-      --glass-bg: rgba(29, 78, 216, 0.1); /* Blue-tinted glass */
-      --glass-border: rgba(59, 130, 246, 0.2);
-      --glass-shadow: 0 8px 32px 0 rgba(0, 20, 80, 0.37);
+      --background-color: #05080f; 
+      --glass-bg: rgba(13, 17, 23, 0.7);
+      --glass-border: rgba(59, 130, 246, 0.3);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
       
-      --text-primary: #e6f1ff; /* Off-white for better readability */
+      --text-primary: #e6f1ff;
       --text-secondary: rgba(230, 241, 255, 0.8);
-      --text-accent: rgba(230, 241, 255, 0.6);
+      --text-accent: rgba(96, 165, 250, 1);
       
       --transition-smooth: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
       --transition-quick: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       
-      --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-      
-      --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.15);
-      --shadow-medium: 0 20px 60px rgba(0, 0, 0, 0.2);
-      --shadow-strong: 0 30px 80px rgba(0, 0, 0, 0.25);
-      
-      --border-radius: 24px;
-      --border-radius-lg: 32px;
+      --font-family: 'Poppins', sans-serif;
+      --border-radius: 20px;
     }
 
     * {
@@ -51,38 +45,45 @@
       font-family: var(--font-family);
       color: var(--text-primary);
       background-color: var(--background-color);
-      overflow-x: hidden;
+      overflow: hidden; /* Hide scrollbars for the immersive feel */
       min-height: 100vh;
-      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* Enhanced Background with Multiple Layers */
+    /* Background Setup */
     .background-container {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       z-index: -10;
+      overflow: hidden;
     }
 
     .video-background {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%) scale(1.1);
       width: 100vw;
       height: 100vh;
+      transform: translate(-50%, -50%);
       z-index: -3;
-      filter: brightness(0.4) contrast(1.3) saturate(1.1) blur(2px); /* Increased blur */
-      animation: videoFloat 20s ease-in-out infinite;
+      filter: brightness(0.3) blur(4px);
     }
 
     .video-background iframe {
       width: 100vw;
-      height: 56.25vw;
+      height: 56.25vw; /* 16:9 ratio */
       min-height: 100vh;
-      min-width: 177.78vh;
+      min-width: 177.78vh; /* 16:9 ratio */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
     }
 
     .gradient-overlay {
@@ -91,701 +92,350 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: 
-        radial-gradient(circle at 20% 80%, rgba(29, 78, 216, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
-        linear-gradient(135deg, rgba(13, 17, 23, 0.8) 0%, rgba(13, 17, 23, 0.6) 100%);
+      background: radial-gradient(circle at center, transparent 0%, var(--background-color) 100%);
       z-index: -2;
-      animation: gradientShift 15s ease-in-out infinite;
     }
 
-    .noise-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter></defs><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.05"/></svg>');
-      z-index: -1;
-      animation: noiseMove 8s linear infinite;
-    }
-
-    @keyframes videoFloat {
-      0%, 100% { transform: translate(-50%, -50%) scale(1.1) rotate(0deg); }
-      50% { transform: translate(-50%, -51%) scale(1.12) rotate(0deg); }
-    }
-
-    @keyframes gradientShift {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.8; }
-    }
-
-    @keyframes noiseMove {
-      0% { transform: translate(0, 0); }
-      100% { transform: translate(20px, 20px); }
-    }
-
-    /* Enhanced Particles */
-    .particles-container {
+    /* Particles */
+    #particles {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
+      z-index: -1;
       pointer-events: none;
-      z-index: 0;
     }
 
     .particle {
       position: absolute;
+      background: white;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(147, 197, 253, 0.8) 0%, rgba(147, 197, 253, 0.1) 100%);
-      filter: blur(1px);
-      animation: particleFloat 20s linear infinite;
+      opacity: 0.5;
+      animation: float linear infinite;
     }
 
-    .particle:nth-child(odd) {
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.6) 0%, rgba(59, 130, 246, 0.1) 100%);
+    @keyframes float {
+      from { transform: translateY(0); }
+      to { transform: translateY(-100vh); }
     }
 
-    @keyframes particleFloat {
-      0% { transform: translateY(100vh) scale(0); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
-    }
-
-    /* Enhanced Entry Screen */
+    /* Entry Screen */
     .entry-screen {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: radial-gradient(circle at center, rgba(13, 17, 23, 0.9) 0%, rgba(13, 17, 23, 0.98) 100%);
+      inset: 0;
+      background: var(--background-color);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
+      z-index: 9999;
       cursor: pointer;
-      backdrop-filter: blur(20px);
-      transition: var(--transition-smooth);
-    }
-
-    .entry-content {
-      text-align: center;
-    }
-
-    .entry-logo {
-      width: 120px;
-      height: 120px;
-      margin: 0 auto 30px;
-      border-radius: 50%;
-      overflow: hidden;
-      position: relative;
-      border: 3px solid rgba(59, 130, 246, 0.3);
-      box-shadow: 0 0 40px rgba(59, 130, 246, 0.2), inset 0 0 20px rgba(59, 130, 246, 0.1);
-      animation: logoFloat 4s ease-in-out infinite;
-    }
-    
-    .entry-logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .entry-text {
-      font-size: 2rem;
-      font-weight: 300;
-      letter-spacing: 2px;
-      background: linear-gradient(45deg, #e6f1ff, #93c5fd, #e6f1ff);
-      background-size: 200% 200%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: textShimmer 3s ease-in-out infinite;
-      margin-bottom: 20px;
-    }
-
-    .entry-subtitle {
-      font-size: 1rem;
-      color: var(--text-accent);
-      font-weight: 300;
-      letter-spacing: 1px;
-      opacity: 0.8;
-      animation: fadeInOut 2s ease-in-out infinite;
-    }
-
-    @keyframes logoFloat {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-10px) scale(1.05); }
-    }
-
-    @keyframes textShimmer {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    @keyframes fadeInOut {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; }
+      transition: opacity 1s ease, visibility 1s;
     }
 
     .entry-screen.hidden {
       opacity: 0;
       visibility: hidden;
-      transform: scale(1.1);
     }
 
-    /* Main Container */
-    .main-container {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      position: relative;
-      z-index: 10;
+    .entry-logo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 2px solid var(--text-accent);
+      margin-bottom: 20px;
+      animation: pulse 2s infinite ease-in-out;
     }
 
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 0 20px 10px rgba(59, 130, 246, 0); }
+    }
+
+    /* Main Content Card */
     .content-card {
       background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(15px);
       border: 1px solid var(--glass-border);
-      border-radius: var(--border-radius-lg);
-      padding: 60px 40px;
-      box-shadow: var(--glass-shadow);
+      border-radius: 30px;
+      padding: 40px;
+      width: 90%;
+      max-width: 420px;
       text-align: center;
-      max-width: 480px;
-      width: 100%;
-      position: relative;
-      overflow: hidden;
       opacity: 0;
-      transform: translateY(30px) scale(0.95);
+      transform: translateY(20px);
       transition: var(--transition-smooth);
+      box-shadow: var(--glass-shadow);
     }
 
     .content-card.visible {
       opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    .content-card:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: var(--glass-shadow), 0 20px 60px rgba(0, 0, 0, 0.2);
-      border-color: rgba(96, 165, 250, 0.4);
-    }
-
-    /* Avatar */
-    .avatar-container {
-      position: relative;
-      margin: 0 auto 40px;
-      width: 160px;
-      height: 160px;
+      transform: translateY(0);
     }
 
     .avatar {
-      width: 100%;
-      height: 100%;
+      width: 130px;
+      height: 130px;
       border-radius: 50%;
+      margin-bottom: 20px;
+      border: 3px solid var(--text-accent);
+      padding: 5px;
       object-fit: cover;
-      border: 4px solid rgba(59, 130, 246, 0.2);
-      box-shadow: 0 0 40px rgba(59, 130, 246, 0.1), inset 0 0 20px rgba(0, 0, 0, 0.2);
-      transition: var(--transition-smooth);
-      transform: scale(0.8);
-      opacity: 0;
-      animation: avatarReveal 1s ease-out 0.5s forwards;
     }
 
-    .avatar-ring {
-      position: absolute;
-      top: -15px;
-      left: -15px;
-      right: -15px;
-      bottom: -15px;
-      border-radius: 50%;
-      background: conic-gradient(from 0deg, var(--primary-gradient), var(--secondary-gradient), var(--accent-gradient), var(--primary-gradient));
-      animation: avatarRingRotate 8s linear infinite;
-      z-index: -1;
-      opacity: 0.8;
-    }
-
-    .avatar-ring::before {
-      content: '';
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      right: 3px;
-      bottom: 3px;
-      background: var(--background-color);
-      border-radius: 50%;
-    }
-
-    @keyframes avatarReveal {
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    @keyframes avatarRingRotate {
-      to { transform: rotate(360deg); }
-    }
-
-    .avatar:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 60px rgba(96, 165, 250, 0.3), inset 0 0 30px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Title */
     .title {
-      font-size: 3.5rem;
+      font-size: 2.5rem;
       font-weight: 800;
-      letter-spacing: 3px;
-      margin-bottom: 50px;
-      background: var(--primary-gradient);
+      margin-bottom: 30px;
+      background: var(--secondary-gradient);
       -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
       background-clip: text;
-      text-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
-      opacity: 0;
-      transform: translateY(20px);
-      animation: titleReveal 1s ease-out 0.8s forwards;
-      position: relative;
-    }
-
-    .title::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 2px;
-      background: var(--primary-gradient);
-      border-radius: 2px;
-      animation: titleUnderline 1s ease-out 1.5s forwards;
-    }
-
-    @keyframes titleReveal {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes titleUnderline {
-      to { width: 100px; }
+      color: transparent;
+      letter-spacing: 2px;
     }
 
     /* Social Buttons */
     .social-buttons {
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      margin-bottom: 40px;
+      gap: 15px;
     }
 
     .social-button {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 15px;
-      padding: 18px 30px;
+      padding: 14px 24px;
       border-radius: var(--border-radius);
       text-decoration: none;
       color: var(--text-primary);
-      font-weight: 600;
-      font-size: 1.1rem;
-      letter-spacing: 0.5px;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid var(--glass-border);
-      background: var(--glass-bg);
-      backdrop-filter: blur(10px);
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       transition: var(--transition-quick);
+      transform: translateX(-10px);
       opacity: 0;
-      transform: translateX(-30px);
+    }
+
+    .social-button.animate {
+      transform: translateX(0);
+      opacity: 1;
     }
 
     .social-button:hover {
-      transform: translateY(-3px) scale(1.02);
-      border-color: rgba(96, 165, 250, 0.5);
-      background: rgba(29, 78, 216, 0.2);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-    
-    .social-button.animate {
-      animation: slideInLeft 0.6s ease-out forwards;
+      background: rgba(59, 130, 246, 0.2);
+      border-color: var(--text-accent);
+      transform: translateY(-2px);
     }
 
-    @keyframes slideInLeft {
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    /* Individual button hover styles */
-    .instagram:hover {
-      background: linear-gradient(135deg, rgba(225, 48, 108, 0.2), rgba(193, 53, 132, 0.2));
-      box-shadow: 0 10px 30px rgba(225, 48, 108, 0.3);
-      border-color: rgba(225, 48, 108, 0.4);
-    }
-
-    .tiktok:hover {
-      background: linear-gradient(135deg, rgba(30, 215, 96, 0.2), rgba(254, 44, 85, 0.2));
-      box-shadow: 0 10px 30px rgba(254, 44, 85, 0.3);
-      border-color: rgba(254, 44, 85, 0.4);
-    }
-
-    .discord:hover {
-      background: linear-gradient(135deg, rgba(114, 137, 218, 0.2), rgba(88, 101, 242, 0.2));
-      box-shadow: 0 10px 30px rgba(114, 137, 218, 0.3);
-      border-color: rgba(114, 137, 218, 0.4);
-    }
-
-    .snapchat:hover {
-      background: linear-gradient(135deg, rgba(255, 252, 0, 0.2), rgba(255, 215, 0, 0.2));
-      box-shadow: 0 10px 30px rgba(255, 252, 0, 0.3);
-      border-color: rgba(255, 252, 0, 0.4);
-    }
-
-    .social-icon {
-      font-size: 1.4rem;
-      filter: drop-shadow(0 0 10px rgba(147, 197, 253, 0.3));
-      transition: var(--transition-quick);
-    }
-
-    .social-button:hover .social-icon {
-      transform: scale(1.2) rotate(5deg);
-      filter: drop-shadow(0 0 15px rgba(147, 197, 253, 0.5));
+    .social-button i {
+      margin-right: 15px;
+      font-size: 1.2rem;
+      width: 25px;
+      text-align: center;
     }
 
     /* Controls */
     .controls {
       position: fixed;
-      bottom: 30px;
-      right: 30px;
+      bottom: 20px;
+      right: 20px;
       display: flex;
-      flex-direction: column;
-      gap: 15px;
+      flex-direction: column-reverse;
+      align-items: center;
+      gap: 10px;
       z-index: 100;
     }
 
     .control-button {
-      width: 60px;
-      height: 60px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
       background: var(--glass-bg);
-      backdrop-filter: blur(15px);
       border: 1px solid var(--glass-border);
-      color: var(--text-primary);
-      font-size: 1.2rem;
+      color: white;
       cursor: pointer;
-      transition: var(--transition-quick);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: var(--shadow-soft);
+      transition: var(--transition-quick);
     }
 
     .control-button:hover {
-      transform: scale(1.1);
-      box-shadow: var(--shadow-medium);
-      border-color: rgba(96, 165, 250, 0.4);
-      background: rgba(29, 78, 216, 0.2);
+      background: var(--text-accent);
+      color: var(--background-color);
     }
 
-    /* Mobile Optimizations */
-    @media (max-width: 768px) {
-      .content-card { padding: 40px 25px; margin: 10px; }
-      .title { font-size: 2.5rem; letter-spacing: 2px; }
-      .avatar-container { width: 120px; height: 120px; margin-bottom: 30px; }
-      .social-button { padding: 16px 25px; font-size: 1rem; }
-      .controls { bottom: 20px; right: 20px; gap: 10px; }
-      .control-button { width: 50px; height: 50px; font-size: 1rem; }
-      .entry-text { font-size: 1.5rem; }
-      .entry-logo { width: 100px; height: 100px; }
+    .volume-control {
+      background: var(--glass-bg);
+      padding: 15px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      display: none;
+      flex-direction: column;
+      height: 120px;
+      align-items: center;
+    }
+
+    .volume-control.visible {
+      display: flex;
+    }
+
+    .volume-slider {
+      writing-mode: bt-lr; /* IE */
+      -webkit-appearance: slider-vertical;
+      width: 8px;
+      height: 100px;
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      .content-card { padding: 30px 20px; }
+      .title { font-size: 2rem; }
     }
   </style>
 </head>
 <body>
-  <!-- Background Container -->
+
   <div class="background-container">
     <div class="video-background">
       <iframe 
-        src="https://www.youtube.com/embed/mZsPXkbGVKk?autoplay=1&mute=1&controls=0&loop=1&playlist=mZsPXkbGVKk&playsinline=1&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3"
-        title="Background Video"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen>
+        id="ytPlayer"
+        src="https://www.youtube.com/embed/mZsPXkbGVKk?enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist=mZsPXkbGVKk&playsinline=1" 
+        frameborder="0" 
+        allow="autoplay">
       </iframe>
     </div>
     <div class="gradient-overlay"></div>
-    <div class="noise-overlay"></div>
   </div>
 
-  <!-- Particles -->
-  <div class="particles-container" id="particles"></div>
+  <div id="particles"></div>
 
-  <!-- Entry Screen -->
-  <div class="entry-screen" id="entryScreen" role="button" tabindex="0" aria-label="Click to enter site">
-    <div class="entry-content">
-      <div class="entry-logo">
-        <img src="https://images-ext-1.discordapp.net/external/-YMYV37BtvmGl0s0S1hpczHlS2U4h9aGJPWolhZWEQ0/%3Fsize%3D4096%26ignore%3Dtrue%29./https/cdn.discordapp.com/avatars/738889970047123597/a_cdf60ba0e0d57ac6d0572fb8ddb65196.gif?width=252&height=252" alt="sh4 Logo">
-      </div>
-      <div class="entry-text">Welcome</div>
-      <div class="entry-subtitle">Click anywhere to continue</div>
-    </div>
+  <div class="entry-screen" id="entryScreen">
+    <img src="https://images-ext-1.discordapp.net/external/-YMYV37BtvmGl0s0S1hpczHlS2U4h9aGJPWolhZWEQ0/%3Fsize%3D4096%26ignore%3Dtrue%29./https/cdn.discordapp.com/avatars/738889970047123597/a_cdf60ba0e0d57ac6d0572fb8ddb65196.gif" class="entry-logo" alt="Logo">
+    <h2 style="font-weight: 300; letter-spacing: 4px; color: white;">CLICK TO ENTER</h2>
   </div>
 
-  <!-- Audio Background -->
-  <audio id="bgAudio" preload="auto" loop>
+  <audio id="bgAudio" loop>
     <source src="https://bebokurd.github.io/Yb%20Wasg'ood,%20Ariis,%20xlout%20-%20BAILA%20LOCA.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
   </audio>
 
-  <!-- Main Content -->
-  <div class="main-container">
-    <div class="content-card will-change" id="contentCard">
-      <div class="avatar-container">
-        <div class="avatar-ring"></div>
-        <img src="https://images-ext-1.discordapp.net/external/-YMYV37BtvmGl0s0S1hpczHlS2U4h9aGJPWolhZWEQ0/%3Fsize%3D4096%26ignore%3Dtrue%29./https/cdn.discordapp.com/avatars/738889970047123597/a_cdf60ba0e0d57ac6d0572fb8ddb65196.gif?width=252&height=252" 
-             alt="CHYA Profile" 
-             class="avatar will-change" 
-             id="avatar"
-             loading="lazy">
-      </div>
-      
-      <h1 class="title will-change" id="title">SH4</h1>
-      
-      <div class="social-buttons" id="socialButtons">
-        <a href="https://www.instagram.com/omer_m_alii/" 
-           target="_blank" 
-           rel="noopener noreferrer"
-           class="social-button instagram will-change" 
-           id="instagramBtn"
-           aria-label="Follow CHYA on Instagram">
-          <i class="fab fa-instagram social-icon" aria-hidden="true"></i>
-          <span>Follow on Instagram</span>
-        </a>
-        
-        <a href="https://www.tiktok.com/@MS4wLjABAAAA5t2yNoQlcBvdy4ZzlJhJhK6sxDO99L6qPfqxbezO3e1gV2SuScsNLMdznrl0S45W?_t=ZS-8w6Q5GKDpPL&_r=1" 
-           target="_blank" 
-           rel="noopener noreferrer"
-           class="social-button tiktok will-change" 
-           id="tiktokBtn"
-           aria-label="Follow CHYA on TikTok">
-          <i class="fab fa-tiktok social-icon" aria-hidden="true"></i>
-          <span>Follow on TikTok</span>
-        </a>
-        
-        <a href="https://discord.gg/JeYX9fSbE2" 
-           target="_blank" 
-           rel="noopener noreferrer"
-           class="social-button discord will-change" 
-           id="discordBtn"
-           aria-label="Join CHYA's Discord server">
-          <i class="fab fa-discord social-icon" aria-hidden="true"></i>
-          <span>Join Discord</span>
-        </a>
-        
-        <a href="https://snapchat.com/t/LESUCtFj" 
-           target="_blank" 
-           rel="noopener noreferrer"
-           class="social-button snapchat will-change" 
-           id="snapchatBtn"
-           aria-label="Add CHYA on Snapchat">
-          <i class="fab fa-snapchat-ghost social-icon" aria-hidden="true"></i>
-          <span>Add on Snapchat</span>
-        </a>
-      </div>
+  <div class="content-card" id="contentCard">
+    <img src="https://images-ext-1.discordapp.net/external/-YMYV37BtvmGl0s0S1hpczHlS2U4h9aGJPWolhZWEQ0/%3Fsize%3D4096%26ignore%3Dtrue%29./https/cdn.discordapp.com/avatars/738889970047123597/a_cdf60ba0e0d57ac6d0572fb8ddb65196.gif" class="avatar" alt="CHYA">
+    <h1 class="title">SH4</h1>
+    
+    <div class="social-buttons">
+      <a href="https://www.instagram.com/omer_m_alii/" target="_blank" class="social-button">
+        <i class="fab fa-instagram"></i> Instagram
+      </a>
+      <a href="https://www.tiktok.com/@MS4wLjABAAAA5t2yNoQlcBvdy4ZzlJhJhK6sxDO99L6qPfqxbezO3e1gV2SuScsNLMdznrl0S45W" target="_blank" class="social-button">
+        <i class="fab fa-tiktok"></i> TikTok
+      </a>
+      <a href="https://discord.gg/JeYX9fSbE2" target="_blank" class="social-button">
+        <i class="fab fa-discord"></i> Discord
+      </a>
+      <a href="https://snapchat.com/t/LESUCtFj" target="_blank" class="social-button">
+        <i class="fab fa-snapchat-ghost"></i> Snapchat
+      </a>
     </div>
   </div>
 
-  <!-- Controls -->
-  <div class="controls" id="controls">
-    <button class="control-button will-change" 
-            id="muteBtn" 
-            aria-label="Toggle mute"
-            title="Toggle Audio">
-      <i class="fas fa-volume-up" aria-hidden="true"></i>
+  <div class="controls">
+    <button class="control-button" id="muteBtn" title="Mute/Unmute">
+      <i class="fas fa-volume-up"></i>
     </button>
-    
-    <button class="control-button will-change" 
-            id="volumeBtn" 
-            aria-label="Volume control"
-            title="Volume Control">
-      <i class="fas fa-sliders-h" aria-hidden="true"></i>
-    </button>
-    
     <div class="volume-control" id="volumeControl">
-      <input type="range" 
-             class="volume-slider" 
-             id="volumeSlider"
-             min="0" 
-             max="100" 
-             value="30"
-             aria-label="Volume level">
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="40" step="1">
     </div>
-    
-    <button class="control-button will-change" 
-            id="replayBtn" 
-            aria-label="Replay audio"
-            title="Replay Audio">
-      <i class="fas fa-redo" aria-hidden="true"></i>
+    <button class="control-button" id="volumeIconBtn" title="Volume">
+      <i class="fas fa-sliders-h"></i>
     </button>
   </div>
 
   <script>
-    // NOTE: The JavaScript remains largely the same as it controls functionality,
-    // not styling. I've kept your original JS for animations and audio control.
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    class ParticleSystem {
-      constructor(container) {
-        this.container = container;
-        this.particles = [];
-        this.particleCount = window.innerWidth < 768 ? 30 : 50;
-        this.init();
-      }
+    const entryScreen = document.getElementById('entryScreen');
+    const contentCard = document.getElementById('contentCard');
+    const bgAudio = document.getElementById('bgAudio');
+    const muteBtn = document.getElementById('muteBtn');
+    const volumeIconBtn = document.getElementById('volumeIconBtn');
+    const volumeControl = document.getElementById('volumeControl');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const socialButtons = document.querySelectorAll('.social-button');
 
-      init() {
-        this.createParticles();
-      }
-
-      createParticles() {
-        for (let i = 0; i < this.particleCount; i++) {
-          const particle = document.createElement('div');
-          particle.className = 'particle';
-          const size = Math.random() * 4 + 2;
-          const left = Math.random() * 100;
-          const duration = Math.random() * 10 + 15;
-          const delay = Math.random() * 20;
-          particle.style.cssText = `
-            width: ${size}px;
-            height: ${size}px;
-            left: ${left}vw;
-            animation-duration: ${duration}s;
-            animation-delay: ${delay}s;
-          `;
-          this.container.appendChild(particle);
-          this.particles.push(particle);
-        }
-      }
-      destroy() {
-        this.particles.forEach(p => p.remove());
-        this.particles = [];
+    // Particle System
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const count = 40;
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        const size = Math.random() * 3 + 1;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 10 + 10;
+        const delay = Math.random() * 10;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${left}%`;
+        particle.style.bottom = `-10%`;
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.animationDelay = `-${delay}s`;
+        container.appendChild(particle);
       }
     }
 
-    class AudioManager {
-      constructor() {
-        this.audio = document.getElementById('bgAudio');
-        this.muteBtn = document.getElementById('muteBtn');
-        this.volumeBtn = document.getElementById('volumeBtn');
-        this.volumeControl = document.getElementById('volumeControl');
-        this.volumeSlider = document.getElementById('volumeSlider');
-        this.replayBtn = document.getElementById('replayBtn');
-        this.isMuted = false;
-        this.volume = 0.3;
-        this.init();
-      }
+    // Audio Logic
+    let isMuted = false;
+    bgAudio.volume = 0.4;
 
-      init() {
-        this.audio.volume = this.volume;
-        this.setupEventListeners();
-      }
+    const toggleMute = () => {
+      isMuted = !isMuted;
+      bgAudio.muted = isMuted;
+      muteBtn.innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+    };
 
-      setupEventListeners() {
-        this.muteBtn.addEventListener('click', () => this.toggleMute());
-        this.volumeBtn.addEventListener('click', () => this.toggleVolumeControl());
-        this.volumeSlider.addEventListener('input', (e) => this.setVolume(e.target.value / 100));
-        this.replayBtn.addEventListener('click', () => this.replay());
-        document.addEventListener('click', (e) => {
-          if (!this.volumeBtn.contains(e.target) && !this.volumeControl.contains(e.target)) {
-            this.volumeControl.classList.remove('visible');
-          }
+    const handleVolume = (e) => {
+      const vol = e.target.value / 100;
+      bgAudio.volume = vol;
+      if (vol === 0) {
+        muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+      } else {
+        muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+      }
+    };
+
+    // Entry Interaction
+    entryScreen.addEventListener('click', () => {
+      entryScreen.classList.add('hidden');
+      
+      // Start Music
+      bgAudio.play().catch(err => console.log("Audio play blocked", err));
+      
+      // Animate Card
+      setTimeout(() => {
+        contentCard.classList.add('visible');
+        socialButtons.forEach((btn, i) => {
+          setTimeout(() => btn.classList.add('animate'), 200 + (i * 100));
         });
-      }
-
-      async play() {
-        try {
-          await this.audio.play();
-        } catch (error) {
-          console.log('Audio autoplay blocked:', error);
-        }
-      }
-
-      toggleMute() {
-        this.isMuted = !this.isMuted;
-        this.audio.muted = this.isMuted;
-        const icon = this.muteBtn.querySelector('i');
-        icon.className = this.isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
-        this.muteBtn.classList.toggle('active', this.isMuted);
-      }
-
-      toggleVolumeControl() {
-        this.volumeControl.classList.toggle('visible');
-      }
-
-      setVolume(volume) {
-        this.volume = Math.max(0, Math.min(1, volume));
-        this.audio.volume = this.volume;
-        const icon = this.muteBtn.querySelector('i');
-        if (this.volume === 0) icon.className = 'fas fa-volume-mute';
-        else if (this.volume < 0.5) icon.className = 'fas fa-volume-down';
-        else icon.className = 'fas fa-volume-up';
-      }
-
-      replay() {
-        this.audio.currentTime = 0;
-        this.play();
-      }
-    }
-
-    class AnimationManager {
-      constructor() {
-        this.entryScreen = document.getElementById('entryScreen');
-        this.contentCard = document.getElementById('contentCard');
-        this.socialButtons = document.querySelectorAll('.social-button');
-        this.hasEntered = false;
-      }
-
-      async enterSite() {
-        if (this.hasEntered) return;
-        this.hasEntered = true;
-        this.entryScreen.classList.add('hidden');
-        await audioManager.play();
-        setTimeout(() => {
-          this.contentCard.classList.add('visible');
-        }, 300);
-        this.socialButtons.forEach((button, index) => {
-          setTimeout(() => {
-            button.classList.add('animate');
-          }, 800 + (index * 150));
-        });
-      }
-    }
-
-    const particleSystem = new ParticleSystem(document.getElementById('particles'));
-    const audioManager = new AudioManager();
-    const animationManager = new AnimationManager();
-
-    document.getElementById('entryScreen').addEventListener('click', () => animationManager.enterSite());
-    document.getElementById('entryScreen').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        animationManager.enterSite();
-      }
-    });
-    
-    window.addEventListener('beforeunload', () => {
-      particleSystem.destroy();
+      }, 500);
     });
 
-    window.addEventListener('resize', () => {
-      const newCount = window.innerWidth < 768 ? 30 : 50;
-      if (newCount !== particleSystem.particleCount) {
-        particleSystem.destroy();
-        particleSystem.particleCount = newCount;
-        particleSystem.createParticles();
-      }
+    // Control Listeners
+    muteBtn.addEventListener('click', toggleMute);
+    volumeIconBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      volumeControl.classList.toggle('visible');
     });
+    volumeSlider.addEventListener('input', handleVolume);
+
+    // Close volume panel on outside click
+    document.addEventListener('click', () => {
+      volumeControl.classList.remove('visible');
+    });
+
+    window.onload = () => {
+      createParticles();
+    };
   </script>
 </body>
 </html>
-
