@@ -50,19 +50,22 @@
             inset: 0;
             z-index: -1;
             overflow: hidden;
+            /* Allow 3D transforms on children */
+            transform-style: preserve-3d;
         }
 
         .bg-video {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(1.1); /* Slight scale to prevent edge gaps during parallax */
             min-width: 100%;
             min-height: 100%;
             width: auto;
             height: auto;
             filter: brightness(0.35) blur(2px);
             z-index: -3;
+            transition: transform 0.1s ease-out; /* Smooth parallax movement */
         }
 
         .bg-video iframe {
@@ -378,7 +381,7 @@
 
     <!-- Background -->
     <div class="bg-wrapper">
-        <div class="bg-video">
+        <div class="bg-video" id="bg-video">
             <!-- Security Update: Added sandbox attribute -->
             <iframe
                 src="https://www.youtube.com/embed/Iv5FFhgPGdo?autoplay=1&mute=1&controls=0&loop=1&playlist=Iv5FFhgPGdo&playsinline=1&showinfo=0&rel=0&modestbranding=1"
@@ -458,6 +461,7 @@
         const refreshBtn = document.getElementById('refresh-btn');
         const socialLinks = document.querySelectorAll('.social-link');
         const canvas = document.getElementById('particles-canvas');
+        const bgVideo = document.getElementById('bg-video');
         const ctx = canvas.getContext('2d');
 
         let particles = [];
@@ -505,7 +509,7 @@
             (function(){})['constructor']('debugger')();
         }, 200);
 
-        // --- MOUSE TRACKING & TYPING VARIABLES ---
+        // --- MOUSE TRACKING & PARALLAX VARIABLES ---
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
 
@@ -515,7 +519,7 @@
 
             // Logic only if card is interactive (after entry)
             if (mainCard.classList.contains('interactive')) {
-                // 1. TILT LOGIC (Stronger effect: Divisor reduced from 25 to 18)
+                // 1. TILT LOGIC (Foreground)
                 const xAxis = (window.innerWidth / 2 - e.pageX) / 18;
                 const yAxis = (window.innerHeight / 2 - e.pageY) / 18;
                 mainCard.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
@@ -524,13 +528,16 @@
                 const glare = document.querySelector('.card-glare');
                 if (glare) {
                     const rect = mainCard.getBoundingClientRect();
-                    // Calculate mouse position relative to card
                     const glareX = e.clientX - rect.left;
                     const glareY = e.clientY - rect.top;
-                    
-                    // Move the radial gradient center
                     glare.style.background = `radial-gradient(circle at ${glareX}px ${glareY}px, rgba(255, 255, 255, 0.3) 0%, transparent 70%)`;
                 }
+
+                // 3. BACKGROUND PARALLAX (Moves opposite to mouse for depth)
+                // Small divisor = more movement. Negative = opposite direction.
+                const bgX = (e.pageX - window.innerWidth / 2) / -50;
+                const bgY = (e.pageY - window.innerHeight / 2) / -50;
+                bgVideo.style.transform = `translate(calc(-50% + ${bgX}px), calc(-50% + ${bgY}px)) scale(1.1)`;
             }
         });
 
@@ -544,55 +551,75 @@
             }
         }
 
-        // --- PARTICLE SYSTEM ---
+        // --- 3D PARTICLE SYSTEM ---
+        // Configuration
+        const particleCount = 150; 
+        const focalLength = 500; // How "deep" the scene feels
+        
         function initParticles() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             particles = [];
-            const count = window.innerWidth < 768 ? 40 : 80;
-
-            for (let i = 0; i < count; i++) {
+            
+            for (let i = 0; i < particleCount; i++) {
                 particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 2 + 1,
-                    speedY: Math.random() * 0.5 + 0.2,
-                    speedX: (Math.random() - 0.5) * 0.5, // gentle horizontal drift
-                    opacity: Math.random() * 0.5 + 0.1,
-                    depth: Math.random() * 1.5 // Increased depth variation
+                    x: (Math.random() - 0.5) * canvas.width * 2, // Spread wider than screen
+                    y: (Math.random() - 0.5) * canvas.height * 2,
+                    z: Math.random() * focalLength * 2, // Depth spread
+                    originalZ: Math.random() * focalLength * 2,
+                    radius: Math.random() * 2 + 0.5
                 });
             }
         }
 
         function drawParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            
+            // Screen center
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
 
-            // Mouse interaction offsets (Stronger background parallax)
-            const parallaxX = (mouseX - canvas.width / 2) * 0.04; // Increased multiplier
-            const parallaxY = (mouseY - canvas.height / 2) * 0.04;
+            // 3D Rotation based on mouse (normalized -0.5 to 0.5)
+            // Multiplier controls sensitivity
+            const rotX = (mouseY - cy) / cy * 0.2; 
+            const rotY = (mouseX - cx) / cx * 0.2; 
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
 
             particles.forEach(p => {
-                ctx.globalAlpha = p.opacity;
-                ctx.beginPath();
+                // 1. Apply Rotation to 3D Coordinates
+                // Standard 3D rotation formulas
+                // Rotate around Y
+                let x = p.x;
+                let z = p.z;
+                let tempX = x * Math.cos(rotY) - z * Math.sin(rotY);
+                let tempZ = z * Math.cos(rotY) + x * Math.sin(rotY);
+                x = tempX;
+                z = tempZ;
+
+                // Rotate around X
+                let y = p.y;
+                let tempY = y * Math.cos(rotX) - z * Math.sin(rotX);
+                tempZ = z * Math.cos(rotX) + y * Math.sin(rotX);
+                y = tempY;
+                z = tempZ;
+
+                // 2. Project 3D Point to 2D Screen
+                // Scale factor determines how "big" things are based on distance
+                // We add 'focalLength' to Z so we don't divide by zero and particles are in front
+                let scale = focalLength / (focalLength + z);
                 
-                // Apply parallax based on depth
-                let displayX = p.x - (parallaxX * p.depth);
-                let displayY = p.y - (parallaxY * p.depth);
+                let x2d = x * scale + cx;
+                let y2d = y * scale + cy;
 
-                ctx.arc(displayX, displayY, p.size, 0, Math.PI * 2);
-                ctx.fill();
-
-                p.y -= p.speedY;
-                p.x += p.speedX;
-
-                // Reset positions
-                if (p.y < -10) {
-                    p.y = canvas.height + 10;
-                    p.x = Math.random() * canvas.width;
+                // 3. Draw
+                // Only draw if within reasonable Z bounds (in front of camera)
+                if (z > -focalLength + 50) {
+                    ctx.globalAlpha = Math.max(0, Math.min(1, scale * 0.8)); // Fade distant particles
+                    ctx.beginPath();
+                    ctx.arc(x2d, y2d, p.radius * scale, 0, Math.PI * 2);
+                    ctx.fill();
                 }
-                if (p.x > canvas.width + 10) p.x = -10;
-                if (p.x < -10) p.x = canvas.width + 10;
             });
 
             requestAnimationFrame(drawParticles);
