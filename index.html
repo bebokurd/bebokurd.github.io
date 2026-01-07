@@ -41,6 +41,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            perspective: 1000px; /* Enable 3D space */
         }
 
         /* --- BACKGROUND LAYERS --- */
@@ -77,6 +78,16 @@
             inset: 0;
             background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%);
             z-index: -2;
+        }
+
+        /* Noise Texture for cinematic feel */
+        .bg-noise {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+            opacity: 0.07;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         /* --- PARTICLES --- */
@@ -155,7 +166,9 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255,255,255,0.02);
             opacity: 0;
             transform: translateY(40px) scale(0.95);
-            transition: var(--transition);
+            /* Transition starts slow for entry, then JS changes it for tilt */
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.6s ease;
+            transform-style: preserve-3d; /* Vital for 3D tilt */
         }
 
         .card.active {
@@ -163,11 +176,17 @@
             transform: translateY(0) scale(1);
         }
 
+        /* Class added by JS to make tilt snappy */
+        .card.interactive {
+            transition: transform 0.1s ease-out;
+        }
+
         .profile-img-container {
             position: relative;
             width: 120px;
             height: 120px;
             margin: 0 auto 1.5rem;
+            transform: translateZ(20px); /* 3D pop */
         }
 
         .profile-img {
@@ -196,6 +215,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 2px 10px rgba(102, 126, 234, 0.2);
+            transform: translateZ(10px); /* 3D pop */
         }
 
         .bio {
@@ -204,6 +224,14 @@
             margin-bottom: 2.5rem;
             letter-spacing: 1px;
             font-weight: 400;
+            min-height: 1.5em; /* Prevent layout shift during typing */
+            transform: translateZ(10px);
+        }
+
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s step-start infinite;
+            color: var(--primary);
         }
 
         /* --- SOCIAL LINKS --- */
@@ -211,6 +239,7 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            transform: translateZ(30px); /* 3D pop */
         }
 
         .social-link {
@@ -298,6 +327,9 @@
             from { transform: scale(1); box-shadow: 0 0 20px rgba(255,255,255,0.1); }
             to { transform: scale(1.05); box-shadow: 0 0 40px rgba(255,255,255,0.2); }
         }
+        @keyframes blink { 
+            50% { opacity: 0; } 
+        }
 
         @keyframes rotate {
             from { transform: rotate(0deg); }
@@ -316,17 +348,21 @@
         }
     </style>
 </head>
-<body oncontextmenu="return false;"> <!-- Disable Right Click (Basic) -->
+<body>
 
     <!-- Background -->
     <div class="bg-wrapper">
         <div class="bg-video">
-            <!-- Replace Video ID if needed -->
+            <!-- Security Update: Added sandbox attribute -->
             <iframe
                 src="https://www.youtube.com/embed/Iv5FFhgPGdo?autoplay=1&mute=1&controls=0&loop=1&playlist=Iv5FFhgPGdo&playsinline=1&showinfo=0&rel=0&modestbranding=1"
-                frameborder="0" allow="autoplay; encrypted-media"></iframe>
+                frameborder="0" 
+                allow="autoplay; encrypted-media"
+                sandbox="allow-scripts allow-same-origin allow-presentation">
+            </iframe>
         </div>
         <div class="bg-overlay"></div>
+        <div class="bg-noise"></div>
         <canvas id="particles-canvas"></canvas>
     </div>
 
@@ -352,7 +388,7 @@
         </div>
 
         <h1 class="username">CHYA</h1>
-        <p class="bio">LUQMAN • DIGITAL CREATOR</p>
+        <p class="bio" id="bio-text"></p> <!-- Empty for typewriter -->
 
         <div class="links-container">
             <!-- Added rel="noopener noreferrer" for Security -->
@@ -377,10 +413,10 @@
 
     <!-- UI Controls -->
     <div class="controls">
-        <button class="ctrl-btn" id="audio-toggle" title="Toggle Audio">
+        <button class="ctrl-btn" id="audio-toggle" title="Toggle Audio" aria-label="Toggle Audio">
             <i class="fas fa-volume-mute"></i>
         </button>
-        <button class="ctrl-btn" id="refresh-btn" title="Restart Music">
+        <button class="ctrl-btn" id="refresh-btn" title="Restart Music" aria-label="Restart Music">
             <i class="fas fa-redo-alt"></i>
         </button>
     </div>
@@ -397,29 +433,32 @@
 
         let particles = [];
         let isPlaying = false;
+        
+        // --- MOUSE TRACKING & TYPING VARIABLES ---
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
 
-        // --- SECURITY: ANTI-THEFT ---
-        // Block Right Click
-        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
 
-        // Block Common DevTool Shortcuts (F12, Ctrl+Shift+I, Ctrl+U)
-        document.onkeydown = function(e) {
-            if(e.keyCode == 123) { // F12
-                return false;
+            // Simple Tilt Logic
+            if (mainCard.classList.contains('interactive')) {
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+                mainCard.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
             }
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { // Ctrl+Shift+I
-                return false;
+        });
+
+        // --- TYPEWRITER FUNCTION ---
+        function typeWriter(text, i) {
+            const bioElement = document.getElementById('bio-text');
+            if (i < text.length) {
+                if (i === 0) bioElement.classList.add('typing-cursor');
+                bioElement.innerHTML += text.charAt(i);
+                setTimeout(() => typeWriter(text, i + 1), 100);
             }
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { // Ctrl+Shift+C
-                return false;
-            }
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { // Ctrl+Shift+J
-                return false;
-            }
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { // Ctrl+U
-                return false;
-            }
-        };
+        }
 
         // --- PARTICLE SYSTEM ---
         function initParticles() {
@@ -434,7 +473,9 @@
                     y: Math.random() * canvas.height,
                     size: Math.random() * 2 + 1,
                     speedY: Math.random() * 0.5 + 0.2,
-                    opacity: Math.random() * 0.5 + 0.1
+                    speedX: (Math.random() - 0.5) * 0.5, // gentle horizontal drift
+                    opacity: Math.random() * 0.5 + 0.1,
+                    depth: Math.random() // for parallax strength
                 });
             }
         }
@@ -443,18 +484,31 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
 
+            // Mouse interaction offsets
+            const parallaxX = (mouseX - canvas.width / 2) * 0.02;
+            const parallaxY = (mouseY - canvas.height / 2) * 0.02;
+
             particles.forEach(p => {
                 ctx.globalAlpha = p.opacity;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                
+                // Apply parallax based on depth
+                let displayX = p.x - (parallaxX * p.depth);
+                let displayY = p.y - (parallaxY * p.depth);
+
+                ctx.arc(displayX, displayY, p.size, 0, Math.PI * 2);
                 ctx.fill();
 
                 p.y -= p.speedY;
+                p.x += p.speedX;
 
+                // Reset positions
                 if (p.y < -10) {
                     p.y = canvas.height + 10;
                     p.x = Math.random() * canvas.width;
                 }
+                if (p.x > canvas.width + 10) p.x = -10;
+                if (p.x < -10) p.x = canvas.width + 10;
             });
 
             requestAnimationFrame(drawParticles);
@@ -465,6 +519,13 @@
             entryScreen.classList.add('hidden');
             mainCard.classList.add('active');
             
+            // Enable Tilt after entry animation
+            setTimeout(() => {
+                mainCard.classList.add('interactive');
+                // Start Typing
+                typeWriter("LUQMAN • DIGITAL CREATOR", 0);
+            }, 600);
+
             // Start Audio
             bgAudio.volume = 0.4;
             bgAudio.play().catch(() => console.log("Audio play blocked"));
