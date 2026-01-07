@@ -41,7 +41,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            perspective: 1000px; /* Enable 3D space */
+            perspective: 1200px; /* Increased perspective for deeper 3D feel */
         }
 
         /* --- BACKGROUND LAYERS --- */
@@ -163,12 +163,13 @@
             border-radius: 40px;
             padding: 3rem 2rem;
             text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255,255,255,0.02);
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(255,255,255,0.02);
             opacity: 0;
             transform: translateY(40px) scale(0.95);
             /* Transition starts slow for entry, then JS changes it for tilt */
             transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.6s ease;
             transform-style: preserve-3d; /* Vital for 3D tilt */
+            position: relative; /* For glare positioning */
         }
 
         .card.active {
@@ -181,12 +182,30 @@
             transition: transform 0.1s ease-out;
         }
 
+        /* Dynamic Glare Effect */
+        .card-glare {
+            position: absolute;
+            inset: 0;
+            border-radius: 40px;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+            opacity: 0;
+            z-index: 10;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            transition: opacity 0.4s ease;
+        }
+        
+        .card:hover .card-glare {
+            opacity: 1;
+        }
+
         .profile-img-container {
             position: relative;
             width: 120px;
             height: 120px;
             margin: 0 auto 1.5rem;
-            transform: translateZ(20px); /* 3D pop */
+            transform: translateZ(50px); /* Enhanced 3D pop */
+            transform-style: preserve-3d;
         }
 
         .profile-img {
@@ -195,7 +214,7 @@
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid #fff;
-            box-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             pointer-events: none; /* Security: Prevents dragging */
         }
 
@@ -205,6 +224,7 @@
             border-radius: 50%;
             border: 2px dashed var(--primary);
             animation: rotate 15s linear infinite;
+            transform: translateZ(-10px); /* Ring sits slightly behind image */
         }
 
         .username {
@@ -214,8 +234,8 @@
             background: linear-gradient(to right, #fff, var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 10px rgba(102, 126, 234, 0.2);
-            transform: translateZ(10px); /* 3D pop */
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateZ(30px); /* Enhanced 3D pop */
         }
 
         .bio {
@@ -225,7 +245,7 @@
             letter-spacing: 1px;
             font-weight: 400;
             min-height: 1.5em; /* Prevent layout shift during typing */
-            transform: translateZ(10px);
+            transform: translateZ(25px); /* Enhanced 3D pop */
         }
 
         .typing-cursor::after {
@@ -239,7 +259,8 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            transform: translateZ(30px); /* 3D pop */
+            transform: translateZ(60px); /* Maximum 3D pop for buttons */
+            transform-style: preserve-3d;
         }
 
         .social-link {
@@ -257,6 +278,7 @@
             overflow: hidden;
             opacity: 0;
             transform: translateX(-20px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .social-link.animate {
@@ -272,22 +294,23 @@
         }
 
         .social-link:hover {
-            transform: translateY(-3px) scale(1.02);
+            transform: translateY(-5px) scale(1.05) translateZ(10px);
             background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
         }
 
         /* Specific link accenting with Glow and Color */
-        .link-ig:hover { background: rgba(225, 48, 108, 0.1); border-color: rgba(225, 48, 108, 0.5); box-shadow: 0 0 25px rgba(225, 48, 108, 0.3); }
+        .link-ig:hover { background: rgba(225, 48, 108, 0.1); border-color: rgba(225, 48, 108, 0.5); box-shadow: 0 0 30px rgba(225, 48, 108, 0.4); }
         .link-ig:hover i { color: #E1306C; }
 
-        .link-tk:hover { background: rgba(0, 242, 254, 0.1); border-color: rgba(0, 242, 254, 0.5); box-shadow: 0 0 25px rgba(0, 242, 254, 0.3); }
+        .link-tk:hover { background: rgba(0, 242, 254, 0.1); border-color: rgba(0, 242, 254, 0.5); box-shadow: 0 0 30px rgba(0, 242, 254, 0.4); }
         .link-tk:hover i { color: #00f2fe; }
 
-        .link-dc:hover { background: rgba(88, 101, 242, 0.1); border-color: rgba(88, 101, 242, 0.5); box-shadow: 0 0 25px rgba(88, 101, 242, 0.3); }
+        .link-dc:hover { background: rgba(88, 101, 242, 0.1); border-color: rgba(88, 101, 242, 0.5); box-shadow: 0 0 30px rgba(88, 101, 242, 0.4); }
         .link-dc:hover i { color: #5865F2; }
 
-        .link-sc:hover { background: rgba(255, 252, 0, 0.1); border-color: rgba(255, 252, 0, 0.5); box-shadow: 0 0 25px rgba(255, 252, 0, 0.3); }
-        .link-sc:hover i, .link-sc:hover span { color: #FFFC00; text-shadow: 0 0 2px rgba(0,0,0,0.5); }
+        .link-sc:hover { background: rgba(255, 252, 0, 0.1); border-color: rgba(255, 252, 0, 0.5); box-shadow: 0 0 30px rgba(255, 252, 0, 0.4); }
+        .link-sc:hover i, .link-sc:hover span { color: #FFFC00; text-shadow: 0 0 5px rgba(255, 252, 0, 0.5); }
 
         /* --- CONTROLS --- */
         .controls {
@@ -345,6 +368,9 @@
             .card { padding: 2rem 1.5rem; width: 85%; }
             .username { font-size: 1.8rem; }
             .controls { bottom: 1rem; right: 1rem; }
+            /* Reduce 3D effect on mobile for performance/usability */
+            .profile-img-container { transform: translateZ(20px); }
+            .links-container { transform: translateZ(30px); }
         }
     </style>
 </head>
@@ -382,6 +408,9 @@
 
     <!-- Main Card -->
     <main class="card" id="main-card">
+        <!-- New Glare Element -->
+        <div class="card-glare"></div>
+
         <div class="profile-img-container">
             <div class="profile-ring"></div>
             <img src="https://i.pinimg.com/1200x/eb/48/73/eb487359acc13ab1ad5e1918e14cd49e.jpg" alt="CHYA" class="profile-img" draggable="false">
@@ -434,6 +463,48 @@
         let particles = [];
         let isPlaying = false;
         
+        // --- SECURITY: ANTI-THEFT & ASSET PROTECTION ---
+        
+        // 1. Block Right Click
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // 2. Block Dragging Globally (Images, Text, etc.)
+        window.ondragstart = function() { return false; };
+        
+        // 3. Block Text Selection Forcefully
+        document.onselectstart = function() { return false; };
+
+        // 4. Block Common DevTool & Save Shortcuts (Windows & Mac)
+        document.onkeydown = function(e) {
+            // F12 (DevTools)
+            if(e.keyCode == 123) return false;
+
+            // Windows: Ctrl+Shift+I (DevTools), J (Console), C (Inspect)
+            if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) {
+                return false;
+            }
+            
+            // Windows: Ctrl+U (View Source), Ctrl+S (Save), Ctrl+P (Print), Ctrl+A (Select All)
+            if(e.ctrlKey && (e.keyCode == 85 || e.keyCode == 83 || e.keyCode == 80 || e.keyCode == 65)) {
+                return false;
+            }
+
+            // Mac: Cmd+Option+I/J/C (DevTools)
+            if(e.metaKey && e.altKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) {
+                return false;
+            }
+
+            // Mac: Cmd+U (Source), Cmd+S (Save), Cmd+P (Print), Cmd+A (Select All)
+            if(e.metaKey && (e.keyCode == 85 || e.keyCode == 83 || e.keyCode == 80 || e.keyCode == 65)) {
+                return false;
+            }
+        };
+
+        // 5. Debugger Trap (Anti-Debug)
+        setInterval(function() {
+            (function(){})['constructor']('debugger')();
+        }, 200);
+
         // --- MOUSE TRACKING & TYPING VARIABLES ---
         let mouseX = window.innerWidth / 2;
         let mouseY = window.innerHeight / 2;
@@ -442,11 +513,24 @@
             mouseX = e.clientX;
             mouseY = e.clientY;
 
-            // Simple Tilt Logic
+            // Logic only if card is interactive (after entry)
             if (mainCard.classList.contains('interactive')) {
-                const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-                const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+                // 1. TILT LOGIC (Stronger effect: Divisor reduced from 25 to 18)
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 18;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 18;
                 mainCard.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+
+                // 2. GLARE LOGIC
+                const glare = document.querySelector('.card-glare');
+                if (glare) {
+                    const rect = mainCard.getBoundingClientRect();
+                    // Calculate mouse position relative to card
+                    const glareX = e.clientX - rect.left;
+                    const glareY = e.clientY - rect.top;
+                    
+                    // Move the radial gradient center
+                    glare.style.background = `radial-gradient(circle at ${glareX}px ${glareY}px, rgba(255, 255, 255, 0.3) 0%, transparent 70%)`;
+                }
             }
         });
 
@@ -475,7 +559,7 @@
                     speedY: Math.random() * 0.5 + 0.2,
                     speedX: (Math.random() - 0.5) * 0.5, // gentle horizontal drift
                     opacity: Math.random() * 0.5 + 0.1,
-                    depth: Math.random() // for parallax strength
+                    depth: Math.random() * 1.5 // Increased depth variation
                 });
             }
         }
@@ -484,9 +568,9 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
 
-            // Mouse interaction offsets
-            const parallaxX = (mouseX - canvas.width / 2) * 0.02;
-            const parallaxY = (mouseY - canvas.height / 2) * 0.02;
+            // Mouse interaction offsets (Stronger background parallax)
+            const parallaxX = (mouseX - canvas.width / 2) * 0.04; // Increased multiplier
+            const parallaxY = (mouseY - canvas.height / 2) * 0.04;
 
             particles.forEach(p => {
                 ctx.globalAlpha = p.opacity;
