@@ -63,7 +63,8 @@
             min-height: 100%;
             width: auto;
             height: auto;
-            filter: brightness(0.35) blur(2px);
+            /* Anime Aesthetic Filters: darker brightness, higher contrast */
+            filter: brightness(0.4) contrast(1.1) saturate(1.2) blur(1px); 
             z-index: -3;
             transition: transform 0.1s ease-out; /* Smooth parallax movement */
         }
@@ -79,7 +80,7 @@
         .bg-overlay {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%);
+            background: radial-gradient(circle at center, transparent 0%, rgba(10, 10, 30, 0.8) 100%); /* Blue-tinted darkness */
             z-index: -2;
         }
 
@@ -88,7 +89,7 @@
             position: absolute;
             inset: 0;
             z-index: -2;
-            opacity: 0.07;
+            opacity: 0.05;
             pointer-events: none;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
@@ -383,8 +384,9 @@
     <div class="bg-wrapper">
         <div class="bg-video" id="bg-video">
             <!-- Security Update: Added sandbox attribute -->
+            <!-- Updated to 'Your Name' style aesthetic loop -->
             <iframe
-                src="https://www.youtube.com/embed/Iv5FFhgPGdo?autoplay=1&mute=1&controls=0&loop=1&playlist=Iv5FFhgPGdo&playsinline=1&showinfo=0&rel=0&modestbranding=1"
+                src="https://www.youtube.com/embed/t348e24kDyA?autoplay=1&mute=1&controls=0&loop=1&playlist=t348e24kDyA&playsinline=1&showinfo=0&rel=0&modestbranding=1"
                 frameborder="0" 
                 allow="autoplay; encrypted-media"
                 sandbox="allow-scripts allow-same-origin allow-presentation">
@@ -551,10 +553,11 @@
             }
         }
 
-        // --- 3D PARTICLE SYSTEM ---
+        // --- 3D PARTICLE SYSTEM (ANIME CONSTELLATION) ---
         // Configuration
-        const particleCount = 150; 
-        const focalLength = 500; // How "deep" the scene feels
+        const particleCount = 100; 
+        const focalLength = 300; 
+        const flySpeed = 1.5; // Slightly slower for chill anime vibe
         
         function initParticles() {
             canvas.width = window.innerWidth;
@@ -563,10 +566,11 @@
             
             for (let i = 0; i < particleCount; i++) {
                 particles.push({
-                    x: (Math.random() - 0.5) * canvas.width * 2, // Spread wider than screen
-                    y: (Math.random() - 0.5) * canvas.height * 2,
-                    z: Math.random() * focalLength * 2, // Depth spread
-                    originalZ: Math.random() * focalLength * 2,
+                    x: (Math.random() - 0.5) * canvas.width * 3, 
+                    y: (Math.random() - 0.5) * canvas.height * 3, 
+                    z: Math.random() * focalLength * 4,
+                    // Anime Colors: Mix of Cyan and Pink/Purple
+                    color: Math.random() > 0.5 ? 'rgba(100, 255, 255,' : 'rgba(255, 100, 200,',
                     radius: Math.random() * 2 + 0.5
                 });
             }
@@ -575,50 +579,89 @@
         function drawParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Screen center
             const cx = canvas.width / 2;
             const cy = canvas.height / 2;
 
-            // 3D Rotation based on mouse (normalized -0.5 to 0.5)
-            // Multiplier controls sensitivity
-            const rotX = (mouseY - cy) / cy * 0.2; 
-            const rotY = (mouseX - cx) / cx * 0.2; 
+            // Camera Rotation based on mouse
+            const rotX = (mouseY - cy) / cy * 0.4; 
+            const rotY = (mouseX - cx) / cx * 0.4; 
             
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.lineWidth = 0.5;
+
+            // Update, Move, and Project
+            let projected = [];
 
             particles.forEach(p => {
-                // 1. Apply Rotation to 3D Coordinates
-                // Standard 3D rotation formulas
-                // Rotate around Y
+                // 1. Move Forward (Fly through effect)
+                p.z -= flySpeed;
+
+                // 2. Recycle particles that pass the camera
+                if (p.z < -focalLength + 50) {
+                    p.z = focalLength * 4; // Send to back
+                    p.x = (Math.random() - 0.5) * canvas.width * 3;
+                    p.y = (Math.random() - 0.5) * canvas.height * 3;
+                }
+
+                // 3. Apply Camera Rotation (3D Math)
                 let x = p.x;
-                let z = p.z;
-                let tempX = x * Math.cos(rotY) - z * Math.sin(rotY);
-                let tempZ = z * Math.cos(rotY) + x * Math.sin(rotY);
-                x = tempX;
-                z = tempZ;
-
-                // Rotate around X
                 let y = p.y;
-                let tempY = y * Math.cos(rotX) - z * Math.sin(rotX);
-                tempZ = z * Math.cos(rotX) + y * Math.sin(rotX);
-                y = tempY;
-                z = tempZ;
+                let z = p.z;
 
-                // 2. Project 3D Point to 2D Screen
-                // Scale factor determines how "big" things are based on distance
-                // We add 'focalLength' to Z so we don't divide by zero and particles are in front
-                let scale = focalLength / (focalLength + z);
-                
-                let x2d = x * scale + cx;
-                let y2d = y * scale + cy;
+                // Rotate Y
+                let tx = x * Math.cos(rotY) - z * Math.sin(rotY);
+                let tz = z * Math.cos(rotY) + x * Math.sin(rotY);
+                x = tx;
+                z = tz;
 
-                // 3. Draw
-                // Only draw if within reasonable Z bounds (in front of camera)
-                if (z > -focalLength + 50) {
-                    ctx.globalAlpha = Math.max(0, Math.min(1, scale * 0.8)); // Fade distant particles
-                    ctx.beginPath();
-                    ctx.arc(x2d, y2d, p.radius * scale, 0, Math.PI * 2);
-                    ctx.fill();
+                // Rotate X
+                let ty = y * Math.cos(rotX) - z * Math.sin(rotX);
+                tz = z * Math.cos(rotX) + y * Math.sin(rotX);
+                y = ty;
+                z = tz;
+
+                // 4. Project 3D point to 2D screen
+                // Ensure point is in front of camera
+                if (z > -focalLength + 10) { 
+                    let scale = focalLength / (focalLength + z);
+                    let x2d = x * scale + cx;
+                    let y2d = y * scale + cy;
+                    let size = p.radius * scale;
+
+                    // Save projected point for rendering
+                    projected.push({ 
+                        x: x2d, 
+                        y: y2d, 
+                        size: size, 
+                        color: p.color,
+                        alpha: Math.min(1, scale) // Fade distant stars
+                    });
+                }
+            });
+
+            // Draw Points and Connections
+            projected.forEach((p, index) => {
+                // Draw Star with Color
+                ctx.fillStyle = p.color + p.alpha + ')';
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw Connections (Constellation Effect)
+                // Connect to nearby points in the projected list
+                for (let j = index + 1; j < projected.length; j++) {
+                    const p2 = projected[j];
+                    const dx = p.x - p2.x;
+                    const dy = p.y - p2.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    // Draw line if close enough on screen
+                    if (dist < 100) { 
+                        ctx.strokeStyle = 'rgba(200, 200, 255,' + ((1 - dist / 100) * 0.15 * p.alpha) + ')';
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
                 }
             });
 
