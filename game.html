@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imposter Game Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .perspective-1000 { perspective: 1000px; }
+        .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        
+        .card-inner {
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { background-color: rgba(239, 68, 68, 0.1); }
+            50% { background-color: rgba(239, 68, 68, 0.3); }
+        }
+        .animate-pulse-red { animation: pulse-red 2s infinite; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans min-h-screen transition-colors duration-300">
+
+    <div id="app" class="container mx-auto max-w-2xl px-4 py-6 md:py-12">
+        <!-- Home View -->
+        <div id="view-home" class="view flex flex-col items-center justify-center min-h-[80vh] space-y-8">
+            <div class="text-center space-y-2">
+                <div class="inline-flex p-4 bg-indigo-600 rounded-3xl shadow-2xl shadow-indigo-500/50 mb-4 transform hover:scale-110 transition-transform">
+                    <i data-lucide="venetian-mask" class="text-white w-12 h-12"></i>
+                </div>
+                <h1 class="text-4xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">IMPOSTER</h1>
+                <p class="text-slate-500 dark:text-slate-400 font-medium">The ultimate social deduction game</p>
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-xl w-full max-w-md border border-slate-200 dark:border-slate-800 space-y-6">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Identity</label>
+                    <input id="input-name" type="text" placeholder="Your display name" class="w-full px-5 py-4 rounded-2xl bg-slate-100 dark:bg-slate-800 border-2 border-transparent focus:border-indigo-500 outline-none transition-all font-bold">
+                </div>
+
+                <div class="space-y-3">
+                    <button onclick="handleHost()" class="w-full flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-2xl shadow-lg shadow-indigo-200 dark:shadow-none transition-all active:scale-95 group">
+                        <i data-lucide="plus-circle" class="w-5 h-5 group-hover:rotate-90 transition-transform"></i>
+                        HOST NEW GAME
+                    </button>
+                    
+                    <div class="flex items-center gap-4 py-2">
+                        <div class="h-px flex-grow bg-slate-200 dark:bg-slate-800"></div>
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-tighter">OR JOIN FRIENDS</span>
+                        <div class="h-px flex-grow bg-slate-200 dark:bg-slate-800"></div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <input id="input-code" type="text" placeholder="CODE" maxlength="4" class="w-28 text-center px-2 py-4 rounded-2xl bg-slate-100 dark:bg-slate-800 border-2 border-transparent focus:border-emerald-500 outline-none transition-all font-mono font-black uppercase text-xl">
+                        <button onclick="handleJoin()" class="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-2xl shadow-lg shadow-emerald-200 dark:shadow-none transition-all active:scale-95">
+                            JOIN
+                        </button>
+                    </div>
+                </div>
+                <p id="error-message" class="hidden text-red-500 text-xs text-center font-bold bg-red-50 dark:bg-red-950/30 p-3 rounded-xl border border-red-100 dark:border-red-900 animate-bounce"></p>
+            </div>
+        </div>
+
+        <!-- Lobby View -->
+        <div id="view-lobby" class="view hidden space-y-6 animate-fade-in">
+            <div class="flex items-center justify-between bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <button onclick="leaveGame()" class="p-3 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-red-500 transition-all">
+                    <i data-lucide="log-out" class="w-6 h-6"></i>
+                </button>
+                <div class="text-center cursor-pointer group" onclick="copyCode()">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">ROOM CODE</span>
+                    <div class="flex items-center gap-2">
+                        <span id="display-room-code" class="text-3xl font-black text-indigo-600 font-mono tracking-tighter">----</span>
+                        <div id="copy-icon-container"><i data-lucide="copy" class="w-4 h-4 text-slate-300 group-hover:text-indigo-600 transition-colors"></i></div>
+                    </div>
+                </div>
+                <div class="w-12"></div>
+            </div>
+
+            <!-- Host Settings (Conditional) -->
+            <div id="host-settings-panel" class="hidden bg-indigo-50 dark:bg-indigo-950/30 p-6 rounded-[2rem] border border-indigo-100 dark:border-indigo-900 space-y-4">
+                <h3 class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest flex items-center gap-2">
+                    <i data-lucide="settings-2" class="w-4 h-4"></i> Game Settings
+                </h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase">Imposters</label>
+                        <select id="select-imposters" class="w-full bg-white dark:bg-slate-800 p-2 rounded-xl text-sm font-bold border-none outline-none ring-1 ring-indigo-200 dark:ring-indigo-900">
+                            <option value="1">1 Imposter</option>
+                            <option value="2">2 Imposters</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase">Timer</label>
+                        <select id="select-timer" class="w-full bg-white dark:bg-slate-800 p-2 rounded-xl text-sm font-bold border-none outline-none ring-1 ring-indigo-200 dark:ring-indigo-900">
+                            <option value="60">1 Minute</option>
+                            <option value="120" selected>2 Minutes</option>
+                            <option value="300">5 Minutes</option>
+                            <option value="0">No Timer</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase block">Categories</label>
+                    <div id="category-chips" class="flex flex-wrap gap-2">
+                        <!-- Chips injected -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/20">
+                    <h2 class="text-lg font-black flex items-center gap-3 italic">
+                        <i data-lucide="users" class="text-indigo-600 w-6 h-6"></i>
+                        SURVIVORS <span id="player-count" class="text-slate-400">0</span>
+                    </h2>
+                    <span class="flex items-center gap-2 text-[10px] font-black text-emerald-500 uppercase animate-pulse">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Ready
+                    </span>
+                </div>
+                
+                <div id="player-list" class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[40vh] overflow-y-auto custom-scrollbar">
+                    <!-- Players injected -->
+                </div>
+
+                <div class="p-6">
+                    <div id="host-controls" class="hidden">
+                        <button onclick="startGame()" id="btn-start" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 rounded-2xl shadow-xl shadow-indigo-200 dark:shadow-none transition-all active:scale-95 disabled:opacity-50 disabled:grayscale uppercase tracking-wider">
+                            START MISSION
+                        </button>
+                        <p class="text-center text-[10px] text-slate-400 font-bold mt-3 uppercase">Requires 3+ Players</p>
+                    </div>
+                    <div id="player-waiting" class="text-center py-4 bg-slate-100 dark:bg-slate-800 rounded-2xl">
+                        <p class="text-slate-500 dark:text-slate-400 text-sm font-black animate-pulse uppercase tracking-widest">Waiting for host...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game View -->
+        <div id="view-game" class="view hidden space-y-8 animate-fade-in">
+            <div class="flex items-center justify-between">
+                <div class="flex flex-col">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Category</span>
+                    <h2 id="game-category" class="text-2xl font-black text-indigo-600 italic uppercase">---</h2>
+                </div>
+                <div id="game-timer-container" class="bg-slate-900 text-white px-6 py-3 rounded-2xl font-mono font-bold text-2xl border-b-4 border-slate-700 shadow-inner min-w-[100px] text-center">
+                    00:00
+                </div>
+            </div>
+
+            <div class="w-full perspective-1000 max-w-sm mx-auto">
+                <div id="identity-card" onclick="toggleCard()" class="card-container relative w-full aspect-[3/4] cursor-pointer transform-style-3d group">
+                    <div class="card-inner relative w-full h-full transform-style-3d">
+                        <!-- Front -->
+                        <div class="absolute inset-0 backface-hidden bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl border-4 border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center p-8 gap-8 overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5"></div>
+                            <div class="bg-slate-100 dark:bg-slate-800 p-10 rounded-[2.5rem] shadow-inner relative group-hover:scale-105 transition-transform duration-500">
+                                <i data-lucide="eye-off" class="text-slate-300 dark:text-slate-600 w-16 h-16"></i>
+                            </div>
+                            <div class="text-center relative">
+                                <h3 class="text-2xl font-black mb-2 uppercase tracking-tighter">Classified</h3>
+                                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest italic opacity-60">Tap to reveal role</p>
+                            </div>
+                        </div>
+
+                        <!-- Back -->
+                        <div id="card-back" class="absolute inset-0 backface-hidden rotate-y-180 rounded-[3rem] shadow-2xl border-4 flex flex-col items-center justify-center p-8 gap-6 text-center">
+                            <div id="role-icon" class="p-8 rounded-[2.5rem] shadow-lg"></div>
+                            <div class="space-y-2">
+                                <h3 id="role-name" class="text-5xl font-black uppercase tracking-tighter">ROLE</h3>
+                                <div class="h-1 w-12 bg-current opacity-20 mx-auto rounded-full my-4"></div>
+                                <div id="role-detail" class="space-y-1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reveal Section (Only visible after round ends) -->
+            <div id="reveal-screen" class="hidden animate-fade-in space-y-6">
+                <div class="bg-indigo-600 text-white p-6 rounded-[2rem] shadow-xl text-center space-y-2">
+                    <h3 class="text-2xl font-black italic">MISSION COMPLETE</h3>
+                    <p class="text-indigo-100 font-bold text-sm">All identities have been exposed.</p>
+                </div>
+                <div id="reveal-list" class="grid grid-cols-1 gap-3">
+                    <!-- Identities reveal here -->
+                </div>
+            </div>
+
+            <div id="game-stats-panel" class="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="text-center">
+                        <div id="stat-players" class="text-3xl font-black">0</div>
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Assets</div>
+                    </div>
+                    <div class="text-center">
+                        <div id="stat-imposters" class="text-3xl font-black text-red-500">0</div>
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hostiles</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="host-game-controls" class="hidden grid grid-cols-1 gap-3">
+                <button id="btn-reveal" onclick="revealAll()" class="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-black py-4 rounded-2xl transition-all active:scale-95 shadow-lg flex items-center justify-center gap-2 uppercase">
+                    <i data-lucide="eye" class="w-5 h-5"></i> End & Reveal Roles
+                </button>
+                <button onclick="startGame()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-2xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 uppercase">
+                    <i data-lucide="refresh-cw" class="w-5 h-5"></i> Start New Round
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="fixed bottom-4 left-0 right-0 text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] pointer-events-none opacity-40">
+        <span id="footer-info">Initializing Neural Link...</span>
+    </footer>
+
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Config ---
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'imposter-pro';
+
+        const WORD_BANK = {
+            "Animals": ["Elephant", "Giraffe", "Penguin", "Kangaroo", "Octopus", "Sloth", "Honey Badger", "Platypus"],
+            "Food": ["Sushi", "Pizza", "Burrito", "Dumplings", "Croissant", "Pancakes", "Guacamole", "Ramen"],
+            "Tech": ["Smartphone", "Blockchain", "Robot", "Satellites", "VR Headset", "Server", "Laptop", "Drone"],
+            "Places": ["Hospital", "Library", "Casino", "Space Station", "Submarine", "Airport", "Colosseum", "Sahara"],
+            "Pop Culture": ["Superhero", "Rockstar", "Wizard", "Vampire", "Detective", "Zombie", "Pirate", "Alien"]
+        };
+
+        // --- Global State ---
+        let state = {
+            user: null,
+            userName: localStorage.getItem('imposter_name') || '',
+            roomCode: '',
+            gameData: null,
+            view: 'home',
+            isFlipped: false,
+            selectedCategories: Object.keys(WORD_BANK),
+            timerInterval: null
+        };
+
+        // --- Core Auth ---
+        onAuthStateChanged(auth, u => {
+            state.user = u;
+            if (u) render();
+        });
+
+        const initAuth = async () => {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+        };
+        initAuth();
+
+        // --- Navigation ---
+        window.handleHost = async () => {
+            const name = document.getElementById('input-name').value;
+            if (!name.trim()) return showError('Provide a callsign');
+            
+            state.userName = name;
+            localStorage.setItem('imposter_name', name);
+            
+            const code = Math.random().toString(36).substring(2, 6).toUpperCase();
+            const gameRef = doc(db, 'artifacts', appId, 'public', 'data', 'games', code);
+            
+            const initialData = {
+                code,
+                hostId: state.user.uid,
+                players: [{ id: state.user.uid, name }],
+                status: 'lobby',
+                imposters: [],
+                secretWord: '',
+                category: '',
+                settings: {
+                    imposterCount: 1,
+                    timerSeconds: 120,
+                    categories: Object.keys(WORD_BANK)
+                },
+                revealed: false,
+                endTime: null,
+                createdAt: Date.now()
+            };
+
+            try {
+                await setDoc(gameRef, initialData);
+                state.roomCode = code;
+                state.view = 'lobby';
+                subscribeToGame(code);
+            } catch (err) { showError('Link failed. Retry.'); }
+        };
+
+        window.handleJoin = async () => {
+            const name = document.getElementById('input-name').value;
+            const code = document.getElementById('input-code').value.toUpperCase();
+            if (!name.trim()) return showError('Provide a callsign');
+            if (!code.trim()) return showError('Missing Code');
+
+            state.userName = name;
+            localStorage.setItem('imposter_name', name);
+            
+            const gameRef = doc(db, 'artifacts', appId, 'public', 'data', 'games', code);
+            try {
+                const snap = await getDoc(gameRef);
+                if (!snap.exists()) return showError('Room not found');
+                
+                const data = snap.data();
+                if (data.status !== 'lobby' && !data.players.some(p => p.id === state.user.uid)) {
+                    return showError('Mission in progress');
+                }
+
+                if (!data.players.some(p => p.id === state.user.uid)) {
+                    await updateDoc(gameRef, { players: arrayUnion({ id: state.user.uid, name }) });
+                }
+                
+                state.roomCode = code;
+                state.view = 'lobby';
+                subscribeToGame(code);
+            } catch (err) { showError('Infiltration failed.'); }
+        };
+
+        window.leaveGame = () => {
+            if (state.unsubscribe) state.unsubscribe();
+            state.view = 'home';
+            state.roomCode = '';
+            state.gameData = null;
+            render();
+        };
+
+        // --- Real-time Sync ---
+        const subscribeToGame = (code) => {
+            if (state.unsubscribe) state.unsubscribe();
+            const gameRef = doc(db, 'artifacts', appId, 'public', 'data', 'games', code);
+            state.unsubscribe = onSnapshot(gameRef, snap => {
+                if (snap.exists()) {
+                    const data = snap.data();
+                    const oldStatus = state.gameData?.status;
+                    state.gameData = data;
+                    
+                    if (data.status === 'playing') state.view = 'game';
+                    if (data.status === 'lobby') {
+                        state.view = 'lobby';
+                        state.isFlipped = false;
+                    }
+                    
+                    render();
+                } else {
+                    leaveGame();
+                }
+            });
+        };
+
+        // --- Gameplay Actions ---
+        window.startGame = async () => {
+            const players = [...state.gameData.players];
+            if (players.length < 3) return showError('Need 3+ assets');
+
+            const impCount = parseInt(document.getElementById('select-imposters')?.value || 1);
+            const timerSec = parseInt(document.getElementById('select-timer')?.value || 120);
+            
+            const shuffled = [...players].sort(() => 0.5 - Math.random());
+            const imposters = shuffled.slice(0, impCount).map(p => p.id);
+            
+            const cats = state.selectedCategories.length > 0 ? state.selectedCategories : Object.keys(WORD_BANK);
+            const cat = cats[Math.floor(Math.random() * cats.length)];
+            const words = WORD_BANK[cat];
+            const word = words[Math.floor(Math.random() * words.length)];
+
+            const gameRef = doc(db, 'artifacts', appId, 'public', 'data', 'games', state.roomCode);
+            await updateDoc(gameRef, {
+                status: 'playing',
+                imposters,
+                secretWord: word,
+                category: cat,
+                revealed: false,
+                endTime: timerSec > 0 ? Date.now() + (timerSec * 1000) : null,
+                settings: { imposterCount: impCount, timerSeconds: timerSec, categories: cats }
+            });
+        };
+
+        window.revealAll = async () => {
+            const gameRef = doc(db, 'artifacts', appId, 'public', 'data', 'games', state.roomCode);
+            await updateDoc(gameRef, { revealed: true, endTime: null });
+        };
+
+        window.kickPlayer = async (pid) => {
+            if (pid === state.user.uid) return;
+            const updated = state.gameData.players.filter(p => p.id !== pid);
+            const gameRef = doc(db, 'artifacts', appId, 'public', 'data', 'games', state.roomCode);
+            await updateDoc(gameRef, { players: updated });
+        };
+
+        window.toggleCategory = (cat) => {
+            if (state.selectedCategories.includes(cat)) {
+                if (state.selectedCategories.length > 1) {
+                    state.selectedCategories = state.selectedCategories.filter(c => c !== cat);
+                }
+            } else {
+                state.selectedCategories.push(cat);
+            }
+            render();
+        };
+
+        window.copyCode = () => {
+            const el = document.createElement('textarea');
+            el.value = state.roomCode;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            const container = document.getElementById('copy-icon-container');
+            container.innerHTML = '<i data-lucide="check" class="text-emerald-500 w-4 h-4"></i>';
+            lucide.createIcons();
+            setTimeout(() => { render(); }, 2000);
+        };
+
+        window.toggleCard = () => {
+            state.isFlipped = !state.isFlipped;
+            const card = document.getElementById('identity-card');
+            if (state.isFlipped) card.classList.add('is-flipped');
+            else card.classList.remove('is-flipped');
+        };
+
+        // --- Visual Helpers ---
+        const showError = (msg) => {
+            const err = document.getElementById('error-message');
+            err.innerText = msg;
+            err.classList.remove('hidden');
+            setTimeout(() => err.classList.add('hidden'), 3000);
+        };
+
+        const updateTimerDisplay = () => {
+            const el = document.getElementById('game-timer-container');
+            if (!state.gameData?.endTime) {
+                el.innerText = "--:--";
+                return;
+            }
+            
+            const diff = Math.max(0, Math.floor((state.gameData.endTime - Date.now()) / 1000));
+            const m = Math.floor(diff / 60);
+            const s = diff % 60;
+            el.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            
+            if (diff <= 10) el.classList.add('text-red-500', 'animate-pulse');
+            else el.classList.remove('text-red-500', 'animate-pulse');
+        };
+
+        // --- Master Render ---
+        const render = () => {
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            const currentView = document.getElementById(`view-${state.view}`);
+            if (currentView) currentView.classList.remove('hidden');
+
+            document.getElementById('footer-info').innerText = `Linked: ${state.userName || 'Unknown'} [${state.user?.uid?.substring(0, 4)}]`;
+
+            if (state.view === 'lobby' && state.gameData) {
+                const isHost = state.user?.uid === state.gameData.hostId;
+                document.getElementById('display-room-code').innerText = state.gameData.code;
+                document.getElementById('player-count').innerText = state.gameData.players.length;
+                
+                // Settings visibility
+                document.getElementById('host-settings-panel').classList.toggle('hidden', !isHost);
+                document.getElementById('host-controls').classList.toggle('hidden', !isHost);
+                document.getElementById('player-waiting').classList.toggle('hidden', isHost);
+
+                // Categories
+                const catContainer = document.getElementById('category-chips');
+                catContainer.innerHTML = Object.keys(WORD_BANK).map(cat => {
+                    const active = state.selectedCategories.includes(cat);
+                    return `<button onclick="toggleCategory('${cat}')" class="px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${active ? 'bg-indigo-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}">${cat}</button>`;
+                }).join('');
+
+                // Player List
+                document.getElementById('player-list').innerHTML = state.gameData.players.map(p => `
+                    <div class="flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-800/40 rounded-[1.5rem] border border-transparent hover:border-indigo-200 dark:hover:border-indigo-900 group">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center font-black ${p.id === state.gameData.hostId ? 'bg-amber-100 text-amber-600' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'}">
+                            ${p.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div class="flex-grow">
+                            <span class="font-black text-sm block">${p.name} ${p.id === state.user.uid ? '(YOU)' : ''}</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">${p.id === state.gameData.hostId ? 'Mission Lead' : 'Field Agent'}</span>
+                        </div>
+                        ${isHost && p.id !== state.user.uid ? `<button onclick="kickPlayer('${p.id}')" class="opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-red-500 transition-all"><i data-lucide="user-x" class="w-4 h-4"></i></button>` : ''}
+                    </div>
+                `).join('');
+            }
+
+            if (state.view === 'game' && state.gameData) {
+                const isImposter = state.gameData.imposters.includes(state.user.uid);
+                document.getElementById('game-category').innerText = state.gameData.category;
+                document.getElementById('stat-players').innerText = state.gameData.players.length;
+                document.getElementById('stat-imposters').innerText = state.gameData.imposters.length;
+                
+                const isHost = state.user?.uid === state.gameData.hostId;
+                document.getElementById('host-game-controls').classList.toggle('hidden', !isHost);
+                document.getElementById('btn-reveal').classList.toggle('hidden', state.gameData.revealed);
+
+                // Timer setup
+                if (state.timerInterval) clearInterval(state.timerInterval);
+                if (state.gameData.endTime) {
+                    state.timerInterval = setInterval(updateTimerDisplay, 1000);
+                    updateTimerDisplay();
+                } else {
+                    document.getElementById('game-timer-container').innerText = "--:--";
+                }
+
+                // Card content
+                const back = document.getElementById('card-back');
+                const roleIcon = document.getElementById('role-icon');
+                const roleName = document.getElementById('role-name');
+                const roleDetail = document.getElementById('role-detail');
+
+                if (isImposter) {
+                    back.className = "absolute inset-0 backface-hidden rotate-y-180 rounded-[3rem] shadow-2xl border-4 flex flex-col items-center justify-center p-8 gap-6 bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900 text-red-600";
+                    roleIcon.className = "p-8 rounded-[2.5rem] bg-red-100 dark:bg-red-900 shadow-lg text-red-600";
+                    roleIcon.innerHTML = '<i data-lucide="skull" class="w-16 h-16"></i>';
+                    roleName.innerText = "Imposter";
+                    roleDetail.innerHTML = '<p class="text-xs font-bold uppercase tracking-widest text-red-500/60 italic">Infiltrator</p><p class="text-slate-600 dark:text-slate-400 text-sm font-medium">Blend in. Sabotage. Do not let them find you.</p>';
+                } else {
+                    back.className = "absolute inset-0 backface-hidden rotate-y-180 rounded-[3rem] shadow-2xl border-4 flex flex-col items-center justify-center p-8 gap-6 bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900 text-emerald-600";
+                    roleIcon.className = "p-8 rounded-[2.5rem] bg-emerald-100 dark:bg-emerald-900 shadow-lg text-emerald-600";
+                    roleIcon.innerHTML = '<i data-lucide="shield-check" class="w-16 h-16"></i>';
+                    roleName.innerText = "Innocent";
+                    roleDetail.innerHTML = `<p class="text-[10px] font-black uppercase tracking-widest text-emerald-500/60">Secret Word</p><p class="text-5xl font-black text-slate-900 dark:text-white">${state.gameData.secretWord}</p>`;
+                }
+
+                // Reveal logic
+                const revealSect = document.getElementById('reveal-screen');
+                const cardCont = document.getElementById('identity-card');
+                const statsPanel = document.getElementById('game-stats-panel');
+                
+                if (state.gameData.revealed) {
+                    revealSect.classList.remove('hidden');
+                    cardCont.classList.add('hidden');
+                    statsPanel.classList.add('hidden');
+                    
+                    document.getElementById('reveal-list').innerHTML = state.gameData.players.map(p => {
+                        const imp = state.gameData.imposters.includes(p.id);
+                        return `
+                            <div class="flex items-center justify-between p-4 rounded-2xl border-2 ${imp ? 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900/50' : 'bg-slate-100 dark:bg-slate-800 border-transparent'}">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-xl flex items-center justify-center font-black ${imp ? 'bg-red-600 text-white' : 'bg-slate-200 dark:bg-slate-700'}">${p.name.charAt(0)}</div>
+                                    <span class="font-black text-sm uppercase">${p.name}</span>
+                                </div>
+                                <span class="text-[10px] font-black uppercase ${imp ? 'text-red-500' : 'text-slate-400'}">${imp ? 'IMPOSTER' : 'INNOCENT'}</span>
+                            </div>
+                        `;
+                    }).join('') + `<div class="p-4 text-center"><span class="text-[10px] font-black text-slate-400 uppercase">Secret Word was:</span><p class="text-2xl font-black text-indigo-600 uppercase">${state.gameData.secretWord}</p></div>`;
+                } else {
+                    revealSect.classList.add('hidden');
+                    cardCont.classList.remove('hidden');
+                    statsPanel.classList.remove('hidden');
+                }
+            }
+
+            lucide.createIcons();
+        };
+
+        window.onload = render;
+    </script>
+</body>
+</html>
