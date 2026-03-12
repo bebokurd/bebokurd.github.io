@@ -1,20 +1,25 @@
 {
-  "name": "CHYA TV FREE",
+  "name": "CHYA TV",
   "short_name": "CHYA TV",
+  "description": "The ultimate destination for Kurdish movies and series.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "background_color": "#050505",
+  "theme_color": "#e50914",
+  "orientation": "portrait",
+  "categories": ["entertainment", "movies"],
   "icons": [
     {
-      "src": "https://bebokurd.github.io/channels4_profile-removebg-preview.png",
+      "src": "chyatv_pwa_icon_192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "https://bebokurd.github.io/channels4_profile-removebg-preview.png",
+      "src": "chyatv_pwa_icon_512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
