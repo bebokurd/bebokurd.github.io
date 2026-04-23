@@ -943,5 +943,61 @@
         "cat": "mods",
         "url": "https://wemod.com",
         "icon": "fa-wrench"
+    },
+    {
+        "name": "Kurdcinama Trivia Master Solver",
+        "desc": "Premium autonomous solver for all Kurdcinama trivia modes.",
+        "cat": "scripts",
+        "url": "https://greasyfork.org/en/scripts/574862-kurdcinama-trivia-master-solver",
+        "icon": "fa-brain"
+    },
+    {
+        "name": "TikTok Video Downloader",
+        "desc": "Download TikTok videos without watermark via browser button.",
+        "cat": "scripts",
+        "url": "https://greasyfork.org/en/scripts/560130-tiktok-video-downloader",
+        "icon": "fa-download"
+    },
+    {
+        "name": "Umingle Uhmegle AutoSkip v3",
+        "desc": "Auto-skip chats and avoid disconnects on Umingle/Uhmegle.",
+        "cat": "scripts",
+        "url": "https://greasyfork.org/en/scripts/548587-umingle-of-uhmegle-autoskip-v3",
+        "icon": "fa-forward"
+    },
+    {
+        "name": "Neal.fun Robot Game Solver",
+        "desc": "Instantly beat 'I'm Not a Robot' game with level selector.",
+        "cat": "scripts",
+        "url": "https://greasyfork.org/en/scripts/558771-instantly-beat-i-m-not-a-robot-game-neal-fun-enhanced",
+        "icon": "fa-robot"
+    },
+    {
+        "name": "Telegram Media Downloader",
+        "desc": "Download restricted content from Telegram private channels.",
+        "cat": "scripts",
+        "url": "https://greasyfork.org/en/scripts/446342-telegram-media-downloader",
+        "icon": "fa-paper-plane"
+    },
+    {
+        "name": "Bypass All Shortlinks",
+        "desc": "Auto-skip link shorteners, ads, and annoying popups.",
+        "cat": "scripts",
+        "url": "https://greasyfork.org/en/scripts/431691-bypass-all-shortlinks",
+        "icon": "fa-link-slash"
+    },
+    {
+        "name": "AutoPager (Infinite Scroll)",
+        "desc": "Seamlessly append the next page content to the bottom.",
+        "cat": "scripts",
+        "url": "https://greasyfork.org/en/scripts/419215-autopager",
+        "icon": "fa-arrows-up-down"
+    },
+    {
+        "name": "IG Helper",
+        "desc": "Download Instagram photos, videos, stories, and reels.",
+        "cat": "scripts",
+        "url": "https://greasyfork.org/en/scripts/404535-ig-helper",
+        "icon": "fa-camera"
     }
 ]

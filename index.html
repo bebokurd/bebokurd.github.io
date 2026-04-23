@@ -705,6 +705,12 @@
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
         }
 
+        .cat-scripts .pkg-list-icon {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.4), rgba(245, 158, 11, 0.1));
+            border-color: rgba(245, 158, 11, 0.3);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+        }
+
         .pkg-list-info {
             flex: 1;
             min-width: 0;
@@ -1259,7 +1265,7 @@
 
 <body>
 
-    <video class="video-background" id="bg-video" autoplay muted loop playsinline>
+    <video class="video-background" id="bg-video" autoplay muted loop playsinline webkit-playsinline preload="auto">
         <source src="https://r2.guns.lol/66f828e9-e90a-48ff-b46b-4f064893c5b7.mp4" type="video/mp4">
     </video>
     <div class="video-noise"></div>
@@ -1346,6 +1352,8 @@
             <div class="sidebar-item" onclick="filterCategory('mods', this)"><i class="fas fa-wrench"></i> Game Mods
             </div>
             <div class="sidebar-item" onclick="filterCategory('tools', this)"><i class="fas fa-toolbox"></i> PC Tools
+            </div>
+            <div class="sidebar-item" onclick="filterCategory('scripts', this)"><i class="fas fa-scroll"></i> Automation Scripts
             </div>
             <div class="sidebar-item" onclick="filterCategory('ads', this)"><i class="fas fa-shield-alt"></i> Ad
                 Blockers
@@ -1543,6 +1551,9 @@
 
         entry.addEventListener('click', () => {
             entry.style.opacity = '0';
+            // Force video play on user interaction for mobile
+            if (bgVideo) bgVideo.play().catch(() => { });
+            
             setTimeout(() => {
                 entry.style.display = 'none';
                 const lockScreen = document.getElementById('spatial-lock');
@@ -1566,6 +1577,14 @@
             }, 800);
             isPlaying = true;
             document.getElementById('audio-fab').innerHTML = '<i class="fas fa-pause"></i>';
+        });
+
+        // Resume media when tab becomes visible again (mobile background fix)
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                if (bgVideo) bgVideo.play().catch(() => { });
+                if (isPlaying && audio) audio.play().catch(() => { });
+            }
         });
 
         function typeWriter(text, i) {
@@ -1620,7 +1639,7 @@
                 movies: "Movies & Series", tools: "Tools & Software",
                 games: "Game Downloads", mods: "Game Mods",
                 livetv: "Live TV & IPTV", ads: "Ad Blockers",
-                sports: "Live Sports"
+                sports: "Live Sports", scripts: "Automation Scripts"
             };
 
             for (const [key, label] of Object.entries(categories)) {
