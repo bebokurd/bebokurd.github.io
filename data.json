@@ -1,0 +1,947 @@
+[
+    {
+        "name": "CHYA Official Discord",
+        "desc": "Join our community hub for updates and chat.",
+        "cat": "social",
+        "url": "https://discord.gg/YTeRSG8kER",
+        "icon": "fa-discord"
+    },
+    {
+        "name": "Claude AI",
+        "desc": "Advanced AI for writing and coding.",
+        "cat": "ai",
+        "url": "https://claude.ai/",
+        "icon": "fa-brain"
+    },
+    {
+        "name": "Gemini",
+        "desc": "Google's most capable AI model.",
+        "cat": "ai",
+        "url": "https://gemini.google.com/",
+        "icon": "fa-wand-magic-sparkles"
+    },
+    {
+        "name": "v0.dev",
+        "desc": "Generate UI components using AI.",
+        "cat": "ai",
+        "url": "https://v0.dev/",
+        "icon": "fa-code"
+    },
+    {
+        "name": "Lovable",
+        "desc": "Build full apps with AI.",
+        "cat": "ai",
+        "url": "https://lovable.dev/",
+        "icon": "fa-heart"
+    },
+    {
+        "name": "Luma Dream Machine",
+        "desc": "AI Video generation.",
+        "cat": "ai",
+        "url": "https://lumalabs.ai/dream-machine",
+        "icon": "fa-meteor"
+    },
+    {
+        "name": "Opus Clip",
+        "desc": "AI powered video repurposing.",
+        "cat": "ai",
+        "url": "https://www.opus.pro/",
+        "icon": "fa-scissors"
+    },
+    {
+        "name": "ElevenLabs",
+        "desc": "Best AI Text-to-Speech.",
+        "cat": "ai",
+        "url": "https://elevenlabs.io/",
+        "icon": "fa-microphone"
+    },
+    {
+        "name": "Websim",
+        "desc": "Browser-based web simulation AI.",
+        "cat": "ai",
+        "url": "https://websim.ai/",
+        "icon": "fa-globe"
+    },
+    {
+        "name": "Kurd Cinema",
+        "desc": "Professional Kurdish movie subtitles/dubs.",
+        "cat": "kurdish",
+        "url": "https://kurdcinema.com/",
+        "icon": "fa-language"
+    },
+    {
+        "name": "KurdFilm",
+        "desc": "Kurdish movie database and streaming.",
+        "cat": "kurdish",
+        "url": "https://kurdfilm.com/",
+        "icon": "fa-compact-disc"
+    },
+    {
+        "name": "Kurd Doblazh",
+        "desc": "Kurdish dubbed series and movies.",
+        "cat": "kurdish",
+        "url": "https://kurddoblaj.net/",
+        "icon": "fa-microphone"
+    },
+    {
+        "name": "Beenar",
+        "desc": "Kurdish media platform.",
+        "cat": "kurdish",
+        "url": "https://beenar.net/",
+        "icon": "fa-eye"
+    },
+    {
+        "name": "Kurd Movies",
+        "desc": "Kurdish dubbed film library.",
+        "cat": "kurdish",
+        "url": "https://kurdmovies.net/",
+        "icon": "fa-film"
+    },
+    {
+        "name": "Kurd TVs",
+        "desc": "Live Kurdish television channels.",
+        "cat": "kurdish",
+        "url": "https://kurdtvs.net/",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "Kurdi TV",
+        "desc": "Live Kurdish television channels.",
+        "cat": "kurdish",
+        "url": "https://kurditv.com/",
+        "icon": "fa-satellite-dish"
+    },
+    {
+        "name": "AniMixPlay",
+        "desc": "Watch HD Anime ad-free.",
+        "cat": "anime",
+        "url": "https://animixplay.to/",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "MangaReader",
+        "desc": "Read and download manga online.",
+        "cat": "anime",
+        "url": "https://mangareader.to/",
+        "icon": "fa-book-open"
+    },
+    {
+        "name": "Crunchyroll",
+        "desc": "Official source for anime.",
+        "cat": "anime",
+        "url": "https://www.crunchyroll.com/",
+        "icon": "fa-play"
+    },
+    {
+        "name": "WCOForever",
+        "desc": "Watch cartoons and anime online.",
+        "cat": "anime",
+        "url": "https://www.wcoforever.net/",
+        "icon": "fa-ghost"
+    },
+    {
+        "name": "KimCartoon",
+        "desc": "Free high quality cartoons.",
+        "cat": "anime",
+        "url": "https://kimcartoon.li/",
+        "icon": "fa-palette"
+    },
+    {
+        "name": "Space Power Fan",
+        "desc": "Kurdish/Arabic anime archive.",
+        "cat": "anime",
+        "url": "https://spacepowerfan.com/",
+        "icon": "fa-star"
+    },
+    {
+        "name": "Anime Nexus",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://anime.nexus",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "AnimeKai",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://animekai.to",
+        "icon": "fa-play"
+    },
+    {
+        "name": "9AnimeTV",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://9animetv.to",
+        "icon": "fa-ghost"
+    },
+    {
+        "name": "Miruro",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://miruro.to",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "Anitaku",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://anitaku.io",
+        "icon": "fa-play"
+    },
+    {
+        "name": "Anikai",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://anikai.to",
+        "icon": "fa-ghost"
+    },
+    {
+        "name": "GogoAnime",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://gogoanime.org.vc",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "Anigo",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://anigo.to",
+        "icon": "fa-play"
+    },
+    {
+        "name": "Kickass Anime",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://kickass-anime.ro",
+        "icon": "fa-ghost"
+    },
+    {
+        "name": "AniWatchTV",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://aniwatchtv.to",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "AnimeGG",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://animegg.org",
+        "icon": "fa-play"
+    },
+    {
+        "name": "AnimeStream",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://animestream.net",
+        "icon": "fa-ghost"
+    },
+    {
+        "name": "KissAnime",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://kissanime.com.ru",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "AllManga",
+        "desc": "Read manga online.",
+        "cat": "anime",
+        "url": "https://allmanga.to",
+        "icon": "fa-book-open"
+    },
+    {
+        "name": "AniWorld",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://aniworld.to",
+        "icon": "fa-play"
+    },
+    {
+        "name": "WCOstream",
+        "desc": "Watch cartoons and anime online.",
+        "cat": "anime",
+        "url": "https://wcostream.tv",
+        "icon": "fa-ghost"
+    },
+    {
+        "name": "JustAnime",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://justanime.to",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "123Animes",
+        "desc": "Watch HD Anime online.",
+        "cat": "anime",
+        "url": "https://123animes.ru",
+        "icon": "fa-play"
+    },
+    {
+        "name": "CimaNow",
+        "desc": "Streaming movies and series (Arabic/Eng).",
+        "cat": "movies",
+        "url": "https://cimanow.cam/",
+        "icon": "fa-video"
+    },
+    {
+        "name": "EgyBest",
+        "desc": "The original EgyBest media platform.",
+        "cat": "movies",
+        "url": "https://egybest.biz/",
+        "icon": "fa-film"
+    },
+    {
+        "name": "MyCima",
+        "desc": "Egyptian and foreign movie portal.",
+        "cat": "movies",
+        "url": "https://mycima.ink/",
+        "icon": "fa-clapperboard"
+    },
+    {
+        "name": "YTS",
+        "desc": "High quality YIFY movie torrents.",
+        "cat": "movies",
+        "url": "https://yts.bz/",
+        "icon": "fa-magnet"
+    },
+    {
+        "name": "FMovies",
+        "desc": "Free HD movies online streaming.",
+        "cat": "movies",
+        "url": "https://fmovies.to/",
+        "icon": "fa-play-circle"
+    },
+    {
+        "name": "PirateMedia",
+        "desc": "Watch movies, TV shows & live sports.",
+        "cat": "movies",
+        "url": "https://piratemedia.xyz/",
+        "icon": "fa-skull-crossbones"
+    },
+    {
+        "name": "Soap2Night",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://soap2night.cc",
+        "icon": "fa-film"
+    },
+    {
+        "name": "Ramoflix",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://ramoflix.net",
+        "icon": "fa-video"
+    },
+    {
+        "name": "Dorawatch",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://dorawatch.one",
+        "icon": "fa-play"
+    },
+    {
+        "name": "Wmovies",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://wmovies.one",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "HydraHD",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://hydrahd.ru",
+        "icon": "fa-film"
+    },
+    {
+        "name": "Cineby",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://cineby.sc",
+        "icon": "fa-video"
+    },
+    {
+        "name": "Flickystream",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://flickystream.ru",
+        "icon": "fa-play"
+    },
+    {
+        "name": "Yflix",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://yflix.to",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "Cinema BZ",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://cinema.bz",
+        "icon": "fa-film"
+    },
+    {
+        "name": "Flixer",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://flixer.su",
+        "icon": "fa-video"
+    },
+    {
+        "name": "Goojara",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://goojara.to",
+        "icon": "fa-play"
+    },
+    {
+        "name": "67movies",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://67movies.net",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "ShuttleTV",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://shuttletv.su",
+        "icon": "fa-film"
+    },
+    {
+        "name": "PopcornMovies",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://popcornmovies.org",
+        "icon": "fa-video"
+    },
+    {
+        "name": "Rivestream",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://rivestream.org",
+        "icon": "fa-play"
+    },
+    {
+        "name": "TheFlixerTV",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://theflixertv.click",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "Onionplay",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://onionplay.io",
+        "icon": "fa-film"
+    },
+    {
+        "name": "Lookmovie2",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://lookmovie2.to",
+        "icon": "fa-video"
+    },
+    {
+        "name": "Pressplayz",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://pressplayz.to",
+        "icon": "fa-play"
+    },
+    {
+        "name": "Nepu",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://nepu.to",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "FMovies",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://fmovies.co",
+        "icon": "fa-film"
+    },
+    {
+        "name": "Soap2day HDz",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://soap2dayhdz.com",
+        "icon": "fa-video"
+    },
+    {
+        "name": "Project Free TV",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://projectfreetv.sx",
+        "icon": "fa-play"
+    },
+    {
+        "name": "Mappl TV",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://mappl.tv",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "Streamex",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://streamex.sh",
+        "icon": "fa-film"
+    },
+    {
+        "name": "Pstream",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://pstream.net",
+        "icon": "fa-video"
+    },
+    {
+        "name": "Movish",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://movish.net",
+        "icon": "fa-play"
+    },
+    {
+        "name": "TheMovieBox",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://themoviebox.org",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "HDToday",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://hdtoday.tr",
+        "icon": "fa-film"
+    },
+    {
+        "name": "CinebyTV",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://cinebytv.com",
+        "icon": "fa-video"
+    },
+    {
+        "name": "RidoMovies",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://ridomovies.tv",
+        "icon": "fa-play"
+    },
+    {
+        "name": "123MoviesFree",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://123moviesfree.net",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "Willow Arlen",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://willow.arlen.icu",
+        "icon": "fa-film"
+    },
+    {
+        "name": "Vidplay",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://vidplay.top",
+        "icon": "fa-video"
+    },
+    {
+        "name": "CinemaOS",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://cinemaos.live",
+        "icon": "fa-play"
+    },
+    {
+        "name": "YesMovies",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://yesmovies.ag",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "AnixTV",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://anixtv.us.cc",
+        "icon": "fa-film"
+    },
+    {
+        "name": "PrimeWire",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://primewire.mov",
+        "icon": "fa-video"
+    },
+    {
+        "name": "MoviePire",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://moviepire.org",
+        "icon": "fa-play"
+    },
+    {
+        "name": "Flickr Mini",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://flickr-mini.pages.dev",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "StreamM4u",
+        "desc": "Movies and TV Shows streaming.",
+        "cat": "movies",
+        "url": "https://streamm4u.com.co",
+        "icon": "fa-film"
+    },
+    {
+        "name": "FileCR",
+        "desc": "Massive software library for PC/Mac.",
+        "cat": "tools",
+        "url": "https://filecr.com/",
+        "icon": "fa-folder-open"
+    },
+    {
+        "name": "Get Into PC",
+        "desc": "Software downloads for PC.",
+        "cat": "tools",
+        "url": "https://getintopc.com/",
+        "icon": "fa-laptop-code"
+    },
+    {
+        "name": "Hydra Launcher",
+        "desc": "Next-gen game launcher.",
+        "cat": "tools",
+        "url": "https://hydralauncher.gg/",
+        "icon": "fa-dragon"
+    },
+    {
+        "name": "Activated.win",
+        "desc": "Windows & Office activation toolkit.",
+        "cat": "tools",
+        "cmd": "irm https://get.activated.win | iex",
+        "icon": "fa-key"
+    },
+    {
+        "name": "WinUtil (C. Titus)",
+        "desc": "Essential Windows tweaks tool.",
+        "cat": "tools",
+        "cmd": "irm \"https://christitus.com/win\" | iex",
+        "icon": "fa-terminal"
+    },
+    {
+        "name": "Winhance",
+        "desc": "Boost PC performance & clean OS.",
+        "cat": "tools",
+        "url": "https://winhance.net/",
+        "icon": "fa-rocket"
+    },
+    {
+        "name": "Photopea",
+        "desc": "Online Photoshop alternative.",
+        "cat": "tools",
+        "url": "https://www.photopea.com/",
+        "icon": "fa-image"
+    },
+    {
+        "name": "uBlock Origin",
+        "desc": "Highly efficient ad blocker.",
+        "cat": "ads",
+        "url": "https://ublockorigin.com/",
+        "icon": "fa-shield-alt"
+    },
+    {
+        "name": "AdBlock Plus",
+        "desc": "Free ad blocker extension.",
+        "cat": "ads",
+        "url": "https://adblockplus.org/",
+        "icon": "fa-ban"
+    },
+    {
+        "name": "AdGuard",
+        "desc": "Advanced adblock plugin.",
+        "cat": "ads",
+        "url": "https://adguard.com/",
+        "icon": "fa-user-shield"
+    },
+    {
+        "name": "AdBlock",
+        "desc": "Popular ad blocking extension.",
+        "cat": "ads",
+        "url": "https://getadblock.com/",
+        "icon": "fa-stop-circle"
+    },
+    {
+        "name": "Poper Blocker",
+        "desc": "Block annoying popups.",
+        "cat": "ads",
+        "url": "https://poperblocker.com/",
+        "icon": "fa-times-circle"
+    },
+    {
+        "name": "LiveTV.sx",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://livetv.sx",
+        "icon": "fa-futbol"
+    },
+    {
+        "name": "TotalSportek",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://totalsportek.events",
+        "icon": "fa-volleyball-ball"
+    },
+    {
+        "name": "Streamed.pk",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://streamed.pk",
+        "icon": "fa-basketball-ball"
+    },
+    {
+        "name": "NTV.cx",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://ntv.cx",
+        "icon": "fa-football-ball"
+    },
+    {
+        "name": "StreamEast",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://streameast.ga",
+        "icon": "fa-table-tennis"
+    },
+    {
+        "name": "FCTV33",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://fctv33.hair",
+        "icon": "fa-baseball-ball"
+    },
+    {
+        "name": "MethStreams",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://methstreams.ms",
+        "icon": "fa-golf-ball"
+    },
+    {
+        "name": "SportsBite",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://sportsbite.sbs",
+        "icon": "fa-futbol"
+    },
+    {
+        "name": "Sport71",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://sport71.pro",
+        "icon": "fa-volleyball-ball"
+    },
+    {
+        "name": "SportyHunter",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://sportyhunter.com",
+        "icon": "fa-basketball-ball"
+    },
+    {
+        "name": "WatchSports",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://watchsports.to",
+        "icon": "fa-football-ball"
+    },
+    {
+        "name": "OnHockey.tv",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://onhockey.tv",
+        "icon": "fa-hockey-puck"
+    },
+    {
+        "name": "CrackStreams",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://crackstreams.io",
+        "icon": "fa-futbol"
+    },
+    {
+        "name": "SportPlus.live",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://sportplus.live",
+        "icon": "fa-volleyball-ball"
+    },
+    {
+        "name": "LiveTV861",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://livetv861.me",
+        "icon": "fa-basketball-ball"
+    },
+    {
+        "name": "StrikeOut",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://strikeout.im",
+        "icon": "fa-baseball-ball"
+    },
+    {
+        "name": "WatchFooty",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://watchfooty.st",
+        "icon": "fa-futbol"
+    },
+    {
+        "name": "Sportsurge",
+        "desc": "Live sports streams.",
+        "cat": "sports",
+        "url": "https://sportsurge.net",
+        "icon": "fa-football-ball"
+    },
+    {
+        "name": "Famelack",
+        "desc": "Live TV streams (Blocked in some regions).",
+        "cat": "livetv",
+        "url": "https://famelack.com",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "The TV App",
+        "desc": "Live TV streams.",
+        "cat": "livetv",
+        "url": "https://the-tv.app",
+        "icon": "fa-satellite-dish"
+    },
+    {
+        "name": "GlobeTV",
+        "desc": "Live TV streams.",
+        "cat": "livetv",
+        "url": "https://globetv.app",
+        "icon": "fa-globe"
+    },
+    {
+        "name": "DaddyLive",
+        "desc": "Live TV streams.",
+        "cat": "livetv",
+        "url": "https://daddylive.mp",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "TV247US",
+        "desc": "Live US TV streams.",
+        "cat": "livetv",
+        "url": "https://tv247us.live",
+        "icon": "fa-flag-usa"
+    },
+    {
+        "name": "NTVStream",
+        "desc": "Live TV streams.",
+        "cat": "livetv",
+        "url": "https://ntvstream.cx",
+        "icon": "fa-satellite-dish"
+    },
+    {
+        "name": "IPTV Web",
+        "desc": "Live TV streams.",
+        "cat": "livetv",
+        "url": "https://iptv-web.app",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "Public IPTV",
+        "desc": "Live TV streams.",
+        "cat": "livetv",
+        "url": "https://publiciptv.com",
+        "icon": "fa-tower-broadcast"
+    },
+    {
+        "name": "MyTV Plus",
+        "desc": "Live TV & Apps.",
+        "cat": "livetv",
+        "url": "https://www.mytvplus.net/",
+        "icon": "fa-mobile-alt"
+    },
+    {
+        "name": "FitGirl Repacks",
+        "desc": "Highly compressed PC games.",
+        "cat": "games",
+        "url": "https://fitgirl-repacks.site/",
+        "icon": "fa-gamepad"
+    },
+    {
+        "name": "DODI Repacks",
+        "desc": "Fast install game repacks.",
+        "cat": "games",
+        "url": "https://dodi-repacks.site/",
+        "icon": "fa-compact-disc"
+    },
+    {
+        "name": "AnkerGames",
+        "desc": "Game downloads and repacks.",
+        "cat": "games",
+        "url": "https://ankergames.net",
+        "icon": "fa-gamepad"
+    },
+    {
+        "name": "G4U",
+        "desc": "Game downloads and repacks.",
+        "cat": "games",
+        "url": "https://g4u.to",
+        "icon": "fa-compact-disc"
+    },
+    {
+        "name": "SteamRIP",
+        "desc": "Game downloads and repacks.",
+        "cat": "games",
+        "url": "https://steamrip.com",
+        "icon": "fa-gamepad"
+    },
+    {
+        "name": "SteamGG",
+        "desc": "Game downloads and repacks.",
+        "cat": "games",
+        "url": "https://steamgg.net",
+        "icon": "fa-compact-disc"
+    },
+    {
+        "name": "M4CKD0GE",
+        "desc": "Game downloads and repacks.",
+        "cat": "games",
+        "url": "https://m4ckd0ge-repacks.site",
+        "icon": "fa-gamepad"
+    },
+    {
+        "name": "Gload",
+        "desc": "Game downloads and repacks.",
+        "cat": "games",
+        "url": "https://gload.to",
+        "icon": "fa-compact-disc"
+    },
+    {
+        "name": "WeMod",
+        "desc": "PC game trainers and mods.",
+        "cat": "mods",
+        "url": "https://wemod.com",
+        "icon": "fa-wrench"
+    }
+]

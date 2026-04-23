@@ -4,30 +4,23 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="description" content="CHYA LUQMAN - Cydia Elite Hybrid Portal">
+    <meta name="description" content="CHYA LUQMAN - link">
     <title>CHYA | Cydia Elite</title>
 
-    <!-- External Assets -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Poppins:wght@300;400;600;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --cydia-gold: #d4af37;
-            --cydia-gold-bright: #f1d592;
-            --cydia-brown: #3d2b1f;
-            --glass: rgba(12, 12, 12, 0.7);
-            --glass-deep: rgba(5, 5, 5, 0.95);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --bg-accent: #6b21a8;
+            --bg-accent2: #2563eb;
+            --glass-bg: rgba(20, 20, 25, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
-            --text-dim: rgba(255, 255, 255, 0.45);
-            --bg-dark: #010101;
-            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --text-dim: #9ca3af;
+            --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* General Settings */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -35,42 +28,84 @@
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #000;
+            color: #fff;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            perspective: 2000px;
             overflow-x: hidden;
             scroll-behavior: smooth;
         }
 
-        /* Custom Scrollbar */
+        .video-background {
+            position: fixed;
+            top: -5%;
+            left: -5%;
+            width: 110%;
+            height: 110%;
+            object-fit: cover;
+            z-index: -3;
+            opacity: 0.7;
+            filter: brightness(0.6) saturate(1.2);
+            transition: transform 0.2s ease-out;
+            pointer-events: none;
+        }
+
+        .video-noise {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+            filter: contrast(150%) brightness(150%);
+        }
+
+        .video-scanlines {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            opacity: 0.05;
+            pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+
         ::-webkit-scrollbar {
             width: 8px;
-            height: 8px;
         }
 
         ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.2);
+            background: transparent;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, var(--cydia-gold), var(--cydia-brown));
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
-            border: 2px solid rgba(0, 0, 0, 0.2);
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--cydia-gold-bright);
+            background: rgba(255, 255, 255, 0.4);
         }
 
-        /* Scroll Progress Bar */
+
         .scroll-progress-container {
             position: fixed;
             top: 0;
@@ -78,26 +113,28 @@
             width: 100%;
             height: 3px;
             z-index: 3000;
-            pointer-events: none;
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .scroll-progress-bar {
             height: 100%;
-            background: linear-gradient(to right, transparent, var(--cydia-gold), var(--cydia-gold-bright));
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
             width: 0%;
-            box-shadow: 0 0 10px var(--cydia-gold);
-            transition: width 0.1s ease-out;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+            transition: width 0.1s;
         }
 
-        /* Back to Top Button */
+
         .back-to-top {
             position: fixed;
             bottom: 30px;
             right: 30px;
             width: 50px;
             height: 50px;
-            background: var(--glass-deep);
-            color: var(--cydia-gold);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: #fff;
             border: 1px solid var(--glass-border);
             border-radius: 50%;
             display: flex;
@@ -108,44 +145,24 @@
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(20px);
+            transform: translateY(20px) scale(0.9);
             transition: var(--transition);
-            backdrop-filter: blur(10px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .back-to-top.visible {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         .back-to-top:hover {
-            background: var(--cydia-gold);
-            color: #000;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 255, 255, 0.1);
         }
 
-        /* Animated Background */
-        .bg-wrapper {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            pointer-events: none;
-        }
 
-        .bg-video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            transform: translate(-50%, -50%) scale(1.1);
-            filter: brightness(0.2) contrast(1.2) saturate(0.7) blur(25px);
-            object-fit: cover;
-        }
-
-        /* Initial Boot Screen */
         #entry-screen {
             position: fixed;
             inset: 0;
@@ -156,244 +173,336 @@
             justify-content: center;
             z-index: 2000;
             cursor: pointer;
-            transition: opacity 0.8s ease, visibility 0.8s;
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), visibility 1s;
         }
 
-        .cydia-icon-box {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, #a28b6d 0%, #3d2b1f 100%);
-            border-radius: 28px;
+        .boot-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+            perspective: 1000px;
+        }
+
+        .boot-logo-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 60px rgba(162, 139, 109, 0.2);
-            margin-bottom: 2rem;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
             position: relative;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: float 6s ease-in-out infinite;
         }
 
-        .cydia-icon-box i {
-            font-size: 4rem;
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotateX(5deg) rotateY(5deg);
+            }
+        }
+
+        .boot-logo-icon i {
+            font-size: 3rem;
             color: #fff;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+        }
+
+        .boot-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #fff, #a1a1aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .boot-subtitle {
+            font-size: 1rem;
+            color: #a1a1aa;
+            margin-top: 5px;
+            font-weight: 300;
+            letter-spacing: 1px;
         }
 
         .log-container {
             width: 90%;
-            max-width: 320px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            color: var(--cydia-gold);
-            height: 120px;
-            border-left: 2px solid rgba(212, 175, 55, 0.2);
-            padding-left: 1.2rem;
+            max-width: 400px;
+            background: transparent;
+            padding: 20px;
+            font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            color: #6ee7b7;
+            height: 160px;
             overflow: hidden;
-            mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
             text-align: left;
+            margin: 20px 0;
+            mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
         }
 
         .log-line {
             opacity: 0;
-            margin-bottom: 6px;
-            transform: translateX(-10px);
-            transition: 0.3s;
+            margin-bottom: 8px;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+            text-shadow: 0 0 5px rgba(110, 231, 183, 0.5);
         }
 
         .log-line.visible {
             opacity: 1;
-            transform: translateX(0);
+            transform: translateY(0);
         }
 
-        /* Hybrid App Window */
-        .app-window {
-            width: 95%;
-            max-width: 440px;
-            background: var(--glass);
-            backdrop-filter: blur(50px);
-            -webkit-backdrop-filter: blur(50px);
-            border: 1px solid var(--glass-border);
-            border-radius: 40px;
-            overflow: hidden;
-            box-shadow: 0 60px 120px rgba(0, 0, 0, 0.9);
-            opacity: 0;
-            transform: scale(0.92) translateY(50px);
-            transition: var(--transition);
-            display: flex;
-            position: relative;
-        }
-
-        .app-window.active {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-
-        /* Sidebar (PC Only) */
-        .sidebar {
-            width: 280px;
-            background: rgba(0, 0, 0, 0.4);
-            border-right: 1px solid var(--glass-border);
-            display: none;
-            flex-direction: column;
-            padding: 1.5rem 1rem;
-        }
-
-        .window-controls {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 2.5rem;
-            padding-left: 1rem;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .dot.red {
-            background: #ff5f56;
-            box-shadow: 0 0 10px rgba(255, 95, 86, 0.3);
-        }
-
-        .dot.yellow {
-            background: #ffbd2e;
-            box-shadow: 0 0 10px rgba(255, 189, 46, 0.3);
-        }
-
-        .dot.green {
-            background: #27c93f;
-            box-shadow: 0 0 10px rgba(39, 201, 63, 0.3);
-        }
-
-        .sidebar-search-container {
-            padding: 0 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .sidebar-search {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            padding: 0.6rem 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-dim);
-            font-size: 0.85rem;
-            transition: var(--transition);
-        }
-
-        .sidebar-search:focus-within {
-            border-color: var(--cydia-gold);
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .sidebar-search input {
-            background: transparent;
-            border: none;
-            outline: none;
+        .boot-tap-hint {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
             color: #fff;
-            width: 100%;
-            font-size: 0.85rem;
-        }
-
-        .sidebar-title {
-            font-size: 0.65rem;
-            font-weight: 800;
-            color: var(--text-dim);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 30px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 1.5rem;
-            padding-left: 1rem;
+            animation: pulseGlow 2s infinite;
         }
 
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 0.9rem 1.2rem;
-            border-radius: 14px;
-            color: var(--text-dim);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: var(--transition);
-            margin-bottom: 4px;
-            cursor: pointer;
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.1);
+            }
+
+            50% {
+                box-shadow: 0 0 20px 0 rgba(255, 255, 255, 0.2);
+            }
         }
 
-        .sidebar-item i {
-            color: var(--cydia-gold);
-            font-size: 1.2rem;
-            width: 24px;
-            text-align: center;
-        }
 
-        .sidebar-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-        }
-
-        .sidebar-item.active {
-            background: var(--cydia-gold);
-            color: #000;
-        }
-
-        .sidebar-item.active i {
-            color: #000;
-        }
-
-        /* Menu Overlay */
-        .menu-overlay {
+        #menu-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 150;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 1500;
             opacity: 0;
             visibility: hidden;
             transition: var(--transition);
         }
 
-        .menu-overlay.active {
+        #menu-overlay.active {
             opacity: 1;
             visibility: visible;
         }
 
-        /* Hamburger Styles */
-        .hamburger {
+
+        #main-app {
+            width: 100%;
+            max-width: 1200px;
+            height: 100vh;
+            display: flex;
+            position: relative;
+            background: transparent;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        @media (min-width: 1024px) {
+            #main-app {
+                height: 90vh;
+                margin: 5vh auto;
+                border-radius: 20px;
+                overflow: hidden;
+                border: 1px solid var(--glass-border);
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                background: var(--glass-bg);
+                backdrop-filter: blur(24px);
+                -webkit-backdrop-filter: blur(24px);
+            }
+        }
+
+
+        .sidebar {
+            width: 280px;
+            background: rgba(10, 10, 15, 0.9);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
             display: none;
             flex-direction: column;
-            gap: 5px;
+            overflow-y: auto;
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            padding-bottom: 20px;
+            z-index: 100;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sidebar-header {
+            padding: 40px 24px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-header p {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .sidebar-title {
+            padding: 24px 24px 8px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 1023px) {
+
+            .sidebar-item,
+            .sidebar-title,
+            .sidebar-search,
+            .sidebar-header {
+                opacity: 0;
+                transform: translateX(-15px);
+            }
+        }
+
+        .sidebar-item {
+            padding: 12px 20px;
+            margin: 4px 12px;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
             cursor: pointer;
-            z-index: 200;
-            padding: 5px;
+            display: flex;
+            align-items: center;
+            border-radius: 12px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid transparent;
+            position: relative;
         }
 
-        .hamburger .bar {
-            width: 25px;
-            height: 3px;
-            background: var(--cydia-gold);
-            border-radius: 5px;
-            transition: var(--transition);
+        .sidebar-item i {
+            width: 32px;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.45);
+            transition: inherit;
         }
 
-        .hamburger.active .bar:nth-child(1) {
-            transform: translateY(8px) rotate(45deg);
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            transform: translateX(4px);
         }
 
-        .hamburger.active .bar:nth-child(2) {
-            opacity: 0;
+        .sidebar-item:hover i {
+            color: #ffffff;
         }
 
-        .hamburger.active .bar:nth-child(3) {
-            transform: translateY(-8px) rotate(-45deg);
+        .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
-        /* Main Pane */
+        .sidebar-item.active i {
+            color: #ffffff;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+        }
+
+        .sidebar-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 25%;
+            height: 50%;
+            width: 4px;
+            background: #3b82f6;
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 1);
+        }
+
+        .sidebar-item.active i {
+            color: #ffffff;
+            filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.6));
+        }
+
+
+        .sidebar-search {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            margin: 10px 15px;
+            height: 44px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-search:focus-within {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+        }
+
+        .sidebar-search i {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .sidebar-search input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 0 12px;
+            width: 100%;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-search input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+
         .main-pane {
             flex: 1;
             display: flex;
             flex-direction: column;
+            background: transparent;
             overflow: hidden;
             position: relative;
         }
@@ -401,197 +510,238 @@
         .scroll-area {
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 80px;
+            padding-bottom: 30px;
             scroll-behavior: smooth;
         }
 
-        /* iPhone Status Bar */
+
         .iphone-status {
-            height: 44px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 2rem;
-            font-size: 0.8rem;
+            padding: 0 10px;
+            font-size: 0.7rem;
             font-weight: 600;
             color: #fff;
             position: relative;
             z-index: 100;
         }
 
-        .dynamic-island {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 110px;
-            height: 28px;
-            background: #000;
-            border-radius: 20px;
-            z-index: 101;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.6rem;
-            color: var(--cydia-gold);
-            font-weight: bold;
-            overflow: hidden;
-        }
-
-        .dynamic-island:hover {
-            width: 200px;
-            height: 40px;
-            background: #0a0a0a;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .dynamic-island-content {
-            opacity: 0;
-            transition: opacity 0.3s;
-            white-space: nowrap;
-        }
-
-        .dynamic-island:hover .dynamic-island-content {
-            opacity: 1;
-        }
 
         .card-nav {
-            padding: 0.8rem 1.8rem 1rem;
+            padding: 0 15px;
+            height: 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(10, 10, 15, 0.4);
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             position: sticky;
             top: 0;
-            background: rgba(15, 15, 15, 0.4);
-            backdrop-filter: blur(10px);
             z-index: 10;
         }
 
+        .hamburger {
+            display: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .hamburger:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.02);
+        }
+
+        .hamburger:active {
+            transform: scale(0.96);
+        }
+
         .nav-label {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            color: var(--cydia-gold);
+            color: #fff;
+            flex: 1;
+            text-align: center;
+            letter-spacing: 1px;
         }
 
         .modify-btn {
-            background: var(--cydia-gold);
-            color: #000;
-            font-size: 0.75rem;
-            font-weight: 900;
-            padding: 0.45rem 1.3rem;
-            border-radius: 50px;
-            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 6px 16px;
             cursor: pointer;
+            transition: var(--transition);
         }
 
-        /* List Items */
+        .modify-btn:hover {
+            background: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+
+
+        .section-header {
+            padding: 25px 20px 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+
+        .detail-group {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            margin: 0 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .detail-group-transparent {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
         .pkg-list-item {
             display: flex;
             align-items: center;
-            padding: 0.9rem 1.8rem;
-            border-bottom: 1px solid var(--glass-border);
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             text-decoration: none;
             color: #fff;
-            transition: background 0.2s;
+            background: transparent;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
+
+        .pkg-list-item:last-child {
+            border-bottom: none;
+        }
+
 
         .pkg-list-item:hover {
-            background: rgba(212, 175, 55, 0.08);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+            border-radius: 12px;
         }
 
+        .pkg-list-item:hover .pkg-list-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .pkg-list-item:hover .chevron {
+            transform: translateX(5px);
+            color: #fff;
+        }
+
+
         .pkg-list-icon {
-            width: 45px;
-            height: 45px;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 1.2rem;
-            color: var(--cydia-gold);
-            font-size: 1.2rem;
-            border: 1px solid var(--glass-border);
+            margin-right: 15px;
+            color: #fff;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            transition: var(--transition);
+            position: relative;
+        }
+
+
+        .cat-ai .pkg-list-icon {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.4), rgba(168, 85, 247, 0.1));
+            border-color: rgba(168, 85, 247, 0.3);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+        }
+
+        .cat-anime .pkg-list-icon {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(239, 68, 68, 0.1));
+            border-color: rgba(239, 68, 68, 0.3);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+        }
+
+        .cat-movies .pkg-list-icon {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(59, 130, 246, 0.1));
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .cat-tools .pkg-list-icon {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.4), rgba(16, 185, 129, 0.1));
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
         }
 
         .pkg-list-info {
             flex: 1;
+            min-width: 0;
         }
 
         .pkg-list-name {
-            font-weight: 700;
-            font-size: 1rem;
+            font-weight: 600;
+            font-size: 1.1rem;
             display: block;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
         }
 
         .pkg-list-desc {
-            font-size: 0.75rem;
-            color: var(--text-dim);
+            font-size: 0.85rem;
+            color: #9ca3af;
             display: block;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            max-width: 240px;
+            font-weight: 300;
         }
 
-        .section-header {
-            padding: 1.5rem 1.8rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 800;
-            color: var(--cydia-gold);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Search Bar */
-        .search-bar-container {
-            padding: 1rem 1.5rem;
-            position: sticky;
-            top: 0;
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(20px);
-            z-index: 30;
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .search-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            padding: 0 1rem;
-        }
-
-        .search-box i {
-            color: var(--text-dim);
-            margin-right: 10px;
-        }
-
-        .search-box input {
-            background: transparent;
-            border: none;
-            color: #fff;
-            padding: 0.8rem 0;
-            width: 100%;
-            outline: none;
-            font-family: inherit;
-            font-size: 0.95rem;
-        }
-
-        /* Detail Rows */
-        .detail-group {
-            background: rgba(0, 0, 0, 0.2);
-            border-top: 1px solid var(--glass-border);
-            border-bottom: 1px solid var(--glass-border);
+        .chevron {
+            color: #6b7280;
+            font-size: 1.2rem;
+            margin-left: 10px;
+            transition: var(--transition);
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
-            padding: 1rem 1.8rem;
-            border-bottom: 1px solid var(--glass-border);
-            font-size: 0.9rem;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
         }
 
         .detail-row:last-child {
@@ -599,450 +749,239 @@
         }
 
         .label {
-            color: var(--text-dim);
+            font-weight: 500;
+            color: #d1d5db;
         }
 
         .val {
-            font-weight: 600;
+            color: #60a5fa;
+            font-weight: 500;
         }
 
-        /* Responsive Design */
-        @media (min-width: 1024px) {
-            .app-window {
-                max-width: 1100px;
-                height: 750px;
-                border-radius: 24px;
+
+        .hero-section {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .hero-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            animation: floatAvatar 6s ease-in-out infinite;
+        }
+
+        @keyframes floatAvatar {
+
+            0%,
+            100% {
+                transform: translateY(0);
             }
 
-            .sidebar {
-                display: flex;
-            }
-
-            .iphone-status,
-            .card-nav {
-                display: none;
-            }
-
-            .pkg-list-desc {
-                max-width: 500px;
-            }
-
-            .detail-group {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 1rem;
-                background: transparent;
-                border: none;
-                padding: 0 1.8rem;
-            }
-
-            .pkg-list-item {
-                background: var(--glass-deep);
-                border: 1px solid var(--glass-border);
-                border-radius: 20px;
-                padding: 1.2rem;
-                margin-bottom: 0;
-                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s, border-color 0.3s;
-            }
-
-            .pkg-list-item:hover {
-                transform: translateY(-5px) scale(1.02);
-                background: rgba(212, 175, 55, 0.1);
-                border-color: var(--cydia-gold);
-            }
-
-            .section-header {
-                padding-left: 1.8rem;
+            50% {
+                transform: translateY(-10px);
             }
         }
 
-        @media (max-width: 1023px) {
-            .sidebar {
-                display: flex;
-                position: fixed;
-                left: -300px;
-                top: 0;
-                height: 100vh;
-                z-index: 200;
-                background: var(--glass-deep);
-                width: 280px;
-                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-
-            .sidebar.active {
-                transform: translateX(300px);
-            }
-
-            .hamburger {
-                display: flex;
-            }
-
-            body {
-                align-items: flex-start;
-                padding-top: 20px;
-                overflow-y: auto;
-            }
-
-            .app-window {
-                margin-bottom: 100px;
-            }
-
-            .dock {
-                position: fixed;
-                bottom: 1.5rem;
-            }
+        .hero-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
         }
 
-        /* Bottom Dock */
-        .dock {
-            display: flex;
-            gap: 1.5rem;
-            z-index: 100;
+        .hero-role {
+            font-size: 1rem;
+            color: #9ca3af;
+            margin-bottom: 20px;
+            font-weight: 300;
         }
 
-        .dock {
-            display: flex;
-            gap: 1.2rem;
-            z-index: 100;
-            background: rgba(40, 40, 40, 0.4);
-            padding: 12px 18px;
+        .app-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .app-btn:hover {
+            background: #fff;
+            color: #000;
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+        }
+
+
+        .search-bar-wrap {
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background: rgba(10, 10, 15, 0.6);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-        }
-
-        .dock-item {
-            width: 54px;
-            height: 54px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .dock-item:hover {
-            background: var(--cydia-gold);
-            color: #000;
-            transform: translateY(-5px);
-        }
-
-        .view-content {
-            display: none;
-        }
-
-        .view-content.active {
-            display: block;
-        }
-
-        /* TikTok Downloader Styles */
-        .tiktok-container {
-            padding: 2rem 1.8rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .tiktok-input-wrapper {
-            position: relative;
-            margin-bottom: 2rem;
-        }
-
-        .tiktok-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 1.2rem 1.5rem;
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-            transition: var(--transition);
-            padding-right: 120px;
-        }
-
-        .tiktok-input:focus {
-            border-color: var(--cydia-gold);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
-        }
-
-        .tiktok-btn {
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--cydia-gold);
-            color: #000;
-            border: none;
-            padding: 0.7rem 1.2rem;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .tiktok-btn:hover {
-            background: var(--cydia-gold-bright);
-            transform: translateY(-50%) scale(1.05);
-        }
-
-        .tiktok-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .tiktok-card {
-            background: var(--glass-deep);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            overflow: hidden;
-            margin-top: 2rem;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .tiktok-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .tiktok-card-header {
-            position: relative;
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .tiktok-card-thumb {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.7);
-        }
-
-        .tiktok-card-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8));
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 1.5rem;
-        }
-
-        .tiktok-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .tiktok-author {
-            font-size: 0.85rem;
-            color: var(--cydia-gold);
-            font-weight: 600;
-        }
-
-        .tiktok-stats {
-            display: flex;
-            gap: 1.5rem;
-            padding: 1rem 1.5rem;
-            background: rgba(255, 255, 255, 0.03);
             border-bottom: 1px solid var(--glass-border);
         }
 
-        .tiktok-stat {
-            font-size: 0.8rem;
-            color: var(--text-dim);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .tiktok-stat i {
-            color: var(--cydia-gold);
-        }
-
-        .tiktok-actions {
-            padding: 1.5rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .download-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 1rem;
+        .search-box-mobile {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 14px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            transition: var(--transition);
-            border: none;
-            cursor: pointer;
-            font-family: inherit;
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .download-hd {
-            background: var(--cydia-gold);
-            color: #000;
-        }
-
-        .download-hd:hover {
-            background: var(--cydia-gold-bright);
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
-        }
-
-        .download-sd {
+        .search-box-mobile:focus-within {
             background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-            border: 1px solid var(--glass-border);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
         }
 
-        .download-sd:hover {
-            background: rgba(255, 255, 255, 0.12);
+        .search-box-mobile i {
+            color: rgba(255, 255, 255, 0.4);
+            margin-right: 12px;
+            font-size: 0.9rem;
         }
+
+        .search-box-mobile input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 4px 0;
+            width: 100%;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .search-box-mobile input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .search-empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .search-empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.2;
+        }
+
+        .search-empty-state p {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+
+        .tool-container {
+            padding: 30px 15px;
+        }
+
+        .tool-hero {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .tool-hero i {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            color: #fff;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+        }
+
+        .tool-hero h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .tool-hero p {
+            color: #9ca3af;
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        .tool-input-wrap {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 25px;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .tool-input {
+            flex: 1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            font-size: 1rem;
+            border-radius: 12px;
+            color: #fff;
+            transition: var(--transition);
+        }
+
+        .tool-input:focus {
+            border-color: rgba(255, 255, 255, 0.3);
+            outline: none;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+        }
+
+        .tool-btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 0 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .tool-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
+        }
+
+        .tool-btn:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
 
         .loader {
             display: none;
             text-align: center;
-            padding: 2rem;
+            padding: 40px 20px;
         }
 
         .loader i {
-            font-size: 2rem;
-            color: var(--cydia-gold);
+            font-size: 2.5rem;
+            color: #fff;
             animation: spin 1s linear infinite;
-        }
-
-        /* Instagram Search Styles */
-        .insta-container {
-            padding: 2rem 1.8rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .insta-input-wrapper {
-            position: relative;
-            margin-bottom: 2rem;
-        }
-
-        .insta-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 1.2rem 1.5rem;
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-            transition: var(--transition);
-            padding-right: 120px;
-        }
-
-        .insta-input:focus {
-            border-color: #e1306c;
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 20px rgba(225, 48, 108, 0.1);
-        }
-
-        .insta-btn {
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            color: #fff;
-            border: none;
-            padding: 0.7rem 1.2rem;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .insta-btn:hover {
-            transform: translateY(-50%) scale(1.05);
-            box-shadow: 0 5px 15px rgba(225, 48, 108, 0.3);
-        }
-
-        .insta-result-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 1rem;
-        }
-
-        .insta-profile-card {
-            background: var(--glass-deep);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: var(--transition);
-            text-decoration: none;
-            color: #fff;
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        .insta-profile-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .insta-profile-card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: #e1306c;
-            transform: translateX(5px);
-        }
-
-        .insta-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 2px solid #e1306c;
-            padding: 2px;
-            object-fit: cover;
-        }
-
-        .insta-info {
-            flex: 1;
-        }
-
-        .insta-username {
-            font-weight: 700;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .insta-fullname {
-            font-size: 0.8rem;
-            color: var(--text-dim);
-        }
-
-        .insta-verified {
-            color: #3897f0;
-            font-size: 0.8rem;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
         }
 
         @keyframes spin {
@@ -1051,44 +990,316 @@
             }
         }
 
-        @keyframes blink {
-            50% {
+
+        .tiktok-result-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            margin-top: 25px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
                 opacity: 0;
+                transform: translateY(20px);
             }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tiktok-result-card.visible {
+            display: block;
+        }
+
+        .tt-thumb {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .tt-info {
+            padding: 20px;
+        }
+
+        .tt-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .tt-author {
+            color: #60a5fa;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .tt-stats {
+            display: flex;
+            gap: 20px;
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+
+        .tt-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+
+        @media (min-width: 768px) {
+            .detail-group {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 15px;
+                background: transparent;
+                border: none;
+                padding: 0 15px;
+                box-shadow: none;
+            }
+
+            .pkg-list-item {
+                border: 1px solid var(--glass-border);
+                border-radius: 16px;
+                background: rgba(255, 255, 255, 0.02);
+                backdrop-filter: blur(10px);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .sidebar {
+                display: flex;
+            }
+
+            .iphone-status {
+                display: none;
+            }
+
+            .hamburger {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .sidebar {
+                display: flex;
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 2000;
+                transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+                box-shadow: 24px 0 60px rgba(0, 0, 0, 0.7);
+            }
+
+            .sidebar.active {
+                transform: translateX(280px);
+            }
+
+            .hamburger {
+                display: block;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .tool-input-wrap {
+                flex-direction: column;
+            }
+
+            .tool-btn {
+                padding: 12px 20px;
+                font-size: 1.1rem;
+            }
+
+            .tt-stats {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .hero-section {
+                padding: 20px 10px;
+            }
+        }
+
+
+        .view-content {
+            display: none;
+        }
+
+        .view-content.active {
+            display: block;
+            animation: fadeView 0.4s ease;
+        }
+
+        @keyframes fadeView {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .audio-fab {
+            position: fixed;
+            bottom: 90px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            cursor: pointer;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+        }
+
+        .audio-fab:hover {
+            background: #fff;
+            color: #000;
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
+        }
+
+        #spatial-lock {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(60px);
+            -webkit-backdrop-filter: blur(60px);
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .face-scan-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .face-scan-frame {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 40px;
+        }
+
+        .face-scan-frame::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border: 2px solid #3b82f6;
+            border-radius: 40px;
+            clip-path: polygon(0 0, 30% 0, 30% 10%, 10% 10%, 10% 30%, 0 30%, 0 0, 70% 0, 70% 10%, 90% 10%, 90% 30%, 100% 30%, 100% 0, 70% 0, 100% 100%, 70% 100%, 70% 90%, 90% 90%, 90% 70%, 100% 70%, 100% 100%, 0 100%, 30% 100%, 30% 90%, 10% 90%, 10% 70%, 0 70%, 0 100%);
+        }
+
+        .face-scan-line {
+            position: absolute;
+            width: 180px;
+            height: 2px;
+            background: #3b82f6;
+            box-shadow: 0 0 15px #3b82f6;
+            top: 20%;
+            animation: scan 3s ease-in-out infinite;
+        }
+
+        @keyframes scan {
+            0%, 100% { top: 25%; opacity: 0; }
+            50% { top: 70%; opacity: 1; }
+        }
+
+        .lock-status {
+            margin-top: 240px;
+            font-size: 0.9rem;
+            color: #fff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+            opacity: 0.8;
+            animation: pulse-op 2s infinite;
+        }
+
+        @keyframes pulse-op {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
         }
     </style>
 </head>
 
 <body>
 
+    <video class="video-background" id="bg-video" autoplay muted loop playsinline>
+        <source src="https://r2.guns.lol/66f828e9-e90a-48ff-b46b-4f064893c5b7.mp4" type="video/mp4">
+    </video>
+    <div class="video-noise"></div>
+    <div class="video-scanlines"></div>
+    <div class="video-overlay"></div>
+
+    <div id="spatial-lock">
+        <div class="face-scan-container">
+            <div class="face-scan-frame"></div>
+            <div class="face-scan-line"></div>
+            <div class="lock-status" id="lock-label">Authenticating...</div>
+        </div>
+    </div>
+
     <div class="scroll-progress-container">
         <div class="scroll-progress-bar" id="progress-bar"></div>
     </div>
 
-    <div class="bg-wrapper">
-        <video class="bg-video" autoplay muted loop playsinline>
-            <source
-                src="https://archive.org/download/bruce-wayne-dark-knight-trilogy-o-starboy/Bruce%20Wayne%20%28Dark%20Knight%20Trilogy%29%20%E2%80%A2%20Starboy.mp4"
-                type="video/mp4">
-        </video>
-    </div>
 
-    <!-- Boot Screen -->
     <div id="entry-screen">
-        <div class="cydia-icon-box"><i class="fas fa-box-open"></i></div>
+        <div class="boot-logo">
+            <div class="boot-logo-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <div class="boot-title">Cydia Elite</div>
+            <div class="boot-subtitle">OS v2.8 (Build 9A334)</div>
+        </div>
         <div class="log-container" id="boot-log"></div>
-        <p style="margin-top: 2rem; color: #555; font-size: 0.8rem; letter-spacing: 3px; font-weight: 700;">TAP TO
-            RESPRING</p>
+        <div class="boot-tap-hint">Tap to Respring</div>
     </div>
 
     <audio id="bg-audio" loop>
-        <source src="https://r2.guns.lol/cb3828fe-a491-44bb-a4ef-cb70c9e628b6.mp3" type="audio/mpeg">
+        <source src="https://r2.guns.lol/35537f34-cd15-4d22-93c4-ad08b81499fe.mp3" type="audio/mpeg">
     </audio>
 
     <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
 
-    <!-- App Interface -->
+
     <main class="app-window" id="main-app">
+
         <aside class="sidebar">
             <div class="window-controls">
                 <div class="dot red"></div>
@@ -1099,275 +1310,317 @@
             <div class="sidebar-search-container">
                 <div class="sidebar-search">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="pc-search-input" placeholder="Search..." autocomplete="off">
+                    <input type="text" id="pc-search-input" placeholder="Search" autocomplete="off">
                 </div>
             </div>
 
-            <div class="sidebar-title">Library</div>
-            <div class="sidebar-item active" onclick="switchTab('home')"><i class="fas fa-home"></i> Home</div>
-            <div class="sidebar-item" onclick="switchTab('installed')"><i class="fas fa-download"></i> Installed</div>
-            <div class="sidebar-item" onclick="switchTab('search')"><i class="fas fa-search"></i> Search</div>
-            <div class="sidebar-item" onclick="switchTab('tiktok')"><i class="fab fa-tiktok"></i> TikTok</div>
-            <div class="sidebar-item" onclick="switchTab('instagram')"><i class="fab fa-instagram"></i> Instagram</div>
-            <div class="sidebar-title" style="margin-top:2rem;">Categories</div>
-            <div class="sidebar-item" onclick="filterCategory('social')"><i class="fab fa-discord"></i> Community</div>
-            <div class="sidebar-item" onclick="filterCategory('ai')"><i class="fas fa-robot"></i> AI Tools</div>
-            <div class="sidebar-item" onclick="filterCategory('movies')"><i class="fas fa-film"></i> Movies</div>
-            <div class="sidebar-item" onclick="filterCategory('anime')"><i class="fas fa-ghost"></i> Anime</div>
-            <div class="sidebar-item" onclick="filterCategory('kurdish')"><i class="fas fa-language"></i> Kurdish</div>
+            <div class="sidebar-title">Store</div>
+            <div class="sidebar-item active" onclick="switchTab('home', this)"><i class="fas fa-home"></i> Home</div>
+            <div class="sidebar-item" onclick="switchTab('installed', this)"><i class="fas fa-download"></i> Packages
+            </div>
+            <div class="sidebar-item" onclick="switchTab('search', this)"><i class="fas fa-search"></i> Search</div>
+
+            <div class="sidebar-title">Utilities</div>
+            <div class="sidebar-item" onclick="switchTab('tiktok', this)"><i class="fab fa-tiktok"></i> TikTok
+                Downloader
+            </div>
+            <div class="sidebar-item" onclick="switchTab('instagram', this)"><i class="fab fa-instagram"></i> Insta
+                LookUp
+            </div>
+
+            <div class="sidebar-title">Categories</div>
+            <div class="sidebar-item" onclick="filterCategory('social', this)"><i class="fab fa-discord"></i> Community
+            </div>
+            <div class="sidebar-item" onclick="filterCategory('ai', this)"><i class="fas fa-robot"></i> AI Tools</div>
+            <div class="sidebar-item" onclick="filterCategory('movies', this)"><i class="fas fa-film"></i> Movies</div>
+            <div class="sidebar-item" onclick="filterCategory('anime', this)"><i class="fas fa-ghost"></i> Anime</div>
+            <div class="sidebar-item" onclick="filterCategory('kurdish', this)"><i class="fas fa-language"></i> Kurdish
+            </div>
+            <div class="sidebar-item" onclick="filterCategory('sports', this)"><i class="fas fa-futbol"></i> Live Sports
+            </div>
+            <div class="sidebar-item" onclick="filterCategory('livetv', this)"><i class="fas fa-satellite-dish"></i>
+                Live TV
+            </div>
+            <div class="sidebar-item" onclick="filterCategory('games', this)"><i class="fas fa-gamepad"></i> PC Games
+            </div>
+            <div class="sidebar-item" onclick="filterCategory('mods', this)"><i class="fas fa-wrench"></i> Game Mods
+            </div>
+            <div class="sidebar-item" onclick="filterCategory('tools', this)"><i class="fas fa-toolbox"></i> PC Tools
+            </div>
+            <div class="sidebar-item" onclick="filterCategory('ads', this)"><i class="fas fa-shield-alt"></i> Ad
+                Blockers
+            </div>
         </aside>
 
+
         <section class="main-pane">
-            <div class="dynamic-island">
-                <span class="dynamic-island-content"><i class="fas fa-microchip"></i> A17 Pro Chip Active</span>
-            </div>
 
             <div class="iphone-status">
-                <span id="iphone-time">9:41</span>
-                <div style="display:flex; gap:8px;"><i class="fas fa-wifi"></i><span>LTE</span><i
-                        class="fas fa-battery-full"></i></div>
+                <span>No Service &nbsp; <i class="fas fa-wifi"></i></span>
+                <span id="iphone-time">9:41 AM</span>
+                <span><i class="fas fa-lock" style="font-size:10px; margin-right:5px;"></i> 100% <i
+                        class="fas fa-battery-full"></i></span>
             </div>
 
+
             <div class="card-nav">
-                <div class="hamburger" id="hamburger-menu" onclick="toggleMenu()">
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                </div>
-                <div class="nav-label" id="nav-title-label">Cydia Elite</div>
-                <div class="modify-btn" onclick="location.reload()">Respring</div>
+                <button class="hamburger" id="hamburger-menu" onclick="toggleMenu()"><i class="fas fa-bars"></i>
+                    Menu</button>
+                <div class="nav-label" id="nav-title-label">Home</div>
+                <button class="modify-btn" onclick="location.reload()">Respring</button>
             </div>
 
             <div class="scroll-area" id="main-scroll">
-                <!-- Home View -->
+
+
                 <div id="view-home" class="view-content active">
-                    <div style="padding: 2rem 1.8rem; text-align: center;">
+                    <div class="hero-section">
                         <img src="https://i.pinimg.com/1200x/eb/48/73/eb487359acc13ab1ad5e1918e14cd49e.jpg"
-                            style="width:100px; height:100px; border-radius:24px; margin-bottom:1rem; border:1px solid var(--glass-border);">
-                        <h1>CHYA LUQMAN</h1>
-                        <p style="color:var(--cydia-gold); font-weight:700;">UI/UX Engineer & Developer</p>
+                            class="hero-avatar" alt="CHYA LUQMAN">
+                        <div class="hero-name">Chya Luqman</div>
+                        <div class="hero-role">UI/UX Engineer & Developer</div>
+                        <button class="app-btn" onclick="window.open('https://discord.gg/YTeRSG8kER', '_blank')">Connect
+                            on Discord</button>
                     </div>
 
                     <div class="section-header">Community</div>
                     <div class="detail-group">
                         <a href="https://discord.gg/YTeRSG8kER" target="_blank" class="pkg-list-item">
-                            <div class="pkg-list-icon"><i class="fab fa-discord"></i></div>
-                            <div class="pkg-list-info"><span class="pkg-list-name">Official Discord</span><span
-                                    class="pkg-list-desc">Join our community server.</span></div>
-                            <i class="fas fa-external-link-alt" style="font-size:0.7rem; color:var(--cydia-gold);"></i>
+                            <div class="pkg-list-icon" style="background: linear-gradient(#7289da, #4e5d94);"><i
+                                    class="fab fa-discord"></i></div>
+                            <div class="pkg-list-info">
+                                <span class="pkg-list-name">Official Discord Server</span>
+                                <span class="pkg-list-desc">Join our community for updates.</span>
+                            </div>
+                            <span class="chevron">›</span>
                         </a>
                     </div>
 
-                    <div class="section-header">System Information</div>
-                    <div class="detail-group">
-                        <div class="detail-row"><span class="label">Version</span><span class="val">2.8.0-Elite</span>
+                    <div class="section-header">Device Information</div>
+                    <div class="detail-group" style="padding: 0;">
+                        <div class="detail-row"><span class="label">OS Version</span><span class="val">iOS 4.2.1</span>
                         </div>
-                        <div class="detail-row"><span class="label">Identifier</span><span
-                                class="val">com.chya.ultimate</span></div>
-                        <div class="detail-row"><span class="label">Architecture</span><span
-                                class="val">iPhoneOS-Arm64</span></div>
+                        <div class="detail-row"><span class="label">Model</span><span class="val">iPhone 4 (GSM)</span>
+                        </div>
+                        <div class="detail-row"><span class="label">Architecture</span><span class="val">ARMv7</span>
+                        </div>
+                        <div class="detail-row"><span class="label">Cydia Build</span><span class="val">1.1.9
+                                ELITE</span></div>
                     </div>
-                    <div style="padding: 1.8rem; font-size: 0.95rem; line-height: 1.6; color: rgba(255,255,255,0.7);"
+
+                    <div style="padding: 20px; color: #555; font-size: 0.9rem; text-align: center; text-shadow: 0 1px 0 #fff;"
                         id="bio-text"></div>
                 </div>
 
-                <!-- Installed View -->
+
                 <div id="view-installed" class="view-content">
-                    <div id="installed-list-container"></div>
+
+                    <div id="installed-list-container" style="padding-bottom: 20px;"></div>
                 </div>
 
-                <!-- Search View -->
+
                 <div id="view-search" class="view-content">
-                    <div class="search-bar-container">
-                        <div class="search-box">
+                    <div class="search-bar-wrap">
+                        <div class="search-box-mobile">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="search-input" placeholder="Search apps, movies, or tools..."
+                            <input type="text" id="search-input" placeholder="Package Names & Descriptions"
                                 autocomplete="off">
                         </div>
                     </div>
-                    <div id="search-results-container"></div>
+                    <div id="search-results-container" style="padding-bottom: 20px;"></div>
                 </div>
 
-                <!-- TikTok View -->
+
                 <div id="view-tiktok" class="view-content">
-                    <div class="tiktok-container">
-                        <div style="text-align: center; margin-bottom: 2rem;">
+                    <div class="tool-container">
+                        <div class="tool-hero">
                             <i class="fab fa-tiktok"
-                                style="font-size: 3rem; color: var(--cydia-gold); margin-bottom: 1rem;"></i>
+                                style="background: linear-gradient(#69C9D0, #EE1D52); -webkit-background-clip: text; color: transparent;"></i>
                             <h2>TikTok Downloader</h2>
-                            <p style="color: var(--text-dim); font-size: 0.9rem;">Download TikTok videos in high quality
-                                without watermark.</p>
+                            <p>Download Videos • No Watermark</p>
                         </div>
 
-                        <div class="tiktok-input-wrapper">
-                            <input type="text" id="tiktok-url" class="tiktok-input"
-                                placeholder="Paste TikTok link here..." autocomplete="off">
-                            <button id="tiktok-fetch-btn" class="tiktok-btn" onclick="fetchTikTok()">Fetch</button>
+                        <div class="tool-input-wrap">
+                            <input type="text" id="tiktok-url" class="tool-input" placeholder="http://vm.tiktok.com/..."
+                                autocomplete="off">
+                            <button id="tiktok-fetch-btn" class="tool-btn" onclick="fetchTikTok()">Download</button>
                         </div>
 
                         <div id="tiktok-loader" class="loader">
-                            <i class="fas fa-circle-notch"></i>
-                            <p style="margin-top: 1rem; color: var(--text-dim);">Analyzing video...</p>
+                            <i class="fas fa-spinner"></i>
+                            <div style="margin-top: 10px; font-weight: bold; color: #333;">Analyzing Media...</div>
                         </div>
 
-                        <div id="tiktok-result" class="tiktok-card">
-                            <!-- Result will be injected here -->
-                        </div>
+                        <div id="tiktok-result" class="tiktok-result-card"></div>
                     </div>
                 </div>
 
-                <!-- Instagram View -->
+
                 <div id="view-instagram" class="view-content">
-                    <div class="insta-container">
-                        <div style="text-align: center; margin-bottom: 2rem;">
-                            <i class="fab fa-instagram"
-                                style="font-size: 3rem; color: #e1306c; margin-bottom: 1rem;"></i>
-                            <h2>Instagram Search</h2>
-                            <p style="color: var(--text-dim); font-size: 0.9rem;">Search for Instagram profiles and users.</p>
+                    <div class="tool-container">
+                        <div class="tool-hero">
+                            <i class="fab fa-instagram" style="color: #e1306c;"></i>
+                            <h2>Instagram Directory</h2>
+                            <p>Search users & public profiles</p>
                         </div>
 
-                        <div class="insta-input-wrapper">
-                            <input type="text" id="insta-query" class="insta-input"
-                                placeholder="Enter username or name..." autocomplete="off">
-                            <button id="insta-search-btn" class="insta-btn" onclick="fetchInstagram()">Search</button>
+                        <div class="tool-input-wrap">
+                            <input type="text" id="insta-query" class="tool-input" placeholder="Username e.g. chya..."
+                                autocomplete="off">
+                            <button id="insta-search-btn" class="tool-btn" onclick="fetchInstagram()">Search</button>
                         </div>
 
                         <div id="insta-loader" class="loader">
-                            <i class="fas fa-circle-notch"></i>
-                            <p style="margin-top: 1rem; color: var(--text-dim);">Searching Instagram...</p>
+                            <i class="fas fa-spinner"></i>
+                            <div style="margin-top: 10px; font-weight: bold; color: #333;">Searching Database...</div>
                         </div>
 
-                        <div id="insta-results" class="insta-result-list">
-                            <!-- Results will be injected here -->
-                        </div>
+                        <div id="insta-results" style="margin-top:20px;"></div>
                     </div>
                 </div>
+
             </div>
+
+            <div class="audio-fab" id="audio-fab" onclick="toggleAudio()">
+                <i class="fas fa-music"></i>
+            </div>
+
         </section>
     </main>
-
-
 
     <div class="back-to-top" id="top-btn" onclick="scrollToTop()">
         <i class="fas fa-arrow-up"></i>
     </div>
 
     <script>
-        const packageData = [
-            // Community
-            { name: "CHYA Official Discord", desc: "Join our community hub for updates and chat.", cat: "social", url: "https://discord.gg/YTeRSG8kER", icon: "fa-discord" },
-
-            // AI Tools
-            { name: "Claude AI", desc: "Advanced AI for writing and coding.", cat: "ai", url: "https://claude.ai/", icon: "fa-brain" },
-            { name: "Gemini", desc: "Google's most capable AI model.", cat: "ai", url: "https://gemini.google.com/", icon: "fa-wand-magic-sparkles" },
-            { name: "v0.dev", desc: "Generate UI components using AI.", cat: "ai", url: "https://v0.dev/", icon: "fa-code" },
-            { name: "Lovable", desc: "Build full apps with AI.", cat: "ai", url: "https://lovable.dev/", icon: "fa-heart" },
-            { name: "Luma Dream Machine", desc: "AI Video generation.", cat: "ai", url: "https://lumalabs.ai/dream-machine", icon: "fa-meteor" },
-            { name: "Opus Clip", desc: "AI powered video repurposing.", cat: "ai", url: "https://www.opus.pro/", icon: "fa-scissors" },
-            { name: "ElevenLabs", desc: "Best AI Text-to-Speech.", cat: "ai", url: "https://elevenlabs.io/", icon: "fa-microphone" },
-            { name: "Websim", desc: "Browser-based web simulation AI.", cat: "ai", url: "https://websim.ai/", icon: "fa-globe" },
-
-            // Kurdish Cinema
-            { name: "Kurd Cinema", desc: "Professional Kurdish movie subtitles/dubs.", cat: "kurdish", url: "https://kurdcinema.com/", icon: "fa-language" },
-            { name: "KurdFilm", desc: "Kurdish movie database and streaming.", cat: "kurdish", url: "https://kurdfilm.com/", icon: "fa-compact-disc" },
-            { name: "Kurd Doblazh", desc: "Kurdish dubbed series and movies.", cat: "kurdish", url: "https://kurddoblaj.net/", icon: "fa-microphone" },
-            { name: "Beenar", desc: "Kurdish media platform.", cat: "kurdish", url: "https://beenar.net/", icon: "fa-eye" },
-            { name: "Kurd Movies", desc: "Kurdish dubbed film library.", cat: "kurdish", url: "https://kurdmovies.net/", icon: "fa-film" },
-
-            // Anime & Manga
-            { name: "AniMixPlay", desc: "Watch HD Anime ad-free.", cat: "anime", url: "https://animixplay.to/", icon: "fa-tv" },
-            { name: "MangaReader", desc: "Read and download manga online.", cat: "anime", url: "https://mangareader.to/", icon: "fa-book-open" },
-            { name: "Crunchyroll", desc: "Official source for anime.", cat: "anime", url: "https://www.crunchyroll.com/", icon: "fa-play" },
-            { name: "WCOForever", desc: "Watch cartoons and anime online.", cat: "anime", url: "https://www.wcoforever.net/", icon: "fa-ghost" },
-            { name: "KimCartoon", desc: "Free high quality cartoons.", cat: "anime", url: "https://kimcartoon.li/", icon: "fa-palette" },
-            { name: "Space Power Fan", desc: "Kurdish/Arabic anime archive.", cat: "anime", url: "https://spacepowerfan.com/", icon: "fa-star" },
-
-            // Movies & Media
-            { name: "CimaNow", desc: "Streaming movies and series (Arabic/Eng).", cat: "movies", url: "https://cimanow.cam/", icon: "fa-video" },
-            { name: "EgyBest", desc: "The original EgyBest media platform.", cat: "movies", url: "https://egybest.biz/", icon: "fa-film" },
-            { name: "MyCima", desc: "Egyptian and foreign movie portal.", cat: "movies", url: "https://mycima.ink/", icon: "fa-clapperboard" },
-            { name: "YTS", desc: "High quality YIFY movie torrents.", cat: "movies", url: "https://yts.mx/", icon: "fa-magnet" },
-            { name: "FMovies", desc: "Free HD movies online streaming.", cat: "movies", url: "https://fmovies.to/", icon: "fa-play-circle" },
-            { name: "PirateMedia", desc: "Watch movies, TV shows & live sports.", cat: "movies", url: "https://piratemedia.xyz/", icon: "fa-skull-crossbones" },
-
-            // Tools & Software
-            { name: "FileCR", desc: "Massive software library for PC/Mac.", cat: "tools", url: "https://filecr.com/", icon: "fa-folder-open" },
-            { name: "Get Into PC", desc: "Software downloads for PC.", cat: "tools", url: "https://getintopc.com/", icon: "fa-laptop-code" },
-            { name: "Hydra Launcher", desc: "Next-gen game launcher.", cat: "tools", url: "https://hydralauncher.gg/", icon: "fa-dragon" },
-            { name: "Activated.win", desc: "Windows and Office activation toolkit.", cat: "tools", url: "https://get.activated.win/", icon: "fa-key" },
-            { name: "Photopea", desc: "Online Photoshop alternative.", cat: "tools", url: "https://www.photopea.com/", icon: "fa-image" }
-        ];
-
+        let packageData = [];
         const entry = document.getElementById('entry-screen');
         const mainApp = document.getElementById('main-app');
         const logBox = document.getElementById('boot-log');
         const audio = document.getElementById('bg-audio');
         const searchInput = document.getElementById('search-input');
+        const pcSearchInput = document.getElementById('pc-search-input');
         const bioText = document.getElementById('bio-text');
-
         let isPlaying = false;
 
         document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'i' || e.key === 'j' || e.key === 'c' || e.key === 'k')) e.preventDefault();
+            if (e.key === 'F12') e.preventDefault();
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C' || e.key === 'K')) e.preventDefault();
+        });
 
-        window.onload = () => {
+        console.log("%cSecurity Active", "color: #3b82f6; font-size: 20px; font-weight: bold;");
+        console.log("Cydia Elite Spatial System Protected.");
+
+        window.onload = async () => {
+            try {
+                const response = await fetch('data.json');
+                packageData = await response.json();
+            } catch (err) {
+                console.error("Failed to load packages via API: ", err);
+            }
+
             const bootLines = [
-                "Initializing Cydia Elite...",
-                "Mapping community nodes...",
-                "Discord link updated: YTeRSG8kER",
-                "Verifying signatures...",
-                "System: Stable."
+                "Apple MobileDeviceService started...",
+                "Mounting root filesystem (read-only)...",
+                "Loading kernel extensions.",
+                "Starting Cydia Substrate...",
+                "Hooking SpringBoard...",
+                "Downloading packages.gz...",
+                "Done: Packages, 31 total."
             ];
             bootLines.forEach((l, i) => {
                 const d = document.createElement('div');
                 d.className = 'log-line';
-                d.innerText = "> " + l;
+                d.innerText = l;
                 logBox.appendChild(d);
-                setTimeout(() => d.classList.add('visible'), i * 350);
+                setTimeout(() => d.classList.add('visible'), i * 300);
             });
             renderInstalled();
+            updateClock();
         };
 
         entry.addEventListener('click', () => {
             entry.style.opacity = '0';
-            setTimeout(() => { entry.style.display = 'none'; mainApp.classList.add('active'); typeWriter("Architecting digital experiences with cinematic design and high-fidelity repositories.", 0); }, 800);
-            audio.volume = 0.3;
-            audio.play().catch(() => { });
+            setTimeout(() => {
+                entry.style.display = 'none';
+                const lockScreen = document.getElementById('spatial-lock');
+                const lockLabel = document.getElementById('lock-label');
+                lockScreen.style.display = 'flex';
+                
+                setTimeout(() => {
+                    lockLabel.innerText = "Identity Verified";
+                    lockLabel.style.color = "#4ade80";
+                    setTimeout(() => {
+                        lockScreen.style.opacity = '0';
+                        setTimeout(() => {
+                            lockScreen.style.display = 'none';
+                            mainApp.style.opacity = '1';
+                            typeWriter("Architecting spatial experiences for 2026.", 0);
+                            audio.volume = 0.3;
+                            audio.play().catch(() => { });
+                        }, 800);
+                    }, 1000);
+                }, 2500);
+            }, 800);
             isPlaying = true;
-            document.getElementById('audio-btn').innerHTML = '<i class="fas fa-pause"></i>';
+            document.getElementById('audio-fab').innerHTML = '<i class="fas fa-pause"></i>';
         });
 
         function typeWriter(text, i) {
             if (i < text.length) {
-                bioText.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
-                setTimeout(() => typeWriter(text, i + 1), 25);
+                bioText.innerHTML = text.substring(0, i + 1) + '|';
+                setTimeout(() => typeWriter(text, i + 1), 40);
             } else {
                 bioText.innerHTML = text;
             }
         }
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-' + tabId).classList.add('active');
-            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('main-scroll').scrollTop = 0;
+        function toggleAudio() {
+            if (isPlaying) { audio.pause(); document.getElementById('audio-fab').innerHTML = '<i class="fas fa-play"></i>'; }
+            else { audio.play(); document.getElementById('audio-fab').innerHTML = '<i class="fas fa-pause"></i>'; }
+            isPlaying = !isPlaying;
+        }
 
-            // Close menu on mobile
+        function switchTab(tabId, el = null) {
+            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+            const targetView = document.getElementById('view-' + tabId);
+            if (targetView) targetView.classList.add('active');
+
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            if (el) {
+                el.classList.add('active');
+            } else {
+                const sidebarItems = document.querySelectorAll('.sidebar-item');
+                sidebarItems.forEach(item => {
+                    const onclickStr = item.getAttribute('onclick') || '';
+                    if (onclickStr.includes(`switchTab('${tabId}')`)) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+
+            document.getElementById('main-scroll').scrollTop = 0;
             if (window.innerWidth < 1024) toggleMenu(false);
 
-            // Update UI label
-            document.getElementById('nav-title-label').innerText = tabId.charAt(0).toUpperCase() + tabId.slice(1);
+            const titles = {
+                'home': 'Home', 'installed': 'Packages', 'search': 'Search',
+                'tiktok': 'TikTok', 'instagram': 'Insta Lookup'
+            };
+            document.getElementById('nav-title-label').innerText = titles[tabId] || tabId;
         }
 
         function renderInstalled(filterCat = null) {
             const container = document.getElementById('installed-list-container');
             container.innerHTML = "";
             const categories = {
-                social: "Social & Community",
-                ai: "Artificial Intelligence",
-                kurdish: "Kurdish Cinema",
-                anime: "Anime & Manga",
-                movies: "Movies & Series",
-                tools: "Tools & Software"
+                social: "Social & Community", ai: "Artificial Intelligence",
+                kurdish: "Kurdish Cinema", anime: "Anime & Manga",
+                movies: "Movies & Series", tools: "Tools & Software",
+                games: "Game Downloads", mods: "Game Mods",
+                livetv: "Live TV & IPTV", ads: "Ad Blockers",
+                sports: "Live Sports"
             };
 
             for (const [key, label] of Object.entries(categories)) {
@@ -1375,63 +1628,103 @@
                 const items = packageData.filter(p => p.cat === key);
                 if (items.length === 0) continue;
 
-                container.innerHTML += `<div class="section-header">${label}</div><div class="detail-group">`;
+                container.innerHTML += `<div class="section-header">${label}</div><div class="detail-group cat-${key}">`;
                 items.forEach(pkg => {
-                    container.innerHTML += `
-                        <a href="${pkg.url}" target="_blank" class="pkg-list-item">
-                            <div class="pkg-list-icon"><i class="${pkg.icon.startsWith('fa-') ? 'fas' : 'fab'} ${pkg.icon}"></i></div>
-                            <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">${pkg.desc}</span></div>
-                            <i class="fas fa-chevron-right" style="font-size:0.7rem; color:var(--cydia-gold);"></i>
-                        </a>`;
+                    const iconClass = pkg.icon.startsWith('fa-') ? 'fas' : 'fab';
+                    if (pkg.cmd) {
+                        const safeCmd = pkg.cmd.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        container.innerHTML += `
+                            <a href="#" onclick="navigator.clipboard.writeText('${safeCmd}'); alert('Command copied to clipboard! Paste it in PowerShell.'); event.preventDefault();" class="pkg-list-item">
+                                <div class="pkg-list-icon"><i class="${iconClass} ${pkg.icon}"></i></div>
+                                <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc" style="color:#007aff; font-family:monospace; font-size:0.75rem;">[Click to Copy Command]</span></div>
+                                <span class="chevron"><i class="fas fa-copy" style="font-size:0.9rem; color:#888;"></i></span>
+                            </a>`;
+                    } else {
+                        container.innerHTML += `
+                            <a href="${pkg.url}" target="_blank" class="pkg-list-item">
+                                <div class="pkg-list-icon"><i class="${iconClass} ${pkg.icon}"></i></div>
+                                <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">${pkg.desc}</span></div>
+                                <span class="chevron">›</span>
+                            </a>`;
+                    }
                 });
                 container.innerHTML += `</div>`;
             }
         }
 
-        function filterCategory(cat) {
-            switchTab('installed');
+        function filterCategory(cat, el) {
+            switchTab('installed', el);
             renderInstalled(cat);
         }
 
-        const pcSearchInput = document.getElementById('pc-search-input');
-
         function updateClock() {
             const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            document.getElementById('iphone-time').innerText = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+            let h = now.getHours();
+            const m = now.getMinutes();
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12; h = h ? h : 12;
+            document.getElementById('iphone-time').innerText = `${h}:${m < 10 ? '0' : ''}${m} ${ampm}`;
         }
         setInterval(updateClock, 1000);
-        updateClock();
 
         function handleSearch(e) {
             const query = e.target.value.toLowerCase().trim();
-            // Sync both inputs
             searchInput.value = e.target.value;
             pcSearchInput.value = e.target.value;
+            const rc = document.getElementById('search-results-container');
+            
+            if (query === "") { 
+                rc.innerHTML = `
+                    <div class="search-empty-state">
+                        <i class="fas fa-search"></i>
+                        <p>Search for packages, tools, or tweaks</p>
+                    </div>`; 
+                return; 
+            }
 
-            const resultsContainer = document.getElementById('search-results-container');
-            if (query === "") { resultsContainer.innerHTML = ""; return; }
             const results = packageData.filter(p => p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query));
-            resultsContainer.innerHTML = `<div class="section-header">Search Results (${results.length})</div><div class="detail-group">`;
+
             if (results.length > 0) {
+                rc.innerHTML = `<div class="section-header">Found ${results.length} results</div><div class="detail-group">`;
                 results.forEach(pkg => {
-                    resultsContainer.innerHTML += `<a href="${pkg.url}" target="_blank" class="pkg-list-item"><div class="pkg-list-icon"><i class="${pkg.icon.startsWith('fa-') ? 'fas' : 'fab'} ${pkg.icon}"></i></div><div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">${pkg.desc}</span></div><i class="fas fa-chevron-right" style="font-size:0.7rem; color:var(--cydia-gold);"></i></a>`;
+                    const iconClass = pkg.icon.startsWith('fa-') ? 'fas' : 'fab';
+                    if (pkg.cmd) {
+                        const safeCmd = pkg.cmd.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                        rc.innerHTML += `
+                            <a href="#" onclick="navigator.clipboard.writeText('${safeCmd}'); alert('Command copied!'); event.preventDefault();" class="pkg-list-item">
+                                <div class="pkg-list-icon"><i class="${iconClass} ${pkg.icon}"></i></div>
+                                <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">Copy Command</span></div>
+                                <span class="chevron"><i class="fas fa-copy"></i></span>
+                            </a>`;
+                    } else {
+                        rc.innerHTML += `
+                            <a href="${pkg.url}" target="_blank" class="pkg-list-item">
+                                <div class="pkg-list-icon"><i class="${iconClass} ${pkg.icon}"></i></div>
+                                <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">${pkg.desc}</span></div>
+                                <span class="chevron">›</span>
+                            </a>`;
+                    }
                 });
-            } else { resultsContainer.innerHTML += `<div style="padding:2rem; text-align:center; color:var(--text-dim);">No packages found.</div>`; }
-            resultsContainer.innerHTML += `</div>`;
+                rc.innerHTML += `</div>`;
+            } else {
+                rc.innerHTML = `
+                    <div class="search-empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>No results found for "${query}"</p>
+                    </div>`;
+            }
         }
+
+        const bgVideo = document.getElementById('bg-video');
+        document.addEventListener('mousemove', (e) => {
+            if (window.innerWidth < 1024) return;
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            bgVideo.style.transform = `translate(${x}px, ${y}px) scale(1.1)`;
+        });
 
         searchInput.addEventListener('input', handleSearch);
         pcSearchInput.addEventListener('input', handleSearch);
-
-        document.getElementById('audio-btn').onclick = () => {
-            if (isPlaying) audio.pause(); else audio.play();
-            isPlaying = !isPlaying;
-            document.getElementById('audio-btn').innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
-        };
-
-        // Scroll Logic
         const mainScroll = document.getElementById('main-scroll');
         const progressBar = document.getElementById('progress-bar');
         const topBtn = document.getElementById('top-btn');
@@ -1439,105 +1732,71 @@
         mainScroll.addEventListener('scroll', () => {
             const winScroll = mainScroll.scrollTop;
             const height = mainScroll.scrollHeight - mainScroll.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            progressBar.style.width = scrolled + "%";
-
-            if (winScroll > 300) {
-                topBtn.classList.add('visible');
-            } else {
-                topBtn.classList.remove('visible');
-            }
+            progressBar.style.width = ((winScroll / height) * 100) + "%";
+            topBtn.classList.toggle('visible', winScroll > 300);
         });
 
-        function scrollToTop() {
-            mainScroll.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-
-        // Menu Logic
+        function scrollToTop() { mainScroll.scrollTo({ top: 0, behavior: 'smooth' }); }
         const sidebar = document.querySelector('.sidebar');
         const overlay = document.getElementById('menu-overlay');
-        const hamburger = document.getElementById('hamburger-menu');
 
         function toggleMenu(force = null) {
             const isActive = force !== null ? force : !sidebar.classList.contains('active');
+            sidebar.classList.toggle('active', isActive);
+            overlay.classList.toggle('active', isActive);
 
-            if (isActive) {
-                sidebar.classList.add('active');
-                overlay.classList.add('active');
-                hamburger.classList.add('active');
-            } else {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                hamburger.classList.remove('active');
+            const burger = document.getElementById('hamburger-menu');
+            if (burger) {
+                burger.innerHTML = isActive ? '<i class="fas fa-times"></i> Close' : '<i class="fas fa-bars"></i> Menu';
             }
+
+            const items = sidebar.querySelectorAll('.sidebar-item, .sidebar-title, .sidebar-search, .sidebar-header');
+            items.forEach((item, i) => {
+                if (isActive) {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                    item.style.transition = `all 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${i * 0.03}s`;
+                } else {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateX(-15px)';
+                    item.style.transition = 'none';
+                }
+            });
         }
-
-        // 3D Parallax Logic
-        document.addEventListener('mousemove', (e) => {
-            if (window.innerWidth > 1024 && mainApp.classList.contains('active')) {
-                const x = (window.innerWidth / 2 - e.pageX) / 85;
-                const y = (window.innerHeight / 2 - e.pageY) / 85;
-                mainApp.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-            }
-        });
-
         async function fetchTikTok() {
             const urlInput = document.getElementById('tiktok-url');
             const fetchBtn = document.getElementById('tiktok-fetch-btn');
             const loader = document.getElementById('tiktok-loader');
             const resultBox = document.getElementById('tiktok-result');
-            const loaderText = loader.querySelector('p');
             const url = urlInput.value.trim();
 
-            if (!url) {
-                alert("Please paste a TikTok URL.");
-                return;
-            }
+            if (!url) { alert("Please input a valid URL."); return; }
 
-            // UI Reset
             resultBox.classList.remove('visible');
             loader.style.display = 'block';
-            loaderText.innerText = "Analyzing video (Direct)...";
             fetchBtn.disabled = true;
 
             const baseApi = "https://v0-tik-tok-downloader-design.vercel.app/api/download";
-            const targetUrl = `${baseApi}?url=${encodeURIComponent(url)}`;
+            const targetUrl = `${baseApi}?url=${encodeURIComponent(url)}&quality=hd&format=mp4`;
 
             try {
-                // Try Direct First
                 let response = await fetch(targetUrl);
-                
                 if (!response.ok) {
-                    console.warn("Direct fetch failed, trying proxy...");
-                    loaderText.innerText = "Connecting via Proxy...";
-                    // Proxy Fallback (AllOrigins)
                     response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`);
                     const proxyData = await response.json();
-                    
                     if (proxyData.contents) {
                         const data = JSON.parse(proxyData.contents);
-                        if (data.success) {
-                            renderTikTokResult(data.data);
-                            return;
-                        } else {
-                            throw new Error(data.error || "Proxy returned error state.");
-                        }
+                        if (data.msg === 'success' || data.code === 0 || data.success) { renderTikTokResult(data.data || data); return; }
                     }
+                    throw new Error("Proxy fetch failed");
                 } else {
                     const data = await response.json();
-                    if (data.success) {
-                        renderTikTokResult(data.data);
-                        return;
-                    } else {
-                        throw new Error(data.error || "API returned error state.");
-                    }
+                    if (data.msg === 'success' || data.code === 0 || data.success) { renderTikTokResult(data.data || data); return; }
+                    throw new Error("Direct fetch failed or returned error");
                 }
             } catch (err) {
-                console.error("TikTok Connectivity Error:", err);
-                alert("Connection failed. This might be due to service downtime or URL restrictions. Try copying the link directly and opening it in a new tab.");
+                console.error(err);
+                alert("Connection failed. Service may be down or URL restricted.");
             } finally {
                 loader.style.display = 'none';
                 fetchBtn.disabled = false;
@@ -1546,70 +1805,65 @@
 
         function renderTikTokResult(data) {
             const resultBox = document.getElementById('tiktok-result');
+            const thumb = data.cover || data.thumbnail || data.origin_cover || '';
+            const title = data.title || 'TikTok Video';
+            const author = (data.author && data.author.unique_id) ? data.author.unique_id : (data.author || 'unknown');
+            const views = data.play_count || data.views || 0;
+            const likes = data.digg_count || data.likes || 0;
+            const duration = data.duration || 0;
+            const hdUrl = data.hdplay || data.download_url_hd;
+            const sdUrl = data.play || data.download_url;
+            const defaultUrl = hdUrl || sdUrl || '';
+            const sizeLabel = data.file_size ? `(${data.file_size})` : '';
+            let actionBtns = '';
+            if (hdUrl) {
+                actionBtns += `<button class="app-btn" onclick="handleDownload('${hdUrl}', 'tiktok_hd.mp4', this)" style="margin-bottom: 5px;"><i class="fas fa-download"></i> Download HD ${sizeLabel}</button>`;
+            }
+            if (sdUrl && sdUrl !== hdUrl) {
+                actionBtns += `<button class="app-btn" onclick="handleDownload('${sdUrl}', 'tiktok_sd.mp4', this)"><i class="fas fa-download"></i> Download SD</button>`;
+            }
+            if (!actionBtns && defaultUrl) {
+                actionBtns = `<button class="app-btn" onclick="handleDownload('${defaultUrl}', 'tiktok_video.mp4', this)"><i class="fas fa-download"></i> Download Video</button>`;
+            }
+
             resultBox.innerHTML = `
-                <div class="tiktok-card-header">
-                    <img src="${data.thumbnail}" class="tiktok-card-thumb" alt="Thumbnail">
-                    <div class="tiktok-card-overlay">
-                        <div class="tiktok-title">${data.title}</div>
-                        <div class="tiktok-author">@${data.author}</div>
+                <img src="${thumb}" class="tt-thumb" alt="Thumbnail">
+                <div class="tt-info">
+                    <div class="tt-title">${title}</div>
+                    <div class="tt-author">@${author}</div>
+                    <div class="tt-stats">
+                        <span><i class="fas fa-play"></i> ${views.toLocaleString()}</span>
+                        <span><i class="fas fa-heart"></i> ${likes.toLocaleString()}</span>
+                        <span><i class="fas fa-clock"></i> ${duration}s</span>
+                    </div>
+                    <div class="tt-actions">
+                        ${actionBtns}
                     </div>
                 </div>
-                <div class="tiktok-stats">
-                    <div class="tiktok-stat"><i class="fas fa-play"></i> ${data.views.toLocaleString()}</div>
-                    <div class="tiktok-stat"><i class="fas fa-heart"></i> ${data.likes.toLocaleString()}</div>
-                    <div class="tiktok-stat"><i class="fas fa-clock"></i> ${data.duration}s</div>
-                </div>
-                <div class="tiktok-actions">
-                    <button class="download-btn download-hd" onclick="handleDownload('${data.download_url_hd}', 'tiktok_hd_${data.video_id}.mp4', this)">
-                        <i class="fas fa-download"></i> Download HD
-                    </button>
-                    <button class="download-btn download-sd" onclick="handleDownload('${data.download_url}', 'tiktok_sd_${data.video_id}.mp4', this)">
-                        <i class="fas fa-video"></i> Download SD
-                    </button>
-                    <button class="download-btn" style="grid-column: span 2; background: rgba(255,255,255,0.05); color: #fff;" onclick="copyToClipboard('${data.download_url_hd}')">
-                        <i class="fas fa-copy"></i> Copy HD Link
-                    </button>
-                </div>
             `;
-            setTimeout(() => resultBox.classList.add('visible'), 50);
+            resultBox.classList.add('visible');
         }
 
         async function handleDownload(url, filename, btn) {
+            if (!url) { alert("Download URL not found."); return; }
             const originalHtml = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
-            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
             try {
                 const response = await fetch(url);
-                if (!response.ok) throw new Error('Network response was not ok');
+                if (!response.ok) throw new Error('Network error');
                 const blob = await response.blob();
                 const blobUrl = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = blobUrl;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(blobUrl);
+                a.href = blobUrl; a.download = filename;
+                document.body.appendChild(a); a.click();
+                document.body.removeChild(a); window.URL.revokeObjectURL(blobUrl);
             } catch (err) {
-                console.error('Download failed:', err);
-                // Fallback: direct window open if blob fails (CORS)
-                const win = window.open(url, '_blank');
-                if (!win) alert("Please allow popups to download this video.");
+                window.open(url, '_blank');
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalHtml;
+                btn.disabled = false; btn.innerHTML = originalHtml;
             }
         }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Download link copied to clipboard!");
-            }).catch(err => {
-                console.error('Copy failed:', err);
-            });
-        }
-
         async function fetchInstagram() {
             const queryInput = document.getElementById('insta-query');
             const searchBtn = document.getElementById('insta-search-btn');
@@ -1617,12 +1871,8 @@
             const resultsBox = document.getElementById('insta-results');
             const query = queryInput.value.trim();
 
-            if (!query) {
-                alert("Please enter a username or name.");
-                return;
-            }
+            if (!query) { alert("Please input a valid username."); return; }
 
-            // UI Reset
             resultsBox.innerHTML = "";
             loader.style.display = 'block';
             searchBtn.disabled = true;
@@ -1630,41 +1880,32 @@
             try {
                 const response = await fetch(`https://www.instagram.com/web/search/topsearch/?query=${encodeURIComponent(query)}`);
                 const data = await response.json();
-
                 if (data.users && data.users.length > 0) {
-                    renderInstagramResults(data.users);
+                    resultsBox.innerHTML = `<div class="detail-group"></div>`;
+                    const group = resultsBox.querySelector('.detail-group');
+                    data.users.forEach(item => {
+                        const user = item.user;
+                        group.innerHTML += `
+                            <a href="https://www.instagram.com/${user.username}/" target="_blank" class="pkg-list-item">
+                                <img src="${user.profile_pic_url}" style="width:40px; height:40px; border-radius:50%; margin-right:12px; border:1px solid #ccc; object-fit:cover;">
+                                <div class="pkg-list-info">
+                                    <div class="pkg-list-name">${user.username} ${user.is_verified ? '<i class="fas fa-check-circle" style="color:#3897f0; font-size:12px;"></i>' : ''}</div>
+                                    <div class="pkg-list-desc">${user.full_name || ''}</div>
+                                </div>
+                                <span class="chevron">›</span>
+                            </a>
+                        `;
+                    });
                 } else {
-                    resultsBox.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--text-dim);">No profiles found.</div>`;
+                    resultsBox.innerHTML = `<div style="text-align:center; padding:20px; color:#555;">No matches found.</div>`;
                 }
             } catch (err) {
                 console.error(err);
-                alert("Unable to fetch Instagram data. This may be due to CORS restrictions or rate limiting.");
+                alert("Network error. Could not fetch Instagram data.");
             } finally {
                 loader.style.display = 'none';
                 searchBtn.disabled = false;
             }
-        }
-
-        function renderInstagramResults(users) {
-            const resultsBox = document.getElementById('insta-results');
-            resultsBox.innerHTML = "";
-            users.forEach((item, index) => {
-                const user = item.user;
-                const card = document.createElement('a');
-                card.href = `https://www.instagram.com/${user.username}/`;
-                card.target = "_blank";
-                card.className = 'insta-profile-card';
-                card.innerHTML = `
-                    <img src="${user.profile_pic_url}" class="insta-avatar" alt="${user.username}">
-                    <div class="insta-info">
-                        <div class="insta-username">${user.username} ${user.is_verified ? '<i class="fas fa-check-circle insta-verified"></i>' : ''}</div>
-                        <div class="insta-fullname">${user.full_name || ''}</div>
-                    </div>
-                    <i class="fas fa-chevron-right" style="color:var(--text-dim); font-size:0.8rem;"></i>
-                `;
-                resultsBox.appendChild(card);
-                setTimeout(() => card.classList.add('visible'), index * 100);
-            });
         }
     </script>
 </body>
