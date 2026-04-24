@@ -1488,6 +1488,32 @@
             font-weight: 600;
             color: #3b82f6;
         }
+
+        /* Clock Widget Styles */
+        .clock-widget {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 20px;
+            animation: slideUpFade 0.8s ease;
+        }
+
+        .clock-time {
+            font-size: 4.5rem;
+            font-weight: 200;
+            letter-spacing: -2px;
+            color: #fff;
+            line-height: 1;
+            margin-bottom: 10px;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .clock-date {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 
@@ -1572,6 +1598,7 @@
             <div class="sidebar-item" onclick="filterCategory('ai', this)"><i class="fas fa-robot"></i> AI Tools</div>
             <div class="sidebar-item" onclick="filterCategory('movies', this)"><i class="fas fa-film"></i> Movies</div>
             <div class="sidebar-item" onclick="filterCategory('anime', this)"><i class="fas fa-ghost"></i> Anime</div>
+            <div class="sidebar-item" onclick="filterCategory('cartoon', this)"><i class="fas fa-child"></i> Cartoons</div>
             <div class="sidebar-item" onclick="filterCategory('kurdish', this)"><i class="fas fa-language"></i> Kurdish
             </div>
             <div class="sidebar-item" onclick="filterCategory('sports', this)"><i class="fas fa-futbol"></i> Live Sports
@@ -1621,6 +1648,12 @@
 
 
                 <div id="view-home" class="view-content active">
+                    <!-- Premium Clock Widget -->
+                    <div class="clock-widget">
+                        <div class="clock-time" id="main-clock-time">9:41 AM</div>
+                        <div class="clock-date" id="main-clock-date">Friday, April 24</div>
+                    </div>
+
                     <div class="hero-section">
                         <img src="https://i.pinimg.com/1200x/eb/48/73/eb487359acc13ab1ad5e1918e14cd49e.jpg"
                             class="hero-avatar" alt="CHYA LUQMAN">
@@ -2025,6 +2058,31 @@
             }
         });
 
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            const strTime = hours + ':' + minutes + ' ' + ampm;
+            
+            const timeEl = document.getElementById('iphone-time');
+            if (timeEl) timeEl.innerText = strTime;
+            
+            const mainClock = document.getElementById('main-clock-time');
+            if (mainClock) mainClock.innerText = strTime;
+            
+            const mainDate = document.getElementById('main-clock-date');
+            if (mainDate) {
+                const options = { weekday: 'long', month: 'long', day: 'numeric' };
+                mainDate.innerText = now.toLocaleDateString(undefined, options);
+            }
+
+            setTimeout(updateClock, 60000);
+        }
+
         function typeWriter(text, i) {
             if (i < text.length) {
                 bioText.innerHTML = text.substring(0, i + 1) + '|';
@@ -2077,6 +2135,7 @@
             const categories = {
                 social: "Social & Community", ai: "Artificial Intelligence",
                 kurdish: "Kurdish Cinema", anime: "Anime & Manga",
+                cartoon: "Cartoons",
                 movies: "Movies & Series", tools: "Tools & Software",
                 games: "Game Downloads", mods: "Game Mods",
                 livetv: "Live TV & IPTV", ads: "Ad Blockers",

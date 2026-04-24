@@ -819,6 +819,13 @@
         "icon": "fa-football-ball"
     },
     {
+        "name": "Yari Live",
+        "desc": "Live sports and events streaming.",
+        "cat": "sports",
+        "url": "http://wvvw.yari.live/",
+        "icon": "fa-video"
+    },
+    {
         "name": "Famelack",
         "desc": "Live TV streams (Blocked in some regions).",
         "cat": "livetv",
@@ -999,5 +1006,82 @@
         "cat": "scripts",
         "url": "https://greasyfork.org/en/scripts/404535-ig-helper",
         "icon": "fa-camera"
+    },
+    {
+        "name": "KissCartoon",
+        "desc": "Watch high quality cartoons online.",
+        "cat": "cartoon",
+        "url": "https://kisscartoon.sh/",
+        "icon": "fa-palette"
+    },
+    {
+        "name": "Arabic Toons",
+        "desc": "Arabic dubbed cartoons and anime.",
+        "cat": "cartoon",
+        "url": "https://www.arabic-toons.com/",
+        "icon": "fa-ghost"
+    },
+    {
+        "name": "Carateen TV",
+        "desc": "Arabic dubbed animations.",
+        "cat": "cartoon",
+        "url": "https://carateen.tv/",
+        "icon": "fa-tv"
+    },
+    {
+        "name": "Stardima",
+        "desc": "Arabic dubbed series and movies.",
+        "cat": "cartoon",
+        "url": "https://watch.stardima.com/watch/#gsc.tab=0",
+        "icon": "fa-star"
+    },
+    {
+        "name": "Kartoni Kurde",
+        "desc": "Kurdish dubbed cartoons.",
+        "cat": "cartoon",
+        "url": "https://kartonikurde.com/",
+        "icon": "fa-language"
+    },
+    {
+        "name": "Anime Kurdish",
+        "desc": "Kurdish dubbed anime and cartoons.",
+        "cat": "cartoon",
+        "url": "https://animekurdish2019.blogspot.com/",
+        "icon": "fa-mask"
+    },
+    {
+        "name": "Kurd Doblazh (Cartoons)",
+        "desc": "Kurdish dubbed animation section.",
+        "cat": "cartoon",
+        "url": "https://www.kurddoblazh.com/search/label/%D8%A6%D9%87%E2%80%8C%D9%86%DB%8C%D9%85%D9%87%E2%80%8C%DB%8C%D8%B4%D9%86?max-results=64",
+        "icon": "fa-microphone"
+    },
+    {
+        "name": "Anime Kurd (Telegram)",
+        "desc": "Kurdish anime community on Telegram.",
+        "cat": "cartoon",
+        "url": "https://t.me/anime_kurd",
+        "icon": "fa-paper-plane"
+    },
+    {
+        "name": "Kartoni Kurdi (Telegram)",
+        "desc": "Kurdish cartoons on Telegram.",
+        "cat": "cartoon",
+        "url": "https://t.me/kartoni_kurdi",
+        "icon": "fa-paper-plane"
+    },
+    {
+        "name": "Kurdish Anime Plus (Telegram)",
+        "desc": "Kurdish dubbed anime channel.",
+        "cat": "cartoon",
+        "url": "https://t.me/+G81-F97Y7v9jMjQy",
+        "icon": "fa-paper-plane"
+    },
+    {
+        "name": "SeeMovies (Telegram)",
+        "desc": "Kurdish movies and cartoons.",
+        "cat": "cartoon",
+        "url": "https://t.me/seemovies09",
+        "icon": "fa-paper-plane"
     }
 ]
