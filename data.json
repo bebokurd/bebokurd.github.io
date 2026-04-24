@@ -63,6 +63,461 @@
         "icon": "fa-globe"
     },
     {
+        "name": "ChatGPT",
+        "desc": "OpenAI's conversational AI and world-leading LLM.",
+        "cat": "ai",
+        "url": "https://chatgpt.com/",
+        "icon": "fa-comment-dots"
+    },
+    {
+        "name": "Perplexity AI",
+        "desc": "AI-powered search engine for accurate answers.",
+        "cat": "ai",
+        "url": "https://www.perplexity.ai/",
+        "icon": "fa-magnifying-glass"
+    },
+    {
+        "name": "DeepSeek-R1",
+        "desc": "Powerful open-weights LLM for coding and reasoning.",
+        "cat": "ai",
+        "url": "https://www.deepseek.com/",
+        "icon": "fa-brain"
+    },
+    {
+        "name": "Phind",
+        "desc": "Intelligent search engine and assistant for programmers.",
+        "cat": "ai",
+        "url": "https://www.phind.com/",
+        "icon": "fa-terminal"
+    },
+    {
+        "name": "Ollama",
+        "desc": "Run large language models locally on your machine.",
+        "cat": "ai",
+        "url": "https://ollama.com/",
+        "icon": "fa-microchip"
+    },
+    {
+        "name": "Midjourney",
+        "desc": "High-end generative AI for stunning visual art.",
+        "cat": "ai",
+        "url": "https://www.midjourney.com/",
+        "icon": "fa-palette"
+    },
+    {
+        "name": "Stable Diffusion",
+        "desc": "Open-source text-to-image generation.",
+        "cat": "ai",
+        "url": "https://stablediffusionweb.com/",
+        "icon": "fa-images"
+    },
+    {
+        "name": "Jasper",
+        "desc": "AI writing assistant for marketing and content.",
+        "cat": "ai",
+        "url": "https://www.jasper.ai/",
+        "icon": "fa-pen-nib"
+    },
+    {
+        "name": "QuillBot",
+        "desc": "AI-powered paraphrasing and writing tool.",
+        "cat": "ai",
+        "url": "https://quillbot.com/",
+        "icon": "fa-file-signature"
+    },
+    {
+        "name": "Taskade",
+        "desc": "AI-powered task management and productivity.",
+        "cat": "ai",
+        "url": "https://www.taskade.com/",
+        "icon": "fa-list-check"
+    },
+    {
+        "name": "RunwayML",
+        "desc": "Next-generation AI video creation suite.",
+        "cat": "ai",
+        "url": "https://runwayml.com/",
+        "icon": "fa-video"
+    },
+    {
+        "name": "Mubert",
+        "desc": "Generative AI music for content creators.",
+        "cat": "ai",
+        "url": "https://mubert.com/",
+        "icon": "fa-music"
+    },
+    {
+        "name": "You.com",
+        "desc": "Private and customizable AI search experience.",
+        "cat": "ai",
+        "url": "https://you.com/",
+        "icon": "fa-user-secret"
+    },
+    {
+        "name": "Komo AI",
+        "desc": "Fast and accurate AI search engine.",
+        "cat": "ai",
+        "url": "https://komo.ai/",
+        "icon": "fa-bolt"
+    },
+    {
+        "name": "Lex",
+        "desc": "AI-powered word processor for faster writing.",
+        "cat": "ai",
+        "url": "https://lex.page/",
+        "icon": "fa-keyboard"
+    },
+    {
+        "name": "Gist AI",
+        "desc": "Summarize websites, YouTube, and PDFs instantly.",
+        "cat": "ai",
+        "url": "https://www.gistai.tech/",
+        "icon": "fa-compress"
+    },
+    {
+        "name": "MeetGeek",
+        "desc": "AI meeting assistant for summaries and transcribing.",
+        "cat": "ai",
+        "url": "https://meetgeek.ai/",
+        "icon": "fa-headset"
+    },
+    {
+        "name": "SaneBox",
+        "desc": "AI-powered email management and prioritization.",
+        "cat": "ai",
+        "url": "https://www.sanebox.com/",
+        "icon": "fa-envelope-open-text"
+    },
+    {
+        "name": "Krisp",
+        "desc": "AI noise cancellation for meetings and calls.",
+        "cat": "ai",
+        "url": "https://krisp.ai/",
+        "icon": "fa-volume-mute"
+    },
+    {
+        "name": "Adobe Podcast",
+        "desc": "AI-powered audio recording and enhancement.",
+        "cat": "ai",
+        "url": "https://podcast.adobe.com/",
+        "icon": "fa-microphone-lines"
+    },
+    {
+        "name": "Voicemod",
+        "desc": "Real-time AI voice changer and soundboard.",
+        "cat": "ai",
+        "url": "https://www.voicemod.net/",
+        "icon": "fa-masks-theater"
+    },
+    {
+        "name": "Lensa",
+        "desc": "AI magic avatars and advanced photo editing.",
+        "cat": "ai",
+        "url": "https://prisma-ai.com/lensa",
+        "icon": "fa-user-astronaut"
+    },
+    {
+        "name": "Character AI",
+        "desc": "Intelligent chatbots with distinct personalities.",
+        "cat": "ai",
+        "url": "https://beta.character.ai/",
+        "icon": "fa-users-viewfinder"
+    },
+    {
+        "name": "Replit Ghostwriter",
+        "desc": "AI-powered pair programmer in your browser.",
+        "cat": "ai",
+        "url": "https://replit.com/",
+        "icon": "fa-laptop-code"
+    },
+    {
+        "name": "Codeium",
+        "desc": "Free lightning-fast AI coding extension.",
+        "cat": "ai",
+        "url": "https://codeium.com/",
+        "icon": "fa-code-branch"
+    },
+    {
+        "name": "Writesonic",
+        "desc": "AI writer for blogs, ads, and product descriptions.",
+        "cat": "ai",
+        "url": "https://writesonic.com/",
+        "icon": "fa-feather-pointed"
+    },
+    {
+        "name": "Microsoft Designer",
+        "desc": "AI-driven graphic design and social media posts.",
+        "cat": "ai",
+        "url": "https://designer.microsoft.com/",
+        "icon": "fa-wand-magic"
+    },
+    {
+        "name": "Clipdrop",
+        "desc": "Create professional visuals without a studio.",
+        "cat": "ai",
+        "url": "https://clipdrop.co/",
+        "icon": "fa-scissors"
+    },
+    {
+        "name": "Uizard",
+        "desc": "AI design tool for apps and websites.",
+        "cat": "ai",
+        "url": "https://uizard.io/",
+        "icon": "fa-mobile-screen-button"
+    },
+    {
+        "name": "ELI5",
+        "desc": "AI that explains complex topics simply.",
+        "cat": "ai",
+        "url": "https://eli5.ai/",
+        "icon": "fa-baby"
+    },
+    {
+        "name": "Remove.bg",
+        "desc": "Automatic background removal for images.",
+        "cat": "ai",
+        "url": "https://www.remove.bg/",
+        "icon": "fa-eraser"
+    },
+    {
+        "name": "Speechify",
+        "desc": "Read-aloud AI text-to-speech assistant.",
+        "cat": "ai",
+        "url": "https://speechify.com/",
+        "icon": "fa-ear-listen"
+    },
+    {
+        "name": "Summarize Tech",
+        "desc": "AI-powered YouTube video summarizer.",
+        "cat": "ai",
+        "url": "https://summarize.tech/",
+        "icon": "fa-compress-arrows-alt"
+    },
+    {
+        "name": "TLDR this",
+        "desc": "Summarize any article or webpage with AI.",
+        "cat": "ai",
+        "url": "https://www.tldrthis.com/",
+        "icon": "fa-align-left"
+    },
+    {
+        "name": "DoNotPay",
+        "desc": "The world's first AI robot lawyer.",
+        "cat": "ai",
+        "url": "https://donotpay.com/",
+        "icon": "fa-gavel"
+    },
+    {
+        "name": "VidIQ",
+        "desc": "AI-powered SEO and analytics for YouTube.",
+        "cat": "ai",
+        "url": "https://vidiq.com/",
+        "icon": "fa-chart-line"
+    },
+    {
+        "name": "Adcreative.ai",
+        "desc": "Generate high-converting ad creatives with AI.",
+        "cat": "ai",
+        "url": "https://www.adcreative.ai/",
+        "icon": "fa-rectangle-ad"
+    },
+    {
+        "name": "Ocoya",
+        "desc": "AI social media marketing and scheduling.",
+        "cat": "ai",
+        "url": "https://www.ocoya.com/",
+        "icon": "fa-share-nodes"
+    },
+    {
+        "name": "Beatoven.ai",
+        "desc": "Create custom royalty-free music with AI.",
+        "cat": "ai",
+        "url": "https://www.beatoven.ai/",
+        "icon": "fa-headphones"
+    },
+    {
+        "name": "Reface AI",
+        "desc": "AI face swap and viral video creation tool.",
+        "cat": "ai",
+        "url": "https://hey.reface.ai/",
+        "icon": "fa-face-grin-stars"
+    },
+    {
+        "name": "GitHub Copilot",
+        "desc": "The world's most widely used AI developer tool.",
+        "cat": "ai",
+        "url": "https://github.com/features/copilot",
+        "icon": "fa-github"
+    },
+    {
+        "name": "Tabnine",
+        "desc": "AI assistant for software developers.",
+        "cat": "ai",
+        "url": "https://www.tabnine.com/",
+        "icon": "fa-code"
+    },
+    {
+        "name": "BlackBox AI",
+        "desc": "Lightning-fast AI code generation and search.",
+        "cat": "ai",
+        "url": "https://www.useblackbox.io/",
+        "icon": "fa-square-terminal"
+    },
+    {
+        "name": "Writesonic",
+        "desc": "Create SEO-optimized content for blogs and ads.",
+        "cat": "ai",
+        "url": "https://writesonic.com/",
+        "icon": "fa-pencil"
+    },
+    {
+        "name": "Anyword",
+        "desc": "AI writing platform built for marketing results.",
+        "cat": "ai",
+        "url": "https://anyword.com/",
+        "icon": "fa-bullhorn"
+    },
+    {
+        "name": "Tiledesk",
+        "desc": "Open-source chatbot development framework.",
+        "cat": "ai",
+        "url": "https://tiledesk.com/",
+        "icon": "fa-comments"
+    },
+    {
+        "name": "Harvey AI",
+        "desc": "AI-powered customer support and automation.",
+        "cat": "ai",
+        "url": "https://hiverhq.com/harvey-ai-customer-support",
+        "icon": "fa-robot"
+    },
+    {
+        "name": "Designs AI",
+        "desc": "Create logos, videos, and banners in minutes.",
+        "cat": "ai",
+        "url": "https://designs.ai/",
+        "icon": "fa-object-group"
+    },
+    {
+        "name": "Teachable Machine",
+        "desc": "Train your own machine learning models quickly.",
+        "cat": "ai",
+        "url": "https://teachablemachine.withgoogle.com/",
+        "icon": "fa-graduation-cap"
+    },
+    {
+        "name": "PromptLayer",
+        "desc": "Platform for prompt engineering and observability.",
+        "cat": "ai",
+        "url": "https://promptlayer.com/",
+        "icon": "fa-layer-group"
+    },
+    {
+        "name": "Caktus AI",
+        "desc": "The first ever AI built for students.",
+        "cat": "ai",
+        "url": "https://www.caktus.ai/",
+        "icon": "fa-school"
+    },
+    {
+        "name": "TutorAI",
+        "desc": "Personalized AI learning platform for any topic.",
+        "cat": "ai",
+        "url": "https://www.tutorai.me/",
+        "icon": "fa-chalkboard-user"
+    },
+    {
+        "name": "Leonardo.Ai",
+        "desc": "Generative AI for creative projects and game assets.",
+        "cat": "ai",
+        "url": "https://leonardo.ai/",
+        "icon": "fa-dice-d20"
+    },
+    {
+        "name": "Scenario",
+        "desc": "AI-generated gaming assets and environments.",
+        "cat": "ai",
+        "url": "https://www.scenario.gg/",
+        "icon": "fa-gamepad"
+    },
+    {
+        "name": "Legal Robot",
+        "desc": "AI-powered legal analysis and document drafting.",
+        "cat": "ai",
+        "url": "https://legalrobot.com/",
+        "icon": "fa-scale-balanced"
+    },
+    {
+        "name": "Boomy",
+        "desc": "Make instant AI-generated songs and monetize them.",
+        "cat": "ai",
+        "url": "https://boomy.com/",
+        "icon": "fa-compact-disc"
+    },
+    {
+        "name": "Soundful",
+        "desc": "Create unique, royalty-free tracks with AI.",
+        "cat": "ai",
+        "url": "https://soundful.com/",
+        "icon": "fa-sliders"
+    },
+    {
+        "name": "Otter AI",
+        "desc": "AI-powered meeting notes and transcription.",
+        "cat": "ai",
+        "url": "https://otter.ai/",
+        "icon": "fa-file-audio"
+    },
+    {
+        "name": "InteriorAI",
+        "desc": "AI-powered interior design and room staging.",
+        "cat": "ai",
+        "url": "https://interiorai.com/",
+        "icon": "fa-house-chimney-window"
+    },
+    {
+        "name": "GetFloorPlan",
+        "desc": "Convert sketches to 3D floor plans with AI.",
+        "cat": "ai",
+        "url": "https://getfloorplan.com/",
+        "icon": "fa-map"
+    },
+    {
+        "name": "Synthesia",
+        "desc": "Create AI videos with talking avatars from text.",
+        "cat": "ai",
+        "url": "https://www.synthesia.io/",
+        "icon": "fa-person-chalkboard"
+    },
+    {
+        "name": "Wonder Dynamics",
+        "desc": "AI tool that automatically animates CG characters.",
+        "cat": "ai",
+        "url": "https://www.wonderdynamics.com/",
+        "icon": "fa-film"
+    },
+    {
+        "name": "Kaedim",
+        "desc": "Turn 2D images into 3D models with AI.",
+        "cat": "ai",
+        "url": "https://www.kaedim3d.com/",
+        "icon": "fa-cube"
+    },
+    {
+        "name": "Civitai",
+        "desc": "The largest community-driven AI model repository.",
+        "cat": "ai",
+        "url": "https://civitai.com/",
+        "icon": "fa-cubes"
+    },
+    {
+        "name": "NightCafe Studio",
+        "desc": "Create AI art through community and challenges.",
+        "cat": "ai",
+        "url": "https://creator.nightcafe.studio/",
+        "icon": "fa-brush"
+    },
+    {
         "name": "Kurd Cinema",
         "desc": "Professional Kurdish movie subtitles/dubs.",
         "cat": "kurdish",
