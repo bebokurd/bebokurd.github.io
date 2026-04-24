@@ -8,7 +8,60 @@ const pcSearchInput = document.getElementById('pc-search-input');
 const bioText = document.getElementById('bio-text');
 let isPlaying = false;
 
-document.addEventListener('contextmenu', e => e.preventDefault());
+const customMenu = document.getElementById('custom-menu');
+
+document.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    
+    const { clientX: mouseX, clientY: mouseY } = e;
+    const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
+    
+    customMenu.style.display = 'block';
+    
+    // Position adjustments to prevent menu from going off-screen
+    let posX = mouseX;
+    let posY = mouseY;
+    
+    if (mouseX + 220 > windowWidth) posX = windowWidth - 230;
+    if (mouseY + 300 > windowHeight) posY = windowHeight - 310;
+    
+    customMenu.style.left = `${posX}px`;
+    customMenu.style.top = `${posY}px`;
+    customMenu.style.transformOrigin = (mouseX + 220 > windowWidth) ? 'top right' : 'top left';
+});
+
+document.addEventListener('click', () => {
+    if (customMenu) customMenu.style.display = 'none';
+});
+
+// Mouse Trail Logic
+let lastParticleTime = 0;
+document.addEventListener('mousemove', e => {
+    const { clientX: x, clientY: y } = e;
+    
+    // Spawn particles with a rate limit for a "short" clean trail
+    const now = Date.now();
+    if (now - lastParticleTime > 40) {
+        spawnParticle(x, y);
+        lastParticleTime = now;
+    }
+});
+
+function spawnParticle(x, y) {
+    const p = document.createElement('div');
+    p.className = 'pointer-particle';
+    p.style.left = `${x}px`;
+    p.style.top = `${y}px`;
+    
+    // Add slight random drift for more visibility and fluid motion
+    const driftX = (Math.random() - 0.5) * 20;
+    const driftY = (Math.random() - 0.5) * 20;
+    p.style.setProperty('--drift-x', `${driftX}px`);
+    p.style.setProperty('--drift-y', `${driftY}px`);
+    
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 500);
+}
 document.addEventListener('keydown', e => {
     if (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'i' || e.key === 'j' || e.key === 'c' || e.key === 'k')) e.preventDefault();
     if (e.key === 'F12') e.preventDefault();
