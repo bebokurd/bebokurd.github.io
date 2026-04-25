@@ -10,6 +10,8 @@ let isPlaying = false;
 
 const customMenu = document.getElementById('custom-menu');
 
+const isMobileDevice = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 document.addEventListener('contextmenu', e => {
     e.preventDefault();
     
@@ -565,8 +567,8 @@ async function fetchTikTok() {
             }
         } catch (e) { console.warn("Direct fetch failed, trying Proxy 1..."); }
 
-        // 2. Try Proxy 1 (corsproxy.io)
-        if (!fetchSuccess) {
+        // 2. Try Proxy 1 (corsproxy.io) - PC Only
+        if (!fetchSuccess && !isMobileDevice()) {
             try {
                 const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`);
                 if (response.ok) {
@@ -616,15 +618,18 @@ function renderTikTokResult(data) {
     const sdUrl = data.play || data.download_url;
     const defaultUrl = hdUrl || sdUrl || '';
     const sizeLabel = data.file_size ? `(${data.file_size})` : '';
+    const safeTitle = title.replace(/[\\/:*?"<>|]/g, '').trim() || 'tiktok_video';
+    const finalFileName = `${safeTitle} | bebokurd.mp4`;
+
     let actionBtns = '';
     if (hdUrl) {
-        actionBtns += `<button class="app-btn" onclick="handleDownload('${hdUrl}', 'tiktok_hd.mp4', this)" style="margin-bottom: 5px;"><i class="fas fa-download"></i> Download HD ${sizeLabel}</button>`;
+        actionBtns += `<button class="app-btn" onclick="handleDownload('${hdUrl}', '${finalFileName}', this)" style="margin-bottom: 5px;"><i class="fas fa-download"></i> Download HD ${sizeLabel}</button>`;
     }
     if (sdUrl && sdUrl !== hdUrl) {
-        actionBtns += `<button class="app-btn" onclick="handleDownload('${sdUrl}', 'tiktok_sd.mp4', this)"><i class="fas fa-download"></i> Download SD</button>`;
+        actionBtns += `<button class="app-btn" onclick="handleDownload('${sdUrl}', '${finalFileName}', this)"><i class="fas fa-download"></i> Download SD</button>`;
     }
     if (!actionBtns && defaultUrl) {
-        actionBtns = `<button class="app-btn" onclick="handleDownload('${defaultUrl}', 'tiktok_video.mp4', this)"><i class="fas fa-download"></i> Download Video</button>`;
+        actionBtns = `<button class="app-btn" onclick="handleDownload('${defaultUrl}', '${finalFileName}', this)"><i class="fas fa-download"></i> Download Video</button>`;
     }
 
     const qualityBadge = data.quality ? `<span style="background: linear-gradient(135deg, #69C9D0, #EE1D52); color: #fff; padding: 4px 14px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; margin-left: 10px; vertical-align: middle; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 0 15px rgba(105, 201, 208, 0.3); text-transform: uppercase;">${data.quality}</span>` : '';
@@ -706,8 +711,8 @@ async function fetchInstagram() {
             }
         } catch (e) { console.warn("Instagram direct failed, trying proxy 1..."); }
 
-        // 2. Try Proxy 1 (corsproxy.io)
-        if (!fetchSuccess) {
+        // 2. Try Proxy 1 (corsproxy.io) - PC Only
+        if (!fetchSuccess && !isMobileDevice()) {
             try {
                 const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(targetInsta)}`);
                 if (response.ok) {
@@ -776,13 +781,18 @@ async function runApiTest() {
     responseBox.innerHTML = "";
 
     try {
-        // Try direct, then proxy if needed (common for API testing)
         let response;
-        try {
+        if (isMobileDevice()) {
+            // Phone: No corsproxy
             response = await fetch(url, { method });
-        } catch (e) {
-            // Auto-fallback to proxy for CORS-heavy APIs
-            response = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, { method });
+        } else {
+            // PC: Corsproxy ON (as fallback or primary)
+            try {
+                response = await fetch(url, { method });
+                if (!response.ok) throw new Error();
+            } catch (e) {
+                response = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, { method });
+            }
         }
         
         const data = await response.json();
