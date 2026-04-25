@@ -299,33 +299,34 @@ function renderInstalled(filterCat = null) {
         sports: "Live Sports", scripts: "Automation Scripts"
     };
 
+    let html = "";
     for (const [key, label] of Object.entries(categories)) {
         if (filterCat && filterCat !== key) continue;
         const items = packageData.filter(p => p.cat === key);
         if (items.length === 0) continue;
 
-        container.innerHTML += `<div class="section-header">${label}</div><div class="detail-group cat-${key}">`;
+        html += `<div class="section-header">${label}</div><div class="detail-group cat-${key}">`;
         items.forEach(pkg => {
-            const iconClass = pkg.icon.startsWith('fa-') ? 'fas' : 'fab';
             if (pkg.cmd) {
                 const safeCmd = pkg.cmd.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                container.innerHTML += `
+                html += `
                     <a href="#" onclick="navigator.clipboard.writeText('${safeCmd}'); showToast('Command copied to clipboard!', 'fa-check-circle'); event.preventDefault();" class="pkg-list-item">
-                        <div class="pkg-list-icon"><i class="${iconClass} ${pkg.icon}"></i></div>
+                        <div class="pkg-list-icon"><i class="${pkg.icon}"></i></div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc" style="color:#007aff; font-family:monospace; font-size:0.75rem;">[Click to Copy Command]</span></div>
                         <span class="chevron"><i class="fas fa-copy" style="font-size:0.9rem; color:#888;"></i></span>
                     </a>`;
             } else {
-                container.innerHTML += `
+                html += `
                     <a href="${pkg.url}" target="_blank" class="pkg-list-item">
-                        <div class="pkg-list-icon"><i class="${iconClass} ${pkg.icon}"></i></div>
+                        <div class="pkg-list-icon"><i class="${pkg.icon}"></i></div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">${pkg.desc}</span></div>
                         <span class="chevron">›</span>
                     </a>`;
             }
         });
-        container.innerHTML += `</div>`;
+        html += `</div>`;
     }
+    container.innerHTML = html;
 }
 
 function filterCategory(cat, el) {
@@ -351,27 +352,27 @@ function handleSearch(e) {
     const results = packageData.filter(p => p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query));
 
     if (results.length > 0) {
-        rc.innerHTML = `<div class="section-header">Found ${results.length} results</div><div class="detail-group">`;
+        let html = `<div class="section-header">Found ${results.length} results</div><div class="detail-group">`;
         results.forEach(pkg => {
-            const iconClass = pkg.icon.startsWith('fa-') ? 'fas' : 'fab';
             if (pkg.cmd) {
                 const safeCmd = pkg.cmd.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-                rc.innerHTML += `
+                html += `
                     <a href="#" onclick="navigator.clipboard.writeText('${safeCmd}'); showToast('Command copied!', 'fa-check-circle'); event.preventDefault();" class="pkg-list-item">
-                        <div class="pkg-list-icon"><i class="${iconClass} ${pkg.icon}"></i></div>
+                        <div class="pkg-list-icon"><i class="${pkg.icon}"></i></div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">Copy Command</span></div>
                         <span class="chevron"><i class="fas fa-copy"></i></span>
                     </a>`;
             } else {
-                rc.innerHTML += `
+                html += `
                     <a href="${pkg.url}" target="_blank" class="pkg-list-item">
-                        <div class="pkg-list-icon"><i class="${iconClass} ${pkg.icon}"></i></div>
+                        <div class="pkg-list-icon"><i class="${pkg.icon}"></i></div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">${pkg.desc}</span></div>
                         <span class="chevron">›</span>
                     </a>`;
             }
         });
-        rc.innerHTML += `</div>`;
+        html += `</div>`;
+        rc.innerHTML = html;
     } else {
         rc.innerHTML = `
             <div class="search-empty-state">

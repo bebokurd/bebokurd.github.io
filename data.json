@@ -564,7 +564,7 @@
         "desc": "AI tool that automatically animates CG characters.",
         "cat": "ai",
         "url": "https://www.wonderdynamics.com/",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "wonder-dynamics-70"
     },
     {
@@ -628,7 +628,7 @@
         "desc": "Kurdish dubbed film library.",
         "cat": "kurdish",
         "url": "https://kurdmovies.net/",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "kurd-movies-78"
     },
     {
@@ -676,7 +676,7 @@
         "desc": "Watch cartoons and anime online.",
         "cat": "anime",
         "url": "https://www.wcoforever.net/",
-        "icon": "fas fa-ghost",
+        "icon": "fas fa-hat-wizard",
         "id": "wcoforever-84"
     },
     {
@@ -716,7 +716,7 @@
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://9animetv.to",
-        "icon": "fas fa-ghost",
+        "icon": "fas fa-hat-wizard",
         "id": "9animetv-89"
     },
     {
@@ -740,7 +740,7 @@
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://anikai.to",
-        "icon": "fas fa-ghost",
+        "icon": "fas fa-hat-wizard",
         "id": "anikai-92"
     },
     {
@@ -764,7 +764,7 @@
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://kickass-anime.ro",
-        "icon": "fas fa-ghost",
+        "icon": "fas fa-hat-wizard",
         "id": "kickass-anime-95"
     },
     {
@@ -788,7 +788,7 @@
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://animestream.net",
-        "icon": "fas fa-ghost",
+        "icon": "fas fa-hat-wizard",
         "id": "animestream-98"
     },
     {
@@ -820,7 +820,7 @@
         "desc": "Watch cartoons and anime online.",
         "cat": "anime",
         "url": "https://wcostream.tv",
-        "icon": "fas fa-ghost",
+        "icon": "fas fa-hat-wizard",
         "id": "wcostream-102"
     },
     {
@@ -852,7 +852,7 @@
         "desc": "The original EgyBest media platform.",
         "cat": "movies",
         "url": "https://egybest.biz/",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "egybest-106"
     },
     {
@@ -892,7 +892,7 @@
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://soap2night.cc",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "soap2night-111"
     },
     {
@@ -924,7 +924,7 @@
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://hydrahd.ru",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "hydrahd-115"
     },
     {
@@ -956,7 +956,7 @@
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://cinema.bz",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "cinema-bz-119"
     },
     {
@@ -988,7 +988,7 @@
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://shuttletv.su",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "shuttletv-123"
     },
     {
@@ -1020,7 +1020,7 @@
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://onionplay.io",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "onionplay-127"
     },
     {
@@ -1052,7 +1052,7 @@
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://fmovies.co",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "fmovies-131"
     },
     {
@@ -1084,7 +1084,7 @@
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://streamex.sh",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "streamex-135"
     },
     {
@@ -1116,7 +1116,7 @@
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://hdtoday.tr",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "hdtoday-139"
     },
     {
@@ -1148,7 +1148,7 @@
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://willow.arlen.icu",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "willow-arlen-143"
     },
     {
@@ -1180,7 +1180,7 @@
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://anixtv.us.cc",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "anixtv-147"
     },
     {
@@ -1212,7 +1212,7 @@
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://streamm4u.com.co",
-        "icon": "fas fa-film",
+        "icon": "fas fa-clapperboard",
         "id": "streamm4u-151"
     },
     {
@@ -1644,7 +1644,7 @@
         "desc": "Download restricted content from Telegram private channels.",
         "cat": "scripts",
         "url": "https://greasyfork.org/en/scripts/446342-telegram-media-downloader",
-        "icon": "fas fa-paper-plane",
+        "icon": "fab fa-telegram",
         "id": "telegram-media-downloader-205"
     },
     {
@@ -1684,7 +1684,7 @@
         "desc": "Arabic dubbed cartoons and anime.",
         "cat": "cartoon",
         "url": "https://www.arabic-toons.com/",
-        "icon": "fas fa-ghost",
+        "icon": "fas fa-hat-wizard",
         "id": "arabic-toons-210"
     },
     {
@@ -1732,7 +1732,7 @@
         "desc": "Kurdish anime community on Telegram.",
         "cat": "cartoon",
         "url": "https://t.me/anime_kurd",
-        "icon": "fas fa-paper-plane",
+        "icon": "fab fa-telegram",
         "id": "anime-kurd-telegram-216"
     },
     {
@@ -1740,7 +1740,7 @@
         "desc": "Kurdish cartoons on Telegram.",
         "cat": "cartoon",
         "url": "https://t.me/kartoni_kurdi",
-        "icon": "fas fa-paper-plane",
+        "icon": "fab fa-telegram",
         "id": "kartoni-kurdi-telegram-217"
     },
     {
@@ -1748,7 +1748,7 @@
         "desc": "Kurdish dubbed anime channel.",
         "cat": "cartoon",
         "url": "https://t.me/+G81-F97Y7v9jMjQy",
-        "icon": "fas fa-paper-plane",
+        "icon": "fab fa-telegram",
         "id": "kurdish-anime-plus-telegram-218"
     },
     {
@@ -1756,7 +1756,63 @@
         "desc": "Kurdish movies and cartoons.",
         "cat": "cartoon",
         "url": "https://t.me/seemovies09",
-        "icon": "fas fa-paper-plane",
+        "icon": "fab fa-telegram",
         "id": "seemovies-telegram-219"
+    },
+    {
+        "name": "Tampermonkey",
+        "desc": "The world's most popular userscript manager, available for all major browsers.",
+        "cat": "tools",
+        "url": "https://www.tampermonkey.net/",
+        "icon": "fas fa-plug",
+        "id": "tampermonkey-220"
+    },
+    {
+        "name": "Kurdish Serie",
+        "desc": "Kurdish dubbed and subtitled series.",
+        "cat": "kurdish",
+        "url": "https://kurdishserie.com/",
+        "icon": "fas fa-clapperboard",
+        "id": "kurdish-serie-221"
+    },
+    {
+        "name": "Qallam Film",
+        "desc": "Kurdish movie database and streaming.",
+        "cat": "kurdish",
+        "url": "https://qallam.net/film/movies",
+        "icon": "fas fa-film",
+        "id": "qallam-film-222"
+    },
+    {
+        "name": "Kurdbin",
+        "desc": "Kurdsat's official Kurdish media and drama portal.",
+        "cat": "kurdish",
+        "url": "https://kurdbin.kurdsat.tv/",
+        "icon": "fas fa-tv",
+        "id": "kurdbin-223"
+    },
+    {
+        "name": "Y-Drama",
+        "desc": "Kurdish dubbed dramas and series.",
+        "cat": "kurdish",
+        "url": "https://www.y-drama.net/",
+        "icon": "fas fa-play-circle",
+        "id": "y-drama-224"
+    },
+    {
+        "name": "Sha Film",
+        "desc": "Professional Kurdish movie streaming.",
+        "cat": "kurdish",
+        "url": "https://shafilm.vip/",
+        "icon": "fas fa-video",
+        "id": "shafilm-225"
+    },
+    {
+        "name": "Kurd Movie",
+        "desc": "High quality Kurdish dubbed and subtitled movies.",
+        "cat": "kurdish",
+        "url": "https://www.kurd-movie.com/",
+        "icon": "fas fa-film",
+        "id": "kurd-movie-226"
     }
 ]

@@ -698,6 +698,54 @@ body {
     box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
 }
 
+.cat-social .pkg-list-icon {
+    background: linear-gradient(135deg, rgba(88, 101, 242, 0.4), rgba(88, 101, 242, 0.1));
+    border-color: rgba(88, 101, 242, 0.3);
+    box-shadow: 0 0 15px rgba(88, 101, 242, 0.2);
+}
+
+.cat-kurdish .pkg-list-icon {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.4), rgba(234, 179, 8, 0.2), rgba(239, 68, 68, 0.4));
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+}
+
+.cat-cartoon .pkg-list-icon {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.4), rgba(251, 191, 36, 0.1));
+    border-color: rgba(251, 191, 36, 0.3);
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+}
+
+.cat-games .pkg-list-icon {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(139, 92, 246, 0.1));
+    border-color: rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+}
+
+.cat-mods .pkg-list-icon {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.4), rgba(6, 182, 212, 0.1));
+    border-color: rgba(6, 182, 212, 0.3);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+.cat-livetv .pkg-list-icon {
+    background: linear-gradient(135deg, rgba(225, 29, 72, 0.4), rgba(225, 29, 72, 0.1));
+    border-color: rgba(225, 29, 72, 0.3);
+    box-shadow: 0 0 15px rgba(225, 29, 72, 0.2);
+}
+
+.cat-sports .pkg-list-icon {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.4), rgba(20, 184, 166, 0.1));
+    border-color: rgba(20, 184, 166, 0.3);
+    box-shadow: 0 0 15px rgba(20, 184, 166, 0.2);
+}
+
+.cat-ads .pkg-list-icon {
+    background: linear-gradient(135deg, rgba(75, 85, 99, 0.4), rgba(75, 85, 99, 0.1));
+    border-color: rgba(75, 85, 99, 0.3);
+    box-shadow: 0 0 15px rgba(75, 85, 99, 0.2);
+}
+
 .pkg-list-info {
     flex: 1;
     min-width: 0;
@@ -1634,9 +1682,9 @@ body {
 }
 
 .menu-item i {
-    width: 18px;
+    width: 24px;
     text-align: center;
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: rgba(255, 255, 255, 0.5);
     transition: color 0.2s ease;
 }
