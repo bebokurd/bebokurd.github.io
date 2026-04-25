@@ -359,13 +359,20 @@
    .then(data => console.log(data));</div>
 
                              <div class="section-header" style="margin-top: 30px;">Deep Linking API</div>
-                             <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Use the following hash format to link directly to a TikTok video download within this portal.</p>
+                             <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Use the following hash format to link directly to a TikTok video download within this portal. This works across all official mirrors.</p>
                              
+                             <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Supported Domains</div>
+                             <div class="detail-group" style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
+                                 <div class="detail-row"><span class="label">Primary</span><span class="val">bebokurd.github.io</span></div>
+                                 <div class="detail-row"><span class="label">Mirror 1</span><span class="val">chyalist.xo.je</span></div>
+                                 <div class="detail-row"><span class="label">Mirror 2</span><span class="val">chyalist.rf.gd</span></div>
+                             </div>
+
                              <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Deep Link Format</div>
-                             <div class="code-block">https://bebokurd.github.io/#url=TIKTOK_URL</div>
+                             <div class="code-block">https://[domain]/#url=TIKTOK_URL</div>
                              
-                             <button class="app-btn" onclick="navigator.clipboard.writeText('https://bebokurd.github.io/#url='); showToast('Deep link prefix copied!', 'fa-check-circle');">
-                                 <i class="fas fa-copy"></i> Copy Link Prefix
+                             <button class="app-btn" onclick="navigator.clipboard.writeText(window.location.origin + window.location.pathname + '#url='); showToast('Deep link prefix copied!', 'fa-check-circle');">
+                                 <i class="fas fa-copy"></i> Copy Current Domain Prefix
                              </button>
                          </div>
 
