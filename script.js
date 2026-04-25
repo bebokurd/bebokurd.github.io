@@ -100,7 +100,61 @@ window.onload = async () => {
     renderInstalled();
     updateClock();
     updateStats();
+    handleDeepLink();
 };
+
+function showToast(message, icon = 'fa-info-circle') {
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => toast.classList.add('visible'), 10);
+    setTimeout(() => {
+        toast.classList.remove('visible');
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
+
+function handleDeepLink() {
+    const hash = window.location.hash.substring(1); // Remove '#'
+    if (!hash) return;
+
+    if (hash.startsWith('url=')) {
+        const targetUrl = decodeURIComponent(hash.substring(4));
+        if (targetUrl) {
+            switchTab('tiktok');
+            const tiktokInput = document.getElementById('tiktok-url');
+            if (tiktokInput) {
+                tiktokInput.value = targetUrl;
+                setTimeout(() => {
+                    const fetchBtn = document.getElementById('tiktok-fetch-btn');
+                    if (fetchBtn && !fetchBtn.disabled) fetchTikTok();
+                }, 500);
+            }
+        }
+    } else {
+        const tabId = hash.toLowerCase();
+        const validTabs = [
+            'home', 'installed', 'search', 'tiktok', 'instagram', 
+            'google', 'anime-search', 'api-hub', 'faq', 'about', 
+            'privacy', 'contact', 'status'
+        ];
+        if (validTabs.includes(tabId)) {
+            switchTab(tabId);
+        } else if (hash.startsWith('cat-')) {
+            const catId = hash.substring(4);
+            filterCategory(catId);
+        }
+    }
+}
+
+window.addEventListener('hashchange', handleDeepLink);
 
 function updateStats() {
     if (!packageData) return;
@@ -214,6 +268,13 @@ function switchTab(tabId, el = null) {
 
     document.getElementById('main-scroll').scrollTop = 0;
     if (window.innerWidth < 1024) toggleMenu(false);
+    
+    // Update URL hash without triggering handleDeepLink recursively if possible
+    // Using history.replaceState to avoid hashchange firing if needed, 
+    // but standard hash update is fine since handleDeepLink checks validity.
+    if (window.location.hash !== '#' + tabId) {
+        history.replaceState(null, null, '#' + tabId);
+    }
 
     const titles = {
         'home': 'Home', 'installed': 'Packages', 'search': 'Search',
@@ -249,7 +310,7 @@ function renderInstalled(filterCat = null) {
             if (pkg.cmd) {
                 const safeCmd = pkg.cmd.replace(/'/g, "\\'").replace(/"/g, "&quot;");
                 container.innerHTML += `
-                    <a href="#" onclick="navigator.clipboard.writeText('${safeCmd}'); alert('Command copied to clipboard! Paste it in PowerShell.'); event.preventDefault();" class="pkg-list-item">
+                    <a href="#" onclick="navigator.clipboard.writeText('${safeCmd}'); showToast('Command copied to clipboard!', 'fa-check-circle'); event.preventDefault();" class="pkg-list-item">
                         <div class="pkg-list-icon"><i class="${iconClass} ${pkg.icon}"></i></div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc" style="color:#007aff; font-family:monospace; font-size:0.75rem;">[Click to Copy Command]</span></div>
                         <span class="chevron"><i class="fas fa-copy" style="font-size:0.9rem; color:#888;"></i></span>
@@ -296,7 +357,7 @@ function handleSearch(e) {
             if (pkg.cmd) {
                 const safeCmd = pkg.cmd.replace(/'/g, "\\'").replace(/"/g, "&quot;");
                 rc.innerHTML += `
-                    <a href="#" onclick="navigator.clipboard.writeText('${safeCmd}'); alert('Command copied!'); event.preventDefault();" class="pkg-list-item">
+                    <a href="#" onclick="navigator.clipboard.writeText('${safeCmd}'); showToast('Command copied!', 'fa-check-circle'); event.preventDefault();" class="pkg-list-item">
                         <div class="pkg-list-icon"><i class="${iconClass} ${pkg.icon}"></i></div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">Copy Command</span></div>
                         <span class="chevron"><i class="fas fa-copy"></i></span>
@@ -328,7 +389,7 @@ function performGoogleSearch() {
     if (query) {
         window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
     } else {
-        alert("Please enter a search query.");
+        showToast('Please enter a search query.', 'fa-exclamation-triangle');
     }
 }
 
@@ -391,7 +452,7 @@ window.addEventListener('paste', (e) => {
 
 function handleAnimeImage(file) {
     if (!file.type.startsWith('image/')) {
-        alert("Please upload an image file.");
+        showToast('Please upload an image file.', 'fa-image');
         return;
     }
 
@@ -406,7 +467,7 @@ function handleAnimeImage(file) {
 async function searchAnimeViaUrl() {
     const urlInput = document.getElementById('anime-url-input');
     const url = urlInput.value.trim();
-    if (!url) { alert("Please enter an image URL."); return; }
+    if (!url) { showToast('Please enter an image URL.', 'fa-link'); return; }
     
     animeDropZone.innerHTML = `<div class="drop-zone__thumb" style="background-image: url('${url}')"></div>`;
     searchAnimeScene(null, url);
@@ -437,7 +498,7 @@ async function searchAnimeScene(file = null, imageUrl = null) {
         renderAnimeResults(data.result, imageUrl);
     } catch (err) {
         console.error(err);
-        alert("Error: " + err.message);
+        showToast("Error: " + err.message, 'fa-times-circle');
     } finally {
         loader.style.display = 'none';
     }
@@ -545,14 +606,14 @@ async function fetchTikTok() {
     const resultBox = document.getElementById('tiktok-result');
     const url = urlInput.value.trim();
 
-    if (!url) { alert("Please input a valid URL."); return; }
+    if (!url) { showToast('Please input a valid URL.', 'fa-link'); return; }
 
     resultBox.classList.remove('visible');
     loader.style.display = 'flex';
     fetchBtn.disabled = true;
 
-    const baseApi = "https://v0-tik-tok-downloader-design.vercel.app/api/download";
-    const targetUrl = `${baseApi}?url=${encodeURIComponent(url)}&quality=hd&format=mp4`;
+    const baseApi = "https://tikwm.com/api/";
+    const targetUrl = `${baseApi}?url=${encodeURIComponent(url)}`;
 
     try {
         let data;
@@ -565,20 +626,10 @@ async function fetchTikTok() {
                 data = await response.json();
                 fetchSuccess = true;
             }
-        } catch (e) { console.warn("Direct fetch failed, trying Proxy 1..."); }
+        } catch (e) { console.warn("Direct fetch failed, trying Proxy fallback..."); }
 
-        // 2. Try Proxy 1 (corsproxy.io) - PC Only
-        if (!fetchSuccess && !isMobileDevice()) {
-            try {
-                const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`);
-                if (response.ok) {
-                    data = await response.json();
-                    fetchSuccess = true;
-                }
-            } catch (e) { console.warn("Proxy 1 failed, trying Proxy 2..."); }
-        }
 
-        // 3. Try Proxy 2 (allorigins.win)
+        // 2. Try Proxy (allorigins.win)
         if (!fetchSuccess) {
             try {
                 const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}&timestamp=${Date.now()}`);
@@ -587,26 +638,26 @@ async function fetchTikTok() {
                     data = JSON.parse(proxyData.contents);
                     fetchSuccess = true;
                 }
-            } catch (e) { console.warn("Proxy 2 failed."); }
+            } catch (e) { console.warn("Proxy fallback failed."); }
         }
 
         if (!fetchSuccess) throw new Error("All fetch attempts failed (CORS/Network)");
 
-        if (data && (data.msg === 'success' || data.code === 0 || data.success)) {
-            renderTikTokResult(data.data || data);
+        if (data && data.code === 0 && data.data) {
+            renderTikTokResult(data.data, url);
         } else {
             throw new Error(data ? (data.msg || data.error || "API error") : "No data received");
         }
     } catch (err) {
         console.error("TikTok Fetch Error:", err);
-        alert("Failed to fetch media: " + err.message);
+        showToast("Failed to fetch media: " + err.message, 'fa-exclamation-circle');
     } finally {
         loader.style.display = 'none';
         fetchBtn.disabled = false;
     }
 }
 
-function renderTikTokResult(data) {
+function renderTikTokResult(data, originalUrl = '') {
     const resultBox = document.getElementById('tiktok-result');
     const thumb = data.cover || data.thumbnail || data.origin_cover || '';
     const title = data.title || 'TikTok Video';
@@ -632,7 +683,8 @@ function renderTikTokResult(data) {
         actionBtns = `<button class="app-btn" onclick="handleDownload('${defaultUrl}', '${finalFileName}', this)"><i class="fas fa-download"></i> Download Video</button>`;
     }
 
-    const qualityBadge = data.quality ? `<span style="background: linear-gradient(135deg, #69C9D0, #EE1D52); color: #fff; padding: 4px 14px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; margin-left: 10px; vertical-align: middle; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 0 15px rgba(105, 201, 208, 0.3); text-transform: uppercase;">${data.quality}</span>` : '';
+    const quality = data.hdplay ? 'HD Available' : (data.quality || '');
+    const qualityBadge = quality ? `<span style="background: linear-gradient(135deg, #69C9D0, #EE1D52); color: #fff; padding: 4px 14px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; margin-left: 10px; vertical-align: middle; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 0 15px rgba(105, 201, 208, 0.3); text-transform: uppercase;">${quality}</span>` : '';
 
     // Attempt to use download_url for preview, fallback to thumbnail
     const videoHtml = defaultUrl ? `
@@ -655,7 +707,10 @@ function renderTikTokResult(data) {
             </div>
             <div class="tt-actions" style="margin-top: 25px;">
                 ${actionBtns}
-                <button class="app-btn" onclick="navigator.clipboard.writeText('${defaultUrl}'); alert('Direct video link copied!');" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; width: 100%;">
+                <button class="app-btn" onclick="navigator.clipboard.writeText('${originalUrl ? (window.location.origin + window.location.pathname + '#url=' + encodeURIComponent(originalUrl)) : defaultUrl}'); showToast('Shareable link copied!', 'fa-share-alt');" style="background: rgba(96, 165, 250, 0.1); border: 1px solid rgba(96, 165, 250, 0.3); margin-top: 10px; width: 100%;">
+                    <i class="fas fa-share-alt"></i> Copy Shareable Link
+                </button>
+                <button class="app-btn" onclick="navigator.clipboard.writeText('${defaultUrl}'); showToast('Source URL copied!', 'fa-link');" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; width: 100%;">
                     <i class="fas fa-link"></i> Copy Source URL
                 </button>
             </div>
@@ -665,7 +720,7 @@ function renderTikTokResult(data) {
 }
 
 async function handleDownload(url, filename, btn) {
-    if (!url) { alert("Download URL not found."); return; }
+    if (!url) { showToast("Download URL not found.", 'fa-times'); return; }
     const originalHtml = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
@@ -691,7 +746,7 @@ async function fetchInstagram() {
     const resultsBox = document.getElementById('insta-results');
     const query = queryInput.value.trim();
 
-    if (!query) { alert("Please input a valid username."); return; }
+    if (!query) { showToast('Please input a valid username.', 'fa-user'); return; }
 
     resultsBox.innerHTML = "";
     loader.style.display = 'block';
@@ -709,20 +764,10 @@ async function fetchInstagram() {
                 data = await response.json();
                 fetchSuccess = true;
             }
-        } catch (e) { console.warn("Instagram direct failed, trying proxy 1..."); }
+        } catch (e) { console.warn("Instagram direct failed, trying proxy fallback..."); }
 
-        // 2. Try Proxy 1 (corsproxy.io) - PC Only
-        if (!fetchSuccess && !isMobileDevice()) {
-            try {
-                const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(targetInsta)}`);
-                if (response.ok) {
-                    data = await response.json();
-                    fetchSuccess = true;
-                }
-            } catch (e) { console.warn("Instagram proxy 1 failed, trying proxy 2..."); }
-        }
 
-        // 3. Try Proxy 2 (allorigins)
+        // 2. Try Proxy (allorigins)
         if (!fetchSuccess) {
             try {
                 const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetInsta)}`);
@@ -755,7 +800,7 @@ async function fetchInstagram() {
         }
     } catch (err) {
         console.error("Instagram Fetch Error:", err);
-        alert("Failed to fetch Instagram data. Check connectivity or try again.");
+        showToast('Failed to fetch Instagram data.', 'fa-times-circle');
     } finally {
         loader.style.display = 'none';
         searchBtn.disabled = false;
@@ -774,26 +819,15 @@ async function runApiTest() {
     const loader = document.getElementById('api-test-loader');
     const responseBox = document.getElementById('api-test-response');
 
-    if (!url) { alert("Please enter an API URL."); return; }
+    if (!url) { showToast('Please enter an API URL.', 'fa-code'); return; }
 
     loader.style.display = 'block';
     responseBox.style.display = 'none';
     responseBox.innerHTML = "";
 
     try {
-        let response;
-        if (isMobileDevice()) {
-            // Phone: No corsproxy
-            response = await fetch(url, { method });
-        } else {
-            // PC: Corsproxy ON (as fallback or primary)
-            try {
-                response = await fetch(url, { method });
-                if (!response.ok) throw new Error();
-            } catch (e) {
-                response = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, { method });
-            }
-        }
+        const response = await fetch(url, { method });
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         
         const data = await response.json();
         responseBox.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;

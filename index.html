@@ -349,15 +349,25 @@
                             <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Endpoint URL</div>
                             <div class="code-block" id="api-endpoint-url">https://bebokurd.github.io/data.json</div>
                             
-                            <button class="app-btn" onclick="navigator.clipboard.writeText('https://bebokurd.github.io/data.json'); alert('API Endpoint copied!');">
+                            <button class="app-btn" onclick="navigator.clipboard.writeText('https://bebokurd.github.io/data.json'); showToast('API Endpoint copied!', 'fa-check-circle');">
                                 <i class="fas fa-copy"></i> Copy Endpoint
                             </button>
 
-                            <div style="font-weight: 700; color: #fff; margin-top: 30px; margin-bottom: 10px;">Quick Example (JavaScript)</div>
-                            <div class="code-block">fetch('data.json')
-  .then(res => res.json())
-  .then(data => console.log(data));</div>
-                        </div>
+                             <div style="font-weight: 700; color: #fff; margin-top: 30px; margin-bottom: 10px;">Quick Example (JavaScript)</div>
+                             <div class="code-block">fetch('data.json')
+   .then(res => res.json())
+   .then(data => console.log(data));</div>
+
+                             <div class="section-header" style="margin-top: 30px;">Deep Linking API</div>
+                             <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Use the following hash format to link directly to a TikTok video download within this portal.</p>
+                             
+                             <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Deep Link Format</div>
+                             <div class="code-block">https://bebokurd.github.io/#url=TIKTOK_URL</div>
+                             
+                             <button class="app-btn" onclick="navigator.clipboard.writeText('https://bebokurd.github.io/#url='); showToast('Deep link prefix copied!', 'fa-check-circle');">
+                                 <i class="fas fa-copy"></i> Copy Link Prefix
+                             </button>
+                         </div>
 
                         <div id="api-pane-tester" class="api-pane">
                             <div class="api-tester-ui">

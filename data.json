@@ -4,1539 +4,1759 @@
         "desc": "Join our community hub for updates and chat.",
         "cat": "social",
         "url": "https://discord.gg/YTeRSG8kER",
-        "icon": "fa-discord"
+        "icon": "fab fa-discord",
+        "id": "chya-official-discord-0"
     },
     {
         "name": "Claude AI",
         "desc": "Advanced AI for writing and coding.",
         "cat": "ai",
         "url": "https://claude.ai/",
-        "icon": "fa-brain"
+        "icon": "fas fa-brain",
+        "id": "claude-ai-1"
     },
     {
         "name": "Gemini",
         "desc": "Google's most capable AI model.",
         "cat": "ai",
         "url": "https://gemini.google.com/",
-        "icon": "fa-wand-magic-sparkles"
+        "icon": "fas fa-wand-magic-sparkles",
+        "id": "gemini-2"
     },
     {
         "name": "v0.dev",
         "desc": "Generate UI components using AI.",
         "cat": "ai",
         "url": "https://v0.dev/",
-        "icon": "fa-code"
+        "icon": "fas fa-code",
+        "id": "v0dev-3"
     },
     {
         "name": "Lovable",
         "desc": "Build full apps with AI.",
         "cat": "ai",
         "url": "https://lovable.dev/",
-        "icon": "fa-heart"
+        "icon": "fas fa-heart",
+        "id": "lovable-4"
     },
     {
         "name": "Luma Dream Machine",
         "desc": "AI Video generation.",
         "cat": "ai",
         "url": "https://lumalabs.ai/dream-machine",
-        "icon": "fa-meteor"
+        "icon": "fas fa-meteor",
+        "id": "luma-dream-machine-5"
     },
     {
         "name": "Opus Clip",
         "desc": "AI powered video repurposing.",
         "cat": "ai",
         "url": "https://www.opus.pro/",
-        "icon": "fa-scissors"
+        "icon": "fas fa-scissors",
+        "id": "opus-clip-6"
     },
     {
         "name": "ElevenLabs",
         "desc": "Best AI Text-to-Speech.",
         "cat": "ai",
         "url": "https://elevenlabs.io/",
-        "icon": "fa-microphone"
+        "icon": "fas fa-microphone",
+        "id": "elevenlabs-7"
     },
     {
         "name": "Websim",
         "desc": "Browser-based web simulation AI.",
         "cat": "ai",
         "url": "https://websim.ai/",
-        "icon": "fa-globe"
+        "icon": "fas fa-globe",
+        "id": "websim-8"
     },
     {
         "name": "ChatGPT",
         "desc": "OpenAI's conversational AI and world-leading LLM.",
         "cat": "ai",
         "url": "https://chatgpt.com/",
-        "icon": "fa-comment-dots"
+        "icon": "fas fa-comment-dots",
+        "id": "chatgpt-9"
     },
     {
         "name": "Perplexity AI",
         "desc": "AI-powered search engine for accurate answers.",
         "cat": "ai",
         "url": "https://www.perplexity.ai/",
-        "icon": "fa-magnifying-glass"
+        "icon": "fas fa-magnifying-glass",
+        "id": "perplexity-ai-10"
     },
     {
         "name": "DeepSeek-R1",
         "desc": "Powerful open-weights LLM for coding and reasoning.",
         "cat": "ai",
         "url": "https://www.deepseek.com/",
-        "icon": "fa-brain"
+        "icon": "fas fa-brain",
+        "id": "deepseek-r1-11"
     },
     {
         "name": "Phind",
         "desc": "Intelligent search engine and assistant for programmers.",
         "cat": "ai",
         "url": "https://www.phind.com/",
-        "icon": "fa-terminal"
+        "icon": "fas fa-terminal",
+        "id": "phind-12"
     },
     {
         "name": "Ollama",
         "desc": "Run large language models locally on your machine.",
         "cat": "ai",
         "url": "https://ollama.com/",
-        "icon": "fa-microchip"
+        "icon": "fas fa-microchip",
+        "id": "ollama-13"
     },
     {
         "name": "Midjourney",
         "desc": "High-end generative AI for stunning visual art.",
         "cat": "ai",
         "url": "https://www.midjourney.com/",
-        "icon": "fa-palette"
+        "icon": "fas fa-palette",
+        "id": "midjourney-14"
     },
     {
         "name": "Stable Diffusion",
         "desc": "Open-source text-to-image generation.",
         "cat": "ai",
         "url": "https://stablediffusionweb.com/",
-        "icon": "fa-images"
+        "icon": "fas fa-images",
+        "id": "stable-diffusion-15"
     },
     {
         "name": "Jasper",
         "desc": "AI writing assistant for marketing and content.",
         "cat": "ai",
         "url": "https://www.jasper.ai/",
-        "icon": "fa-pen-nib"
+        "icon": "fas fa-pen-nib",
+        "id": "jasper-16"
     },
     {
         "name": "QuillBot",
         "desc": "AI-powered paraphrasing and writing tool.",
         "cat": "ai",
         "url": "https://quillbot.com/",
-        "icon": "fa-file-signature"
+        "icon": "fas fa-file-signature",
+        "id": "quillbot-17"
     },
     {
         "name": "Taskade",
         "desc": "AI-powered task management and productivity.",
         "cat": "ai",
         "url": "https://www.taskade.com/",
-        "icon": "fa-list-check"
+        "icon": "fas fa-list-check",
+        "id": "taskade-18"
     },
     {
         "name": "RunwayML",
         "desc": "Next-generation AI video creation suite.",
         "cat": "ai",
         "url": "https://runwayml.com/",
-        "icon": "fa-video"
+        "icon": "fas fa-video",
+        "id": "runwayml-19"
     },
     {
         "name": "Mubert",
         "desc": "Generative AI music for content creators.",
         "cat": "ai",
         "url": "https://mubert.com/",
-        "icon": "fa-music"
+        "icon": "fas fa-music",
+        "id": "mubert-20"
     },
     {
         "name": "You.com",
         "desc": "Private and customizable AI search experience.",
         "cat": "ai",
         "url": "https://you.com/",
-        "icon": "fa-user-secret"
+        "icon": "fas fa-user-secret",
+        "id": "youcom-21"
     },
     {
         "name": "Komo AI",
         "desc": "Fast and accurate AI search engine.",
         "cat": "ai",
         "url": "https://komo.ai/",
-        "icon": "fa-bolt"
+        "icon": "fas fa-bolt",
+        "id": "komo-ai-22"
     },
     {
         "name": "Lex",
         "desc": "AI-powered word processor for faster writing.",
         "cat": "ai",
         "url": "https://lex.page/",
-        "icon": "fa-keyboard"
+        "icon": "fas fa-keyboard",
+        "id": "lex-23"
     },
     {
         "name": "Gist AI",
         "desc": "Summarize websites, YouTube, and PDFs instantly.",
         "cat": "ai",
         "url": "https://www.gistai.tech/",
-        "icon": "fa-compress"
+        "icon": "fas fa-compress",
+        "id": "gist-ai-24"
     },
     {
         "name": "MeetGeek",
         "desc": "AI meeting assistant for summaries and transcribing.",
         "cat": "ai",
         "url": "https://meetgeek.ai/",
-        "icon": "fa-headset"
+        "icon": "fas fa-headset",
+        "id": "meetgeek-25"
     },
     {
         "name": "SaneBox",
         "desc": "AI-powered email management and prioritization.",
         "cat": "ai",
         "url": "https://www.sanebox.com/",
-        "icon": "fa-envelope-open-text"
+        "icon": "fas fa-envelope-open-text",
+        "id": "sanebox-26"
     },
     {
         "name": "Krisp",
         "desc": "AI noise cancellation for meetings and calls.",
         "cat": "ai",
         "url": "https://krisp.ai/",
-        "icon": "fa-volume-mute"
+        "icon": "fas fa-volume-mute",
+        "id": "krisp-27"
     },
     {
         "name": "Adobe Podcast",
         "desc": "AI-powered audio recording and enhancement.",
         "cat": "ai",
         "url": "https://podcast.adobe.com/",
-        "icon": "fa-microphone-lines"
+        "icon": "fas fa-microphone-lines",
+        "id": "adobe-podcast-28"
     },
     {
         "name": "Voicemod",
         "desc": "Real-time AI voice changer and soundboard.",
         "cat": "ai",
         "url": "https://www.voicemod.net/",
-        "icon": "fa-masks-theater"
+        "icon": "fas fa-masks-theater",
+        "id": "voicemod-29"
     },
     {
         "name": "Lensa",
         "desc": "AI magic avatars and advanced photo editing.",
         "cat": "ai",
         "url": "https://prisma-ai.com/lensa",
-        "icon": "fa-user-astronaut"
+        "icon": "fas fa-user-astronaut",
+        "id": "lensa-30"
     },
     {
         "name": "Character AI",
         "desc": "Intelligent chatbots with distinct personalities.",
         "cat": "ai",
         "url": "https://beta.character.ai/",
-        "icon": "fa-users-viewfinder"
+        "icon": "fas fa-users-viewfinder",
+        "id": "character-ai-31"
     },
     {
         "name": "Replit Ghostwriter",
         "desc": "AI-powered pair programmer in your browser.",
         "cat": "ai",
         "url": "https://replit.com/",
-        "icon": "fa-laptop-code"
+        "icon": "fas fa-laptop-code",
+        "id": "replit-ghostwriter-32"
     },
     {
         "name": "Codeium",
         "desc": "Free lightning-fast AI coding extension.",
         "cat": "ai",
         "url": "https://codeium.com/",
-        "icon": "fa-code-branch"
+        "icon": "fas fa-code-branch",
+        "id": "codeium-33"
     },
     {
         "name": "Writesonic",
         "desc": "AI writer for blogs, ads, and product descriptions.",
         "cat": "ai",
         "url": "https://writesonic.com/",
-        "icon": "fa-feather-pointed"
+        "icon": "fas fa-feather-pointed",
+        "id": "writesonic-34"
     },
     {
         "name": "Microsoft Designer",
         "desc": "AI-driven graphic design and social media posts.",
         "cat": "ai",
         "url": "https://designer.microsoft.com/",
-        "icon": "fa-wand-magic"
+        "icon": "fas fa-wand-magic",
+        "id": "microsoft-designer-35"
     },
     {
         "name": "Clipdrop",
         "desc": "Create professional visuals without a studio.",
         "cat": "ai",
         "url": "https://clipdrop.co/",
-        "icon": "fa-scissors"
+        "icon": "fas fa-scissors",
+        "id": "clipdrop-36"
     },
     {
         "name": "Uizard",
         "desc": "AI design tool for apps and websites.",
         "cat": "ai",
         "url": "https://uizard.io/",
-        "icon": "fa-mobile-screen-button"
+        "icon": "fas fa-mobile-screen-button",
+        "id": "uizard-37"
     },
     {
         "name": "ELI5",
         "desc": "AI that explains complex topics simply.",
         "cat": "ai",
         "url": "https://eli5.ai/",
-        "icon": "fa-baby"
+        "icon": "fas fa-baby",
+        "id": "eli5-38"
     },
     {
         "name": "Remove.bg",
         "desc": "Automatic background removal for images.",
         "cat": "ai",
         "url": "https://www.remove.bg/",
-        "icon": "fa-eraser"
+        "icon": "fas fa-eraser",
+        "id": "removebg-39"
     },
     {
         "name": "Speechify",
         "desc": "Read-aloud AI text-to-speech assistant.",
         "cat": "ai",
         "url": "https://speechify.com/",
-        "icon": "fa-ear-listen"
+        "icon": "fas fa-ear-listen",
+        "id": "speechify-40"
     },
     {
         "name": "Summarize Tech",
         "desc": "AI-powered YouTube video summarizer.",
         "cat": "ai",
         "url": "https://summarize.tech/",
-        "icon": "fa-compress-arrows-alt"
+        "icon": "fas fa-compress-arrows-alt",
+        "id": "summarize-tech-41"
     },
     {
         "name": "TLDR this",
         "desc": "Summarize any article or webpage with AI.",
         "cat": "ai",
         "url": "https://www.tldrthis.com/",
-        "icon": "fa-align-left"
+        "icon": "fas fa-align-left",
+        "id": "tldr-this-42"
     },
     {
         "name": "DoNotPay",
         "desc": "The world's first AI robot lawyer.",
         "cat": "ai",
         "url": "https://donotpay.com/",
-        "icon": "fa-gavel"
+        "icon": "fas fa-gavel",
+        "id": "donotpay-43"
     },
     {
         "name": "VidIQ",
         "desc": "AI-powered SEO and analytics for YouTube.",
         "cat": "ai",
         "url": "https://vidiq.com/",
-        "icon": "fa-chart-line"
+        "icon": "fas fa-chart-line",
+        "id": "vidiq-44"
     },
     {
         "name": "Adcreative.ai",
         "desc": "Generate high-converting ad creatives with AI.",
         "cat": "ai",
         "url": "https://www.adcreative.ai/",
-        "icon": "fa-rectangle-ad"
+        "icon": "fas fa-rectangle-ad",
+        "id": "adcreativeai-45"
     },
     {
         "name": "Ocoya",
         "desc": "AI social media marketing and scheduling.",
         "cat": "ai",
         "url": "https://www.ocoya.com/",
-        "icon": "fa-share-nodes"
+        "icon": "fas fa-share-nodes",
+        "id": "ocoya-46"
     },
     {
         "name": "Beatoven.ai",
         "desc": "Create custom royalty-free music with AI.",
         "cat": "ai",
         "url": "https://www.beatoven.ai/",
-        "icon": "fa-headphones"
+        "icon": "fas fa-headphones",
+        "id": "beatovenai-47"
     },
     {
         "name": "Reface AI",
         "desc": "AI face swap and viral video creation tool.",
         "cat": "ai",
         "url": "https://hey.reface.ai/",
-        "icon": "fa-face-grin-stars"
+        "icon": "fas fa-face-grin-stars",
+        "id": "reface-ai-48"
     },
     {
         "name": "GitHub Copilot",
         "desc": "The world's most widely used AI developer tool.",
         "cat": "ai",
         "url": "https://github.com/features/copilot",
-        "icon": "fa-github"
+        "icon": "fab fa-github",
+        "id": "github-copilot-49"
     },
     {
         "name": "Tabnine",
         "desc": "AI assistant for software developers.",
         "cat": "ai",
         "url": "https://www.tabnine.com/",
-        "icon": "fa-code"
+        "icon": "fas fa-code",
+        "id": "tabnine-50"
     },
     {
         "name": "BlackBox AI",
         "desc": "Lightning-fast AI code generation and search.",
         "cat": "ai",
         "url": "https://www.useblackbox.io/",
-        "icon": "fa-square-terminal"
+        "icon": "fas fa-square-terminal",
+        "id": "blackbox-ai-51"
     },
     {
         "name": "Writesonic",
         "desc": "Create SEO-optimized content for blogs and ads.",
         "cat": "ai",
         "url": "https://writesonic.com/",
-        "icon": "fa-pencil"
+        "icon": "fas fa-pencil",
+        "id": "writesonic-52"
     },
     {
         "name": "Anyword",
         "desc": "AI writing platform built for marketing results.",
         "cat": "ai",
         "url": "https://anyword.com/",
-        "icon": "fa-bullhorn"
+        "icon": "fas fa-bullhorn",
+        "id": "anyword-53"
     },
     {
         "name": "Tiledesk",
         "desc": "Open-source chatbot development framework.",
         "cat": "ai",
         "url": "https://tiledesk.com/",
-        "icon": "fa-comments"
+        "icon": "fas fa-comments",
+        "id": "tiledesk-54"
     },
     {
         "name": "Harvey AI",
         "desc": "AI-powered customer support and automation.",
         "cat": "ai",
         "url": "https://hiverhq.com/harvey-ai-customer-support",
-        "icon": "fa-robot"
+        "icon": "fas fa-robot",
+        "id": "harvey-ai-55"
     },
     {
         "name": "Designs AI",
         "desc": "Create logos, videos, and banners in minutes.",
         "cat": "ai",
         "url": "https://designs.ai/",
-        "icon": "fa-object-group"
+        "icon": "fas fa-object-group",
+        "id": "designs-ai-56"
     },
     {
         "name": "Teachable Machine",
         "desc": "Train your own machine learning models quickly.",
         "cat": "ai",
         "url": "https://teachablemachine.withgoogle.com/",
-        "icon": "fa-graduation-cap"
+        "icon": "fas fa-graduation-cap",
+        "id": "teachable-machine-57"
     },
     {
         "name": "PromptLayer",
         "desc": "Platform for prompt engineering and observability.",
         "cat": "ai",
         "url": "https://promptlayer.com/",
-        "icon": "fa-layer-group"
+        "icon": "fas fa-layer-group",
+        "id": "promptlayer-58"
     },
     {
         "name": "Caktus AI",
         "desc": "The first ever AI built for students.",
         "cat": "ai",
         "url": "https://www.caktus.ai/",
-        "icon": "fa-school"
+        "icon": "fas fa-school",
+        "id": "caktus-ai-59"
     },
     {
         "name": "TutorAI",
         "desc": "Personalized AI learning platform for any topic.",
         "cat": "ai",
         "url": "https://www.tutorai.me/",
-        "icon": "fa-chalkboard-user"
+        "icon": "fas fa-chalkboard-user",
+        "id": "tutorai-60"
     },
     {
         "name": "Leonardo.Ai",
         "desc": "Generative AI for creative projects and game assets.",
         "cat": "ai",
         "url": "https://leonardo.ai/",
-        "icon": "fa-dice-d20"
+        "icon": "fas fa-dice-d20",
+        "id": "leonardoai-61"
     },
     {
         "name": "Scenario",
         "desc": "AI-generated gaming assets and environments.",
         "cat": "ai",
         "url": "https://www.scenario.gg/",
-        "icon": "fa-gamepad"
+        "icon": "fas fa-gamepad",
+        "id": "scenario-62"
     },
     {
         "name": "Legal Robot",
         "desc": "AI-powered legal analysis and document drafting.",
         "cat": "ai",
         "url": "https://legalrobot.com/",
-        "icon": "fa-scale-balanced"
+        "icon": "fas fa-scale-balanced",
+        "id": "legal-robot-63"
     },
     {
         "name": "Boomy",
         "desc": "Make instant AI-generated songs and monetize them.",
         "cat": "ai",
         "url": "https://boomy.com/",
-        "icon": "fa-compact-disc"
+        "icon": "fas fa-compact-disc",
+        "id": "boomy-64"
     },
     {
         "name": "Soundful",
         "desc": "Create unique, royalty-free tracks with AI.",
         "cat": "ai",
         "url": "https://soundful.com/",
-        "icon": "fa-sliders"
+        "icon": "fas fa-sliders",
+        "id": "soundful-65"
     },
     {
         "name": "Otter AI",
         "desc": "AI-powered meeting notes and transcription.",
         "cat": "ai",
         "url": "https://otter.ai/",
-        "icon": "fa-file-audio"
+        "icon": "fas fa-file-audio",
+        "id": "otter-ai-66"
     },
     {
         "name": "InteriorAI",
         "desc": "AI-powered interior design and room staging.",
         "cat": "ai",
         "url": "https://interiorai.com/",
-        "icon": "fa-house-chimney-window"
+        "icon": "fas fa-house-chimney-window",
+        "id": "interiorai-67"
     },
     {
         "name": "GetFloorPlan",
         "desc": "Convert sketches to 3D floor plans with AI.",
         "cat": "ai",
         "url": "https://getfloorplan.com/",
-        "icon": "fa-map"
+        "icon": "fas fa-map",
+        "id": "getfloorplan-68"
     },
     {
         "name": "Synthesia",
         "desc": "Create AI videos with talking avatars from text.",
         "cat": "ai",
         "url": "https://www.synthesia.io/",
-        "icon": "fa-person-chalkboard"
+        "icon": "fas fa-person-chalkboard",
+        "id": "synthesia-69"
     },
     {
         "name": "Wonder Dynamics",
         "desc": "AI tool that automatically animates CG characters.",
         "cat": "ai",
         "url": "https://www.wonderdynamics.com/",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "wonder-dynamics-70"
     },
     {
         "name": "Kaedim",
         "desc": "Turn 2D images into 3D models with AI.",
         "cat": "ai",
         "url": "https://www.kaedim3d.com/",
-        "icon": "fa-cube"
+        "icon": "fas fa-cube",
+        "id": "kaedim-71"
     },
     {
         "name": "Civitai",
         "desc": "The largest community-driven AI model repository.",
         "cat": "ai",
         "url": "https://civitai.com/",
-        "icon": "fa-cubes"
+        "icon": "fas fa-cubes",
+        "id": "civitai-72"
     },
     {
         "name": "NightCafe Studio",
         "desc": "Create AI art through community and challenges.",
         "cat": "ai",
         "url": "https://creator.nightcafe.studio/",
-        "icon": "fa-brush"
+        "icon": "fas fa-brush",
+        "id": "nightcafe-studio-73"
     },
     {
         "name": "Kurd Cinema",
         "desc": "Professional Kurdish movie subtitles/dubs.",
         "cat": "kurdish",
         "url": "https://kurdcinema.com/",
-        "icon": "fa-language"
+        "icon": "fas fa-language",
+        "id": "kurd-cinema-74"
     },
     {
         "name": "KurdFilm",
         "desc": "Kurdish movie database and streaming.",
         "cat": "kurdish",
         "url": "https://kurdfilm.com/",
-        "icon": "fa-compact-disc"
+        "icon": "fas fa-compact-disc",
+        "id": "kurdfilm-75"
     },
     {
         "name": "Kurd Doblazh",
         "desc": "Kurdish dubbed series and movies.",
         "cat": "kurdish",
         "url": "https://kurddoblaj.net/",
-        "icon": "fa-microphone"
+        "icon": "fas fa-microphone",
+        "id": "kurd-doblazh-76"
     },
     {
         "name": "Beenar",
         "desc": "Kurdish media platform.",
         "cat": "kurdish",
         "url": "https://beenar.net/",
-        "icon": "fa-eye"
+        "icon": "fas fa-eye",
+        "id": "beenar-77"
     },
     {
         "name": "Kurd Movies",
         "desc": "Kurdish dubbed film library.",
         "cat": "kurdish",
         "url": "https://kurdmovies.net/",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "kurd-movies-78"
     },
     {
         "name": "Kurd TVs",
         "desc": "Live Kurdish television channels.",
         "cat": "kurdish",
         "url": "https://kurdtvs.net/",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "kurd-tvs-79"
     },
     {
         "name": "Kurdi TV",
         "desc": "Live Kurdish television channels.",
         "cat": "kurdish",
         "url": "https://kurditv.com/",
-        "icon": "fa-satellite-dish"
+        "icon": "fas fa-satellite-dish",
+        "id": "kurdi-tv-80"
     },
     {
         "name": "AniMixPlay",
         "desc": "Watch HD Anime ad-free.",
         "cat": "anime",
         "url": "https://animixplay.to/",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "animixplay-81"
     },
     {
         "name": "MangaReader",
         "desc": "Read and download manga online.",
         "cat": "anime",
         "url": "https://mangareader.to/",
-        "icon": "fa-book-open"
+        "icon": "fas fa-book-open",
+        "id": "mangareader-82"
     },
     {
         "name": "Crunchyroll",
         "desc": "Official source for anime.",
         "cat": "anime",
         "url": "https://www.crunchyroll.com/",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "crunchyroll-83"
     },
     {
         "name": "WCOForever",
         "desc": "Watch cartoons and anime online.",
         "cat": "anime",
         "url": "https://www.wcoforever.net/",
-        "icon": "fa-ghost"
+        "icon": "fas fa-ghost",
+        "id": "wcoforever-84"
     },
     {
         "name": "KimCartoon",
         "desc": "Free high quality cartoons.",
         "cat": "anime",
         "url": "https://kimcartoon.li/",
-        "icon": "fa-palette"
+        "icon": "fas fa-palette",
+        "id": "kimcartoon-85"
     },
     {
         "name": "Space Power Fan",
         "desc": "Kurdish/Arabic anime archive.",
         "cat": "anime",
         "url": "https://spacepowerfan.com/",
-        "icon": "fa-star"
+        "icon": "fas fa-star",
+        "id": "space-power-fan-86"
     },
     {
         "name": "Anime Nexus",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://anime.nexus",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "anime-nexus-87"
     },
     {
         "name": "AnimeKai",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://animekai.to",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "animekai-88"
     },
     {
         "name": "9AnimeTV",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://9animetv.to",
-        "icon": "fa-ghost"
+        "icon": "fas fa-ghost",
+        "id": "9animetv-89"
     },
     {
         "name": "Miruro",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://miruro.to",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "miruro-90"
     },
     {
         "name": "Anitaku",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://anitaku.io",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "anitaku-91"
     },
     {
         "name": "Anikai",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://anikai.to",
-        "icon": "fa-ghost"
+        "icon": "fas fa-ghost",
+        "id": "anikai-92"
     },
     {
         "name": "GogoAnime",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://gogoanime.org.vc",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "gogoanime-93"
     },
     {
         "name": "Anigo",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://anigo.to",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "anigo-94"
     },
     {
         "name": "Kickass Anime",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://kickass-anime.ro",
-        "icon": "fa-ghost"
+        "icon": "fas fa-ghost",
+        "id": "kickass-anime-95"
     },
     {
         "name": "AniWatchTV",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://aniwatchtv.to",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "aniwatchtv-96"
     },
     {
         "name": "AnimeGG",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://animegg.org",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "animegg-97"
     },
     {
         "name": "AnimeStream",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://animestream.net",
-        "icon": "fa-ghost"
+        "icon": "fas fa-ghost",
+        "id": "animestream-98"
     },
     {
         "name": "KissAnime",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://kissanime.com.ru",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "kissanime-99"
     },
     {
         "name": "AllManga",
         "desc": "Read manga online.",
         "cat": "anime",
         "url": "https://allmanga.to",
-        "icon": "fa-book-open"
+        "icon": "fas fa-book-open",
+        "id": "allmanga-100"
     },
     {
         "name": "AniWorld",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://aniworld.to",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "aniworld-101"
     },
     {
         "name": "WCOstream",
         "desc": "Watch cartoons and anime online.",
         "cat": "anime",
         "url": "https://wcostream.tv",
-        "icon": "fa-ghost"
+        "icon": "fas fa-ghost",
+        "id": "wcostream-102"
     },
     {
         "name": "JustAnime",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://justanime.to",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "justanime-103"
     },
     {
         "name": "123Animes",
         "desc": "Watch HD Anime online.",
         "cat": "anime",
         "url": "https://123animes.ru",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "123animes-104"
     },
     {
         "name": "CimaNow",
         "desc": "Streaming movies and series (Arabic/Eng).",
         "cat": "movies",
         "url": "https://cimanow.cam/",
-        "icon": "fa-video"
+        "icon": "fas fa-video",
+        "id": "cimanow-105"
     },
     {
         "name": "EgyBest",
         "desc": "The original EgyBest media platform.",
         "cat": "movies",
         "url": "https://egybest.biz/",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "egybest-106"
     },
     {
         "name": "MyCima",
         "desc": "Egyptian and foreign movie portal.",
         "cat": "movies",
         "url": "https://mycima.ink/",
-        "icon": "fa-clapperboard"
+        "icon": "fas fa-clapperboard",
+        "id": "mycima-107"
     },
     {
         "name": "YTS",
         "desc": "High quality YIFY movie torrents.",
         "cat": "movies",
         "url": "https://yts.bz/",
-        "icon": "fa-magnet"
+        "icon": "fas fa-magnet",
+        "id": "yts-108"
     },
     {
         "name": "FMovies",
         "desc": "Free HD movies online streaming.",
         "cat": "movies",
         "url": "https://fmovies.to/",
-        "icon": "fa-play-circle"
+        "icon": "fas fa-play-circle",
+        "id": "fmovies-109"
     },
     {
         "name": "PirateMedia",
         "desc": "Watch movies, TV shows & live sports.",
         "cat": "movies",
         "url": "https://piratemedia.xyz/",
-        "icon": "fa-skull-crossbones"
+        "icon": "fas fa-skull-crossbones",
+        "id": "piratemedia-110"
     },
     {
         "name": "Soap2Night",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://soap2night.cc",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "soap2night-111"
     },
     {
         "name": "Ramoflix",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://ramoflix.net",
-        "icon": "fa-video"
+        "icon": "fas fa-video",
+        "id": "ramoflix-112"
     },
     {
         "name": "Dorawatch",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://dorawatch.one",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "dorawatch-113"
     },
     {
         "name": "Wmovies",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://wmovies.one",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "wmovies-114"
     },
     {
         "name": "HydraHD",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://hydrahd.ru",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "hydrahd-115"
     },
     {
         "name": "Cineby",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://cineby.sc",
-        "icon": "fa-video"
+        "icon": "fas fa-video",
+        "id": "cineby-116"
     },
     {
         "name": "Flickystream",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://flickystream.ru",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "flickystream-117"
     },
     {
         "name": "Yflix",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://yflix.to",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "yflix-118"
     },
     {
         "name": "Cinema BZ",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://cinema.bz",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "cinema-bz-119"
     },
     {
         "name": "Flixer",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://flixer.su",
-        "icon": "fa-video"
+        "icon": "fas fa-video",
+        "id": "flixer-120"
     },
     {
         "name": "Goojara",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://goojara.to",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "goojara-121"
     },
     {
         "name": "67movies",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://67movies.net",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "67movies-122"
     },
     {
         "name": "ShuttleTV",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://shuttletv.su",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "shuttletv-123"
     },
     {
         "name": "PopcornMovies",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://popcornmovies.org",
-        "icon": "fa-video"
+        "icon": "fas fa-video",
+        "id": "popcornmovies-124"
     },
     {
         "name": "Rivestream",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://rivestream.org",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "rivestream-125"
     },
     {
         "name": "TheFlixerTV",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://theflixertv.click",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "theflixertv-126"
     },
     {
         "name": "Onionplay",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://onionplay.io",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "onionplay-127"
     },
     {
         "name": "Lookmovie2",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://lookmovie2.to",
-        "icon": "fa-video"
+        "icon": "fas fa-video",
+        "id": "lookmovie2-128"
     },
     {
         "name": "Pressplayz",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://pressplayz.to",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "pressplayz-129"
     },
     {
         "name": "Nepu",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://nepu.to",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "nepu-130"
     },
     {
         "name": "FMovies",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://fmovies.co",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "fmovies-131"
     },
     {
         "name": "Soap2day HDz",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://soap2dayhdz.com",
-        "icon": "fa-video"
+        "icon": "fas fa-video",
+        "id": "soap2day-hdz-132"
     },
     {
         "name": "Project Free TV",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://projectfreetv.sx",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "project-free-tv-133"
     },
     {
         "name": "Mappl TV",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://mappl.tv",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "mappl-tv-134"
     },
     {
         "name": "Streamex",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://streamex.sh",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "streamex-135"
     },
     {
         "name": "Pstream",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://pstream.net",
-        "icon": "fa-video"
+        "icon": "fas fa-video",
+        "id": "pstream-136"
     },
     {
         "name": "Movish",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://movish.net",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "movish-137"
     },
     {
         "name": "TheMovieBox",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://themoviebox.org",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "themoviebox-138"
     },
     {
         "name": "HDToday",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://hdtoday.tr",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "hdtoday-139"
     },
     {
         "name": "CinebyTV",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://cinebytv.com",
-        "icon": "fa-video"
+        "icon": "fas fa-video",
+        "id": "cinebytv-140"
     },
     {
         "name": "RidoMovies",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://ridomovies.tv",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "ridomovies-141"
     },
     {
         "name": "123MoviesFree",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://123moviesfree.net",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "123moviesfree-142"
     },
     {
         "name": "Willow Arlen",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://willow.arlen.icu",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "willow-arlen-143"
     },
     {
         "name": "Vidplay",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://vidplay.top",
-        "icon": "fa-video"
+        "icon": "fas fa-video",
+        "id": "vidplay-144"
     },
     {
         "name": "CinemaOS",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://cinemaos.live",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "cinemaos-145"
     },
     {
         "name": "YesMovies",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://yesmovies.ag",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "yesmovies-146"
     },
     {
         "name": "AnixTV",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://anixtv.us.cc",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "anixtv-147"
     },
     {
         "name": "PrimeWire",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://primewire.mov",
-        "icon": "fa-video"
+        "icon": "fas fa-video",
+        "id": "primewire-148"
     },
     {
         "name": "MoviePire",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://moviepire.org",
-        "icon": "fa-play"
+        "icon": "fas fa-play",
+        "id": "moviepire-149"
     },
     {
         "name": "Flickr Mini",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://flickr-mini.pages.dev",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "flickr-mini-150"
     },
     {
         "name": "StreamM4u",
         "desc": "Movies and TV Shows streaming.",
         "cat": "movies",
         "url": "https://streamm4u.com.co",
-        "icon": "fa-film"
+        "icon": "fas fa-film",
+        "id": "streamm4u-151"
     },
     {
         "name": "FileCR",
         "desc": "Massive software library for PC/Mac.",
         "cat": "tools",
         "url": "https://filecr.com/",
-        "icon": "fa-folder-open"
+        "icon": "fas fa-folder-open",
+        "id": "filecr-152"
     },
     {
         "name": "Get Into PC",
         "desc": "Software downloads for PC.",
         "cat": "tools",
         "url": "https://getintopc.com/",
-        "icon": "fa-laptop-code"
+        "icon": "fas fa-laptop-code",
+        "id": "get-into-pc-153"
     },
     {
         "name": "Hydra Launcher",
         "desc": "Next-gen game launcher.",
         "cat": "tools",
         "url": "https://hydralauncher.gg/",
-        "icon": "fa-dragon"
+        "icon": "fas fa-dragon",
+        "id": "hydra-launcher-154"
     },
     {
         "name": "Activated.win",
         "desc": "Windows & Office activation toolkit.",
         "cat": "tools",
         "cmd": "irm https://get.activated.win | iex",
-        "icon": "fa-key"
+        "icon": "fas fa-key",
+        "id": "activatedwin-155"
     },
     {
         "name": "WinUtil (C. Titus)",
         "desc": "Essential Windows tweaks tool.",
         "cat": "tools",
         "cmd": "irm \"https://christitus.com/win\" | iex",
-        "icon": "fa-terminal"
+        "icon": "fas fa-terminal",
+        "id": "winutil-c-titus-156"
     },
     {
         "name": "Winhance",
         "desc": "Boost PC performance & clean OS.",
         "cat": "tools",
         "url": "https://winhance.net/",
-        "icon": "fa-rocket"
+        "icon": "fas fa-rocket",
+        "id": "winhance-157"
     },
     {
         "name": "Photopea",
         "desc": "Online Photoshop alternative.",
         "cat": "tools",
         "url": "https://www.photopea.com/",
-        "icon": "fa-image"
+        "icon": "fas fa-image",
+        "id": "photopea-158"
     },
     {
         "name": "uBlock Origin",
         "desc": "Highly efficient ad blocker.",
         "cat": "ads",
         "url": "https://ublockorigin.com/",
-        "icon": "fa-shield-alt"
+        "icon": "fas fa-shield-alt",
+        "id": "ublock-origin-159"
     },
     {
         "name": "AdBlock Plus",
         "desc": "Free ad blocker extension.",
         "cat": "ads",
         "url": "https://adblockplus.org/",
-        "icon": "fa-ban"
+        "icon": "fas fa-ban",
+        "id": "adblock-plus-160"
     },
     {
         "name": "AdGuard",
         "desc": "Advanced adblock plugin.",
         "cat": "ads",
         "url": "https://adguard.com/",
-        "icon": "fa-user-shield"
+        "icon": "fas fa-user-shield",
+        "id": "adguard-161"
     },
     {
         "name": "AdBlock",
         "desc": "Popular ad blocking extension.",
         "cat": "ads",
         "url": "https://getadblock.com/",
-        "icon": "fa-stop-circle"
+        "icon": "fas fa-stop-circle",
+        "id": "adblock-162"
     },
     {
         "name": "Poper Blocker",
         "desc": "Block annoying popups.",
         "cat": "ads",
         "url": "https://poperblocker.com/",
-        "icon": "fa-times-circle"
+        "icon": "fas fa-times-circle",
+        "id": "poper-blocker-163"
     },
     {
         "name": "LiveTV.sx",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://livetv.sx",
-        "icon": "fa-futbol"
+        "icon": "fas fa-futbol",
+        "id": "livetvsx-164"
     },
     {
         "name": "TotalSportek",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://totalsportek.events",
-        "icon": "fa-volleyball-ball"
+        "icon": "fas fa-volleyball-ball",
+        "id": "totalsportek-165"
     },
     {
         "name": "Streamed.pk",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://streamed.pk",
-        "icon": "fa-basketball-ball"
+        "icon": "fas fa-basketball-ball",
+        "id": "streamedpk-166"
     },
     {
         "name": "NTV.cx",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://ntv.cx",
-        "icon": "fa-football-ball"
+        "icon": "fas fa-football-ball",
+        "id": "ntvcx-167"
     },
     {
         "name": "StreamEast",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://streameast.ga",
-        "icon": "fa-table-tennis"
+        "icon": "fas fa-table-tennis",
+        "id": "streameast-168"
     },
     {
         "name": "FCTV33",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://fctv33.hair",
-        "icon": "fa-baseball-ball"
+        "icon": "fas fa-baseball-ball",
+        "id": "fctv33-169"
     },
     {
         "name": "MethStreams",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://methstreams.ms",
-        "icon": "fa-golf-ball"
+        "icon": "fas fa-golf-ball",
+        "id": "methstreams-170"
     },
     {
         "name": "SportsBite",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://sportsbite.sbs",
-        "icon": "fa-futbol"
+        "icon": "fas fa-futbol",
+        "id": "sportsbite-171"
     },
     {
         "name": "Sport71",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://sport71.pro",
-        "icon": "fa-volleyball-ball"
+        "icon": "fas fa-volleyball-ball",
+        "id": "sport71-172"
     },
     {
         "name": "SportyHunter",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://sportyhunter.com",
-        "icon": "fa-basketball-ball"
+        "icon": "fas fa-basketball-ball",
+        "id": "sportyhunter-173"
     },
     {
         "name": "WatchSports",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://watchsports.to",
-        "icon": "fa-football-ball"
+        "icon": "fas fa-football-ball",
+        "id": "watchsports-174"
     },
     {
         "name": "OnHockey.tv",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://onhockey.tv",
-        "icon": "fa-hockey-puck"
+        "icon": "fas fa-hockey-puck",
+        "id": "onhockeytv-175"
     },
     {
         "name": "CrackStreams",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://crackstreams.io",
-        "icon": "fa-futbol"
+        "icon": "fas fa-futbol",
+        "id": "crackstreams-176"
     },
     {
         "name": "SportPlus.live",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://sportplus.live",
-        "icon": "fa-volleyball-ball"
+        "icon": "fas fa-volleyball-ball",
+        "id": "sportpluslive-177"
     },
     {
         "name": "LiveTV861",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://livetv861.me",
-        "icon": "fa-basketball-ball"
+        "icon": "fas fa-basketball-ball",
+        "id": "livetv861-178"
     },
     {
         "name": "StrikeOut",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://strikeout.im",
-        "icon": "fa-baseball-ball"
+        "icon": "fas fa-baseball-ball",
+        "id": "strikeout-179"
     },
     {
         "name": "WatchFooty",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://watchfooty.st",
-        "icon": "fa-futbol"
+        "icon": "fas fa-futbol",
+        "id": "watchfooty-180"
     },
     {
         "name": "Sportsurge",
         "desc": "Live sports streams.",
         "cat": "sports",
         "url": "https://sportsurge.net",
-        "icon": "fa-football-ball"
+        "icon": "fas fa-football-ball",
+        "id": "sportsurge-181"
     },
     {
         "name": "Yari Live",
         "desc": "Live sports and events streaming.",
         "cat": "sports",
         "url": "http://wvvw.yari.live/",
-        "icon": "fa-video"
+        "icon": "fas fa-video",
+        "id": "yari-live-182"
     },
     {
         "name": "Famelack",
         "desc": "Live TV streams (Blocked in some regions).",
         "cat": "livetv",
         "url": "https://famelack.com",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "famelack-183"
     },
     {
         "name": "The TV App",
         "desc": "Live TV streams.",
         "cat": "livetv",
         "url": "https://the-tv.app",
-        "icon": "fa-satellite-dish"
+        "icon": "fas fa-satellite-dish",
+        "id": "the-tv-app-184"
     },
     {
         "name": "GlobeTV",
         "desc": "Live TV streams.",
         "cat": "livetv",
         "url": "https://globetv.app",
-        "icon": "fa-globe"
+        "icon": "fas fa-globe",
+        "id": "globetv-185"
     },
     {
         "name": "DaddyLive",
         "desc": "Live TV streams.",
         "cat": "livetv",
         "url": "https://daddylive.mp",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "daddylive-186"
     },
     {
         "name": "TV247US",
         "desc": "Live US TV streams.",
         "cat": "livetv",
         "url": "https://tv247us.live",
-        "icon": "fa-flag-usa"
+        "icon": "fas fa-flag-usa",
+        "id": "tv247us-187"
     },
     {
         "name": "NTVStream",
         "desc": "Live TV streams.",
         "cat": "livetv",
         "url": "https://ntvstream.cx",
-        "icon": "fa-satellite-dish"
+        "icon": "fas fa-satellite-dish",
+        "id": "ntvstream-188"
     },
     {
         "name": "IPTV Web",
         "desc": "Live TV streams.",
         "cat": "livetv",
         "url": "https://iptv-web.app",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "iptv-web-189"
     },
     {
         "name": "Public IPTV",
         "desc": "Live TV streams.",
         "cat": "livetv",
         "url": "https://publiciptv.com",
-        "icon": "fa-tower-broadcast"
+        "icon": "fas fa-tower-broadcast",
+        "id": "public-iptv-190"
     },
     {
         "name": "MyTV Plus",
         "desc": "Live TV & Apps.",
         "cat": "livetv",
         "url": "https://www.mytvplus.net/",
-        "icon": "fa-mobile-alt"
+        "icon": "fas fa-mobile-alt",
+        "id": "mytv-plus-191"
     },
     {
         "name": "FitGirl Repacks",
         "desc": "Highly compressed PC games.",
         "cat": "games",
         "url": "https://fitgirl-repacks.site/",
-        "icon": "fa-gamepad"
+        "icon": "fas fa-gamepad",
+        "id": "fitgirl-repacks-192"
     },
     {
         "name": "DODI Repacks",
         "desc": "Fast install game repacks.",
         "cat": "games",
         "url": "https://dodi-repacks.site/",
-        "icon": "fa-compact-disc"
+        "icon": "fas fa-compact-disc",
+        "id": "dodi-repacks-193"
     },
     {
         "name": "AnkerGames",
         "desc": "Game downloads and repacks.",
         "cat": "games",
         "url": "https://ankergames.net",
-        "icon": "fa-gamepad"
+        "icon": "fas fa-gamepad",
+        "id": "ankergames-194"
     },
     {
         "name": "G4U",
         "desc": "Game downloads and repacks.",
         "cat": "games",
         "url": "https://g4u.to",
-        "icon": "fa-compact-disc"
+        "icon": "fas fa-compact-disc",
+        "id": "g4u-195"
     },
     {
         "name": "SteamRIP",
         "desc": "Game downloads and repacks.",
         "cat": "games",
         "url": "https://steamrip.com",
-        "icon": "fa-gamepad"
+        "icon": "fas fa-gamepad",
+        "id": "steamrip-196"
     },
     {
         "name": "SteamGG",
         "desc": "Game downloads and repacks.",
         "cat": "games",
         "url": "https://steamgg.net",
-        "icon": "fa-compact-disc"
+        "icon": "fas fa-compact-disc",
+        "id": "steamgg-197"
     },
     {
         "name": "M4CKD0GE",
         "desc": "Game downloads and repacks.",
         "cat": "games",
         "url": "https://m4ckd0ge-repacks.site",
-        "icon": "fa-gamepad"
+        "icon": "fas fa-gamepad",
+        "id": "m4ckd0ge-198"
     },
     {
         "name": "Gload",
         "desc": "Game downloads and repacks.",
         "cat": "games",
         "url": "https://gload.to",
-        "icon": "fa-compact-disc"
+        "icon": "fas fa-compact-disc",
+        "id": "gload-199"
     },
     {
         "name": "WeMod",
         "desc": "PC game trainers and mods.",
         "cat": "mods",
         "url": "https://wemod.com",
-        "icon": "fa-wrench"
+        "icon": "fas fa-wrench",
+        "id": "wemod-200"
     },
     {
         "name": "Kurdcinama Trivia Master Solver",
         "desc": "Premium autonomous solver for all Kurdcinama trivia modes.",
         "cat": "scripts",
         "url": "https://greasyfork.org/en/scripts/574862-kurdcinama-trivia-master-solver",
-        "icon": "fa-brain"
+        "icon": "fas fa-brain",
+        "id": "kurdcinama-trivia-master-solver-201"
     },
     {
         "name": "TikTok Video Downloader",
         "desc": "Download TikTok videos without watermark via browser button.",
         "cat": "scripts",
         "url": "https://greasyfork.org/en/scripts/560130-tiktok-video-downloader",
-        "icon": "fa-download"
+        "icon": "fas fa-download",
+        "id": "tiktok-video-downloader-202"
     },
     {
         "name": "Umingle Uhmegle AutoSkip v3",
         "desc": "Auto-skip chats and avoid disconnects on Umingle/Uhmegle.",
         "cat": "scripts",
         "url": "https://greasyfork.org/en/scripts/548587-umingle-of-uhmegle-autoskip-v3",
-        "icon": "fa-forward"
+        "icon": "fas fa-forward",
+        "id": "umingle-uhmegle-autoskip-v3-203"
     },
     {
         "name": "Neal.fun Robot Game Solver",
         "desc": "Instantly beat 'I'm Not a Robot' game with level selector.",
         "cat": "scripts",
         "url": "https://greasyfork.org/en/scripts/558771-instantly-beat-i-m-not-a-robot-game-neal-fun-enhanced",
-        "icon": "fa-robot"
+        "icon": "fas fa-robot",
+        "id": "nealfun-robot-game-solver-204"
     },
     {
         "name": "Telegram Media Downloader",
         "desc": "Download restricted content from Telegram private channels.",
         "cat": "scripts",
         "url": "https://greasyfork.org/en/scripts/446342-telegram-media-downloader",
-        "icon": "fa-paper-plane"
+        "icon": "fas fa-paper-plane",
+        "id": "telegram-media-downloader-205"
     },
     {
         "name": "Bypass All Shortlinks",
         "desc": "Auto-skip link shorteners, ads, and annoying popups.",
         "cat": "scripts",
         "url": "https://greasyfork.org/en/scripts/431691-bypass-all-shortlinks",
-        "icon": "fa-link-slash"
+        "icon": "fas fa-link-slash",
+        "id": "bypass-all-shortlinks-206"
     },
     {
         "name": "AutoPager (Infinite Scroll)",
         "desc": "Seamlessly append the next page content to the bottom.",
         "cat": "scripts",
         "url": "https://greasyfork.org/en/scripts/419215-autopager",
-        "icon": "fa-arrows-up-down"
+        "icon": "fas fa-arrows-up-down",
+        "id": "autopager-infinite-scroll-207"
     },
     {
         "name": "IG Helper",
         "desc": "Download Instagram photos, videos, stories, and reels.",
         "cat": "scripts",
         "url": "https://greasyfork.org/en/scripts/404535-ig-helper",
-        "icon": "fa-camera"
+        "icon": "fas fa-camera",
+        "id": "ig-helper-208"
     },
     {
         "name": "KissCartoon",
         "desc": "Watch high quality cartoons online.",
         "cat": "cartoon",
         "url": "https://kisscartoon.sh/",
-        "icon": "fa-palette"
+        "icon": "fas fa-palette",
+        "id": "kisscartoon-209"
     },
     {
         "name": "Arabic Toons",
         "desc": "Arabic dubbed cartoons and anime.",
         "cat": "cartoon",
         "url": "https://www.arabic-toons.com/",
-        "icon": "fa-ghost"
+        "icon": "fas fa-ghost",
+        "id": "arabic-toons-210"
     },
     {
         "name": "Carateen TV",
         "desc": "Arabic dubbed animations.",
         "cat": "cartoon",
         "url": "https://carateen.tv/",
-        "icon": "fa-tv"
+        "icon": "fas fa-tv",
+        "id": "carateen-tv-211"
     },
     {
         "name": "Stardima",
         "desc": "Arabic dubbed series and movies.",
         "cat": "cartoon",
         "url": "https://watch.stardima.com/watch/#gsc.tab=0",
-        "icon": "fa-star"
+        "icon": "fas fa-star",
+        "id": "stardima-212"
     },
     {
         "name": "Kartoni Kurde",
         "desc": "Kurdish dubbed cartoons.",
         "cat": "cartoon",
         "url": "https://kartonikurde.com/",
-        "icon": "fa-language"
+        "icon": "fas fa-language",
+        "id": "kartoni-kurde-213"
     },
     {
         "name": "Anime Kurdish",
         "desc": "Kurdish dubbed anime and cartoons.",
         "cat": "cartoon",
         "url": "https://animekurdish2019.blogspot.com/",
-        "icon": "fa-mask"
+        "icon": "fas fa-mask",
+        "id": "anime-kurdish-214"
     },
     {
         "name": "Kurd Doblazh (Cartoons)",
         "desc": "Kurdish dubbed animation section.",
         "cat": "cartoon",
         "url": "https://www.kurddoblazh.com/search/label/%D8%A6%D9%87%E2%80%8C%D9%86%DB%8C%D9%85%D9%87%E2%80%8C%DB%8C%D8%B4%D9%86?max-results=64",
-        "icon": "fa-microphone"
+        "icon": "fas fa-microphone",
+        "id": "kurd-doblazh-cartoons-215"
     },
     {
         "name": "Anime Kurd (Telegram)",
         "desc": "Kurdish anime community on Telegram.",
         "cat": "cartoon",
         "url": "https://t.me/anime_kurd",
-        "icon": "fa-paper-plane"
+        "icon": "fas fa-paper-plane",
+        "id": "anime-kurd-telegram-216"
     },
     {
         "name": "Kartoni Kurdi (Telegram)",
         "desc": "Kurdish cartoons on Telegram.",
         "cat": "cartoon",
         "url": "https://t.me/kartoni_kurdi",
-        "icon": "fa-paper-plane"
+        "icon": "fas fa-paper-plane",
+        "id": "kartoni-kurdi-telegram-217"
     },
     {
         "name": "Kurdish Anime Plus (Telegram)",
         "desc": "Kurdish dubbed anime channel.",
         "cat": "cartoon",
         "url": "https://t.me/+G81-F97Y7v9jMjQy",
-        "icon": "fa-paper-plane"
+        "icon": "fas fa-paper-plane",
+        "id": "kurdish-anime-plus-telegram-218"
     },
     {
         "name": "SeeMovies (Telegram)",
         "desc": "Kurdish movies and cartoons.",
         "cat": "cartoon",
         "url": "https://t.me/seemovies09",
-        "icon": "fa-paper-plane"
+        "icon": "fas fa-paper-plane",
+        "id": "seemovies-telegram-219"
     }
 ]

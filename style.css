@@ -1687,3 +1687,57 @@ body {
         opacity: 0;
     }
 }
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.toast {
+    background: rgba(15, 15, 20, 0.85);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+}
+
+.toast.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.toast i {
+    color: #3b82f6;
+    font-size: 1.1rem;
+    filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.5));
+}
+
+@media (max-width: 768px) {
+    .toast-container {
+        bottom: 80px;
+        width: 90%;
+    }
+    .toast {
+        width: 100%;
+        justify-content: center;
+    }
+}
