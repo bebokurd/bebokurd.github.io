@@ -95,7 +95,7 @@ window.onload = async () => {
         d.className = 'log-line';
         d.innerText = l;
         logBox.appendChild(d);
-        setTimeout(() => d.classList.add('visible'), i * 300);
+        setTimeout(() => d.classList.add('visible'), i * 150);
     });
     renderInstalled();
     updateClock();
@@ -191,10 +191,10 @@ entry.addEventListener('click', () => {
                     typeWriter("Architecting spatial experiences for 2026.", 0);
                     audio.volume = 0.3;
                     audio.play().catch(() => { });
-                }, 800);
-            }, 1000);
-        }, 2500);
-    }, 800);
+                }, 400);
+            }, 600);
+        }, 1200);
+    }, 400);
     isPlaying = true;
     document.getElementById('audio-fab').innerHTML = '<i class="fas fa-pause"></i>';
 });
@@ -300,9 +300,17 @@ function renderInstalled(filterCat = null) {
     };
 
     let html = "";
+    // Cache filtered results to avoid re-calculating on every render
+    if (!window._pkgCache) window._pkgCache = {};
+    
     for (const [key, label] of Object.entries(categories)) {
         if (filterCat && filterCat !== key) continue;
-        const items = packageData.filter(p => p.cat === key);
+        
+        const cacheKey = key;
+        if (!window._pkgCache[cacheKey]) {
+            window._pkgCache[cacheKey] = packageData.filter(p => p.cat === key);
+        }
+        const items = window._pkgCache[cacheKey];
         if (items.length === 0) continue;
 
         html += `<div class="section-header">${label}</div><div class="detail-group cat-${key}">`;
@@ -669,6 +677,7 @@ function renderTikTokResult(data, originalUrl = '') {
     const hdUrl = data.hdplay || data.download_url_hd;
     const sdUrl = data.play || data.download_url;
     const defaultUrl = hdUrl || sdUrl || '';
+    const musicUrl = data.music || data.music_info?.play || '';
     const sizeLabel = data.file_size ? `(${data.file_size})` : '';
     const safeTitle = title.replace(/[\\/:*?"<>|]/g, '').trim() || 'tiktok_video';
     const finalFileName = `${safeTitle} | bebokurd.mp4`;
@@ -679,6 +688,10 @@ function renderTikTokResult(data, originalUrl = '') {
     }
     if (sdUrl && sdUrl !== hdUrl) {
         actionBtns += `<button class="app-btn" onclick="handleDownload('${sdUrl}', '${finalFileName}', this)"><i class="fas fa-download"></i> Download SD</button>`;
+    }
+    if (musicUrl) {
+        const musicName = `${safeTitle} | bebokurd.mp3`;
+        actionBtns += `<button class="app-btn" onclick="handleDownload('${musicUrl}', '${musicName}', this)" style="background: rgba(234, 179, 8, 0.1); border-color: rgba(234, 179, 8, 0.3); margin-top: 5px;"><i class="fas fa-music"></i> Download MP3 (Audio)</button>`;
     }
     if (!actionBtns && defaultUrl) {
         actionBtns = `<button class="app-btn" onclick="handleDownload('${defaultUrl}', '${finalFileName}', this)"><i class="fas fa-download"></i> Download Video</button>`;
@@ -724,18 +737,28 @@ async function handleDownload(url, filename, btn) {
     if (!url) { showToast("Download URL not found.", 'fa-times'); return; }
     const originalHtml = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
     try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Network error');
+        let response;
+        try {
+            response = await fetch(url);
+            if (!response.ok) throw new Error('Direct fetch failed');
+        } catch (e) {
+            // Phone Fix: Use CORS proxy for binary data
+            showToast('Applying Phone Fix...', 'fa-mobile-alt');
+            response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+            if (!response.ok) throw new Error('Proxy fetch failed');
+        }
         const blob = await response.blob();
         const blobUrl = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = blobUrl; a.download = filename;
         document.body.appendChild(a); a.click();
         document.body.removeChild(a); window.URL.revokeObjectURL(blobUrl);
+        showToast('Download started!', 'fa-check-circle');
     } catch (err) {
         window.open(url, '_blank');
+        showToast('Opening in browser...', 'fa-external-link-alt');
     } finally {
         btn.disabled = false; btn.innerHTML = originalHtml;
     }
