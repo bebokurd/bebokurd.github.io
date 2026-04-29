@@ -1814,5 +1814,37 @@
         "url": "https://www.kurd-movie.com/",
         "icon": "fas fa-film",
         "id": "kurd-movie-226"
+    },
+    {
+        "name": "awenafilm",
+        "desc": "awenafilm no ads",
+        "cat": "kurdish",
+        "url": "https://awenafilm.com/",
+        "icon": "fas fa-film",
+        "id": "awenafilm-1777406006289"
+    },
+    {
+        "name": "StripView 透视镜",
+        "desc": "A draggable reveal lens for videos on any webpage (完美无损移植版)",
+        "cat": "scripts",
+        "url": "https://greasyfork.org/en/scripts/575364-stripview-%E9%80%8F%E8%A7%86%E9%95%9C",
+        "icon": "fas fa-heart",
+        "id": "stripview--1777406459831"
+    },
+    {
+        "name": "animekai",
+        "desc": " Watch Free Anime Online, Stream Subbed &amp; Dubbed Anime in HD<",
+        "cat": "anime",
+        "url": "https://animekai.to/home",
+        "icon": "fas fa-play",
+        "id": "animekai-1777461641653"
+    },
+    {
+        "name": "mangadex",
+        "desc": "MangaDex is a non-profit, ad-free online manga reader and content aggregator that hosts a massive library of manga, manhwa (Korean comics), and manhua (Chinese comics). Launched in 2018 as a successor to the defunct Batoto, it has grown into one of the largest fan-run platforms for \"scanlations\"—unofficial translations created by fan groups.",
+        "cat": "anime",
+        "url": "https://mangadex.org/",
+        "icon": "fas fa-book-open",
+        "id": "mangadex-1777461788252"
     }
 ]
