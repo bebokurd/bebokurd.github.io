@@ -213,6 +213,20 @@ function updateStats() {
     if (catsEl) catsEl.innerText = uniqueCategories;
 }
 
+function createBiometricDots() {
+    const container = document.querySelector('.biometric-dots');
+    if (!container) return;
+    container.innerHTML = '';
+    for (let i = 0; i < 20; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'bio-dot';
+        dot.style.left = Math.random() * 100 + '%';
+        dot.style.top = Math.random() * 100 + '%';
+        dot.style.animation = `bioPulse ${1 + Math.random() * 2}s infinite ${Math.random() * 2}s`;
+        container.appendChild(dot);
+    }
+}
+
 entry.addEventListener('click', () => {
     entry.style.opacity = '0';
     // Force video play on user interaction for mobile
@@ -224,10 +238,12 @@ entry.addEventListener('click', () => {
         const lockScreen = document.getElementById('spatial-lock');
         const lockLabel = document.getElementById('lock-label');
         lockScreen.style.display = 'flex';
+        createBiometricDots();
         
         setTimeout(() => {
             lockLabel.innerText = "Identity Verified";
             lockLabel.style.color = "#4ade80";
+            document.querySelector('.face-scan-container').classList.add('verified');
             setTimeout(() => {
                 lockScreen.style.opacity = '0';
                 setTimeout(() => {
@@ -399,6 +415,18 @@ function renderInstalled(filterCat = null) {
 function filterCategory(cat, el) {
     switchTab('installed', el);
     renderInstalled(cat);
+}
+
+function toggleFaq(el) {
+    const item = el.parentElement;
+    const isActive = item.classList.contains('active');
+    
+    // Optional: Close other FAQ items
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+    
+    if (!isActive) {
+        item.classList.add('active');
+    }
 }
 
 function handleSearch(e) {

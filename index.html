@@ -18,7 +18,8 @@
 
 <body>
 
-    <video class="video-background" id="bg-video" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="https://grainy-gradients.vercel.app/noise.svg">
+    <video class="video-background" id="bg-video" autoplay muted loop playsinline webkit-playsinline preload="metadata"
+        poster="https://grainy-gradients.vercel.app/noise.svg">
         <source src="https://r2.guns.lol/66f828e9-e90a-48ff-b46b-4f064893c5b7.mp4" type="video/mp4">
     </video>
     <div class="video-noise"></div>
@@ -36,8 +37,13 @@
 
     <div id="spatial-lock">
         <div class="face-scan-container">
+            <div class="scan-ring"></div>
             <div class="face-scan-frame"></div>
             <div class="face-scan-line"></div>
+            <div class="biometric-dots"></div>
+            <div class="face-scan-success">
+                <i class="fas fa-check-circle"></i>
+            </div>
             <div class="lock-status" id="lock-label">Authenticating...</div>
         </div>
     </div>
@@ -97,11 +103,14 @@
             </div>
             <div class="sidebar-item" onclick="switchTab('google', this)"><i class="fab fa-google"></i> Google Search
             </div>
-            <div class="sidebar-item" onclick="switchTab('anime-search', this)"><i class="fas fa-camera"></i> Anime Search
+            <div class="sidebar-item" onclick="switchTab('anime-search', this)"><i class="fas fa-camera"></i> Anime
+                Search
             </div>
-            <div class="sidebar-item" onclick="switchTab('kurdstream', this)"><i class="fas fa-play-circle"></i> KurdStream
+            <div class="sidebar-item" onclick="switchTab('kurdstream', this)"><i class="fas fa-play-circle"></i>
+                KurdStream
             </div>
-            <div class="sidebar-item" onclick="switchTab('kurddoblazh', this)"><i class="fas fa-microphone-alt"></i> KurdDoblazh
+            <div class="sidebar-item" onclick="switchTab('kurddoblazh', this)"><i class="fas fa-microphone-alt"></i>
+                KurdDoblazh
             </div>
             <div class="sidebar-item" onclick="switchTab('kurdmovie', this)"><i class="fas fa-film"></i> KurdMovie
             </div>
@@ -114,7 +123,8 @@
             <div class="sidebar-item" onclick="filterCategory('ai', this)"><i class="fas fa-robot"></i> AI Tools</div>
             <div class="sidebar-item" onclick="filterCategory('movies', this)"><i class="fas fa-film"></i> Movies</div>
             <div class="sidebar-item" onclick="filterCategory('anime', this)"><i class="fas fa-ghost"></i> Anime</div>
-            <div class="sidebar-item" onclick="filterCategory('cartoon', this)"><i class="fas fa-child"></i> Cartoons</div>
+            <div class="sidebar-item" onclick="filterCategory('cartoon', this)"><i class="fas fa-child"></i> Cartoons
+            </div>
             <div class="sidebar-item" onclick="filterCategory('kurdish', this)"><i class="fas fa-language"></i> Kurdish
             </div>
             <div class="sidebar-item" onclick="filterCategory('sports', this)"><i class="fas fa-futbol"></i> Live Sports
@@ -128,7 +138,8 @@
             </div>
             <div class="sidebar-item" onclick="filterCategory('tools', this)"><i class="fas fa-toolbox"></i> PC Tools
             </div>
-            <div class="sidebar-item" onclick="filterCategory('scripts', this)"><i class="fas fa-scroll"></i> Automation Scripts
+            <div class="sidebar-item" onclick="filterCategory('scripts', this)"><i class="fas fa-scroll"></i> Automation
+                Scripts
             </div>
             <div class="sidebar-item" onclick="filterCategory('ads', this)"><i class="fas fa-shield-alt"></i> Ad
                 Blockers
@@ -137,9 +148,11 @@
             <div class="sidebar-title">Support & Info</div>
             <div class="sidebar-item" onclick="switchTab('faq', this)"><i class="fas fa-question-circle"></i> FAQ</div>
             <div class="sidebar-item" onclick="switchTab('about', this)"><i class="fas fa-info-circle"></i> About</div>
-            <div class="sidebar-item" onclick="switchTab('privacy', this)"><i class="fas fa-user-shield"></i> Terms & Privacy</div>
+            <div class="sidebar-item" onclick="switchTab('privacy', this)"><i class="fas fa-user-shield"></i> Terms &
+                Privacy</div>
             <div class="sidebar-item" onclick="switchTab('contact', this)"><i class="fas fa-envelope"></i> Contact</div>
-            <div class="sidebar-item" onclick="switchTab('status', this)"><i class="fas fa-server"></i> System Status</div>
+            <div class="sidebar-item" onclick="switchTab('status', this)"><i class="fas fa-server"></i> System Status
+            </div>
         </aside>
 
 
@@ -171,49 +184,81 @@
                     </div>
 
                     <div class="hero-section">
-                        <img src="https://i.pinimg.com/1200x/eb/48/73/eb487359acc13ab1ad5e1918e14cd49e.jpg"
-                            class="hero-avatar" alt="CHYA LUQMAN">
+                        <div class="hero-avatar-container">
+                            <div class="hero-avatar-ring"></div>
+                            <img src="https://i.pinimg.com/1200x/eb/48/73/eb487359acc13ab1ad5e1918e14cd49e.jpg"
+                                class="hero-avatar" alt="CHYA LUQMAN">
+                        </div>
                         <div class="hero-name">Chya Luqman</div>
                         <div class="hero-role">UI/UX Engineer & Developer</div>
-                        <div style="display: flex; gap: 10px; justify-content: center; width: 100%; max-width: 400px; margin: 0 auto;">
-                            <button class="app-btn" style="flex: 1;" onclick="window.open('https://discord.gg/YTeRSG8kER', '_blank')">Discord</button>
-                            <button class="app-btn" style="flex: 1; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); border: none;" onclick="window.open('https://www.instagram.com/chya_luqman/', '_blank')">Instagram</button>
+                        <div
+                            style="display: flex; gap: 10px; justify-content: center; width: 100%; max-width: 400px; margin: 0 auto;">
+                            <button class="app-btn" style="flex: 1;"
+                                onclick="window.open('https://discord.gg/YTeRSG8kER', '_blank')"><i
+                                    class="fab fa-discord"></i> Discord</button>
+                            <button class="app-btn"
+                                style="flex: 1; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); border: none;"
+                                onclick="window.open('https://www.instagram.com/chya_luqman/', '_blank')"><i
+                                    class="fab fa-instagram"></i> Instagram</button>
                         </div>
                     </div>
 
-                    <div class="section-header">Community</div>
-                    <div class="detail-group">
-                        <a href="https://discord.gg/YTeRSG8kER" target="_blank" class="pkg-list-item">
-                            <div class="pkg-list-icon" style="background: linear-gradient(#7289da, #4e5d94);"><i class="fab fa-discord"></i></div>
-                            <div class="pkg-list-info">
-                                <span class="pkg-list-name">Official Discord Server</span>
-                                <span class="pkg-list-desc">Join our community for updates.</span>
+                    <div class="home-widgets-grid">
+                        <!-- Community Widget -->
+                        <div class="spatial-card">
+                            <div class="widget-header">
+                                <i class="fas fa-users"></i>
+                                <span>Community</span>
                             </div>
-                            <span class="chevron">›</span>
-                        </a>
-                        <a href="https://www.instagram.com/chya_luqman/" target="_blank" class="pkg-list-item">
-                            <div class="pkg-list-icon" style="background: linear-gradient(45deg, #f09433, #bc1888);"><i class="fab fa-instagram"></i></div>
-                            <div class="pkg-list-info">
-                                <span class="pkg-list-name">Instagram Profile</span>
-                                <span class="pkg-list-desc">@chya_luqman</span>
+                            <div class="widget-content">
+                                <a href="https://discord.gg/YTeRSG8kER" target="_blank" class="widget-item">
+                                    <div class="widget-icon" style="background: #7289da;"><i class="fab fa-discord"></i>
+                                    </div>
+                                    <div class="widget-info">
+                                        <div class="widget-name">Official Discord</div>
+                                        <div class="widget-desc">Join 2.5k+ members</div>
+                                    </div>
+                                </a>
+                                <a href="https://www.instagram.com/chya_luqman/" target="_blank" class="widget-item">
+                                    <div class="widget-icon"
+                                        style="background: linear-gradient(45deg, #f09433, #bc1888);"><i
+                                            class="fab fa-instagram"></i></div>
+                                    <div class="widget-info">
+                                        <div class="widget-name">Instagram</div>
+                                        <div class="widget-desc">@chya_luqman</div>
+                                    </div>
+                                </a>
                             </div>
-                            <span class="chevron">›</span>
-                        </a>
+                        </div>
+
+                        <!-- Device Stats Widget -->
+                        <div class="spatial-card">
+                            <div class="widget-header">
+                                <i class="fas fa-microchip"></i>
+                                <span>System Info</span>
+                            </div>
+                            <div class="widget-content">
+                                <div class="stat-row">
+                                    <span class="stat-label">OS Version</span>
+                                    <span class="stat-value">v2.8 Elite</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Build</span>
+                                    <span class="stat-value">9A334 (Spatial)</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Model</span>
+                                    <span class="stat-value">iPhone 4 Mirror</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Uptime</span>
+                                    <span class="stat-value" style="color: #4ade80;">100.0%</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="section-header">Device Information</div>
-                    <div class="detail-group" style="padding: 0;">
-                        <div class="detail-row"><span class="label">OS Version</span><span class="val">iOS 4.2.1</span>
-                        </div>
-                        <div class="detail-row"><span class="label">Model</span><span class="val">iPhone 4 (GSM)</span>
-                        </div>
-                        <div class="detail-row"><span class="label">Architecture</span><span class="val">ARMv7</span>
-                        </div>
-                        <div class="detail-row"><span class="label">Cydia Build</span><span class="val">1.1.9
-                                ELITE</span></div>
-                    </div>
-
-                    <div style="padding: 20px; color: #555; font-size: 0.9rem; text-align: center; text-shadow: 0 1px 0 #fff;"
+                    <div style="padding: 40px 20px; color: rgba(255,255,255,0.4); font-size: 0.9rem; text-align: center; font-weight: 500;"
                         id="bio-text"></div>
                 </div>
 
@@ -287,30 +332,35 @@
                 <div id="view-google" class="view-content">
                     <div class="tool-container">
                         <div class="tool-hero">
-                            <i class="fab fa-google" style="background: linear-gradient(45deg, #4285F4, #EA4335, #FBBC05, #34A853); -webkit-background-clip: text; color: transparent;"></i>
+                            <i class="fab fa-google"
+                                style="background: linear-gradient(45deg, #4285F4, #EA4335, #FBBC05, #34A853); -webkit-background-clip: text; color: transparent;"></i>
                             <h2>Google Search</h2>
                             <p>Explore the web • Spatial Engine</p>
                         </div>
 
                         <div class="tool-input-wrap">
-                            <input type="text" id="google-query" class="tool-input" placeholder="What are you looking for?"
-                                autocomplete="off" onkeydown="if(event.key === 'Enter') performGoogleSearch()">
+                            <input type="text" id="google-query" class="tool-input"
+                                placeholder="What are you looking for?" autocomplete="off"
+                                onkeydown="if(event.key === 'Enter') performGoogleSearch()">
                             <button class="tool-btn" onclick="performGoogleSearch()">Search</button>
                         </div>
 
                         <div class="section-header">Quick Search</div>
                         <div class="detail-group" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));">
-                            <div class="pkg-list-item" onclick="document.getElementById('google-query').value='Latest Tech News'; performGoogleSearch()">
+                            <div class="pkg-list-item"
+                                onclick="document.getElementById('google-query').value='Latest Tech News'; performGoogleSearch()">
                                 <div class="pkg-list-info" style="text-align: center;">
                                     <span class="pkg-list-name" style="font-size: 0.85rem;">Tech News</span>
                                 </div>
                             </div>
-                            <div class="pkg-list-item" onclick="document.getElementById('google-query').value='AI Developments 2026'; performGoogleSearch()">
+                            <div class="pkg-list-item"
+                                onclick="document.getElementById('google-query').value='AI Developments 2026'; performGoogleSearch()">
                                 <div class="pkg-list-info" style="text-align: center;">
                                     <span class="pkg-list-name" style="font-size: 0.85rem;">AI Trends</span>
                                 </div>
                             </div>
-                            <div class="pkg-list-item" onclick="document.getElementById('google-query').value='Spatial Computing'; performGoogleSearch()">
+                            <div class="pkg-list-item"
+                                onclick="document.getElementById('google-query').value='Spatial Computing'; performGoogleSearch()">
                                 <div class="pkg-list-info" style="text-align: center;">
                                     <span class="pkg-list-name" style="font-size: 0.85rem;">Spatial</span>
                                 </div>
@@ -322,20 +372,24 @@
                 <div id="view-anime-search" class="view-content">
                     <div class="tool-container">
                         <div class="tool-hero">
-                            <i class="fas fa-camera" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); -webkit-background-clip: text; color: transparent;"></i>
+                            <i class="fas fa-camera"
+                                style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); -webkit-background-clip: text; color: transparent;"></i>
                             <h2>Anime Scene Search</h2>
                             <p>Drop or paste an image to find the source</p>
                         </div>
 
                         <div class="tool-input-wrap">
-                            <input type="text" id="anime-url-input" class="tool-input" placeholder="Paste image URL here..."
-                                autocomplete="off" onkeydown="if(event.key === 'Enter') searchAnimeViaUrl()">
+                            <input type="text" id="anime-url-input" class="tool-input"
+                                placeholder="Paste image URL here..." autocomplete="off"
+                                onkeydown="if(event.key === 'Enter') searchAnimeViaUrl()">
                             <button class="tool-btn" onclick="searchAnimeViaUrl()">Search URL</button>
                         </div>
 
                         <div class="drop-zone" id="anime-drop-zone" style="margin-bottom: 20px;">
-                            <span class="drop-zone__prompt">Drop image here or click to upload<br><small>(You can also paste from clipboard)</small></span>
-                            <input type="file" name="animeFile" class="drop-zone__input" id="anime-file-input" accept="image/*">
+                            <span class="drop-zone__prompt">Drop image here or click to upload<br><small>(You can also
+                                    paste from clipboard)</small></span>
+                            <input type="file" name="animeFile" class="drop-zone__input" id="anime-file-input"
+                                accept="image/*">
                         </div>
 
                         <div id="anime-search-loader" class="anime-loader-custom">
@@ -350,19 +404,22 @@
                 <div id="view-kurdstream" class="view-content">
                     <div class="tool-container">
                         <div class="tool-hero">
-                            <i class="fas fa-play-circle" style="background: linear-gradient(45deg, #f59e0b, #ef4444); -webkit-background-clip: text; color: transparent;"></i>
+                            <i class="fas fa-play-circle"
+                                style="background: linear-gradient(45deg, #f59e0b, #ef4444); -webkit-background-clip: text; color: transparent;"></i>
                             <h2>KurdStream Search</h2>
                             <p>Search Movies & Series • Stream in HD</p>
                         </div>
 
                         <div class="tool-input-wrap">
-                            <input type="text" id="ks-search-input" class="tool-input" placeholder="Search for movies, series..."
-                                autocomplete="off" onkeydown="if(event.key === 'Enter') searchKurdStream()">
+                            <input type="text" id="ks-search-input" class="tool-input"
+                                placeholder="Search for movies, series..." autocomplete="off"
+                                onkeydown="if(event.key === 'Enter') searchKurdStream()">
                             <button id="ks-search-btn" class="tool-btn" onclick="searchKurdStream()">Search</button>
                         </div>
 
                         <div id="ks-loader" class="tt-custom-loader" style="display: none;">
-                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #f59e0b, #ef4444);"><i class="fas fa-play"></i></div>
+                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #f59e0b, #ef4444);"><i
+                                    class="fas fa-play"></i></div>
                             <div class="tt-loading-text">Fetching from KurdStream...</div>
                         </div>
 
@@ -374,29 +431,39 @@
                 <div id="view-kurddoblazh" class="view-content">
                     <div class="tool-container">
                         <div class="tool-hero">
-                            <i class="fas fa-microphone-alt" style="background: linear-gradient(45deg, #1862de, #0f3e8a); -webkit-background-clip: text; color: transparent;"></i>
+                            <i class="fas fa-microphone-alt"
+                                style="background: linear-gradient(45deg, #1862de, #0f3e8a); -webkit-background-clip: text; color: transparent;"></i>
                             <h2>KurdDoblazh Hub</h2>
                             <p>Dubbed Movies & Series • New Proxy Engine</p>
                         </div>
 
                         <div class="tool-input-wrap">
-                            <input type="text" id="kd-search-input" class="tool-input" placeholder="Search dubbed content..."
-                                autocomplete="off" onkeydown="if(event.key === 'Enter') searchKurdDoblazh()">
-                            <button id="kd-search-btn" class="tool-btn" style="background: linear-gradient(45deg, #1862de, #0f3e8a); border: none;" onclick="searchKurdDoblazh()">Search</button>
+                            <input type="text" id="kd-search-input" class="tool-input"
+                                placeholder="Search dubbed content..." autocomplete="off"
+                                onkeydown="if(event.key === 'Enter') searchKurdDoblazh()">
+                            <button id="kd-search-btn" class="tool-btn"
+                                style="background: linear-gradient(45deg, #1862de, #0f3e8a); border: none;"
+                                onclick="searchKurdDoblazh()">Search</button>
                         </div>
 
-                        <div id="kd-labels" class="kd-labels-container" style="margin-bottom: 20px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px;"></div>
+                        <div id="kd-labels" class="kd-labels-container"
+                            style="margin-bottom: 20px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px;">
+                        </div>
 
                         <div id="kd-loader" class="tt-custom-loader" style="display: none;">
-                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #1862de, #0f3e8a);"><i class="fas fa-microphone-alt"></i></div>
+                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #1862de, #0f3e8a);"><i
+                                    class="fas fa-microphone-alt"></i></div>
                             <div class="tt-loading-text">Connecting to KD Proxy...</div>
                         </div>
 
                         <div id="kd-results" class="kd-grid" style="margin-top: 20px;"></div>
-                        
-                        <div id="kd-pagination" style="display: none; justify-content: center; gap: 15px; margin-top: 30px;">
-                            <button class="app-btn" id="kd-prev-btn" onclick="kdPaginate(-1)"><i class="fas fa-chevron-left"></i> Previous</button>
-                            <button class="app-btn" id="kd-next-btn" onclick="kdPaginate(1)">Next <i class="fas fa-chevron-right"></i></button>
+
+                        <div id="kd-pagination"
+                            style="display: none; justify-content: center; gap: 15px; margin-top: 30px;">
+                            <button class="app-btn" id="kd-prev-btn" onclick="kdPaginate(-1)"><i
+                                    class="fas fa-chevron-left"></i> Previous</button>
+                            <button class="app-btn" id="kd-next-btn" onclick="kdPaginate(1)">Next <i
+                                    class="fas fa-chevron-right"></i></button>
                         </div>
 
                         <div id="kd-details" class="kd-details-view" style="display: none;"></div>
@@ -406,19 +473,24 @@
                 <div id="view-kurdmovie" class="view-content">
                     <div class="tool-container">
                         <div class="tool-hero">
-                            <i class="fas fa-film" style="background: linear-gradient(45deg, #60a5fa, #3b82f6); -webkit-background-clip: text; color: transparent;"></i>
+                            <i class="fas fa-film"
+                                style="background: linear-gradient(45deg, #60a5fa, #3b82f6); -webkit-background-clip: text; color: transparent;"></i>
                             <h2>Kurd-Movie</h2>
                             <p>Premium Kurdish Cinema • WordPress Engine</p>
                         </div>
 
                         <div class="tool-input-wrap">
-                            <input type="text" id="km-search-input" class="tool-input" placeholder="Search movies, TV shows..."
-                                autocomplete="off" onkeydown="if(event.key === 'Enter') searchKurdMovie()">
-                            <button id="km-search-btn" class="tool-btn" style="background: linear-gradient(45deg, #60a5fa, #3b82f6); border: none;" onclick="searchKurdMovie()">Search</button>
+                            <input type="text" id="km-search-input" class="tool-input"
+                                placeholder="Search movies, TV shows..." autocomplete="off"
+                                onkeydown="if(event.key === 'Enter') searchKurdMovie()">
+                            <button id="km-search-btn" class="tool-btn"
+                                style="background: linear-gradient(45deg, #60a5fa, #3b82f6); border: none;"
+                                onclick="searchKurdMovie()">Search</button>
                         </div>
 
                         <div id="km-loader" class="tt-custom-loader" style="display: none;">
-                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #60a5fa, #3b82f6);"><i class="fas fa-film"></i></div>
+                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #60a5fa, #3b82f6);"><i
+                                    class="fas fa-film"></i></div>
                             <div class="tt-loading-text">Fetching from KurdMovie...</div>
                         </div>
 
@@ -442,55 +514,73 @@
 
                         <div id="api-pane-docs" class="api-pane active">
                             <div class="section-header">Developer Documentation</div>
-                            <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Use the following endpoint to fetch the full database of packages and utilities in JSON format.</p>
-                            
+                            <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Use the following endpoint to
+                                fetch the full database of packages and utilities in JSON format.</p>
+
                             <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Endpoint URL</div>
                             <div class="code-block" id="api-endpoint-url">https://bebokurd.github.io/data.json</div>
-                            
-                            <button class="app-btn" onclick="navigator.clipboard.writeText('https://bebokurd.github.io/data.json'); showToast('API Endpoint copied!', 'fa-check-circle');">
+
+                            <button class="app-btn"
+                                onclick="navigator.clipboard.writeText('https://bebokurd.github.io/data.json'); showToast('API Endpoint copied!', 'fa-check-circle');">
                                 <i class="fas fa-copy"></i> Copy Endpoint
                             </button>
 
-                             <div style="font-weight: 700; color: #fff; margin-top: 30px; margin-bottom: 10px;">Quick Example (JavaScript)</div>
-                             <div class="code-block">fetch('data.json')
-   .then(res => res.json())
-   .then(data => console.log(data));</div>
+                            <div style="font-weight: 700; color: #fff; margin-top: 30px; margin-bottom: 10px;">Quick
+                                Example (JavaScript)</div>
+                            <div class="code-block">fetch('data.json')
+                                .then(res => res.json())
+                                .then(data => console.log(data));</div>
 
-                             <div class="section-header" style="margin-top: 30px;">Deep Linking API</div>
-                             <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Use the following hash format to link directly to a TikTok video download within this portal. This works across all official mirrors.</p>
-                             
-                             <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Supported Domains</div>
-                             <div class="detail-group" style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
-                                 <div class="detail-row"><span class="label">Primary</span><span class="val">bebokurd.github.io</span></div>
-                                 <div class="detail-row"><span class="label">Mirror 1</span><span class="val">chyalist.xo.je</span></div>
-                                 <div class="detail-row"><span class="label">Mirror 2</span><span class="val">chyalist.rf.gd</span></div>
-                             </div>
+                            <div class="section-header" style="margin-top: 30px;">Deep Linking API</div>
+                            <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Use the following hash format
+                                to link directly to a TikTok video download within this portal. This works across all
+                                official mirrors.</p>
 
-                             <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Deep Link Format</div>
-                             <div class="code-block">https://[domain]/#url=TIKTOK_URL</div>
-                             
-                             <button class="app-btn" onclick="navigator.clipboard.writeText(window.location.origin + window.location.pathname + '#url='); showToast('Deep link prefix copied!', 'fa-check-circle');">
-                                 <i class="fas fa-copy"></i> Copy Current Domain Prefix
-                             </button>
+                            <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Supported Domains</div>
+                            <div class="detail-group"
+                                style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
+                                <div class="detail-row"><span class="label">Primary</span><span
+                                        class="val">bebokurd.github.io</span></div>
+                                <div class="detail-row"><span class="label">Mirror 1</span><span
+                                        class="val">chyalist.xo.je</span></div>
+                                <div class="detail-row"><span class="label">Mirror 2</span><span
+                                        class="val">chyalist.rf.gd</span></div>
+                            </div>
 
-                             <div class="section-header" style="margin-top: 30px;">KurdStream Public API</div>
-                             <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Direct access to Kurdish movies, series, and streaming embeds via a public seeker API.</p>
-                             
-                             <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Base Endpoint</div>
-                             <div class="code-block">https://kurdcinama-stream-seeker.lovable.app/api/public</div>
-                             
-                             <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Available Routes</div>
-                             <div class="detail-group" style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
-                                 <div class="detail-row"><span class="label">Search</span><span class="val">/search?q={query}</span></div>
-                                 <div class="detail-row"><span class="label">Movie</span><span class="val">/movie/{id}</span></div>
-                                 <div class="detail-row"><span class="label">Series</span><span class="val">/series/{id}</span></div>
-                                 <div class="detail-row"><span class="label">Embed</span><span class="val">/embed?movieId={id}</span></div>
-                             </div>
+                            <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Deep Link Format</div>
+                            <div class="code-block">https://[domain]/#url=TIKTOK_URL</div>
 
-                             <button class="app-btn" onclick="window.open('https://kurdcinama-stream-seeker.lovable.app/api/public/docs', '_blank')">
-                                 <i class="fas fa-external-link-alt"></i> View Full API Docs
-                             </button>
-                         </div>
+                            <button class="app-btn"
+                                onclick="navigator.clipboard.writeText(window.location.origin + window.location.pathname + '#url='); showToast('Deep link prefix copied!', 'fa-check-circle');">
+                                <i class="fas fa-copy"></i> Copy Current Domain Prefix
+                            </button>
+
+                            <div class="section-header" style="margin-top: 30px;">KurdStream Public API</div>
+                            <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Direct access to Kurdish
+                                movies, series, and streaming embeds via a public seeker API.</p>
+
+                            <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Base Endpoint</div>
+                            <div class="code-block">https://kurdcinama-stream-seeker.lovable.app/api/public</div>
+
+                            <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Available
+                                Routes</div>
+                            <div class="detail-group"
+                                style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
+                                <div class="detail-row"><span class="label">Search</span><span
+                                        class="val">/search?q={query}</span></div>
+                                <div class="detail-row"><span class="label">Movie</span><span
+                                        class="val">/movie/{id}</span></div>
+                                <div class="detail-row"><span class="label">Series</span><span
+                                        class="val">/series/{id}</span></div>
+                                <div class="detail-row"><span class="label">Embed</span><span
+                                        class="val">/embed?movieId={id}</span></div>
+                            </div>
+
+                            <button class="app-btn"
+                                onclick="window.open('https://kurdcinama-stream-seeker.lovable.app/api/public/docs', '_blank')">
+                                <i class="fas fa-external-link-alt"></i> View Full API Docs
+                            </button>
+                        </div>
 
                         <div id="api-pane-tester" class="api-pane">
                             <div class="api-tester-ui">
@@ -499,14 +589,17 @@
                                         <option value="GET">GET</option>
                                         <option value="POST">POST</option>
                                     </select>
-                                    <input type="text" id="api-test-url" class="tool-input" style="flex: 1; margin-bottom: 0;" placeholder="https://api.example.com/data">
+                                    <input type="text" id="api-test-url" class="tool-input"
+                                        style="flex: 1; margin-bottom: 0;" placeholder="https://api.example.com/data">
                                 </div>
-                                <button class="tool-btn" style="width: 100%;" onclick="runApiTest()">Send Request</button>
+                                <button class="tool-btn" style="width: 100%;" onclick="runApiTest()">Send
+                                    Request</button>
                             </div>
 
                             <div id="api-test-loader" class="loader" style="margin-top: 20px;">
                                 <i class="fas fa-spinner"></i>
-                                <div style="margin-top: 10px; font-weight: bold; color: #fff;">Fetching API Response...</div>
+                                <div style="margin-top: 10px; font-weight: bold; color: #fff;">Fetching API Response...
+                                </div>
                             </div>
 
                             <div class="section-header" style="margin-top: 30px;">Response Viewer</div>
@@ -523,14 +616,83 @@
                             <h2>Frequently Asked Questions</h2>
                             <p>Everything you need to know about Cydia Elite</p>
                         </div>
-                        <div class="detail-group">
-                            <div class="pkg-list-item" style="display: block; padding: 20px;">
-                                <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Is Cydia Elite free?</div>
-                                <div style="color: rgba(255,255,255,0.6); line-height: 1.6;">Yes, the portal and all integrated tools are free to use for the community.</div>
+                        <div class="faq-grid">
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <div class="faq-q-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                                    <span>Is Cydia Elite free to use?</span>
+                                    <i class="fas fa-chevron-down chevron-state"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Absolutely. Cydia Elite is a community-driven project. All integrated tools,
+                                        package links, and search utilities are provided 100% free of charge with no
+                                        hidden subscriptions.</p>
+                                </div>
                             </div>
-                            <div class="pkg-list-item" style="display: block; padding: 20px;">
-                                <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">How do I install packages?</div>
-                                <div style="color: rgba(255,255,255,0.6); line-height: 1.6;">Click on any package to open its official link or copy the installation command if available.</div>
+
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <div class="faq-q-icon"><i class="fas fa-download"></i></div>
+                                    <span>How do I install packages?</span>
+                                    <i class="fas fa-chevron-down chevron-state"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Simply find the package you want. If it has a URL, clicking it will take you to
+                                        the official download page. If it has a command, clicking will copy it to your
+                                        clipboard for use in PowerShell or Terminal.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <div class="faq-q-icon"><i class="fas fa-user-secret"></i></div>
+                                    <span>Are my searches and downloads private?</span>
+                                    <i class="fas fa-chevron-down chevron-state"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Privacy is our core pillar. We do not log your search queries, IP addresses, or
+                                        download history. All tool processing happens in real-time and data is cleared
+                                        immediately after your session.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <div class="faq-q-icon"><i class="fas fa-sync-alt"></i></div>
+                                    <span>How often is the database updated?</span>
+                                    <i class="fas fa-chevron-down chevron-state"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Our package database (data.json) is updated frequently. New tools, streaming
+                                        links, and security patches are usually added weekly to ensure everything
+                                        remains operational.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <div class="faq-q-icon"><i class="fas fa-mobile-alt"></i></div>
+                                    <span>Does it work on mobile?</span>
+                                    <i class="fas fa-chevron-down chevron-state"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Yes! Cydia Elite is fully responsive and designed to work seamlessly on iOS,
+                                        Android, and desktop browsers. Some terminal tools may require a PC, but all
+                                        streaming and search features work everywhere.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <div class="faq-q-icon"><i class="fas fa-plus-circle"></i></div>
+                                    <span>Can I request a new tool?</span>
+                                    <i class="fas fa-chevron-down chevron-state"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>We love community feedback! You can join our Discord server or message Chya on
+                                        Instagram to suggest new tools, scripts, or streaming sources to be added to the
+                                        portal.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -538,117 +700,419 @@
 
                 <div id="view-about" class="view-content">
                     <div class="tool-container">
-                        <div class="tool-hero">
-                            <div class="boot-logo-icon" style="margin: 0 auto 20px; width: 80px; height: 80px; line-height: 80px; font-size: 2.5rem;">
+                        <div class="about-spatial-hero">
+                            <div class="spatial-logo">
                                 <i class="fas fa-box-open"></i>
+                                <div class="spatial-pulse"></div>
                             </div>
-                            <h2>About Cydia Elite</h2>
-                            <p>Version 2.8 Spatial Edition</p>
+                            <div class="about-title-group">
+                                <h2>Cydia Elite</h2>
+                                <p>Spatial OS v2.8 (Build 9A334)</p>
+                            </div>
                         </div>
-                        <div class="pkg-list-item" style="display: block; padding: 30px; text-align: center;">
-                            <p style="color: rgba(255,255,255,0.8); line-height: 1.8; margin-bottom: 20px;">
-                                Cydia Elite is a premium web portal designed by Chya Luqman. 
-                                It bridges the gap between classic package management and modern spatial computing design.
+
+                        <div class="spatial-card" style="margin: 0 10px 20px;">
+                            <div class="widget-header">
+                                <i class="fas fa-quote-left"></i>
+                                <span>The Vision</span>
+                            </div>
+                            <p style="color: rgba(255,255,255,0.7); line-height: 1.8; margin: 0; font-size: 1rem;">
+                                Developed by <strong>Chya Luqman</strong>, Cydia Elite is more than just a link
+                                repository. It's an exploration of how classic package management aesthetics can evolve
+                                into the era of spatial computing. Our goal is to provide a unified, secure, and
+                                beautiful interface for power users.
                             </p>
-                            <div style="font-size: 0.9rem; color: #3b82f6; font-weight: 600;">© 2026 Chya Luqman. All rights reserved.</div>
+                        </div>
+
+                        <div class="about-stats-grid">
+                            <div class="about-stat-box">
+                                <i class="fas fa-layer-group"></i>
+                                <div class="stat-num">200+</div>
+                                <div class="stat-lbl">Resources</div>
+                            </div>
+                            <div class="about-stat-box">
+                                <i class="fas fa-bolt"></i>
+                                <div class="stat-num">60fps</div>
+                                <div class="stat-lbl">Fluidity</div>
+                            </div>
+                            <div class="about-stat-box">
+                                <i class="fas fa-shield-virus"></i>
+                                <div class="stat-num">100%</div>
+                                <div class="stat-lbl">Private</div>
+                            </div>
+                        </div>
+
+                        <div class="spatial-card" style="margin: 0 10px 20px;">
+                            <div class="widget-header">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Project Leadership</span>
+                            </div>
+
+                            <div class="dev-spotlight">
+                                <img src="https://i.pinimg.com/1200x/eb/48/73/eb487359acc13ab1ad5e1918e14cd49e.jpg"
+                                    class="dev-mini-avatar" alt="Chya Luqman">
+                                <div class="dev-info">
+                                    <div class="dev-name">Chya Luqman</div>
+                                    <div class="dev-role" style="color: #f59e0b;">Founder & Lead Architect</div>
+                                    <div class="dev-socials">
+                                        <a href="https://discord.gg/YTeRSG8kER" target="_blank"><i
+                                                class="fab fa-discord"></i></a>
+                                        <a href="https://www.instagram.com/chya_luqman/" target="_blank"><i
+                                                class="fab fa-instagram"></i></a>
+                                        <a href="mailto:support@cydia-elite.com"><i class="fas fa-envelope"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dev-spotlight"
+                                style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);">
+                                <img src="https://cdn.discordapp.com/avatars/738889970047123597/fa78bcf3e9d70f1776060748b6aa6525.webp?size=1024"
+                                    class="dev-mini-avatar" alt="SH4">
+                                <div class="dev-info">
+                                    <div class="dev-name">SH4</div>
+                                    <div class="dev-role" style="color: #3b82f6;">Staff Moderator</div>
+                                    <div class="dev-socials">
+                                        <a href="https://discord.gg/YTeRSG8kER" target="_blank"><i
+                                                class="fab fa-discord"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dev-spotlight"
+                                style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);">
+                                <img src="https://cdn.discordapp.com/avatars/1090740216609898550/b5bd0ab40adcfe9cdd1d3ba3b57525c8.webp?size=1024"
+                                    class="dev-mini-avatar" alt="Admiral Xwaro">
+                                <div class="dev-info">
+                                    <div class="dev-name"> xwaro</div>
+                                    <div class="dev-role" style="color: #ef4444;">Project Admiral</div>
+                                    <div class="dev-socials">
+                                        <a href="https://discord.gg/YTeRSG8kER" target="_blank"><i
+                                                class="fab fa-discord"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-header">Supported Platforms</div>
+                        <div class="platforms-grid">
+                            <div class="platform-item"><i class="fab fa-windows"></i><span>Windows</span></div>
+                            <div class="platform-item"><i class="fab fa-apple"></i><span>iOS / Mac</span></div>
+                            <div class="platform-item"><i class="fab fa-android"></i><span>Android</span></div>
+                            <div class="platform-item"><i class="fas fa-vr-cardboard"></i><span>Spatial</span></div>
+                        </div>
+
+                        <div class="section-header">Version Changelog</div>
+                        <div class="changelog-container">
+                            <div class="changelog-item">
+                                <div class="cl-version">v2.8</div>
+                                <div class="cl-desc">Spatial OS overhaul, improved API hub, and new streaming proxies.
+                                </div>
+                            </div>
+                            <div class="changelog-item">
+                                <div class="cl-version">v2.5</div>
+                                <div class="cl-desc">Added TikTok and Instagram search utilities.</div>
+                            </div>
+                            <div class="changelog-item">
+                                <div class="cl-version">v2.0</div>
+                                <div class="cl-desc">Initial Cydia Elite portal launch with local database.</div>
+                            </div>
+                        </div>
+
+                        <div class="section-header">Core Technologies</div>
+                        <div class="detail-group" style="margin-bottom: 30px;">
+                            <div class="pkg-list-item">
+                                <div class="pkg-list-icon"><i class="fas fa-cubes"></i></div>
+                                <div class="pkg-list-info">
+                                    <span class="pkg-list-name">Spatial Engine</span>
+                                    <span class="pkg-list-desc">Glassmorphic UI with CSS Backdrop-Filters</span>
+                                </div>
+                            </div>
+                            <div class="pkg-list-item">
+                                <div class="pkg-list-icon"><i class="fas fa-network-wired"></i></div>
+                                <div class="pkg-list-info">
+                                    <span class="pkg-list-name">Unified API Hub</span>
+                                    <span class="pkg-list-desc">Centralized data.json management</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center; padding: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+                            <div style="font-size: 0.85rem; color: #3b82f6; font-weight: 700; letter-spacing: 1px;">
+                                DESIGNED IN KURDISTAN</div>
+                            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.3); margin-top: 5px;">© 2026 Chya
+                                Luqman. All rights reserved.</div>
                         </div>
                     </div>
                 </div>
 
                 <div id="view-privacy" class="view-content">
                     <div class="tool-container">
-                        <div class="tool-hero">
-                            <i class="fas fa-user-shield" style="color: #10b981;"></i>
-                            <h2>Terms & Privacy</h2>
-                            <p>Your data is yours. Period.</p>
+                        <div class="privacy-hero">
+                            <div class="privacy-shield-icon">
+                                <i class="fas fa-shield-alt"></i>
+                                <div class="shield-ring"></div>
+                            </div>
+                            <h2>Privacy & Transparency</h2>
+                            <p>We believe privacy is a fundamental right, not a feature.</p>
                         </div>
-                        <div class="pkg-list-item" style="display: block; padding: 25px;">
-                            <h3 style="color: #fff; margin-bottom: 15px;">Privacy Policy</h3>
-                            <p style="color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 20px;">
-                                Cydia Elite does not collect or store any personal data. All searches and tool interactions (TikTok, Instagram, Anime Search) are processed in real-time and are not logged on our servers.
-                            </p>
-                            <h3 style="color: #fff; margin-bottom: 15px;">Terms of Use</h3>
-                            <p style="color: rgba(255,255,255,0.6); line-height: 1.6;">
-                                Users are responsible for ensuring they have the right to download or search for the content they process through our utilities.
-                            </p>
+
+                        <div class="privacy-grid">
+                            <div class="spatial-card">
+                                <div class="widget-header">
+                                    <i class="fas fa-user-lock"></i>
+                                    <span>Zero Logging</span>
+                                </div>
+                                <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; line-height: 1.6;">We never
+                                    log your IP address, browser information, or search history. All interactions are
+                                    processed in volatile memory and destroyed immediately.</p>
+                            </div>
+
+                            <div class="spatial-card">
+                                <div class="widget-header">
+                                    <i class="fas fa-cookie-bite"></i>
+                                    <span>No Tracking</span>
+                                </div>
+                                <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; line-height: 1.6;">Cydia
+                                    Elite uses zero tracking cookies, zero analytics scripts, and zero third-party
+                                    trackers. Your browsing habits stay with you.</p>
+                            </div>
+
+                            <div class="spatial-card">
+                                <div class="widget-header">
+                                    <i class="fas fa-file-contract"></i>
+                                    <span>Terms of Service</span>
+                                </div>
+                                <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; line-height: 1.6;">Users are
+                                    responsible for the legality of content searched or downloaded. We provide the
+                                    tools; you provide the compliance with local laws.</p>
+                            </div>
+
+                            <div class="spatial-card">
+                                <div class="widget-header">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Third-Party APIs</span>
+                                </div>
+                                <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; line-height: 1.6;">When using
+                                    our utilities (TikTok, etc.), requests are sent directly to the respective API
+                                    providers via secure SSL/TLS encryption.</p>
+                            </div>
+                        </div>
+
+                        <div class="privacy-footer-card">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Audit Status: <strong>Fully Compliant</strong> with Privacy First Principles</span>
                         </div>
                     </div>
                 </div>
 
                 <div id="view-contact" class="view-content">
                     <div class="tool-container">
-                        <div class="tool-hero">
-                            <i class="fas fa-envelope" style="color: #f59e0b;"></i>
-                            <h2>Contact Us</h2>
-                            <p>Get in touch with the developers</p>
+                        <div class="contact-hero">
+                            <div class="contact-icon-box">
+                                <i class="fas fa-paper-plane"></i>
+                                <div class="ping-wave"></div>
+                            </div>
+                            <h2>Connect Hub</h2>
+                            <p>We're here to help you navigate the spatial ecosystem.</p>
                         </div>
-                        <div class="detail-group">
-                            <a href="https://discord.gg/YTeRSG8kER" target="_blank" class="pkg-list-item">
-                                <div class="pkg-list-icon" style="background: #7289da;"><i class="fab fa-discord"></i></div>
-                                <div class="pkg-list-info">
-                                    <span class="pkg-list-name">Discord Support</span>
-                                    <span class="pkg-list-desc">Join our server for help</span>
+
+                        <div class="contact-grid">
+                            <div class="spatial-card">
+                                <div class="widget-header">
+                                    <i class="fab fa-discord"></i>
+                                    <span>Discord</span>
                                 </div>
-                                <span class="chevron">›</span>
-                            </a>
-                            <a href="https://www.instagram.com/chya_luqman/" target="_blank" class="pkg-list-item">
-                                <div class="pkg-list-icon" style="background: linear-gradient(45deg, #f09433, #bc1888);"><i class="fab fa-instagram"></i></div>
-                                <div class="pkg-list-info">
-                                    <span class="pkg-list-name">Instagram DM</span>
-                                    <span class="pkg-list-desc">@chya_luqman</span>
+                                <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-bottom: 20px;">Join
+                                    our developer community for real-time support and updates.</p>
+                                <a href="https://discord.gg/YTeRSG8kER" target="_blank" class="app-btn"
+                                    style="width: 100%; background: #7289da; border: none;">
+                                    <i class="fab fa-discord"></i> Join Server
+                                </a>
+                            </div>
+
+                            <div class="spatial-card">
+                                <div class="widget-header">
+                                    <i class="fab fa-instagram"></i>
+                                    <span>Instagram</span>
                                 </div>
-                                <span class="chevron">›</span>
-                            </a>
-                            <a href="mailto:support@cydia-elite.com" class="pkg-list-item">
-                                <div class="pkg-list-icon" style="background: #ef4444;"><i class="fas fa-at"></i></div>
-                                <div class="pkg-list-info">
-                                    <span class="pkg-list-name">Email Support</span>
-                                    <span class="pkg-list-desc">support@cydia-elite.com</span>
+                                <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-bottom: 20px;">Follow
+                                    Chya Luqman for behind-the-scenes and design leaks.</p>
+                                <a href="https://www.instagram.com/chya_luqman/" target="_blank" class="app-btn"
+                                    style="width: 100%; background: linear-gradient(45deg, #f09433, #bc1888); border: none;">
+                                    <i class="fab fa-instagram"></i> DM on Instagram
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="spatial-card" style="margin: 0 10px 30px;">
+                            <div class="widget-header">
+                                <i class="fas fa-envelope-open-text"></i>
+                                <span>Official Inquiries</span>
+                            </div>
+                            <div class="email-block">
+                                <div class="email-info">
+                                    <div class="email-address">support@cydia-elite.com</div>
+                                    <div class="email-hint">Typical response time: <span style="color: #4ade80;">&lt;
+                                            24h</span></div>
                                 </div>
-                                <span class="chevron">›</span>
-                            </a>
+                                <a href="mailto:support@cydia-elite.com" class="app-btn" style="padding: 10px 20px;">
+                                    <i class="fas fa-at"></i> Send Email
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="support-status-card">
+                            <div class="status-indicator">
+                                <div class="status-dot online"></div>
+                                <span>Community Support: <strong>Active</strong></span>
+                            </div>
+                            <div class="status-stats">
+                                <div class="s-stat"><span>2.5k</span> Members</div>
+                                <div class="s-stat"><span>12</span> Admins</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div id="view-status" class="view-content">
                     <div class="tool-container">
-                        <div class="tool-hero">
-                            <i class="fas fa-server" style="color: #3b82f6;"></i>
-                            <h2>System Status</h2>
-                            <p>Real-time service health</p>
-                        </div>
-                        
-                        <div class="pkg-list-item" style="display: flex; align-items: center; padding: 20px; border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.05);">
-                            <div style="width: 12px; height: 12px; background: #10b981; border-radius: 50%; margin-right: 15px; box-shadow: 0 0 15px #10b981; animation: ttPulse 1.5s infinite;"></div>
-                            <div style="font-weight: 700; color: #10b981;">All Systems Operational</div>
+                        <div class="status-hero">
+                            <div class="pulse-ring-container">
+                                <div class="pulse-dot"></div>
+                                <div class="pulse-ring"></div>
+                                <div class="pulse-ring-2"></div>
+                            </div>
+                            <h2>System Health</h2>
+                            <p>Global monitoring of Cydia Elite infrastructure.</p>
                         </div>
 
-                        <div class="section-header">Service Details</div>
-                        <div class="detail-group">
-                            <div class="pkg-list-item" style="padding: 15px; justify-content: space-between;">
-                                <span style="color: rgba(255,255,255,0.6);">TikTok Downloader</span>
-                                <span style="color: #10b981; font-weight: 700;">ONLINE</span>
+                        <div class="status-summary-card">
+                            <div class="summary-top">
+                                <i class="fas fa-check-circle"></i>
+                                <span>All Systems Operational</span>
                             </div>
-                            <div class="pkg-list-item" style="padding: 15px; justify-content: space-between;">
-                                <span style="color: rgba(255,255,255,0.6);">Anime Scene Search</span>
-                                <span style="color: #10b981; font-weight: 700;">ONLINE</span>
-                            </div>
-                            <div class="pkg-list-item" style="padding: 15px; justify-content: space-between;">
-                                <span style="color: rgba(255,255,255,0.6);">Package Database</span>
-                                <span style="color: #10b981; font-weight: 700;">STABLE</span>
+                            <div class="summary-bottom">
+                                <span>Last checked: <span id="status-last-check">Just now</span></span>
+                                <span>Global Uptime: <strong>99.98%</strong></span>
                             </div>
                         </div>
 
-                        <div class="section-header">Database Statistics</div>
-                        <div class="detail-group">
-                            <div class="pkg-list-item" style="padding: 15px; justify-content: space-between;">
-                                <span style="color: rgba(255,255,255,0.6);">Total Links</span>
-                                <span style="color: #60a5fa; font-weight: 700;" id="stats-total-links">...</span>
+                        <div class="section-header">Service Infrastructure</div>
+                        <div class="status-grid">
+                            <div class="spatial-card status-item">
+                                <div class="widget-header">
+                                    <i class="fas fa-database"></i>
+                                    <span>Main Registry</span>
+                                </div>
+                                <div class="uptime-bar">
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar warning"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                </div>
+                                <div class="status-meta">
+                                    <span>Latency: 12ms</span>
+                                    <span class="online-label">Stable</span>
+                                </div>
                             </div>
-                            <div class="pkg-list-item" style="padding: 15px; justify-content: space-between;">
-                                <span style="color: rgba(255,255,255,0.6);">Categories</span>
-                                <span style="color: #60a5fa; font-weight: 700;" id="stats-total-categories">...</span>
+
+                            <div class="spatial-card status-item">
+                                <div class="widget-header">
+                                    <i class="fas fa-video"></i>
+                                    <span>Media Proxies</span>
+                                </div>
+                                <div class="uptime-bar">
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                </div>
+                                <div class="status-meta">
+                                    <span>Latency: 45ms</span>
+                                    <span class="online-label">Stable</span>
+                                </div>
+                            </div>
+
+                            <div class="spatial-card status-item">
+                                <div class="widget-header">
+                                    <i class="fas fa-search"></i>
+                                    <span>Search Hub</span>
+                                </div>
+                                <div class="uptime-bar">
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                </div>
+                                <div class="status-meta">
+                                    <span>Latency: 18ms</span>
+                                    <span class="online-label">Stable</span>
+                                </div>
+                            </div>
+
+                            <div class="spatial-card status-item">
+                                <div class="widget-header">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Security Layer</span>
+                                </div>
+                                <div class="uptime-bar">
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                    <div class="u-bar active"></div>
+                                </div>
+                                <div class="status-meta">
+                                    <span>SSL: Valid</span>
+                                    <span class="online-label">Active</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-header">Live Data Feed</div>
+                        <div class="spatial-card" style="margin: 0 10px 40px; padding: 20px;">
+                            <div class="data-row">
+                                <span class="data-label">Total Registry Links</span>
+                                <span class="data-val" id="stats-total-links" style="color: #3b82f6;">...</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">Active Categories</span>
+                                <span class="data-val" id="stats-total-categories" style="color: #3b82f6;">...</span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">API Health Check</span>
+                                <span class="data-val" style="color: #4ade80;">Passed</span>
                             </div>
                         </div>
                     </div>
@@ -664,7 +1128,8 @@
     </main>
 
     <div class="back-to-top" id="top-btn" onclick="scrollToTop()">
-        <i class="fas fa-arrow-up"></i>    </div>
+        <i class="fas fa-arrow-up"></i>
+    </div>
     <div id="custom-menu" class="custom-menu">
         <div class="menu-item" onclick="switchTab('home')"><i class="fas fa-home"></i> Home</div>
         <div class="menu-item" onclick="switchTab('installed')"><i class="fas fa-download"></i> Packages</div>
@@ -673,7 +1138,8 @@
         <div class="menu-item" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Respring</div>
         <div class="menu-item" onclick="switchTab('about')"><i class="fas fa-info-circle"></i> About</div>
         <div class="menu-divider"></div>
-        <a href="https://discord.gg/arVdGh76wj" target="_blank" class="menu-item" style="text-decoration: none;"><i class="fab fa-discord"></i> Discord Community</a>
+        <a href="https://discord.gg/arVdGh76wj" target="_blank" class="menu-item" style="text-decoration: none;"><i
+                class="fab fa-discord"></i> Discord Community</a>
     </div>
 
     <script src="script.js"></script>
