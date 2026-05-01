@@ -1272,6 +1272,14 @@
         "id": "photopea-158"
     },
     {
+        "name": "Spicetify CLI",
+        "desc": "Powerful CLI tool to customize Spotify client.",
+        "cat": "tools",
+        "cmd": "iwr -useb https://raw.githubusercontent.com/spicetify/cli/main/install.ps1 | iex",
+        "icon": "fas fa-music",
+        "id": "spicetify-cli-227"
+    },
+    {
         "name": "uBlock Origin",
         "desc": "Highly efficient ad blocker.",
         "cat": "ads",

@@ -25,6 +25,15 @@
     <div class="video-scanlines"></div>
     <div class="video-overlay"></div>
 
+    <!-- Fake Debugger Overlay -->
+    <div id="fake-debugger-bar">
+        <div class="debug-controls">
+            <div class="debug-btn resume" onclick="resumeFakeDebugger()"><i class="fas fa-play"></i></div>
+            <div class="debug-btn step"><i class="fas fa-redo-alt"></i></div>
+        </div>
+        <div class="debug-message">Paused in debugger</div>
+    </div>
+
     <div id="spatial-lock">
         <div class="face-scan-container">
             <div class="face-scan-frame"></div>
@@ -51,7 +60,7 @@
     </div>
 
     <audio id="bg-audio" loop>
-        <source src="https://r2.guns.lol/35537f34-cd15-4d22-93c4-ad08b81499fe.mp3" type="audio/mpeg">
+        <source src="https://r2.guns.lol/1c4d2c66-120e-4ec9-881a-54802191ae54.mp3" type="audio/mpeg">
     </audio>
 
     <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
@@ -89,6 +98,12 @@
             <div class="sidebar-item" onclick="switchTab('google', this)"><i class="fab fa-google"></i> Google Search
             </div>
             <div class="sidebar-item" onclick="switchTab('anime-search', this)"><i class="fas fa-camera"></i> Anime Search
+            </div>
+            <div class="sidebar-item" onclick="switchTab('kurdstream', this)"><i class="fas fa-play-circle"></i> KurdStream
+            </div>
+            <div class="sidebar-item" onclick="switchTab('kurddoblazh', this)"><i class="fas fa-microphone-alt"></i> KurdDoblazh
+            </div>
+            <div class="sidebar-item" onclick="switchTab('kurdmovie', this)"><i class="fas fa-film"></i> KurdMovie
             </div>
             <div class="sidebar-item" onclick="switchTab('api-hub', this)"><i class="fas fa-code"></i> API Hub
             </div>
@@ -332,6 +347,86 @@
                     </div>
                 </div>
 
+                <div id="view-kurdstream" class="view-content">
+                    <div class="tool-container">
+                        <div class="tool-hero">
+                            <i class="fas fa-play-circle" style="background: linear-gradient(45deg, #f59e0b, #ef4444); -webkit-background-clip: text; color: transparent;"></i>
+                            <h2>KurdStream Search</h2>
+                            <p>Search Movies & Series • Stream in HD</p>
+                        </div>
+
+                        <div class="tool-input-wrap">
+                            <input type="text" id="ks-search-input" class="tool-input" placeholder="Search for movies, series..."
+                                autocomplete="off" onkeydown="if(event.key === 'Enter') searchKurdStream()">
+                            <button id="ks-search-btn" class="tool-btn" onclick="searchKurdStream()">Search</button>
+                        </div>
+
+                        <div id="ks-loader" class="tt-custom-loader" style="display: none;">
+                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #f59e0b, #ef4444);"><i class="fas fa-play"></i></div>
+                            <div class="tt-loading-text">Fetching from KurdStream...</div>
+                        </div>
+
+                        <div id="ks-results" class="detail-group-transparent" style="margin-top: 20px;"></div>
+                        <div id="ks-details" class="ks-details-view" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <div id="view-kurddoblazh" class="view-content">
+                    <div class="tool-container">
+                        <div class="tool-hero">
+                            <i class="fas fa-microphone-alt" style="background: linear-gradient(45deg, #1862de, #0f3e8a); -webkit-background-clip: text; color: transparent;"></i>
+                            <h2>KurdDoblazh Hub</h2>
+                            <p>Dubbed Movies & Series • New Proxy Engine</p>
+                        </div>
+
+                        <div class="tool-input-wrap">
+                            <input type="text" id="kd-search-input" class="tool-input" placeholder="Search dubbed content..."
+                                autocomplete="off" onkeydown="if(event.key === 'Enter') searchKurdDoblazh()">
+                            <button id="kd-search-btn" class="tool-btn" style="background: linear-gradient(45deg, #1862de, #0f3e8a); border: none;" onclick="searchKurdDoblazh()">Search</button>
+                        </div>
+
+                        <div id="kd-labels" class="kd-labels-container" style="margin-bottom: 20px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px;"></div>
+
+                        <div id="kd-loader" class="tt-custom-loader" style="display: none;">
+                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #1862de, #0f3e8a);"><i class="fas fa-microphone-alt"></i></div>
+                            <div class="tt-loading-text">Connecting to KD Proxy...</div>
+                        </div>
+
+                        <div id="kd-results" class="kd-grid" style="margin-top: 20px;"></div>
+                        
+                        <div id="kd-pagination" style="display: none; justify-content: center; gap: 15px; margin-top: 30px;">
+                            <button class="app-btn" id="kd-prev-btn" onclick="kdPaginate(-1)"><i class="fas fa-chevron-left"></i> Previous</button>
+                            <button class="app-btn" id="kd-next-btn" onclick="kdPaginate(1)">Next <i class="fas fa-chevron-right"></i></button>
+                        </div>
+
+                        <div id="kd-details" class="kd-details-view" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <div id="view-kurdmovie" class="view-content">
+                    <div class="tool-container">
+                        <div class="tool-hero">
+                            <i class="fas fa-film" style="background: linear-gradient(45deg, #60a5fa, #3b82f6); -webkit-background-clip: text; color: transparent;"></i>
+                            <h2>Kurd-Movie</h2>
+                            <p>Premium Kurdish Cinema • WordPress Engine</p>
+                        </div>
+
+                        <div class="tool-input-wrap">
+                            <input type="text" id="km-search-input" class="tool-input" placeholder="Search movies, TV shows..."
+                                autocomplete="off" onkeydown="if(event.key === 'Enter') searchKurdMovie()">
+                            <button id="km-search-btn" class="tool-btn" style="background: linear-gradient(45deg, #60a5fa, #3b82f6); border: none;" onclick="searchKurdMovie()">Search</button>
+                        </div>
+
+                        <div id="km-loader" class="tt-custom-loader" style="display: none;">
+                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #60a5fa, #3b82f6);"><i class="fas fa-film"></i></div>
+                            <div class="tt-loading-text">Fetching from KurdMovie...</div>
+                        </div>
+
+                        <div id="km-results" class="kd-grid" style="margin-top: 20px;"></div>
+                        <div id="km-details" class="kd-details-view" style="display: none;"></div>
+                    </div>
+                </div>
+
                 <div id="view-api-hub" class="view-content">
                     <div class="tool-container">
                         <div class="tool-hero">
@@ -376,6 +471,24 @@
                              
                              <button class="app-btn" onclick="navigator.clipboard.writeText(window.location.origin + window.location.pathname + '#url='); showToast('Deep link prefix copied!', 'fa-check-circle');">
                                  <i class="fas fa-copy"></i> Copy Current Domain Prefix
+                             </button>
+
+                             <div class="section-header" style="margin-top: 30px;">KurdStream Public API</div>
+                             <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Direct access to Kurdish movies, series, and streaming embeds via a public seeker API.</p>
+                             
+                             <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Base Endpoint</div>
+                             <div class="code-block">https://kurdcinama-stream-seeker.lovable.app/api/public</div>
+                             
+                             <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Available Routes</div>
+                             <div class="detail-group" style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
+                                 <div class="detail-row"><span class="label">Search</span><span class="val">/search?q={query}</span></div>
+                                 <div class="detail-row"><span class="label">Movie</span><span class="val">/movie/{id}</span></div>
+                                 <div class="detail-row"><span class="label">Series</span><span class="val">/series/{id}</span></div>
+                                 <div class="detail-row"><span class="label">Embed</span><span class="val">/embed?movieId={id}</span></div>
+                             </div>
+
+                             <button class="app-btn" onclick="window.open('https://kurdcinama-stream-seeker.lovable.app/api/public/docs', '_blank')">
+                                 <i class="fas fa-external-link-alt"></i> View Full API Docs
                              </button>
                          </div>
 
