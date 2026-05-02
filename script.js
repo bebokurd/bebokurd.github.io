@@ -187,7 +187,7 @@ function handleDeepLink() {
         const tabId = hash.toLowerCase();
         const validTabs = [
             'home', 'installed', 'search', 'tiktok', 'instagram', 
-            'google', 'anime-search', 'kurdstream', 'kurddoblazh', 'kurdmovie', 'api-hub', 'faq', 'about', 
+            'google', 'anime-search', 'kurdstream', 'kurddoblazh', 'api-hub', 'faq', 'about', 
             'privacy', 'contact', 'status'
         ];
         if (validTabs.includes(tabId)) {
@@ -352,11 +352,6 @@ function switchTab(tabId, el = null) {
         if (resultsBox && resultsBox.innerHTML === "") {
             fetchKurdDoblazhLatest();
             fetchKurdDoblazhLabels();
-        }
-    } else if (tabId === 'kurdmovie') {
-        const resultsBox = document.getElementById('km-results');
-        if (resultsBox && resultsBox.innerHTML === "") {
-            searchKurdMovie('latest'); // Assuming empty query or 'latest' might work for KM
         }
     }
 }
@@ -1275,6 +1270,20 @@ let kdCurrentMode = 'latest'; // 'latest' or 'search'
 let kdCurrentQuery = '';
 let kdCurrentLabel = '';
 
+// Upgrade Blogger thumbnail URL to high resolution.
+// Handles both URL formats returned by the API:
+//   Old: "...=s72-c"   → "...=s1200"
+//   New: ".../s640/file.jpg" → ".../s1600/file.jpg"
+function upgradeBloggerThumb(url) {
+    if (!url) return url;
+    // Old-style: ends with =sNNN or =sNNN-c
+    if (/=s\d+(-c)?$/.test(url)) return url.replace(/=s\d+(-c)?$/, '=s1200');
+    // New-style: has /sNNN/ in path
+    if (/\/s\d+\//.test(url)) return url.replace(/\/s\d+\//, '/s1200/');
+    return url;
+}
+
+
 async function fetchKurdDoblazhLatest(label = '', start = 1) {
     const resultsBox = document.getElementById('kd-results');
     const detailsBox = document.getElementById('kd-details');
@@ -1417,12 +1426,20 @@ function renderKDResults(items, append = false) {
     }
 
     let html = append ? resultsBox.innerHTML : '';
-    items.forEach((item, index) => {
+    items.forEach((item) => {
+        // Prefer images[0] (already full-res from API), fallback to upgraded thumbnail
+        let thumb = (item.images && item.images.length > 0)
+            ? item.images[0]
+            : upgradeBloggerThumb(item.thumbnail);
+
+        const cats = (item.categories && item.categories.length > 0)
+            ? item.categories[0] : 'Dubbed';
+
         html += `
             <div class="kd-card" onclick="fetchKDPost('${item.url}')">
-                <div class="kd-card-badge">Dubbed</div>
+                <div class="kd-card-badge">${cats}</div>
                 <div class="kd-card-img-container">
-                    <img src="${item.thumbnail}" alt="${item.title}" loading="lazy">
+                    <img src="${thumb}" alt="${item.title}" loading="lazy" onerror="this.src='${item.thumbnail}'">
                 </div>
                 <div class="kd-card-info">
                     <div class="kd-card-title">${item.title}</div>
@@ -1433,7 +1450,7 @@ function renderKDResults(items, append = false) {
     resultsBox.innerHTML = html;
 }
 
-async function fetchKDPost(url) {
+async function fetchKDPost(input) {
     const resultsBox = document.getElementById('kd-results');
     const detailsBox = document.getElementById('kd-details');
     const loader = document.getElementById('kd-loader');
@@ -1444,43 +1461,95 @@ async function fetchKDPost(url) {
     loader.style.display = 'flex';
 
     try {
-        const response = await fetch(`${KD_PROXY_API}/kd/post?url=${encodeURIComponent(url)}&include=html|summary`);
+        // Use resolve endpoint if input looks like a path/slug, otherwise use post
+        const isUrl = input.startsWith('http');
+        const endpoint = isUrl ? 'post?url=' : 'resolve?input=';
+        const fetchUrl = `${KD_PROXY_API}/kd/${endpoint}${encodeURIComponent(input)}&include=html`;
+        
+        console.log("Fetching KD Post:", fetchUrl);
+        const response = await fetch(fetchUrl);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`API Error ${response.status}: ${errorText}`);
+        }
+        
         const data = await response.json();
         renderKDDetails(data);
         loader.style.display = 'none';
         detailsBox.style.display = 'block';
         document.getElementById('main-scroll').scrollTop = 0;
     } catch (err) {
-        console.error(err);
-        showToast('Failed to fetch post details.', 'fa-times-circle');
+        console.error("KD Fetch Error:", err);
+        showToast(`Error: ${err.message}`, 'fa-times-circle');
         resultsBox.style.display = 'grid';
         pagination.style.display = 'flex';
         loader.style.display = 'none';
     }
 }
 
-function renderKDDetails(data) {
+function renderKDDetails(rawData) {
+    console.log("KurdDoblazh Post Data:", rawData);
     const detailsBox = document.getElementById('kd-details');
-    const streams = data.streams || [];
     
-    let streamsHtml = '';
-    if (streams.length === 0) {
-        streamsHtml = '<p style="color:rgba(255,255,255,0.5); padding:20px;">No direct streams extracted. Try the official link below.</p>';
-    } else {
-        streams.forEach(srv => {
-            streamsHtml += `
-                <button class="kd-server-btn" onclick="renderKSEmbed('${srv.url}', '${data.title.replace(/'/g, "\\'")} - ${srv.name}')">
-                    <i class="fas fa-play-circle"></i>
-                    <div>
-                        <div style="font-size: 0.95rem;">${srv.name}</div>
-                        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">Dubbed Stream</div>
-                    </div>
-                </button>
-            `;
-        });
+    // Support nested response structures if they exist
+    const data = rawData.post || rawData.item || rawData;
+
+    if (!data || (!data.title && !data.id)) {
+        detailsBox.innerHTML = `
+            <button class="kd-back-btn" onclick="document.getElementById('kd-details').style.display='none'; document.getElementById('kd-results').style.display='grid';">
+                <i class="fas fa-arrow-left"></i> Back to Results
+            </button>
+            <div style="text-align:center; padding:60px; color:rgba(255,255,255,0.4);">
+                <i class="fas fa-exclamation-triangle" style="font-size:3rem; margin-bottom:15px; display:block; color:#ef4444;"></i>
+                Failed to load valid content data.
+            </div>
+        `;
+        return;
     }
 
-    const heroImage = (data.images && data.images.length > 0) ? data.images[0] : '';
+    const streams = data.streams || [];
+    const html = data.content_html || data.content || "";
+    
+    // Extract metadata from Blogger script if available
+    const extract = (key) => {
+        const regex = new RegExp(`var ${key} =\\s*"(.*?)"`, 'i');
+        const match = html.match(regex);
+        return match ? match[1] : null;
+    };
+
+    const rating = extract('rating');
+    const timing = extract('timing');
+    const story = extract('story');
+    const genre = extract('zhanarr');
+    const actor = extract('aktar');
+
+    // Group streams by type
+    const watchServers = streams.filter(s => s.type === 'iframe');
+    const downloadServers = streams.filter(s => s.type !== 'iframe');
+
+    const safeTitle = (data.title || 'Untitled Content').replace(/'/g, "\\'");
+
+    const renderServerBtn = (srv) => {
+        const serverName = srv.label || srv.name || srv.host || "Unknown Server";
+        return `
+            <button class="kd-server-btn" onclick="${srv.type === 'iframe' ? `renderKSEmbed('${srv.url}', '${safeTitle} - ${serverName}')` : `window.open('${srv.url}', '_blank')`}">
+                <i class="fas ${srv.type === 'iframe' ? 'fa-play-circle' : 'fa-external-link-alt'}"></i>
+                <div>
+                    <div style="font-size: 0.95rem;">${serverName}</div>
+                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">${srv.type === 'iframe' ? 'Watch Online' : 'Download Host'}</div>
+                </div>
+            </button>
+        `;
+    };
+
+    let watchHtml = watchServers.map(renderServerBtn).join('');
+    let downloadHtml = downloadServers.map(renderServerBtn).join('');
+
+    // Hero: images[0] is already full-res from API; upgrade thumbnail as fallback
+    let heroImage = (data.images && data.images.length > 0)
+        ? upgradeBloggerThumb(data.images[0])
+        : upgradeBloggerThumb(data.thumbnail || '');
 
     detailsBox.innerHTML = `
         <button class="kd-back-btn" onclick="document.getElementById('kd-details').style.display='none'; document.getElementById('kd-results').style.display='grid';">
@@ -1488,165 +1557,45 @@ function renderKDDetails(data) {
         </button>
 
         <div class="kd-hero-container">
-            ${heroImage ? `<img class="kd-hero-bg" src="${heroImage}" alt="${data.title}">` : '<div class="kd-hero-bg" style="background: #111;"></div>'}
+            ${heroImage ? `<img class="kd-hero-bg" src="${heroImage}" alt="${data.title || 'Hero'}">` : '<div class="kd-hero-bg" style="background: #111;"></div>'}
             <div class="kd-hero-overlay">
-                <div class="kd-hero-title">${data.title}</div>
-                <div style="display: flex; gap: 10px;">
-                    <span class="kd-meta-tag">Kurdish Dubbed</span>
-                    <span class="kd-meta-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: rgba(239, 68, 68, 0.3);">HD</span>
+                <div class="kd-hero-title">${data.title || 'Untitled Content'}</div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <span class="kd-meta-tag"><i class="fas fa-microphone-alt"></i> Kurdish Dubbed</span>
+                    ${rating ? `<span class="kd-meta-tag" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);"><i class="fas fa-star"></i> ${rating}</span>` : ''}
+                    ${timing ? `<span class="kd-meta-tag" style="background: rgba(59, 130, 246, 0.2); color: #93c5fd; border-color: rgba(59, 130, 246, 0.3);"><i class="fas fa-clock"></i> ${timing}</span>` : ''}
                 </div>
             </div>
         </div>
 
-        ${data.content ? `
-            <div class="section-header">Description & Information</div>
-            <div class="ks-desc-card" style="font-size: 0.9rem; max-height: 300px; overflow-y: auto;">
-                ${data.content}
+        <div class="section-header">Information</div>
+        <div class="ks-desc-card" style="font-size: 0.9rem;">
+            ${genre ? `<div style="margin-bottom: 10px;"><strong style="color: #3b82f6;">Genre:</strong> ${genre}</div>` : ''}
+            ${actor && actor !== '-' ? `<div style="margin-bottom: 10px;"><strong style="color: #3b82f6;">Actors:</strong> ${actor}</div>` : ''}
+            <div style="line-height: 1.6; color: rgba(255,255,255,0.8);">${story || data.summary || 'No description available for this title.'}</div>
+        </div>
+
+        ${watchHtml ? `
+            <div class="section-header">Watch Online (Servers)</div>
+            <div class="kd-server-grid" style="margin-bottom: 20px;">
+                ${watchHtml}
             </div>
         ` : ''}
 
-        <div class="section-header">Streaming Servers</div>
-        <div class="kd-server-grid">
-            ${streamsHtml}
-        </div>
+        ${downloadHtml ? `
+            <div class="section-header">Download Links</div>
+            <div class="kd-server-grid">
+                ${downloadHtml}
+            </div>
+        ` : ''}
+
+        ${!watchHtml && !downloadHtml ? `<div style="padding:20px; color:rgba(255,255,255,0.4); text-align:center;">No streaming or download links found.</div>` : ''}
         
         <div style="margin-top: 30px; text-align: center;">
             <button class="app-btn" onclick="window.open('${data.url}', '_blank')" style="background: rgba(255, 255, 255, 0.05);">
-                <i class="fas fa-external-link-alt"></i> View on Official Website
+                <i class="fas fa-external-link-alt"></i> View on KurdDoblazh.com
             </button>
         </div>
     `;
 }
 
-/* KurdMovie Functions */
-async function searchKurdMovie(queryOverride = null) {
-    const input = document.getElementById('km-search-input');
-    const query = queryOverride || input.value.trim();
-    
-    // For KurdMovie, if query is empty and not overridden, we might want to fetch a default list
-    // But since the API details for KM latest weren't provided, we'll just handle search.
-    if (!query && !queryOverride) return;
-
-    const resultsBox = document.getElementById('km-results');
-    const detailsBox = document.getElementById('km-details');
-    const loader = document.getElementById('km-loader');
-    const btn = document.getElementById('km-search-btn');
-
-    resultsBox.style.display = 'none';
-    detailsBox.style.display = 'none';
-    loader.style.display = 'flex';
-    btn.disabled = true;
-
-    try {
-        const fetchUrl = query === 'latest' 
-            ? `${KD_PROXY_API}/km/list?limit=24` 
-            : `${KD_PROXY_API}/km/list?q=${encodeURIComponent(query)}&limit=24`;
-            
-        const response = await fetch(fetchUrl);
-        const data = await response.json();
-        resultsBox.innerHTML = `<div class="section-header" style="grid-column: 1/-1; margin-top: 0;">${query === 'latest' ? 'Recent Additions' : `Results for "${query}"`}</div>`;
-        renderKMResults(data.items || [], true);
-    } catch (err) {
-        console.error(err);
-        showToast('KurdMovie API error.', 'fa-times-circle');
-    } finally {
-        loader.style.display = 'none';
-        btn.disabled = false;
-        resultsBox.style.display = 'grid';
-    }
-}
-
-function renderKMResults(items, append = false) {
-    const resultsBox = document.getElementById('km-results');
-    if (!items || items.length === 0) {
-        if (!append) resultsBox.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.4); grid-column: 1/-1;"><i class="fas fa-film" style="font-size:4rem; margin-bottom:20px; display:block; opacity:0.1;"></i>No items found on KurdMovie.</div>';
-        return;
-    }
-
-    let html = append ? resultsBox.innerHTML : '';
-    items.forEach((item) => {
-        html += `
-            <div class="kd-card" onclick="fetchKMItem('${item.url}')">
-                <div class="kd-card-badge" style="background: #3b82f6;">${item.type || 'Movie'}</div>
-                <div class="kd-card-img-container">
-                    <img src="${item.thumbnail}" alt="${item.title}" loading="lazy">
-                </div>
-                <div class="kd-card-info">
-                    <div class="kd-card-title">${item.title}</div>
-                </div>
-            </div>
-        `;
-    });
-    resultsBox.innerHTML = html;
-}
-
-async function fetchKMItem(url) {
-    const resultsBox = document.getElementById('km-results');
-    const detailsBox = document.getElementById('km-details');
-    const loader = document.getElementById('km-loader');
-    
-    resultsBox.style.display = 'none';
-    loader.style.display = 'flex';
-
-    try {
-        const response = await fetch(`${KD_PROXY_API}/km/item?url=${encodeURIComponent(url)}`);
-        const data = await response.json();
-        renderKMDetails(data);
-        loader.style.display = 'none';
-        detailsBox.style.display = 'block';
-    } catch (err) {
-        console.error(err);
-        showToast('Failed to fetch movie details.', 'fa-times-circle');
-        resultsBox.style.display = 'grid';
-        loader.style.display = 'none';
-    }
-}
-
-function renderKMDetails(data) {
-    const detailsBox = document.getElementById('km-details');
-    const streams = data.streams || [];
-    
-    let streamsHtml = '';
-    if (streams.length === 0) {
-        streamsHtml = '<p style="color:rgba(255,255,255,0.5); padding:20px;">No direct streams found. Use the link below.</p>';
-    } else {
-        streams.forEach(srv => {
-            streamsHtml += `
-                <button class="kd-server-btn" style="border-color: rgba(59, 130, 246, 0.2);" onclick="renderKSEmbed('${srv.url}', '${data.title.replace(/'/g, "\\'")} - ${srv.name}')">
-                    <i class="fas fa-play-circle" style="color: #3b82f6;"></i>
-                    <div>
-                        <div style="font-size: 0.95rem;">${srv.name}</div>
-                        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">KurdMovie Server</div>
-                    </div>
-                </button>
-            `;
-        });
-    }
-
-    detailsBox.innerHTML = `
-        <button class="kd-back-btn" onclick="document.getElementById('km-details').style.display='none'; document.getElementById('km-results').style.display='grid';">
-            <i class="fas fa-arrow-left"></i> Back to Results
-        </button>
-
-        <div class="kd-hero-container">
-            <img class="kd-hero-bg" src="${data.thumbnail}" alt="${data.title}">
-            <div class="kd-hero-overlay">
-                <div class="kd-hero-title">${data.title}</div>
-                <div style="display: flex; gap: 10px;">
-                    <span class="kd-meta-tag" style="background: rgba(59, 130, 246, 0.2); color: #93c5fd; border-color: rgba(59, 130, 246, 0.3);">${data.type || 'Movie'}</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="section-header">Available Servers</div>
-        <div class="kd-server-grid">
-            ${streamsHtml}
-        </div>
-        
-        <div style="margin-top: 30px; text-align: center;">
-            <button class="app-btn" onclick="window.open('${data.url}', '_blank')" style="background: rgba(255,255,255,0.05);">
-                <i class="fas fa-external-link-alt"></i> View on Kurd-Movie.com
-            </button>
-        </div>
-    `;
-}

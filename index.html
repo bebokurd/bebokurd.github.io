@@ -59,7 +59,7 @@
                 <i class="fas fa-box-open"></i>
             </div>
             <div class="boot-title">Cydia Elite</div>
-            <div class="boot-subtitle">OS v2.8 (Build 9A334)</div>
+            <div class="boot-subtitle">OS v4.0 (Build 12A402)</div>
         </div>
         <div class="log-container" id="boot-log"></div>
         <div class="boot-tap-hint">Tap to Respring</div>
@@ -111,8 +111,6 @@
             </div>
             <div class="sidebar-item" onclick="switchTab('kurddoblazh', this)"><i class="fas fa-microphone-alt"></i>
                 KurdDoblazh
-            </div>
-            <div class="sidebar-item" onclick="switchTab('kurdmovie', this)"><i class="fas fa-film"></i> KurdMovie
             </div>
             <div class="sidebar-item" onclick="switchTab('api-hub', this)"><i class="fas fa-code"></i> API Hub
             </div>
@@ -470,34 +468,6 @@
                     </div>
                 </div>
 
-                <div id="view-kurdmovie" class="view-content">
-                    <div class="tool-container">
-                        <div class="tool-hero">
-                            <i class="fas fa-film"
-                                style="background: linear-gradient(45deg, #60a5fa, #3b82f6); -webkit-background-clip: text; color: transparent;"></i>
-                            <h2>Kurd-Movie</h2>
-                            <p>Premium Kurdish Cinema • WordPress Engine</p>
-                        </div>
-
-                        <div class="tool-input-wrap">
-                            <input type="text" id="km-search-input" class="tool-input"
-                                placeholder="Search movies, TV shows..." autocomplete="off"
-                                onkeydown="if(event.key === 'Enter') searchKurdMovie()">
-                            <button id="km-search-btn" class="tool-btn"
-                                style="background: linear-gradient(45deg, #60a5fa, #3b82f6); border: none;"
-                                onclick="searchKurdMovie()">Search</button>
-                        </div>
-
-                        <div id="km-loader" class="tt-custom-loader" style="display: none;">
-                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #60a5fa, #3b82f6);"><i
-                                    class="fas fa-film"></i></div>
-                            <div class="tt-loading-text">Fetching from KurdMovie...</div>
-                        </div>
-
-                        <div id="km-results" class="kd-grid" style="margin-top: 20px;"></div>
-                        <div id="km-details" class="kd-details-view" style="display: none;"></div>
-                    </div>
-                </div>
 
                 <div id="view-api-hub" class="view-content">
                     <div class="tool-container">
@@ -580,6 +550,27 @@
                                 onclick="window.open('https://kurdcinama-stream-seeker.lovable.app/api/public/docs', '_blank')">
                                 <i class="fas fa-external-link-alt"></i> View Full API Docs
                             </button>
+
+                            <div class="section-header" style="margin-top: 30px;">KurdDoblazh Proxy API</div>
+                            <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">A high-performance proxy for
+                                KurdDoblazh.com content, optimized for mobile and spatial browsers.</p>
+
+                            <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Base Endpoint</div>
+                            <div class="code-block">https://kurd-doblazh-api.lovable.app</div>
+
+                            <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Available
+                                Routes</div>
+                            <div class="detail-group"
+                                style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
+                                <div class="detail-row"><span class="label">Search</span><span
+                                        class="val">/api/kd/search?q={q}</span></div>
+                                <div class="detail-row"><span class="label">Latest</span><span
+                                        class="val">/api/kd/latest?limit={n}</span></div>
+                                <div class="detail-row"><span class="label">Labels</span><span
+                                        class="val">/api/kd/labels</span></div>
+                                <div class="detail-row"><span class="label">Resolve</span><span
+                                        class="val">/api/kd/resolve?input={url}</span></div>
+                            </div>
                         </div>
 
                         <div id="api-pane-tester" class="api-pane">
