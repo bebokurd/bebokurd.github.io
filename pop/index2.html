@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<body>
+
+<button class="login" onclick="login()">
+  Login With Spotify
+</button>
+
+<div class="player">
+  <img id="cover" class="cover" src="" alt="Album Cover">
+
+  <div class="info">
+    <div id="title" class="title">Not Playing</div>
+    <div id="artist" class="artist">Spotify</div>
+
+    <div class="bar">
+      <div id="progress" class="progress"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const clientId = 'e2293944bcdb45e7abd8c56febb948d0';
+const redirectUri = window.location.origin + window.location.pathname;
+const scopes = [
+  'user-read-currently-playing',
+  'user-read-playback-state'
+].join(' ');
+
+function login() {
+  const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
+
+  window.location.href = authUrl;
+}
+
+function getAccessToken() {
+  const hash = window.location.hash.substring(1);
+  const params = new URLSearchParams(hash);
+  return params.get('access_token');
+}
+
+const token = getAccessToken();
+
+async function updateSong() {
+  if (!token) return;
+
+  const res = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  if (res.status === 204) return;
+
+  const data = await res.json();
+
+  if (!data || !data.item) return;
+
+  document.getElementById('title').textContent = data.item.name;
+
+  document.getElementById('artist').textContent = data.item.artists
+    .map(a => a.name)
+    .join(', ');
+
+  document.getElementById('cover').src = data.item.album.images[0].url;
+
+  const progress = (data.progress_ms / data.item.duration_ms) * 100;
+
+  document.getElementById('progress').style.width = progress + '%';
+}
+
+setInterval(updateSong, 1000);
+updateSong();
+</script>
+
+</body>
+</html>
