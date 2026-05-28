@@ -66,7 +66,7 @@
     </div>
 
     <audio id="bg-audio" loop>
-        <source src="https://r2.guns.lol/1c4d2c66-120e-4ec9-881a-54802191ae54.mp3" type="audio/mpeg">
+        <source src="/lala.mp3" type="audio/mpeg">
     </audio>
 
     <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
@@ -135,6 +135,8 @@
             <div class="sidebar-item" onclick="filterCategory('mods', this)"><i class="fas fa-wrench"></i> Game Mods
             </div>
             <div class="sidebar-item" onclick="filterCategory('tools', this)"><i class="fas fa-toolbox"></i> PC Tools
+            </div>
+            <div class="sidebar-item" onclick="filterCategory('browser', this)"><i class="fas fa-globe"></i> Web Browsers
             </div>
             <div class="sidebar-item" onclick="filterCategory('scripts', this)"><i class="fas fa-scroll"></i> Automation
                 Scripts
@@ -283,7 +285,7 @@
                     <div class="tool-container">
                         <div class="tool-hero">
                             <i class="fab fa-tiktok"
-                                style="background: linear-gradient(#69C9D0, #EE1D52); -webkit-background-clip: text; color: transparent;"></i>
+                                style="background: linear-gradient(#69C9D0, #EE1D52); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
                             <h2>TikTok Downloader</h2>
                             <p>Download Videos • No Watermark</p>
                         </div>
@@ -331,7 +333,7 @@
                     <div class="tool-container">
                         <div class="tool-hero">
                             <i class="fab fa-google"
-                                style="background: linear-gradient(45deg, #4285F4, #EA4335, #FBBC05, #34A853); -webkit-background-clip: text; color: transparent;"></i>
+                                style="background: linear-gradient(45deg, #4285F4, #EA4335, #FBBC05, #34A853); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
                             <h2>Google Search</h2>
                             <p>Explore the web • Spatial Engine</p>
                         </div>
@@ -371,7 +373,7 @@
                     <div class="tool-container">
                         <div class="tool-hero">
                             <i class="fas fa-camera"
-                                style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); -webkit-background-clip: text; color: transparent;"></i>
+                                style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
                             <h2>Anime Scene Search</h2>
                             <p>Drop or paste an image to find the source</p>
                         </div>
@@ -403,9 +405,25 @@
                     <div class="tool-container">
                         <div class="tool-hero">
                             <i class="fas fa-play-circle"
-                                style="background: linear-gradient(45deg, #f59e0b, #ef4444); -webkit-background-clip: text; color: transparent;"></i>
+                                style="background: linear-gradient(45deg, #f59e0b, #ef4444); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
                             <h2>KurdStream Search</h2>
                             <p>Search Movies & Series • Stream in HD</p>
+                        </div>
+
+                        <!-- Source Switcher Tabs -->
+                        <div class="ks-source-tabs">
+                            <div class="ks-source-tab active" onclick="switchKsSource('kurdstream', this)">
+                                <i class="fas fa-database"></i> KurdStream DB
+                            </div>
+                            <div class="ks-source-tab" onclick="switchKsSource('videasy', this)">
+                                <i class="fas fa-globe"></i> TMDB & VIDEASY
+                            </div>
+                        </div>
+
+                        <!-- VIDEASY Sub-tabs -->
+                        <div id="ks-videasy-subtabs" style="display: none; justify-content: center; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;">
+                            <button class="kd-label-chip active" onclick="switchVideasySub('tmdb', this)"><i class="fas fa-film"></i> Movies & TV</button>
+                            <button class="kd-label-chip" onclick="switchVideasySub('anime', this)"><i class="fas fa-ghost"></i> Anime (AniList)</button>
                         </div>
 
                         <div class="tool-input-wrap">
@@ -418,7 +436,7 @@
                         <div id="ks-loader" class="tt-custom-loader" style="display: none;">
                             <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #f59e0b, #ef4444);"><i
                                     class="fas fa-play"></i></div>
-                            <div class="tt-loading-text">Fetching from KurdStream...</div>
+                            <div class="tt-loading-text" id="ks-loader-text">Fetching from KurdStream...</div>
                         </div>
 
                         <div id="ks-results" class="detail-group-transparent" style="margin-top: 20px;"></div>
@@ -430,7 +448,7 @@
                     <div class="tool-container">
                         <div class="tool-hero">
                             <i class="fas fa-microphone-alt"
-                                style="background: linear-gradient(45deg, #1862de, #0f3e8a); -webkit-background-clip: text; color: transparent;"></i>
+                                style="background: linear-gradient(45deg, #1862de, #0f3e8a); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
                             <h2>KurdDoblazh Hub</h2>
                             <p>Dubbed Movies & Series • New Proxy Engine</p>
                         </div>
@@ -698,20 +716,17 @@
                             </div>
                             <div class="about-title-group">
                                 <h2>Cydia Elite</h2>
-                                <p>Spatial OS v2.8 (Build 9A334)</p>
+                                <p>Spatial System v2.8 (Build 9A334)</p>
                             </div>
                         </div>
 
-                        <div class="spatial-card" style="margin: 0 10px 20px;">
+                        <div class="spatial-card" style="margin: 0 20px 25px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.01);">
                             <div class="widget-header">
-                                <i class="fas fa-quote-left"></i>
+                                <i class="fas fa-quote-left" style="color: #3b82f6;"></i>
                                 <span>The Vision</span>
                             </div>
-                            <p style="color: rgba(255,255,255,0.7); line-height: 1.8; margin: 0; font-size: 1rem;">
-                                Developed by <strong>Chya Luqman</strong>, Cydia Elite is more than just a link
-                                repository. It's an exploration of how classic package management aesthetics can evolve
-                                into the era of spatial computing. Our goal is to provide a unified, secure, and
-                                beautiful interface for power users.
+                            <p style="color: rgba(255,255,255,0.7); line-height: 1.8; margin: 0; font-size: 1.05rem; font-weight: 500;">
+                                Developed by <strong>Chya Luqman</strong>, Cydia Elite is an architectural study in how classic package management can evolve into the era of spatial computing. We provide a unified, secure, and high-fidelity interface for the next generation of power users.
                             </p>
                         </div>
 
@@ -723,62 +738,52 @@
                             </div>
                             <div class="about-stat-box">
                                 <i class="fas fa-bolt"></i>
-                                <div class="stat-num">60fps</div>
+                                <div class="stat-num">120hz</div>
                                 <div class="stat-lbl">Fluidity</div>
                             </div>
                             <div class="about-stat-box">
                                 <i class="fas fa-shield-virus"></i>
-                                <div class="stat-num">100%</div>
-                                <div class="stat-lbl">Private</div>
+                                <div class="stat-num">Secure</div>
+                                <div class="stat-lbl">Environment</div>
                             </div>
                         </div>
 
-                        <div class="spatial-card" style="margin: 0 10px 20px;">
-                            <div class="widget-header">
-                                <i class="fas fa-shield-alt"></i>
-                                <span>Project Leadership</span>
-                            </div>
-
+                        <div class="section-header">Project Leadership</div>
+                        <div class="spatial-card" style="margin: 0 20px 30px; padding: 25px;">
                             <div class="dev-spotlight">
                                 <img src="https://i.pinimg.com/1200x/eb/48/73/eb487359acc13ab1ad5e1918e14cd49e.jpg"
                                     class="dev-mini-avatar" alt="Chya Luqman">
                                 <div class="dev-info">
                                     <div class="dev-name">Chya Luqman</div>
-                                    <div class="dev-role" style="color: #f59e0b;">Founder & Lead Architect</div>
+                                    <div class="dev-role">Lead Architect & Founder</div>
                                     <div class="dev-socials">
-                                        <a href="https://discord.gg/YTeRSG8kER" target="_blank"><i
-                                                class="fab fa-discord"></i></a>
-                                        <a href="https://www.instagram.com/chya_luqman/" target="_blank"><i
-                                                class="fab fa-instagram"></i></a>
+                                        <a href="https://discord.gg/YTeRSG8kER" target="_blank"><i class="fab fa-discord"></i></a>
+                                        <a href="https://www.instagram.com/chya_luqman/" target="_blank"><i class="fab fa-instagram"></i></a>
                                         <a href="mailto:support@cydia-elite.com"><i class="fas fa-envelope"></i></a>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="dev-spotlight"
-                                style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);">
+                            <div class="dev-spotlight" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
                                 <img src="https://cdn.discordapp.com/avatars/738889970047123597/fa78bcf3e9d70f1776060748b6aa6525.webp?size=1024"
                                     class="dev-mini-avatar" alt="SH4">
                                 <div class="dev-info">
                                     <div class="dev-name">SH4</div>
-                                    <div class="dev-role" style="color: #3b82f6;">Staff Moderator</div>
+                                    <div class="dev-role">Staff Moderator</div>
                                     <div class="dev-socials">
-                                        <a href="https://discord.gg/YTeRSG8kER" target="_blank"><i
-                                                class="fab fa-discord"></i></a>
+                                        <a href="https://discord.gg/YTeRSG8kER" target="_blank"><i class="fab fa-discord"></i></a>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="dev-spotlight"
-                                style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);">
+                            <div class="dev-spotlight" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
                                 <img src="https://cdn.discordapp.com/avatars/1090740216609898550/b5bd0ab40adcfe9cdd1d3ba3b57525c8.webp?size=1024"
                                     class="dev-mini-avatar" alt="Admiral Xwaro">
                                 <div class="dev-info">
-                                    <div class="dev-name"> xwaro</div>
-                                    <div class="dev-role" style="color: #ef4444;">Project Admiral</div>
+                                    <div class="dev-name">xwaro</div>
+                                    <div class="dev-role">Project Admiral</div>
                                     <div class="dev-socials">
-                                        <a href="https://discord.gg/YTeRSG8kER" target="_blank"><i
-                                                class="fab fa-discord"></i></a>
+                                        <a href="https://discord.gg/YTeRSG8kER" target="_blank"><i class="fab fa-discord"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -786,53 +791,56 @@
 
                         <div class="section-header">Supported Platforms</div>
                         <div class="platforms-grid">
-                            <div class="platform-item"><i class="fab fa-windows"></i><span>Windows</span></div>
-                            <div class="platform-item"><i class="fab fa-apple"></i><span>iOS / Mac</span></div>
-                            <div class="platform-item"><i class="fab fa-android"></i><span>Android</span></div>
-                            <div class="platform-item"><i class="fas fa-vr-cardboard"></i><span>Spatial</span></div>
+                            <div class="platform-item"><i class="fab fa-windows"></i><span>Windows OS</span></div>
+                            <div class="platform-item"><i class="fab fa-apple"></i><span>macOS / iOS</span></div>
+                            <div class="platform-item"><i class="fab fa-android"></i><span>Android OS</span></div>
+                            <div class="platform-item"><i class="fas fa-vr-cardboard"></i><span>Spatial / Vision</span></div>
                         </div>
 
-                        <div class="section-header">Version Changelog</div>
+                        <div class="section-header">System Changelog</div>
                         <div class="changelog-container">
                             <div class="changelog-item">
-                                <div class="cl-version">v2.8</div>
-                                <div class="cl-desc">Spatial OS overhaul, improved API hub, and new streaming proxies.
-                                </div>
+                                <div class="cl-version">v2.8.0</div>
+                                <div class="cl-desc">Spatial OS architecture overhaul, improved API hub integration, and high-fidelity UI components.</div>
                             </div>
                             <div class="changelog-item">
-                                <div class="cl-version">v2.5</div>
-                                <div class="cl-desc">Added TikTok and Instagram search utilities.</div>
+                                <div class="cl-version">v2.5.0</div>
+                                <div class="cl-desc">Added TikTok and Instagram deep-search utilities and social media scrapers.</div>
                             </div>
                             <div class="changelog-item">
-                                <div class="cl-version">v2.0</div>
-                                <div class="cl-desc">Initial Cydia Elite portal launch with local database.</div>
+                                <div class="cl-version">v2.0.0</div>
+                                <div class="cl-desc">Initial Cydia Elite portal launch with local database and glassmorphic base layer.</div>
                             </div>
                         </div>
 
-                        <div class="section-header">Core Technologies</div>
-                        <div class="detail-group" style="margin-bottom: 30px;">
+                        <div class="section-header">Core Infrastructure</div>
+                        <div class="detail-group" style="margin-bottom: 40px; border-color: rgba(59, 130, 246, 0.2);">
                             <div class="pkg-list-item">
                                 <div class="pkg-list-icon"><i class="fas fa-cubes"></i></div>
                                 <div class="pkg-list-info">
                                     <span class="pkg-list-name">Spatial Engine</span>
-                                    <span class="pkg-list-desc">Glassmorphic UI with CSS Backdrop-Filters</span>
+                                    <span class="pkg-list-desc">Glassmorphic UI with Dynamic Backdrop-Filters</span>
                                 </div>
                             </div>
                             <div class="pkg-list-item">
                                 <div class="pkg-list-icon"><i class="fas fa-network-wired"></i></div>
                                 <div class="pkg-list-info">
                                     <span class="pkg-list-name">Unified API Hub</span>
-                                    <span class="pkg-list-desc">Centralized data.json management</span>
+                                    <span class="pkg-list-desc">Centralized real-time data.json management</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div style="text-align: center; padding: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
-                            <div style="font-size: 0.85rem; color: #3b82f6; font-weight: 700; letter-spacing: 1px;">
-                                DESIGNED IN KURDISTAN</div>
-                            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.3); margin-top: 5px;">© 2026 Chya
-                                Luqman. All rights reserved.</div>
+                        <div style="text-align: center; padding: 40px 20px; border-top: 1px solid rgba(255,255,255,0.05); background: linear-gradient(to bottom, transparent, rgba(59, 130, 246, 0.02));">
+                            <div style="font-size: 0.9rem; color: #3b82f6; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;">
+                                ARCHITECTED IN KURDISTAN</div>
+                            <div style="font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-top: 8px; font-weight: 500;">© 2026 Chya Luqman. All rights reserved.</div>
+                            <div style="margin-top: 15px; font-size: 0.7rem; color: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 1px;">
+                                Build ID: CE-9A334-SPATIAL
+                            </div>
                         </div>
+                    </div>
+                </div>
                     </div>
                 </div>
 
@@ -904,50 +912,56 @@
                                 <div class="ping-wave"></div>
                             </div>
                             <h2>Connect Hub</h2>
-                            <p>We're here to help you navigate the spatial ecosystem.</p>
+                            <p>Architecting community and direct support channels.</p>
                         </div>
 
                         <div class="contact-grid">
-                            <div class="spatial-card">
+                            <div class="spatial-card contact-card">
+                                <i class="fab fa-discord brand-icon-large"></i>
                                 <div class="widget-header">
-                                    <i class="fab fa-discord"></i>
-                                    <span>Discord</span>
+                                    <i class="fab fa-discord" style="color: #7289da;"></i>
+                                    <span>Discord Alpha</span>
                                 </div>
-                                <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-bottom: 20px;">Join
-                                    our developer community for real-time support and updates.</p>
+                                <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-bottom: 20px; line-height: 1.5;">
+                                    Join 2.5k+ members in our encrypted community for real-time debugging and early builds.
+                                </p>
                                 <a href="https://discord.gg/YTeRSG8kER" target="_blank" class="app-btn"
-                                    style="width: 100%; background: #7289da; border: none;">
-                                    <i class="fab fa-discord"></i> Join Server
+                                    style="width: 100%; background: #5865F2; border: none; box-shadow: 0 10px 20px rgba(88, 101, 242, 0.2);">
+                                    <i class="fab fa-discord"></i> Enter Server
                                 </a>
                             </div>
 
-                            <div class="spatial-card">
+                            <div class="spatial-card contact-card">
+                                <i class="fab fa-instagram brand-icon-large"></i>
                                 <div class="widget-header">
-                                    <i class="fab fa-instagram"></i>
-                                    <span>Instagram</span>
+                                    <i class="fab fa-instagram" style="color: #E1306C;"></i>
+                                    <span>Instagram Direct</span>
                                 </div>
-                                <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-bottom: 20px;">Follow
-                                    Chya Luqman for behind-the-scenes and design leaks.</p>
+                                <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-bottom: 20px; line-height: 1.5;">
+                                    Follow Chya Luqman for high-fidelity design leaks and project milestones.
+                                </p>
                                 <a href="https://www.instagram.com/chya_luqman/" target="_blank" class="app-btn"
-                                    style="width: 100%; background: linear-gradient(45deg, #f09433, #bc1888); border: none;">
-                                    <i class="fab fa-instagram"></i> DM on Instagram
+                                    style="width: 100%; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border: none; box-shadow: 0 10px 20px rgba(225, 48, 108, 0.2);">
+                                    <i class="fab fa-instagram"></i> Send Message
                                 </a>
                             </div>
                         </div>
 
-                        <div class="spatial-card" style="margin: 0 10px 30px;">
+                        <div class="spatial-card" style="margin: 0 20px 30px; border: 1px solid rgba(59, 130, 246, 0.2); background: rgba(59, 130, 246, 0.02);">
                             <div class="widget-header">
-                                <i class="fas fa-envelope-open-text"></i>
-                                <span>Official Inquiries</span>
+                                <i class="fas fa-envelope-open-text" style="color: #3b82f6;"></i>
+                                <span>Secure Inquiries</span>
                             </div>
                             <div class="email-block">
                                 <div class="email-info">
                                     <div class="email-address">support@cydia-elite.com</div>
-                                    <div class="email-hint">Typical response time: <span style="color: #4ade80;">&lt;
-                                            24h</span></div>
+                                    <div class="email-hint">
+                                        <i class="fas fa-bolt" style="color: #f59e0b; font-size: 0.7rem;"></i>
+                                        SLA Response: <span style="color: #4ade80; font-weight: 700;">&lt; 12 Hours</span>
+                                    </div>
                                 </div>
-                                <a href="mailto:support@cydia-elite.com" class="app-btn" style="padding: 10px 20px;">
-                                    <i class="fas fa-at"></i> Send Email
+                                <a href="mailto:support@cydia-elite.com" class="app-btn" style="padding: 12px 25px; background: rgba(255,255,255,0.05);">
+                                    <i class="fas fa-paper-plane"></i> Initialize Mail
                                 </a>
                             </div>
                         </div>
@@ -955,11 +969,20 @@
                         <div class="support-status-card">
                             <div class="status-indicator">
                                 <div class="status-dot online"></div>
-                                <span>Community Support: <strong>Active</strong></span>
+                                <div style="display: flex; flex-direction: column;">
+                                    <span style="font-weight: 800; color: #fff;">Network Active</span>
+                                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">Support nodes operational</span>
+                                </div>
                             </div>
                             <div class="status-stats">
-                                <div class="s-stat"><span>2.5k</span> Members</div>
-                                <div class="s-stat"><span>12</span> Admins</div>
+                                <div class="s-stat">
+                                    <span class="s-stat-val">2.5k</span>
+                                    <span class="s-stat-lbl">Citizens</span>
+                                </div>
+                                <div class="s-stat">
+                                    <span class="s-stat-val">12</span>
+                                    <span class="s-stat-lbl">Operators</span>
+                                </div>
                             </div>
                         </div>
                     </div>

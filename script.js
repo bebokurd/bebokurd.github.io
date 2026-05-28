@@ -141,6 +141,16 @@ window.onload = async () => {
     updateClock();
     updateStats();
     handleDeepLink();
+    
+    // Setup LIVE YTS/TMDB empty query handler
+    const ksSearchInput = document.getElementById('ks-search-input');
+    if (ksSearchInput) {
+        ksSearchInput.addEventListener('input', () => {
+            if (!ksSearchInput.value.trim() && ksCurrentSource === 'videasy') {
+                loadVideasyHome();
+            }
+        });
+    }
 };
 
 function showToast(message, icon = 'fa-info-circle') {
@@ -366,6 +376,7 @@ function renderInstalled(filterCat = null) {
         movies: "Movies & Series", tools: "Tools & Software",
         games: "Game Downloads", mods: "Game Mods",
         livetv: "Live TV & IPTV", ads: "Ad Blockers",
+        browser: "Web Browsers",
         sports: "Live Sports", scripts: "Automation Scripts"
     };
 
@@ -946,7 +957,107 @@ async function runApiTest() {
     }
 }
 
-// KurdStream Logic
+// VIDEASY & TMDB Global State
+const TMDB_API_KEY = '54e00466a09676df57ba51c4ca30b1a6';
+let ksCurrentSource = 'kurdstream'; // 'kurdstream' or 'videasy'
+let videasyActiveTab = 'tmdb'; // 'tmdb' or 'anime'
+let videasyCustomColor = localStorage.getItem('vds_color') || 'f59e0b'; // Amber theme color
+let videasyNextEpisode = localStorage.getItem('vds_next') !== 'false';
+let videasyAutoplay = localStorage.getItem('vds_autoplay') !== 'false';
+let videasySelector = localStorage.getItem('vds_selector') !== 'false';
+let videasyOverlay = localStorage.getItem('vds_overlay') !== 'false';
+let currentMediaMeta = { poster: '', year: '' };
+let ksDefaultServer = localStorage.getItem('vds_server') || 'videasy'; // 'videasy' or 'vidsrc'
+let videasyBackButtonUrl = localStorage.getItem('vds_backbutton') || window.location.origin;
+let videasyLogoUrl = localStorage.getItem('vds_logo') || '';
+let videasyIdleCheck = parseInt(localStorage.getItem('vds_idlecheck') || '0', 10);
+let vidsrcToSubtitleUrl = localStorage.getItem('vds_to_suburl') || '';
+let vidsrcToSubtitleLabel = localStorage.getItem('vds_to_sublabel') || 'English';
+let screenscapeLanguage = localStorage.getItem('vds_ss_lan') || 'eng';
+let peachifyDub = localStorage.getItem('vds_pf_dub') || '';
+let peachifySub = localStorage.getItem('vds_pf_sub') || '';
+let peachifyServer = localStorage.getItem('vds_pf_server') || '';
+let peachifyHideCast = localStorage.getItem('vds_pf_hidecast') === 'true';
+let peachifyHidePip = localStorage.getItem('vds_pf_hidepip') === 'true';
+let peachifyHideServers = localStorage.getItem('vds_pf_hideservers') === 'true';
+let megaplayLanguage = localStorage.getItem('vds_mp_lan') || 'sub';
+
+
+
+
+
+// Switch Source Tab
+function switchKsSource(source, el) {
+    ksCurrentSource = source;
+    
+    // Toggle active state
+    document.querySelectorAll('.ks-source-tab').forEach(t => t.classList.remove('active'));
+    if (el) el.classList.add('active');
+    
+    // Show/hide subtabs & update search placeholders
+    const subtabs = document.getElementById('ks-videasy-subtabs');
+    const searchInput = document.getElementById('ks-search-input');
+    const resultsBox = document.getElementById('ks-results');
+    const detailsBox = document.getElementById('ks-details');
+    
+    // Clear views
+    resultsBox.innerHTML = '';
+    detailsBox.style.display = 'none';
+    resultsBox.style.display = 'block';
+    
+    if (source === 'videasy') {
+        if (subtabs) subtabs.style.display = 'flex';
+        updateVideasySearchPlaceholder();
+        
+        // Auto-load home if search query is empty
+        if (searchInput && !searchInput.value.trim()) {
+            loadVideasyHome();
+        }
+    } else {
+        if (subtabs) subtabs.style.display = 'none';
+        if (searchInput) {
+            searchInput.placeholder = "Search for movies, series...";
+        }
+    }
+}
+
+// Switch VIDEASY sub-tab (TMDB vs Anime)
+function switchVideasySub(tab, el) {
+    videasyActiveTab = tab;
+    
+    // Toggle active state
+    const subtabs = document.getElementById('ks-videasy-subtabs');
+    if (subtabs) {
+        subtabs.querySelectorAll('.kd-label-chip').forEach(c => c.classList.remove('active'));
+    }
+    if (el) el.classList.add('active');
+    
+    // Clear results
+    document.getElementById('ks-results').innerHTML = '';
+    document.getElementById('ks-details').style.display = 'none';
+    document.getElementById('ks-results').style.display = 'block';
+    
+    updateVideasySearchPlaceholder();
+    
+    // Auto-load home if search query is empty
+    const searchInput = document.getElementById('ks-search-input');
+    if (searchInput && !searchInput.value.trim()) {
+        loadVideasyHome();
+    }
+}
+
+function updateVideasySearchPlaceholder() {
+    const searchInput = document.getElementById('ks-search-input');
+    if (searchInput) {
+        if (videasyActiveTab === 'tmdb') {
+            searchInput.placeholder = "Search Movies & TV on TMDB...";
+        } else {
+            searchInput.placeholder = "Search Anime on AniList...";
+        }
+    }
+}
+
+// Global Search KurdStream Selector
 async function searchKurdStream() {
     const query = document.getElementById('ks-search-input').value.trim();
     const resultsBox = document.getElementById('ks-results');
@@ -963,17 +1074,1547 @@ async function searchKurdStream() {
     btn.disabled = true;
 
     try {
-        const response = await fetch(`https://kurdcinama-stream-seeker.lovable.app/api/public/search?q=${encodeURIComponent(query)}`);
-        const data = await response.json();
-        renderKSResults(data.results || []);
+        if (ksCurrentSource === 'kurdstream') {
+            document.getElementById('ks-loader-text').innerText = 'Fetching from KurdStream...';
+            const response = await fetch(`https://kurdcinama-stream-seeker.lovable.app/api/public/search?q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            renderKSResults(data.results || []);
+        } else if (videasyActiveTab === 'tmdb') {
+            document.getElementById('ks-loader-text').innerText = 'Searching TMDB...';
+            await searchTMDB(query);
+        } else {
+            document.getElementById('ks-loader-text').innerText = 'Searching AniList...';
+            await searchAniList(query);
+        }
     } catch (err) {
         console.error(err);
-        showToast('Failed to fetch from KurdStream.', 'fa-times-circle');
+        showToast('Search query failed.', 'fa-times-circle');
     } finally {
         loader.style.display = 'none';
         btn.disabled = false;
     }
 }
+
+// TMDB search functions
+async function searchTMDB(query) {
+    const url = `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`;
+    const response = await fetch(url);
+    const data = await response.json();
+    renderTMDBResults(data.results || []);
+}
+
+function renderTMDBResults(results) {
+    const resultsBox = document.getElementById('ks-results');
+    // Filter results to only movies and tv shows
+    const filtered = results.filter(item => item.media_type === 'movie' || item.media_type === 'tv');
+    
+    if (!filtered || filtered.length === 0) {
+        resultsBox.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.4);"><i class="fas fa-film" style="font-size:4rem; margin-bottom:20px; display:block; opacity:0.1;"></i>No matching movies or TV shows found on TMDB.</div>';
+        return;
+    }
+
+    let html = `<div class="ks-grid">`;
+    filtered.forEach(res => {
+        const title = res.title || res.name || 'Untitled';
+        const poster = res.poster_path ? `https://image.tmdb.org/t/p/w500${res.poster_path}` : 'https://placehold.co/500x750/000000/ffffff/png?text=No+Poster';
+        const year = (res.release_date || res.first_air_date || '').split('-')[0] || 'N/A';
+        const typeLabel = res.media_type === 'movie' ? 'Movie' : 'TV Show';
+        
+        html += `
+            <div class="ks-card" onclick="fetchTMDBDetails(${res.id}, '${res.media_type}')">
+                <div class="ks-card-badge">${typeLabel}</div>
+                <div class="ks-card-img-container">
+                    <img src="${poster}" alt="${title}" loading="lazy">
+                </div>
+                <div class="ks-card-info">
+                    <div class="ks-card-title">${title}</div>
+                    <div class="ks-card-meta">${year} • TMDB</div>
+                </div>
+            </div>
+        `;
+    });
+    html += `</div>`;
+    resultsBox.innerHTML = html;
+}
+
+// AniList search functions
+async function searchAniList(query) {
+    const graphqlQuery = `
+    query ($search: String) {
+      Page (page: 1, perPage: 24) {
+        media (search: $search, type: ANIME) {
+          id
+          title {
+            romaji
+            english
+          }
+          coverImage {
+            large
+          }
+          seasonYear
+          format
+        }
+      }
+    }
+    `;
+    
+    const response = await fetch('https://graphql.anilist.co', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query: graphqlQuery,
+            variables: { search: query }
+        })
+    });
+    
+    const resData = await response.json();
+    const items = resData?.data?.Page?.media || [];
+    renderAniListResults(items);
+}
+
+function renderAniListResults(items) {
+    const resultsBox = document.getElementById('ks-results');
+    if (!items || items.length === 0) {
+        resultsBox.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.4);"><i class="fas fa-ghost" style="font-size:4rem; margin-bottom:20px; display:block; opacity:0.1;"></i>No matching anime found on AniList.</div>';
+        return;
+    }
+
+    let html = `<div class="ks-grid">`;
+    items.forEach(res => {
+        const title = res.title.english || res.title.romaji || 'Untitled Anime';
+        const poster = res.coverImage.large || '';
+        const year = res.seasonYear || 'N/A';
+        const format = res.format || 'Anime';
+        
+        html += `
+            <div class="ks-card" onclick="fetchAniListDetails(${res.id})">
+                <div class="ks-card-badge">${format}</div>
+                <div class="ks-card-img-container">
+                    <img src="${poster}" alt="${title}" loading="lazy">
+                </div>
+                <div class="ks-card-info">
+                    <div class="ks-card-title">${title}</div>
+                    <div class="ks-card-meta">${year} • AniList</div>
+                </div>
+            </div>
+        `;
+    });
+    html += `</div>`;
+    resultsBox.innerHTML = html;
+}
+
+// Fetch Details functions
+async function fetchTMDBDetails(id, type) {
+    const detailsBox = document.getElementById('ks-details');
+    const resultsBox = document.getElementById('ks-results');
+    const loader = document.getElementById('ks-loader');
+    
+    resultsBox.style.display = 'none';
+    detailsBox.style.display = 'none';
+    loader.style.display = 'flex';
+    document.getElementById('ks-loader-text').innerText = 'Loading details...';
+
+    try {
+        const url = `https://api.themoviedb.org/3/${type}/${id}?api_key=${TMDB_API_KEY}&append_to_response=credits,recommendations,videos`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (type === 'movie') {
+            renderTMDBMovieDetail(data);
+        } else {
+            await renderTMDBTvDetail(data);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Failed to load TMDB details.', 'fa-times-circle');
+        resultsBox.style.display = 'block';
+    } finally {
+        loader.style.display = 'none';
+    }
+}
+
+function renderTMDBMovieDetail(movie) {
+    const detailsBox = document.getElementById('ks-details');
+    detailsBox.style.display = 'block';
+    
+    // Cache media metadata
+    currentMediaMeta = {
+        poster: movie.poster_path ? `https://image.tmdb.org/t/p/w300${movie.poster_path}` : '',
+        year: (movie.release_date || '').split('-')[0] || ''
+    };
+    
+    const title = movie.title || movie.original_title || 'Untitled';
+    const backdrop = movie.backdrop_path ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}` : (movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '');
+    const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://placehold.co/500x750/000000/ffffff/png?text=No+Poster';
+    const rating = movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A';
+    const runtime = movie.runtime ? `${movie.runtime} min` : 'N/A';
+    const year = (movie.release_date || '').split('-')[0] || 'N/A';
+    const genres = (movie.genres || []).map(g => `<span class="ks-meta-tag genre">${g.name}</span>`).join('');
+    
+    // Cast list
+    let castHtml = '';
+    const cast = (movie.credits?.cast || []).slice(0, 10);
+    if (cast.length > 0) {
+        castHtml += `<div class="section-header">Starring Cast</div><div class="cast-scroller">`;
+        cast.forEach(actor => {
+            const actorPhoto = actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : 'https://placehold.co/100x120/111111/ffffff/png?text=?';
+            castHtml += `
+                <div class="cast-card">
+                    <img class="cast-photo" src="${actorPhoto}" alt="${actor.name}" loading="lazy">
+                    <div class="cast-name">${actor.name}</div>
+                    <div class="cast-character">${actor.character || ''}</div>
+                </div>
+            `;
+        });
+        castHtml += `</div>`;
+    }
+    
+    // Progress Resume block
+    const progressBlockHtml = getWatchProgressHtml(movie.id, 'movie', title);
+    
+    // Extract trailer key
+    let trailerKey = '';
+    if (movie.videos?.results) {
+        const trailer = movie.videos.results.find(v => v.type === 'Trailer' && v.site === 'YouTube') || movie.videos.results.find(v => v.site === 'YouTube');
+        if (trailer) trailerKey = trailer.key;
+    }
+    
+    let trailerBtnHtml = '';
+    let trailerSectionHtml = '';
+    if (trailerKey) {
+        trailerBtnHtml = `
+            <button class="resume-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3); flex: 1; min-width: 200px;" onclick="document.getElementById('ks-trailer-section').scrollIntoView({ behavior: 'smooth' })">
+                <i class="fas fa-film"></i> Watch Trailer
+            </button>
+        `;
+        trailerSectionHtml = `
+            <div class="section-header" id="ks-trailer-section">Official Trailer</div>
+            <div class="ks-trailer-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 15px 40px rgba(0,0,0,0.5); margin-bottom: 25px;">
+                <iframe style="position: absolute; top:0; left:0; width:100%; height:100%; border:none;" src="https://www.youtube.com/embed/${trailerKey}?rel=0&showinfo=0" allowfullscreen></iframe>
+            </div>
+        `;
+    }
+    
+    // Settings panel
+    const settingsPanelHtml = getVideasySettingsPanelHtml('movie', movie.id, title);
+
+    detailsBox.innerHTML = `
+        <button class="ks-back-btn" onclick="document.getElementById('ks-details').style.display='none'; document.getElementById('ks-results').style.display='block';">
+            <i class="fas fa-arrow-left"></i> Back to Results
+        </button>
+
+        <div class="ks-hero-container">
+            ${backdrop ? `<img class="ks-hero-bg" src="${backdrop}" alt="${title}">` : '<div class="ks-hero-bg" style="background: #111;"></div>'}
+            <div class="ks-hero-overlay">
+                <div class="ks-hero-title">${title}</div>
+                <div class="ks-hero-meta">
+                    <span class="ks-meta-tag year">${year}</span>
+                    <span class="ks-meta-tag" style="color: #10b981;"><i class="fas fa-star" style="color:#fbbf24;"></i> ${rating}</span>
+                    <span class="ks-meta-tag"><i class="fas fa-clock"></i> ${runtime}</span>
+                    ${genres}
+                </div>
+            </div>
+        </div>
+
+        ${progressBlockHtml}
+
+        <div style="margin-top: 15px; margin-bottom: 25px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="resume-btn" style="background: linear-gradient(135deg, #f59e0b, #ef4444); box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3); flex: 1; min-width: 200px;" onclick="playVideasyMedia('${movie.id}', 'movie', '${title.replace(/'/g, "\\'")}', false)">
+                <i class="fas fa-play"></i> Play Movie
+            </button>
+            ${trailerBtnHtml}
+            <button class="resume-btn" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3); flex: 1; min-width: 200px;" onclick="window.open('https://vidvault.ru/movie/${movie.id}', '_blank')">
+                <i class="fas fa-download"></i> Download / Alt (VidVault)
+            </button>
+        </div>
+
+        <div class="section-header">Storyline</div>
+        <div class="ks-desc-card">
+            ${movie.overview || 'No overview available.'}
+        </div>
+
+        ${trailerSectionHtml}
+
+        ${settingsPanelHtml}
+
+        <div class="section-header">Torrent Downloads (YTS Torrents)</div>
+        <div id="ks-yts-downloads" style="margin-bottom: 30px;">
+            <div class="tt-custom-loader" style="padding: 20px; display: flex;">
+                <div class="tt-pulse-logo" style="background: #10b981; width: 40px; height: 40px; font-size: 1.2rem;"><i class="fas fa-magnet"></i></div>
+                <div class="tt-loading-text" style="font-size: 0.85rem;">Searching YTS Torrents...</div>
+            </div>
+        </div>
+
+        ${castHtml}
+    `;
+
+    // Auto-fetch YTS torrents
+    setTimeout(() => {
+        fetchYtsDownloads(movie.imdb_id, title);
+    }, 100);
+}
+
+async function renderTMDBTvDetail(show) {
+    const detailsBox = document.getElementById('ks-details');
+    detailsBox.style.display = 'block';
+    
+    // Cache media metadata
+    currentMediaMeta = {
+        poster: show.poster_path ? `https://image.tmdb.org/t/p/w300${show.poster_path}` : '',
+        year: (show.first_air_date || '').split('-')[0] || ''
+    };
+    
+    const title = show.name || show.original_name || 'Untitled';
+    const backdrop = show.backdrop_path ? `https://image.tmdb.org/t/p/w1280${show.backdrop_path}` : (show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : '');
+    const rating = show.vote_average ? show.vote_average.toFixed(1) : 'N/A';
+    const year = (show.first_air_date || '').split('-')[0] || 'N/A';
+    const genres = (show.genres || []).map(g => `<span class="ks-meta-tag genre">${g.name}</span>`).join('');
+    
+    // Extract trailer key
+    let trailerKey = '';
+    if (show.videos?.results) {
+        const trailer = show.videos.results.find(v => v.type === 'Trailer' && v.site === 'YouTube') || show.videos.results.find(v => v.site === 'YouTube');
+        if (trailer) trailerKey = trailer.key;
+    }
+    
+    let trailerBtnHtml = '';
+    let trailerSectionHtml = '';
+    if (trailerKey) {
+        trailerBtnHtml = `
+            <div style="margin-top: 15px; margin-bottom: 25px; display: flex; gap: 12px; flex-wrap: wrap;">
+                <button class="resume-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3); flex: 1; min-width: 200px;" onclick="document.getElementById('ks-trailer-section').scrollIntoView({ behavior: 'smooth' })">
+                    <i class="fas fa-film"></i> Watch Official Trailer
+                </button>
+            </div>
+        `;
+        trailerSectionHtml = `
+            <div class="section-header" id="ks-trailer-section">Official Trailer</div>
+            <div class="ks-trailer-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 15px 40px rgba(0,0,0,0.5); margin-bottom: 25px;">
+                <iframe style="position: absolute; top:0; left:0; width:100%; height:100%; border:none;" src="https://www.youtube.com/embed/${trailerKey}?rel=0&showinfo=0" allowfullscreen></iframe>
+            </div>
+        `;
+    }
+    
+    // Cast list
+    let castHtml = '';
+    const cast = (show.credits?.cast || []).slice(0, 10);
+    if (cast.length > 0) {
+        castHtml += `<div class="section-header">Starring Cast</div><div class="cast-scroller">`;
+        cast.forEach(actor => {
+            const actorPhoto = actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : 'https://placehold.co/100x120/111111/ffffff/png?text=?';
+            castHtml += `
+                <div class="cast-card">
+                    <img class="cast-photo" src="${actorPhoto}" alt="${actor.name}" loading="lazy">
+                    <div class="cast-name">${actor.name}</div>
+                    <div class="cast-character">${actor.character || ''}</div>
+                </div>
+            `;
+        });
+        castHtml += `</div>`;
+    }
+
+    // Filter seasons to only regular seasons (season_number > 0)
+    const seasons = (show.seasons || []).filter(s => s.season_number > 0);
+    if (seasons.length === 0 && (show.seasons || []).length > 0) {
+        seasons.push(show.seasons[0]);
+    }
+    
+    let seasonSelectHtml = '';
+    if (seasons.length > 0) {
+        seasonSelectHtml += `
+            <div class="section-header">Select Season</div>
+            <div class="season-select-wrapper">
+        `;
+        seasons.forEach((season, idx) => {
+            const activeClass = idx === 0 ? 'active' : '';
+            seasonSelectHtml += `
+                <button class="season-select-btn ${activeClass}" data-season-num="${season.season_number}" onclick="switchSeason('${show.id}', ${season.season_number}, this, '${title.replace(/'/g, "\\'")}')">
+                    ${season.name || `Season ${season.season_number}`}
+                </button>
+            `;
+        });
+        seasonSelectHtml += `</div>`;
+    }
+    
+    // Settings panel
+    const settingsPanelHtml = getVideasySettingsPanelHtml('tv', show.id, title);
+
+    detailsBox.innerHTML = `
+        <button class="ks-back-btn" onclick="document.getElementById('ks-details').style.display='none'; document.getElementById('ks-results').style.display='block';">
+            <i class="fas fa-arrow-left"></i> Back to Results
+        </button>
+
+        <div class="ks-hero-container">
+            ${backdrop ? `<img class="ks-hero-bg" src="${backdrop}" alt="${title}">` : '<div class="ks-hero-bg" style="background: #111;"></div>'}
+            <div class="ks-hero-overlay">
+                <div class="ks-hero-title">${title}</div>
+                <div class="ks-hero-meta">
+                    <span class="ks-meta-tag year">${year}</span>
+                    <span class="ks-meta-tag" style="color: #10b981;"><i class="fas fa-star" style="color:#fbbf24;"></i> ${rating}</span>
+                    <span class="ks-meta-tag"><i class="fas fa-tv"></i> ${show.number_of_seasons} Seasons</span>
+                    ${genres}
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">Overview</div>
+        <div class="ks-desc-card">
+            ${show.overview || 'No description available.'}
+        </div>
+
+        ${trailerBtnHtml}
+        ${trailerSectionHtml}
+
+        ${settingsPanelHtml}
+
+        ${seasonSelectHtml}
+        
+        <div class="tv-episodes-section">
+            <div id="tv-episodes-loader" class="tt-custom-loader" style="display: none; padding: 20px;">
+                <div class="tt-pulse-logo" style="background: #f59e0b; width: 40px; height: 40px; font-size: 1.2rem;"><i class="fas fa-play"></i></div>
+                <div class="tt-loading-text" style="font-size: 0.85rem;">Loading Episodes...</div>
+            </div>
+            <div id="tv-episodes-list" class="tv-episode-grid-list"></div>
+        </div>
+
+        <div style="margin-top: 35px;"></div>
+        ${castHtml}
+    `;
+    
+    // Auto-load Season 1
+    if (seasons.length > 0) {
+        await loadTvSeasonEpisodes(show.id, seasons[0].season_number, title);
+    }
+}
+
+async function switchSeason(showId, seasonNumber, btn, showTitle) {
+    document.querySelectorAll('.season-select-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    await loadTvSeasonEpisodes(showId, seasonNumber, showTitle);
+}
+
+async function loadTvSeasonEpisodes(showId, seasonNumber, showTitle) {
+    const listContainer = document.getElementById('tv-episodes-list');
+    const loader = document.getElementById('tv-episodes-loader');
+    
+    if (listContainer) listContainer.innerHTML = '';
+    if (loader) loader.style.display = 'flex';
+    
+    try {
+        const url = `https://api.themoviedb.org/3/tv/${showId}/season/${seasonNumber}?api_key=${TMDB_API_KEY}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        let html = '';
+        const episodes = data.episodes || [];
+        
+        if (episodes.length === 0) {
+            if (listContainer) listContainer.innerHTML = '<div style="grid-column: 1/-1; padding: 20px; text-align: center; color: rgba(255,255,255,0.4);">No episodes found in this season.</div>';
+            return;
+        }
+        
+        episodes.forEach(ep => {
+            const epThumb = ep.still_path ? `https://image.tmdb.org/t/p/w300${ep.still_path}` : 'https://placehold.co/300x170/111111/ffffff/png?text=No+Thumbnail';
+            const epTitle = ep.name || `Episode ${ep.episode_number}`;
+            const epDate = ep.air_date || 'Unknown Air Date';
+            
+            // Check if there is saved progress for this episode
+            const progressHtml = getWatchProgressHtml(showId, 'tv', `${showTitle} - S${seasonNumber}E${ep.episode_number}`, seasonNumber, ep.episode_number);
+            
+            html += `
+                <div class="tv-ep-card" onclick="playVideasyMedia('${showId}', 'tv', '${showTitle.replace(/'/g, "\\'")}', false, ${seasonNumber}, ${ep.episode_number})">
+                    <div class="tv-ep-thumb-wrapper">
+                        <img class="tv-ep-thumb" src="${epThumb}" alt="${epTitle}" loading="lazy">
+                        <div class="tv-ep-play-overlay">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                    </div>
+                    <div class="tv-ep-card-body" style="display: flex; flex-direction: column; height: 100%;">
+                        <div class="tv-ep-card-header">
+                            <span class="tv-ep-number">S${seasonNumber} • EP ${ep.episode_number}</span>
+                            <span class="tv-ep-airdate">${epDate}</span>
+                        </div>
+                        <div class="tv-ep-name">${epTitle}</div>
+                        <p class="tv-ep-overview">${ep.overview || 'No episode description available.'}</p>
+                        ${progressHtml}
+                        
+                        <div style="display: flex; gap: 8px; margin-top: auto; padding-top: 15px;">
+                            <button class="ks-mini-server-btn" style="flex: 1; background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.25); color: #f59e0b; font-weight: 700; margin: 0; padding: 6px 0;" onclick="event.stopPropagation(); playVideasyMedia('${showId}', 'tv', '${showTitle.replace(/'/g, "\\'")}', false, ${seasonNumber}, ${ep.episode_number})">
+                                <i class="fas fa-play"></i> Play
+                            </button>
+                            <button class="ks-mini-server-btn" style="flex: 1; background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.25); color: #60a5fa; font-weight: 700; margin: 0; padding: 6px 0;" onclick="event.stopPropagation(); window.open('https://vidvault.ru/tv/${showId}/${seasonNumber}/${ep.episode_number}', '_blank')">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        if (listContainer) listContainer.innerHTML = html;
+    } catch (err) {
+        console.error(err);
+        if (listContainer) listContainer.innerHTML = '<div style="grid-column: 1/-1; padding: 20px; text-align: center; color: #ef4444;">Failed to load season episodes.</div>';
+    } finally {
+        if (loader) loader.style.display = 'none';
+    }
+}
+
+async function fetchAniListDetails(id) {
+    const detailsBox = document.getElementById('ks-details');
+    const resultsBox = document.getElementById('ks-results');
+    const loader = document.getElementById('ks-loader');
+    
+    resultsBox.style.display = 'none';
+    detailsBox.style.display = 'none';
+    loader.style.display = 'flex';
+    document.getElementById('ks-loader-text').innerText = 'Loading anime details...';
+
+    try {
+        const graphqlQuery = `
+        query ($id: Int) {
+          Media (id: $id, type: ANIME) {
+            id
+            title {
+              romaji
+              english
+              native
+            }
+            coverImage {
+              large
+            }
+            bannerImage
+            description
+            episodes
+            season
+            seasonYear
+            averageScore
+            genres
+            status
+          }
+        }
+        `;
+        
+        const response = await fetch('https://graphql.anilist.co', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                query: graphqlQuery,
+                variables: { id: id }
+            })
+        });
+        
+        const resData = await response.json();
+        const media = resData?.data?.Media;
+        if (media) {
+            renderAniListDetail(media);
+        } else {
+            throw new Error("No media returned from AniList");
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Failed to load anime details.', 'fa-times-circle');
+        resultsBox.style.display = 'block';
+    } finally {
+        loader.style.display = 'none';
+    }
+}
+
+function renderAniListDetail(anime) {
+    const detailsBox = document.getElementById('ks-details');
+    detailsBox.style.display = 'block';
+    
+    // Cache media metadata
+    currentMediaMeta = {
+        poster: anime.coverImage.large || '',
+        year: anime.seasonYear || ''
+    };
+    
+    const title = anime.title.english || anime.title.romaji || 'Untitled Anime';
+    const banner = anime.bannerImage || anime.coverImage.large || '';
+    const rating = anime.averageScore ? `${anime.averageScore}%` : 'N/A';
+    const year = anime.seasonYear || 'N/A';
+    const status = anime.status || 'N/A';
+    const genres = (anime.genres || []).map(g => `<span class="ks-meta-tag genre">${g}</span>`).join('');
+    
+    // Check if it has multiple episodes (is a show vs movie)
+    const isMovie = anime.episodes === 1;
+    
+    let episodeSelectHtml = '';
+    if (!isMovie) {
+        const epCount = anime.episodes || 12; // default if not specified
+        episodeSelectHtml += `
+            <div class="section-header">Select Episode</div>
+            <div class="tv-episode-grid-list">
+        `;
+        
+        for (let i = 1; i <= epCount; i++) {
+            const progressHtml = getWatchProgressHtml(anime.id, 'anime', `${title} - Episode ${i}`, null, i);
+            episodeSelectHtml += `
+                <div class="tv-ep-card" style="min-height: 120px;" onclick="playVideasyMedia('${anime.id}', 'anime', '${title.replace(/'/g, "\\'")}', false, null, ${i})">
+                    <div class="tv-ep-card-body" style="justify-content: center;">
+                        <div class="tv-ep-card-header">
+                            <span class="tv-ep-number" style="color: #ef4444;"><i class="fas fa-play"></i> Episode ${i}</span>
+                        </div>
+                        <div class="tv-ep-name">Stream Episode ${i}</div>
+                        ${progressHtml}
+                    </div>
+                </div>
+            `;
+        }
+        episodeSelectHtml += `</div>`;
+    } else {
+        // Is anime movie
+        const progressHtml = getWatchProgressHtml(anime.id, 'anime', title);
+        episodeSelectHtml += `
+            ${progressHtml}
+            <div style="margin-top: 15px; margin-bottom: 25px;">
+                <button class="resume-btn" style="background: linear-gradient(135deg, #f59e0b, #ef4444); box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);" onclick="playVideasyMedia('${anime.id}', 'anime', '${title.replace(/'/g, "\\'")}', false)">
+                    <i class="fas fa-play"></i> Play Anime Movie
+                </button>
+            </div>
+        `;
+    }
+    
+    // Settings panel
+    const settingsPanelHtml = getVideasySettingsPanelHtml('anime', anime.id, title);
+
+    detailsBox.innerHTML = `
+        <button class="ks-back-btn" onclick="document.getElementById('ks-details').style.display='none'; document.getElementById('ks-results').style.display='block';">
+            <i class="fas fa-arrow-left"></i> Back to Results
+        </button>
+
+        <div class="ks-hero-container">
+            ${banner ? `<img class="ks-hero-bg" src="${banner}" alt="${title}">` : '<div class="ks-hero-bg" style="background: #111;"></div>'}
+            <div class="ks-hero-overlay">
+                <div class="ks-hero-title">${title}</div>
+                <div class="ks-hero-meta">
+                    <span class="ks-meta-tag year">${year}</span>
+                    <span class="ks-meta-tag" style="color: #ef4444;"><i class="fas fa-heart"></i> ${rating}</span>
+                    <span class="ks-meta-tag">${status}</span>
+                    ${genres}
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">Synopsis</div>
+        <div class="ks-desc-card">
+            ${anime.description || 'No synopsis available.'}
+        </div>
+
+        ${settingsPanelHtml}
+
+        ${episodeSelectHtml}
+        
+        <div style="margin-top: 35px;"></div>
+    `;
+}
+
+// Fetch YTS Torrents dynamically via IMDb ID
+async function fetchYtsDownloads(imdbId, movieTitle) {
+    const ytsContainer = document.getElementById('ks-yts-downloads');
+    if (!ytsContainer) return;
+    
+    if (!imdbId) {
+        ytsContainer.innerHTML = '<div style="color: rgba(255,255,255,0.4); font-size: 0.85rem; padding: 10px;">No IMDb ID found for this title. YTS Torrents are unavailable.</div>';
+        return;
+    }
+    
+    try {
+        const response = await fetch(`https://movies-api.accel.li/api/v2/movie_details.json?imdb_id=${imdbId}`);
+        const data = await response.json();
+        
+        if (data && data.status === 'ok' && data.data && data.data.movie && data.data.movie.torrents) {
+            const torrents = data.data.movie.torrents;
+            const titleEncoded = encodeURIComponent(movieTitle);
+            
+            // Standard high-speed trackers from documentation
+            const trackers = [
+                'udp://tracker.opentrackr.org:1337/announce',
+                'udp://tracker.torrent.eu.org:451/announce',
+                'udp://tracker.dler.org:6969/announce',
+                'udp://open.stealth.si:80/announce',
+                'udp://open.demonii.com:1337/announce',
+                'https://tracker.moeblog.cn:443/announce',
+                'udp://open.dstud.io:6969/announce',
+                'udp://tracker.srv00.com:6969/announce',
+                'https://tracker.zhuqiy.com:443/announce',
+                'https://tracker.pmman.tech:443/announce'
+            ].map(tr => `&tr=${encodeURIComponent(tr)}`).join('');
+            
+            let html = `
+                <div class="videasy-settings-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); margin-top: 10px;">
+            `;
+            
+            torrents.forEach(tor => {
+                const magnetLink = `magnet:?xt=urn:btih:${tor.hash}&dn=${titleEncoded}${trackers}`;
+                const size = tor.size || 'N/A';
+                const quality = tor.quality || 'N/A';
+                const seeds = tor.seeds || 0;
+                const peers = tor.peers || 0;
+                
+                html += `
+                    <div class="videasy-setting-item" style="flex-direction: column; align-items: stretch; gap: 12px; padding: 15px; margin: 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <div style="display: flex; flex-direction: column; gap: 2px;">
+                                <span style="font-weight: 800; color: #fff; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+                                    <i class="fas fa-compact-disc" style="color: #10b981;"></i> ${quality} (${tor.type.toUpperCase()})
+                                </span>
+                                <span class="videasy-setting-desc" style="font-size: 0.72rem;">Size: ${size}</span>
+                            </div>
+                            <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.25); color: #10b981; padding: 2px 8px; border-radius: 8px; font-size: 0.65rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                                <i class="fas fa-arrow-up" style="color:#10b981; font-size:0.6rem;"></i> ${seeds} / <i class="fas fa-arrow-down" style="color:#ef4444; font-size:0.6rem;"></i> ${peers}
+                            </span>
+                        </div>
+                        
+                        <div style="display: flex; gap: 8px; margin-top: 5px; width: 100%;">
+                            <a href="${magnetLink}" class="ks-mini-server-btn" style="flex: 1; text-align: center; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25); color: #10b981; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 0; margin: 0; font-size: 0.8rem;">
+                                <i class="fas fa-magnet" style="color:#10b981;"></i> Magnet
+                            </a>
+                            <a href="${tor.url}" class="ks-mini-server-btn" style="flex: 1; text-align: center; background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.25); color: #f59e0b; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 0; margin: 0; font-size: 0.8rem;">
+                                <i class="fas fa-file-download" style="color:#f59e0b;"></i> Torrent
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            ytsContainer.innerHTML = html;
+        } else {
+            ytsContainer.innerHTML = '<div style="color: rgba(255,255,255,0.4); font-size: 0.85rem; padding: 10px;">No torrents found on YTS for this movie.</div>';
+        }
+    } catch (err) {
+        console.error(err);
+        ytsContainer.innerHTML = '<div style="color: #ef4444; font-size: 0.85rem; padding: 10px;">Failed to connect to YTS Torrents API.</div>';
+    }
+}
+
+// Settings customization panel HTML builder
+function getVideasySettingsPanelHtml(type, mediaId, title) {
+    const isTv = type === 'tv';
+    return `
+        <div class="section-header">Player Customization Settings</div>
+        <div class="videasy-settings-card">
+            <div class="videasy-settings-grid">
+                <div class="videasy-setting-item">
+                    <div class="videasy-setting-info">
+                        <span class="videasy-setting-title">Next Episode Button</span>
+                        <span class="videasy-setting-desc">Show trigger controls</span>
+                    </div>
+                    <label class="switch-control">
+                        <input type="checkbox" id="vds-next" ${videasyNextEpisode ? 'checked' : ''} onchange="videasyNextEpisode = this.checked; localStorage.setItem('vds_next', this.checked)">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="videasy-setting-item">
+                    <div class="videasy-setting-info">
+                        <span class="videasy-setting-title">Autoplay Next</span>
+                        <span class="videasy-setting-desc">Auto-advance content</span>
+                    </div>
+                    <label class="switch-control">
+                        <input type="checkbox" id="vds-autoplay" ${videasyAutoplay ? 'checked' : ''} onchange="videasyAutoplay = this.checked; localStorage.setItem('vds_autoplay', this.checked)">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                
+                ${isTv ? `
+                <div class="videasy-setting-item">
+                    <div class="videasy-setting-info">
+                        <span class="videasy-setting-title">Episode Selector</span>
+                        <span class="videasy-setting-desc">Built-in menu control</span>
+                    </div>
+                    <label class="switch-control">
+                        <input type="checkbox" id="vds-selector" ${videasySelector ? 'checked' : ''} onchange="videasySelector = this.checked; localStorage.setItem('vds_selector', this.checked)">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                ` : ''}
+                
+                <div class="videasy-setting-item">
+                    <div class="videasy-setting-info">
+                        <span class="videasy-setting-title">Netflix Overlay</span>
+                        <span class="videasy-setting-desc">Triggers on pause</span>
+                    </div>
+                    <label class="switch-control">
+                        <input type="checkbox" id="vds-overlay" ${videasyOverlay ? 'checked' : ''} onchange="videasyOverlay = this.checked; localStorage.setItem('vds_overlay', this.checked)">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-server" style="color: #f59e0b;"></i> Select Streaming Server
+            </div>
+            <div class="videasy-color-picker" style="margin-top: 10px; gap: 8px; background: rgba(255,255,255,0.01); border-color: rgba(255,255,255,0.03); flex-wrap: wrap;">
+                <button class="kd-label-chip ${ksDefaultServer === 'videasy' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('videasy', this)">VIDEASY (Multi)</button>
+                <button class="kd-label-chip ${ksDefaultServer === 'vidsrc' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('vidsrc', this)">VidSrc.ru (High Speed)</button>
+                <button class="kd-label-chip ${ksDefaultServer === 'vidsrc_to' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('vidsrc_to', this)">VidSrc.to (Alternative)</button>
+                <button class="kd-label-chip ${ksDefaultServer === 'cinemaos' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('cinemaos', this)">CinemaOS (Premium)</button>
+                <button class="kd-label-chip ${ksDefaultServer === 'vidplay' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('vidplay', this)">VidPlay (Fast)</button>
+                <button class="kd-label-chip ${ksDefaultServer === 'screenscape' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('screenscape', this)">ScreenScape (HD)</button>
+                <button class="kd-label-chip ${ksDefaultServer === 'peachify' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('peachify', this)">Peachify (Ultra)</button>
+                <button class="kd-label-chip ${ksDefaultServer === 'megaplay' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('megaplay', this)">MegaPlay (Anikoto)</button>
+            </div>
+            
+            <div style="margin-top: 20px; font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-palette" style="color: #f59e0b;"></i> Accent Color Theme
+            </div>
+            <div class="videasy-color-picker">
+                <div class="videasy-color-dot ${videasyCustomColor === 'f59e0b' ? 'active' : ''}" style="background: #f59e0b; --accent-glow: rgba(245,158,11,0.5);" onclick="setVideasyColor('f59e0b', this)"></div>
+                <div class="videasy-color-dot ${videasyCustomColor === '3B82F6' ? 'active' : ''}" style="background: #3B82F6; --accent-glow: rgba(59,130,246,0.5);" onclick="setVideasyColor('3B82F6', this)"></div>
+                <div class="videasy-color-dot ${videasyCustomColor === '8B5CF6' ? 'active' : ''}" style="background: #8B5CF6; --accent-glow: rgba(139,92,246,0.5);" onclick="setVideasyColor('8B5CF6', this)"></div>
+                <div class="videasy-color-dot ${videasyCustomColor === 'ef4444' ? 'active' : ''}" style="background: #ef4444; --accent-glow: rgba(239,68,68,0.5);" onclick="setVideasyColor('ef4444', this)"></div>
+                <div class="videasy-color-dot ${videasyCustomColor === '10B981' ? 'active' : ''}" style="background: #10B981; --accent-glow: rgba(16,185,129,0.5);" onclick="setVideasyColor('10B981', this)"></div>
+                <div class="videasy-color-dot ${videasyCustomColor === 'ec4899' ? 'active' : ''}" style="background: #ec4899; --accent-glow: rgba(236,72,153,0.5);" onclick="setVideasyColor('ec4899', this)"></div>
+            </div>
+
+            <!-- New VidSrc Customization Fields -->
+            <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
+                <div style="font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                    <i class="fas fa-sliders-h" style="color: #f59e0b;"></i> VidSrc.ru Custom Parameters
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Back Button URL</label>
+                        <input type="text" id="vds-backbutton-input" class="ks-details-input" 
+                               placeholder="e.g. ${window.location.origin}" 
+                               value="${videasyBackButtonUrl}" 
+                               oninput="videasyBackButtonUrl = this.value; localStorage.setItem('vds_backbutton', this.value)">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Logo Overlay URL</label>
+                        <input type="text" id="vds-logo-input" class="ks-details-input" 
+                               placeholder="e.g. https://yourdomain.com/logo.png" 
+                               value="${videasyLogoUrl}" 
+                               oninput="videasyLogoUrl = this.value; localStorage.setItem('vds_logo', this.value)">
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Idle Check Watcher (Minutes)</label>
+                    <select id="vds-idlecheck-select" class="ks-details-input" 
+                            onchange="videasyIdleCheck = parseInt(this.value, 10); localStorage.setItem('vds_idlecheck', this.value)">
+                        <option value="0" ${videasyIdleCheck === 0 ? 'selected' : ''}>Disabled</option>
+                        <option value="5" ${videasyIdleCheck === 5 ? 'selected' : ''}>Every 5 minutes</option>
+                        <option value="10" ${videasyIdleCheck === 10 ? 'selected' : ''}>Every 10 minutes</option>
+                        <option value="15" ${videasyIdleCheck === 15 ? 'selected' : ''}>Every 15 minutes</option>
+                        <option value="30" ${videasyIdleCheck === 30 ? 'selected' : ''}>Every 30 minutes</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- New VidSrc.to Custom Subtitle Fields -->
+            <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
+                <div style="font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                    <i class="fas fa-closed-captioning" style="color: #f59e0b;"></i> VidSrc.to Custom Subtitles
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px;">
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Subtitle URL or JSON Array</label>
+                        <input type="text" id="vds-to-suburl-input" class="ks-details-input" 
+                               placeholder="URL to .vtt OR [{file: '...', label: '...'}]" 
+                               value="${vidsrcToSubtitleUrl.replace(/"/g, '&quot;')}" 
+                               oninput="vidsrcToSubtitleUrl = this.value; localStorage.setItem('vds_to_suburl', this.value)">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Subtitle Label</label>
+                        <input type="text" id="vds-to-sublabel-input" class="ks-details-input" 
+                               placeholder="e.g. English" 
+                               value="${vidsrcToSubtitleLabel}" 
+                               oninput="vidsrcToSubtitleLabel = this.value; localStorage.setItem('vds_to_sublabel', this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- New ScreenScape Custom Language Fields -->
+            <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
+                <div style="font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                    <i class="fas fa-language" style="color: #f59e0b;"></i> ScreenScape Language Settings
+                </div>
+                
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Preferred Audio Language</label>
+                    <select id="vds-ss-lan-select" class="ks-details-input" 
+                            onchange="screenscapeLanguage = this.value; localStorage.setItem('vds_ss_lan', this.value)">
+                        <option value="eng" ${screenscapeLanguage === 'eng' ? 'selected' : ''}>English (eng)</option>
+                        <option value="hindi" ${screenscapeLanguage === 'hindi' ? 'selected' : ''}>Hindi (hindi)</option>
+                        <option value="french" ${screenscapeLanguage === 'french' ? 'selected' : ''}>French (french)</option>
+                        <option value="spanish" ${screenscapeLanguage === 'spanish' ? 'selected' : ''}>Spanish (spanish)</option>
+                        <option value="arabic" ${screenscapeLanguage === 'arabic' ? 'selected' : ''}>Arabic (arabic)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- New Peachify Customization Fields -->
+            <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
+                <div style="font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                    <i class="fas fa-play-circle" style="color: #f59e0b;"></i> Peachify Custom Parameters
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Force Provider Server</label>
+                        <select id="vds-pf-server-select" class="ks-details-input" 
+                                onchange="peachifyServer = this.value; localStorage.setItem('vds_pf_server', this.value)">
+                            <option value="" ${peachifyServer === '' ? 'selected' : ''}>Default Fallback</option>
+                            <option value="iron" ${peachifyServer === 'iron' ? 'selected' : ''}>iron (Fast)</option>
+                            <option value="spider" ${peachifyServer === 'spider' ? 'selected' : ''}>spider (Fast)</option>
+                            <option value="multi" ${peachifyServer === 'multi' ? 'selected' : ''}>multi</option>
+                            <option value="dark" ${peachifyServer === 'dark' ? 'selected' : ''}>dark</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Preferred Audio Dub</label>
+                        <input type="text" id="vds-pf-dub-input" class="ks-details-input" 
+                               placeholder="e.g. English, French" 
+                               value="${peachifyDub}" 
+                               oninput="peachifyDub = this.value; localStorage.setItem('vds_pf_dub', this.value)">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Preferred Subtitle</label>
+                        <input type="text" id="vds-pf-sub-input" class="ks-details-input" 
+                               placeholder="e.g. English, Spanish" 
+                               value="${peachifySub}" 
+                               oninput="peachifySub = this.value; localStorage.setItem('vds_pf_sub', this.value)">
+                    </div>
+                </div>
+
+                <div class="videasy-settings-grid" style="margin-top: 20px;">
+                    <div class="videasy-setting-item">
+                        <div class="videasy-setting-info">
+                            <span class="videasy-setting-title">Hide Cast button</span>
+                            <span class="videasy-setting-desc">Remove cast UI</span>
+                        </div>
+                        <label class="switch-control">
+                            <input type="checkbox" id="vds-pf-hidecast" ${peachifyHideCast ? 'checked' : ''} onchange="peachifyHideCast = this.checked; localStorage.setItem('vds_pf_hidecast', this.checked)">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="videasy-setting-item">
+                        <div class="videasy-setting-info">
+                            <span class="videasy-setting-title">Hide PIP button</span>
+                            <span class="videasy-setting-desc">Remove Picture-in-Picture</span>
+                        </div>
+                        <label class="switch-control">
+                            <input type="checkbox" id="vds-pf-hidepip" ${peachifyHidePip ? 'checked' : ''} onchange="peachifyHidePip = this.checked; localStorage.setItem('vds_pf_hidepip', this.checked)">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="videasy-setting-item">
+                        <div class="videasy-setting-info">
+                            <span class="videasy-setting-title">Hide Server Menu</span>
+                            <span class="videasy-setting-desc">Disable provider swapping</span>
+                        </div>
+                        <label class="switch-control">
+                            <input type="checkbox" id="vds-pf-hideservers" ${peachifyHideServers ? 'checked' : ''} onchange="peachifyHideServers = this.checked; localStorage.setItem('vds_pf_hideservers', this.checked)">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New MegaPlay Customization Fields -->
+            <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
+                <div style="font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                    <i class="fas fa-closed-captioning" style="color: #f59e0b;"></i> MegaPlay (Anikoto) Settings
+                </div>
+                
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Preferred Language Track</label>
+                    <select id="vds-mp-lan-select" class="ks-details-input" 
+                            onchange="megaplayLanguage = this.value; localStorage.setItem('vds_mp_lan', this.value)">
+                        <option value="sub" ${megaplayLanguage === 'sub' ? 'selected' : ''}>Subtitled (sub)</option>
+                        <option value="dub" ${megaplayLanguage === 'dub' ? 'selected' : ''}>English Dubbed (dub)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function setKsStreamingServer(server, el) {
+    ksDefaultServer = server;
+    localStorage.setItem('vds_server', server);
+    if (el) {
+        const parent = el.parentNode;
+        parent.querySelectorAll('.kd-label-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    } else {
+        const chips = document.querySelectorAll('.videasy-color-picker .kd-label-chip');
+        chips.forEach(chip => {
+            if (chip.getAttribute('onclick') && chip.getAttribute('onclick').includes(`'${server}'`)) {
+                const parent = chip.parentNode;
+                parent.querySelectorAll('.kd-label-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+            }
+        });
+    }
+}
+
+function setVideasyColor(color, el) {
+    videasyCustomColor = color;
+    localStorage.setItem('vds_color', color);
+    document.querySelectorAll('.videasy-color-dot').forEach(d => d.classList.remove('active'));
+    if (el) el.classList.add('active');
+}
+
+// Iframe URL Builder & Player Launcher
+let currentTrackingMedia = null;
+
+function playVideasyMedia(mediaId, mediaType, title, resume = false, season = null, episode = null) {
+    let baseUrl = '';
+    const params = new URLSearchParams();
+    
+    // Choose active server: for anime, fallback to videasy unless megaplay is chosen
+    const activeServer = (mediaType === 'anime') 
+        ? (ksDefaultServer === 'megaplay' ? 'megaplay' : 'videasy') 
+        : ksDefaultServer;
+    
+    if (activeServer === 'videasy') {
+        // Construct base URL structure
+        if (mediaType === 'movie') {
+            baseUrl = `https://player.videasy.net/movie/${mediaId}`;
+        } else if (mediaType === 'tv') {
+            const s = season || 1;
+            const e = episode || 1;
+            baseUrl = `https://player.videasy.net/tv/${mediaId}/${s}/${e}`;
+        } else if (mediaType === 'anime') {
+            if (episode) {
+                baseUrl = `https://player.videasy.net/anime/${mediaId}/${episode}`;
+            } else {
+                baseUrl = `https://player.videasy.net/anime/${mediaId}`;
+            }
+        }
+        
+        // Construct Query Parameters
+        if (videasyCustomColor) params.append('color', videasyCustomColor);
+        if (videasyNextEpisode) params.append('nextEpisode', 'true');
+        if (videasyAutoplay) params.append('autoplayNextEpisode', 'true');
+        if (videasyOverlay) params.append('overlay', 'true');
+        if (mediaType === 'tv' && videasySelector) params.append('episodeSelector', 'true');
+        
+    } else if (activeServer === 'vidsrc_to') {
+        // VidSrc.to
+        if (mediaType === 'movie') {
+            baseUrl = `https://vidsrc.to/embed/movie/${mediaId}`;
+        } else if (mediaType === 'tv') {
+            const s = season || 1;
+            if (episode) {
+                baseUrl = `https://vidsrc.to/embed/tv/${mediaId}/${s}/${episode}`;
+            } else {
+                baseUrl = `https://vidsrc.to/embed/tv/${mediaId}/${s}`;
+            }
+        }
+        
+        // Construct subtitle parameters if configured
+        if (vidsrcToSubtitleUrl) {
+            // Check if user entered a JSON array for multiple subtitles
+            if (vidsrcToSubtitleUrl.trim().startsWith('[') && vidsrcToSubtitleUrl.trim().endsWith(']')) {
+                try {
+                    // Try parsing and encoding it
+                    const jsonSub = JSON.parse(vidsrcToSubtitleUrl);
+                    params.append('sub.info', JSON.stringify(jsonSub));
+                } catch(e) {
+                    // If parsing fails, treat it as a single subtitle URL
+                    params.append('sub_file', vidsrcToSubtitleUrl);
+                    if (vidsrcToSubtitleLabel) {
+                        params.append('sub_label', vidsrcToSubtitleLabel);
+                    }
+                }
+            } else {
+                params.append('sub_file', vidsrcToSubtitleUrl);
+                if (vidsrcToSubtitleLabel) {
+                    params.append('sub_label', vidsrcToSubtitleLabel);
+                }
+            }
+        }
+    } else if (activeServer === 'cinemaos') {
+        // CinemaOS
+        if (mediaType === 'movie') {
+            baseUrl = `https://cinemaos.tech/player/${mediaId}`;
+        } else if (mediaType === 'tv') {
+            const s = season || 1;
+            const e = episode || 1;
+            baseUrl = `https://cinemaos.tech/player/${mediaId}/${s}/${e}`;
+        }
+        
+        // Theme parameter
+        if (videasyCustomColor) {
+            params.append('theme', videasyCustomColor);
+        }
+    } else if (activeServer === 'vidplay') {
+        // VidPlay
+        if (mediaType === 'movie') {
+            baseUrl = `https://vidplay.to/film/${mediaId}/player`;
+        } else if (mediaType === 'tv') {
+            baseUrl = `https://vidplay.to/serial/${mediaId}/player`;
+            if (season) params.append('s', season.toString());
+            if (episode) params.append('e', episode.toString());
+        }
+    } else if (activeServer === 'screenscape') {
+        // ScreenScape
+        baseUrl = 'https://screenscape.me/embed';
+        params.append('tmdb', mediaId);
+        params.append('type', mediaType);
+        if (mediaType === 'tv') {
+            params.append('s', (season || 1).toString());
+            params.append('e', (episode || 1).toString());
+        }
+        if (screenscapeLanguage) {
+            params.append('lan', screenscapeLanguage);
+        }
+    } else if (activeServer === 'megaplay') {
+        // MegaPlay / Anikoto
+        const ep = episode || 1;
+        baseUrl = `https://megaplay.buzz/stream/ani/${mediaId}/${ep}/${megaplayLanguage}`;
+    } else if (activeServer === 'peachify') {
+        // Peachify
+        if (mediaType === 'movie') {
+            baseUrl = `https://peachify.top/embed/movie/${mediaId}`;
+        } else if (mediaType === 'tv') {
+            const s = season || 1;
+            const e = episode || 1;
+            baseUrl = `https://peachify.top/embed/tv/${mediaId}/${s}/${e}`;
+        }
+        
+        if (peachifyServer) params.append('server', peachifyServer);
+        if (peachifyDub) params.append('dub', peachifyDub);
+        if (peachifySub) params.append('sub', peachifySub);
+        
+        if (!videasyAutoplay) {
+            params.append('autoPlay', 'false');
+        }
+        
+        if (mediaType === 'tv') {
+            if (videasyAutoplay) {
+                params.append('autoNext', '30');
+            }
+            if (!videasyNextEpisode) {
+                params.append('showNextBtn', 'false');
+            }
+        }
+        
+        if (peachifyHideCast) params.append('cast', 'hide');
+        if (peachifyHidePip) params.append('pip', 'hide');
+        if (peachifyHideServers) params.append('servers', 'hide');
+    } else {
+        // VidSrc.ru
+        if (mediaType === 'movie') {
+            baseUrl = `https://vidsrc.ru/movie/${mediaId}`;
+        } else if (mediaType === 'tv') {
+            const s = season || 1;
+            const e = episode || 1;
+            baseUrl = `https://vidsrc.ru/tv/${mediaId}/${s}/${e}`;
+        }
+        
+        // Construct Query Parameters
+        params.append('autoplay', videasyAutoplay ? 'true' : 'false');
+        if (videasyCustomColor) params.append('colour', videasyCustomColor);
+        params.append('autonextepisode', videasyAutoplay ? 'true' : 'false');
+        params.append('pausescreen', videasyOverlay ? 'true' : 'false');
+        if (videasyBackButtonUrl) params.append('backbutton', videasyBackButtonUrl);
+        if (videasyLogoUrl) params.append('logo', videasyLogoUrl);
+        if (videasyIdleCheck > 0) params.append('idlecheck', videasyIdleCheck.toString());
+    }
+    
+    // Watch Progress loading
+    const progressKey = getWatchProgressKey(mediaId, mediaType, season, episode);
+    const saved = localStorage.getItem(progressKey);
+    
+    if (saved) {
+        try {
+            const progressData = JSON.parse(saved);
+            if (resume && progressData.timestamp) {
+                if (activeServer === 'peachify') {
+                    params.append('startAt', Math.floor(progressData.timestamp));
+                } else {
+                    params.append('progress', Math.floor(progressData.timestamp));
+                }
+                showToast(`Resuming at ${Math.floor(progressData.progress)}%`, 'fa-clock');
+            }
+        } catch(e){}
+    }
+    
+    const finalUrl = `${baseUrl}?${params.toString()}`;
+    console.log("Playing server URL:", finalUrl);
+    
+    // Save metadata for continue watching resume cards
+    const metaKey = `videasy_meta_${mediaType}_${mediaId}`;
+    localStorage.setItem(metaKey, JSON.stringify({
+        id: mediaId,
+        type: mediaType,
+        title: title,
+        poster: currentMediaMeta.poster,
+        year: currentMediaMeta.year,
+        season: season,
+        episode: episode,
+        updatedAt: Date.now()
+    }));
+    
+    // Construct tmdbServers list to pass to renderKSEmbed
+    const tmdbServers = [
+        { id: 'videasy', name: 'VIDEASY' },
+        { id: 'vidsrc', name: 'VidSrc.ru' },
+        { id: 'vidsrc_to', name: 'VidSrc.to' },
+        { id: 'cinemaos', name: 'CinemaOS' },
+        { id: 'vidplay', name: 'VidPlay' },
+        { id: 'screenscape', name: 'ScreenScape' },
+        { id: 'peachify', name: 'Peachify' },
+        { id: 'megaplay', name: 'MegaPlay' }
+    ];
+    
+    // Open player modal/overlay
+    renderKSEmbed(finalUrl, title, tmdbServers, 'tmdb_videasy');
+    
+    // Set tracking media
+    currentTrackingMedia = {
+        id: mediaId,
+        type: mediaType,
+        title: title,
+        season: season,
+        episode: episode
+    };
+}
+
+// Watch Progress State Keepers
+function getWatchProgressKey(id, type, season = null, episode = null) {
+    let key = `videasy_progress_${type}_${id}`;
+    if (season) key += `_s${season}`;
+    if (episode) key += `_e${episode}`;
+    return key;
+}
+
+function getWatchProgressHtml(id, type, title, season = null, episode = null) {
+    const key = getWatchProgressKey(id, type, season, episode);
+    const saved = localStorage.getItem(key);
+    
+    if (!saved) return '';
+    
+    try {
+        const data = JSON.parse(saved);
+        const percent = Math.floor(data.progress || 0);
+        const timestamp = data.timestamp || 0;
+        const duration = data.duration || 0;
+        
+        const formatTime = (secs) => {
+            const h = Math.floor(secs / 3600);
+            const m = Math.floor((secs % 3600) / 60);
+            const s = Math.floor(secs % 60);
+            return h > 0 
+                ? `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+                : `${m}:${s.toString().padStart(2, '0')}`;
+        };
+        
+        const timeLabel = duration 
+            ? `${formatTime(timestamp)} / ${formatTime(duration)}`
+            : `${formatTime(timestamp)}`;
+            
+        if (season || episode) {
+            return `
+                <div style="margin-top: 10px;">
+                    <div style="height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow:hidden;">
+                        <div style="height:100%; width: ${percent}%; background: #10b981;"></div>
+                    </div>
+                    <div style="font-size: 0.65rem; color: rgba(255,255,255,0.4); text-align:right; margin-top:2px;">${percent}% watched</div>
+                </div>
+            `;
+        }
+        
+        return `
+            <div class="resume-playback-wrapper">
+                <button class="resume-btn" onclick="playVideasyMedia('${id}', '${type}', '${title.replace(/'/g, "\\'")}', true)">
+                    <i class="fas fa-undo"></i> Resume Playback at ${percent}%
+                </button>
+                <div class="resume-progress-container">
+                    <div class="resume-progress-bar" style="width: ${percent}%;"></div>
+                </div>
+                <div class="resume-info-text">
+                    <span>Last watched: ${new Date(data.lastWatched).toLocaleDateString()}</span>
+                    <span>${timeLabel} (${percent}%)</span>
+                </div>
+            </div>
+        `;
+    } catch(e) {
+        return '';
+    }
+}
+
+// Window watch progress postMessage listener
+window.addEventListener("message", function (event) {
+    if (!event.origin.includes("videasy.net") && !event.origin.includes("vidsrc.ru") && !event.origin.includes("vidsrc.to") && !event.origin.includes("cinemaos.tech") && !event.origin.includes("vidplay.to") && !event.origin.includes("screenscape.me") && !event.origin.includes("peachify.top") && !event.origin.includes("megaplay.buzz")) return;
+    
+    try {
+        let eventData = event.data;
+        
+        if (typeof eventData === "string") {
+            try {
+                eventData = JSON.parse(eventData);
+            } catch (e) {}
+        }
+        
+        // 00. Check for Anikoto / MegaPlay message format
+        if (eventData && (eventData.channel === 'megacloud' || eventData.type === 'watching-log' || eventData.event === 'time' || eventData.event === 'complete')) {
+            let watchedTime = 0;
+            let duration = 0;
+            let percent = 0;
+            
+            if (eventData.event === 'time') {
+                watchedTime = eventData.time;
+                duration = eventData.duration;
+                percent = eventData.percent;
+            } else if (eventData.type === 'watching-log') {
+                watchedTime = eventData.currentTime;
+                duration = eventData.duration;
+                percent = duration ? (watchedTime / duration) * 100 : 0;
+            } else if (eventData.event === 'complete') {
+                percent = 100;
+                watchedTime = duration;
+            }
+            
+            if (watchedTime > 0 || percent > 0) {
+                const id = currentTrackingMedia?.id;
+                const type = currentTrackingMedia?.type;
+                const s = currentTrackingMedia?.season || null;
+                const e = currentTrackingMedia?.episode || null;
+                
+                if (id && type) {
+                    const key = getWatchProgressKey(id, type, s, e);
+                    const trackingObj = {
+                        progress: percent,
+                        timestamp: watchedTime,
+                        duration: duration,
+                        season: s,
+                        episode: e,
+                        lastWatched: Date.now()
+                    };
+                    
+                    localStorage.setItem(key, JSON.stringify(trackingObj));
+                    if (s || e) {
+                        const parentKey = getWatchProgressKey(id, type);
+                        localStorage.setItem(parentKey, JSON.stringify(trackingObj));
+                    }
+                    
+                    // Sync with official watch_progress storage key
+                    try {
+                        const STORAGE_KEY = 'watch_progress';
+                        let watchProgress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+                        watchProgress[id] = {
+                            ...watchProgress[id],
+                            id: id,
+                            type: type,
+                            title: currentTrackingMedia?.title || '',
+                            progress: {
+                                watched_time: watchedTime,
+                                duration: duration
+                            },
+                            last_updated: Date.now()
+                        };
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(watchProgress));
+                    } catch (err) {}
+                }
+            }
+            return;
+        }
+        
+        // 0. Check for Peachify PLAYER_EVENT progress format
+        if (eventData && eventData.type === 'PLAYER_EVENT') {
+            const playerEventData = eventData.data;
+            if (playerEventData && playerEventData.tmdbId) {
+                const id = playerEventData.tmdbId.toString();
+                const type = playerEventData.mediaType;
+                const watchedTime = playerEventData.currentTime;
+                const duration = playerEventData.duration;
+                const progressPercent = duration ? (watchedTime / duration) * 100 : 0;
+                const s = playerEventData.season || null;
+                const e = playerEventData.episode || null;
+                
+                const key = getWatchProgressKey(id, type, s, e);
+                const trackingObj = {
+                    progress: progressPercent,
+                    timestamp: watchedTime,
+                    duration: duration,
+                    season: s,
+                    episode: e,
+                    lastWatched: Date.now()
+                };
+                
+                localStorage.setItem(key, JSON.stringify(trackingObj));
+                
+                if (s || e) {
+                    const parentKey = getWatchProgressKey(id, type);
+                    localStorage.setItem(parentKey, JSON.stringify(trackingObj));
+                }
+
+                // Sync with the official watch_progress storage key mapping
+                try {
+                    const STORAGE_KEY = 'watch_progress';
+                    let watchProgress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+                    watchProgress[id] = {
+                        ...watchProgress[id],
+                        id: id,
+                        type: type,
+                        title: currentTrackingMedia?.title || '',
+                        progress: {
+                            watched_time: watchedTime,
+                            duration: duration
+                        },
+                        last_updated: Date.now()
+                    };
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(watchProgress));
+                } catch (err) {}
+            }
+            return;
+        }
+        
+        // 1. Check for MEDIA_DATA progress event format (VidSrc or Peachify)
+        if (eventData && eventData.type === 'MEDIA_DATA') {
+            if (event.origin.includes("peachify.top")) {
+                localStorage.setItem('peachifyProgress', JSON.stringify(eventData.data));
+                
+                // Real-time progress mapping sync from Peachify dictionary if available
+                try {
+                    const keys = Object.keys(eventData.data);
+                    if (keys.length > 0) {
+                        const id = keys[0];
+                        const item = eventData.data[id];
+                        if (item && item.progress) {
+                            const type = item.type;
+                            const watchedTime = item.progress.watched;
+                            const duration = item.progress.duration;
+                            const progressPercent = duration ? (watchedTime / duration) * 100 : 0;
+                            
+                            const s = item.last_season_watched ? parseInt(item.last_season_watched, 10) : null;
+                            const e = item.last_episode_watched ? parseInt(item.last_episode_watched, 10) : null;
+                            
+                            const key = getWatchProgressKey(id, type, s, e);
+                            const trackingObj = {
+                                progress: progressPercent,
+                                timestamp: watchedTime,
+                                duration: duration,
+                                season: s,
+                                episode: e,
+                                lastWatched: Date.now()
+                            };
+                            
+                            localStorage.setItem(key, JSON.stringify(trackingObj));
+                            if (s || e) {
+                                const parentKey = getWatchProgressKey(id, type);
+                                localStorage.setItem(parentKey, JSON.stringify(trackingObj));
+                            }
+                        }
+                    }
+                } catch (e) {}
+            } else {
+                // VidSrc MEDIA_DATA
+                const mediaData = eventData.data;
+                if (mediaData && mediaData.id && mediaData.progress) {
+                    const id = mediaData.id;
+                    const type = mediaData.type;
+                    const watchedTime = mediaData.progress.watched_time;
+                    const duration = mediaData.progress.duration;
+                    const progressPercent = (watchedTime / duration) * 100;
+                    
+                    const s = (currentTrackingMedia?.id === id || currentTrackingMedia?.id === Number(id)) ? currentTrackingMedia.season : null;
+                    const e = (currentTrackingMedia?.id === id || currentTrackingMedia?.id === Number(id)) ? currentTrackingMedia.episode : null;
+                    
+                    const key = getWatchProgressKey(id, type, s, e);
+                    const trackingObj = {
+                        progress: progressPercent,
+                        timestamp: watchedTime,
+                        duration: duration,
+                        season: s,
+                        episode: e,
+                        lastWatched: Date.now()
+                    };
+                    
+                    localStorage.setItem(key, JSON.stringify(trackingObj));
+                    
+                    if (s || e) {
+                        const parentKey = getWatchProgressKey(id, type);
+                        localStorage.setItem(parentKey, JSON.stringify(trackingObj));
+                    }
+
+                    // Sync with the official watch_progress storage key mapping for VidSrc
+                    try {
+                        const STORAGE_KEY = 'watch_progress';
+                        let watchProgress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+                        watchProgress[id] = {
+                            ...watchProgress[id],
+                            ...mediaData,
+                            last_updated: Date.now()
+                        };
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(watchProgress));
+                    } catch (err) {}
+                }
+            }
+            return;
+        }
+        
+        // 2. Check for VIDEASY progress event format
+        if (typeof eventData === "string") {
+            eventData = JSON.parse(eventData);
+        }
+        
+        console.log("Message received from player:", eventData);
+        
+        if (eventData && eventData.id) {
+            const id = eventData.id;
+            const type = eventData.type;
+            const progress = eventData.progress;
+            const timestamp = eventData.timestamp;
+            const duration = eventData.duration;
+            const season = eventData.season;
+            const episode = eventData.episode;
+            
+            const key = getWatchProgressKey(id, type, season, episode);
+            const trackingObj = {
+                progress,
+                timestamp,
+                duration,
+                season,
+                episode,
+                lastWatched: Date.now()
+            };
+            
+            localStorage.setItem(key, JSON.stringify(trackingObj));
+            
+            if (season || episode) {
+                const parentKey = getWatchProgressKey(id, type);
+                localStorage.setItem(parentKey, JSON.stringify(trackingObj));
+            }
+
+            // Sync with the official watch_progress storage key mapping for VIDEASY
+            try {
+                const STORAGE_KEY = 'watch_progress';
+                let watchProgress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+                watchProgress[id] = {
+                    ...watchProgress[id],
+                    id: id,
+                    type: type,
+                    title: currentTrackingMedia?.title || '',
+                    progress: {
+                        watched_time: timestamp,
+                        duration: duration
+                    },
+                    last_updated: Date.now()
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(watchProgress));
+            } catch (err) {}
+        }
+    } catch (e) {
+        // Safe fail
+    }
+});
 
 function renderKSResults(results) {
     const resultsBox = document.getElementById('ks-results');
@@ -1240,20 +2881,47 @@ function renderKSEmbed(url, title = 'KurdStream Player', servers = [], baseUrl =
             const btn = document.createElement('button');
             btn.className = 'ks-mini-server-btn';
             btn.innerText = srv.name;
+            
+            // Highlight the active server button
+            if (baseUrl === 'tmdb_videasy') {
+                const activeServer = (currentTrackingMedia?.type === 'anime') ? 'videasy' : ksDefaultServer;
+                if (srv.id === activeServer) {
+                    btn.classList.add('active');
+                }
+            }
+            
             btn.onclick = async () => {
                 document.querySelectorAll('.ks-mini-server-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 const loader = document.getElementById('ks-player-loader');
                 loader.style.display = 'flex';
-                try {
-                    const fetchUrl = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}server=${srv.id}`;
-                    const res = await fetch(fetchUrl);
-                    const data = await res.json();
-                    document.getElementById('ks-iframe').src = data.iframeUrl;
-                } catch (err) {
-                    showToast('Failed to switch server.', 'fa-times-circle');
-                } finally {
+                
+                if (baseUrl === 'tmdb_videasy') {
+                    try {
+                        setKsStreamingServer(srv.id);
+                        if (currentTrackingMedia) {
+                            playVideasyMedia(
+                                currentTrackingMedia.id,
+                                currentTrackingMedia.type,
+                                currentTrackingMedia.title,
+                                true, // resume playback
+                                currentTrackingMedia.season,
+                                currentTrackingMedia.episode
+                            );
+                        }
+                    } catch (e) {}
                     loader.style.display = 'none';
+                } else {
+                    try {
+                        const fetchUrl = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}server=${srv.id}`;
+                        const res = await fetch(fetchUrl);
+                        const data = await res.json();
+                        document.getElementById('ks-iframe').src = data.iframeUrl;
+                    } catch (err) {
+                        showToast('Failed to switch server.', 'fa-times-circle');
+                    } finally {
+                        loader.style.display = 'none';
+                    }
                 }
             };
             serverBox.appendChild(btn);
@@ -1597,5 +3265,221 @@ function renderKDDetails(rawData) {
             </button>
         </div>
     `;
+}
+
+// VIDEASY Dynamic Home Dashboard (Continue Watching & Trending content)
+async function loadVideasyHome() {
+    const resultsBox = document.getElementById('ks-results');
+    if (!resultsBox) return;
+    
+    resultsBox.innerHTML = '';
+    
+    // 1. Render Continue Watching
+    const continueHtml = renderContinueWatchingSection();
+    if (continueHtml) {
+        resultsBox.innerHTML += continueHtml;
+    }
+    
+    // 2. Render Loader for Trending Section
+    const trendingSectionId = `ks-trending-${Date.now()}`;
+    resultsBox.innerHTML += `
+        <div class="section-header" style="margin-top: 30px;">Trending Today</div>
+        <div id="${trendingSectionId}">
+            <div class="tt-custom-loader" style="padding: 20px; display: flex;">
+                <div class="tt-pulse-logo" style="background: #f59e0b; width: 40px; height: 40px; font-size: 1.2rem;"><i class="fas fa-fire"></i></div>
+                <div class="tt-loading-text" style="font-size: 0.85rem;">Loading Trending Content...</div>
+            </div>
+        </div>
+    `;
+    
+    // 3. Fetch and Render Trending
+    try {
+        if (videasyActiveTab === 'tmdb') {
+            const url = `https://api.themoviedb.org/3/trending/all/day?api_key=${TMDB_API_KEY}`;
+            const res = await fetch(url);
+            const data = await res.json();
+            const filtered = (data.results || []).filter(item => item.media_type === 'movie' || item.media_type === 'tv').slice(0, 12);
+            renderTrendingGrid(filtered, trendingSectionId);
+        } else {
+            // Anime
+            const graphqlQuery = `
+            query {
+              Page (page: 1, perPage: 12) {
+                media (sort: TRENDING_DESC, type: ANIME) {
+                  id
+                  title {
+                    romaji
+                    english
+                  }
+                  coverImage {
+                    large
+                  }
+                  seasonYear
+                  format
+                }
+              }
+            }
+            `;
+            
+            const response = await fetch('https://graphql.anilist.co', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ query: graphqlQuery })
+            });
+            
+            const resData = await response.json();
+            const items = resData?.data?.Page?.media || [];
+            renderTrendingAnimeGrid(items, trendingSectionId);
+        }
+    } catch(e) {
+        console.error("Failed to load trending:", e);
+        const container = document.getElementById(trendingSectionId);
+        if (container) {
+            container.innerHTML = '<div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.4);">Failed to load trending feeds. Check connection.</div>';
+        }
+    }
+}
+
+function renderContinueWatchingSection() {
+    const progressKeys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('videasy_progress_')) {
+            progressKeys.push(key);
+        }
+    }
+    
+    if (progressKeys.length === 0) return '';
+    
+    const items = [];
+    progressKeys.forEach(key => {
+        try {
+            const progressData = JSON.parse(localStorage.getItem(key));
+            
+            // Extract media parts
+            const parts = key.split('_');
+            const type = parts[2];
+            const id = parts[3];
+            
+            // Look up metadata
+            const metaKey = `videasy_meta_${type}_${id}`;
+            const metaStr = localStorage.getItem(metaKey);
+            if (metaStr) {
+                const meta = JSON.parse(metaStr);
+                items.push({
+                    ...meta,
+                    progress: progressData.progress,
+                    timestamp: progressData.timestamp,
+                    duration: progressData.duration,
+                    updatedAt: progressData.lastWatched || meta.updatedAt || 0
+                });
+            }
+        } catch(e){}
+    });
+    
+    if (items.length === 0) return '';
+    
+    // Sort items by last watched date descending
+    items.sort((a, b) => b.updatedAt - a.updatedAt);
+    
+    // Slice to top 6 items
+    const topItems = items.slice(0, 6);
+    
+    let html = `
+        <div class="section-header" style="margin-top: 10px;">Continue Watching</div>
+        <div style="display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px 20px 5px; margin-bottom: 10px; scrollbar-width: thin;">
+    `;
+    
+    topItems.forEach(item => {
+        const percent = Math.floor(item.progress || 0);
+        const poster = item.poster || 'https://placehold.co/150x220/111111/ffffff/png?text=No+Poster';
+        const typeBadge = item.type === 'movie' ? 'Movie' : (item.type === 'tv' ? 'TV' : 'Anime');
+        const detailAction = item.type === 'anime' 
+            ? `fetchAniListDetails(${item.id})`
+            : `fetchTMDBDetails(${item.id}, '${item.type}')`;
+            
+        const episodeLabel = item.type === 'movie' 
+            ? 'Movie' 
+            : (item.season ? `S${item.season} E${item.episode}` : `Ep ${item.episode}`);
+            
+        html += `
+            <div class="ks-card" style="flex: 0 0 140px; cursor: pointer; height: auto; position: relative;" onclick="${detailAction}">
+                <div class="ks-card-badge" style="background: #10b981; font-size: 0.6rem; padding: 2px 6px; border-radius: 6px;">${typeBadge}</div>
+                <div class="ks-card-img-container" style="padding-top: 140%;">
+                    <img src="${poster}" alt="${item.title}" loading="lazy">
+                </div>
+                <div class="ks-card-info" style="position: relative; padding: 10px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); border-bottom-left-radius: 18px; border-bottom-right-radius: 18px;">
+                    <div class="ks-card-title" style="font-size: 0.8rem; margin-bottom: 2px; font-weight:700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</div>
+                    <div class="ks-card-meta" style="font-size: 0.65rem; color: #10b981; font-weight:600;">${episodeLabel}</div>
+                    <div style="height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; margin-top: 8px;">
+                        <div style="height: 100%; width: ${percent}%; background: #10b981; border-radius: 2px; box-shadow: 0 0 5px #10b981;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `</div>`;
+    return html;
+}
+
+  
+function renderTrendingGrid(results, targetId) {
+    const container = document.getElementById(targetId);
+    if (!container) return;
+    
+    let html = `<div class="ks-grid" style="padding: 10px 0;">`;
+    results.forEach(res => {
+        const title = res.title || res.name || 'Untitled';
+        const poster = res.poster_path ? `https://image.tmdb.org/t/p/w500${res.poster_path}` : 'https://placehold.co/500x750/000000/ffffff/png?text=No+Poster';
+        const year = (res.release_date || res.first_air_date || '').split('-')[0] || 'N/A';
+        const typeLabel = res.media_type === 'movie' ? 'Movie' : 'TV Show';
+        
+        html += `
+            <div class="ks-card" onclick="fetchTMDBDetails(${res.id}, '${res.media_type}')">
+                <div class="ks-card-badge">${typeLabel}</div>
+                <div class="ks-card-img-container">
+                    <img src="${poster}" alt="${title}" loading="lazy">
+                </div>
+                <div class="ks-card-info">
+                    <div class="ks-card-title">${title}</div>
+                    <div class="ks-card-meta">${year} • Trending</div>
+                </div>
+            </div>
+        `;
+    });
+    html += `</div>`;
+    container.innerHTML = html;
+}
+  
+function renderTrendingAnimeGrid(items, targetId) {
+    const container = document.getElementById(targetId);
+    if (!container) return;
+    
+    let html = `<div class="ks-grid" style="padding: 10px 0;">`;
+    items.forEach(res => {
+        const title = res.title.english || res.title.romaji || 'Untitled Anime';
+        const poster = res.coverImage.large || '';
+        const year = res.seasonYear || 'N/A';
+        const format = res.format || 'Anime';
+        
+        html += `
+            <div class="ks-card" onclick="fetchAniListDetails(${res.id})">
+                <div class="ks-card-badge">${format}</div>
+                <div class="ks-card-img-container">
+                    <img src="${poster}" alt="${title}" loading="lazy">
+                </div>
+                <div class="ks-card-info">
+                    <div class="ks-card-title">${title}</div>
+                    <div class="ks-card-meta">${year} • Trending</div>
+                </div>
+            </div>
+        `;
+    });
+    html += `</div>`;
+    container.innerHTML = html;
 }
 

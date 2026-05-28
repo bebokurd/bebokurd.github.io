@@ -1854,5 +1854,77 @@
         "url": "https://mangadex.org/",
         "icon": "fas fa-book-open",
         "id": "mangadex-1777461788252"
+    },
+    {
+        "name": "Brave Browser",
+        "desc": "Privacy-focused browser with built-in ad blocking and rewards.",
+        "cat": "browser",
+        "url": "https://brave.com/",
+        "icon": "fab fa-brave",
+        "id": "brave-browser-1777461800000"
+    },
+    {
+        "name": "Opera Browser",
+        "desc": "Fast, secure browser with built-in VPN and integrated messaging.",
+        "cat": "browser",
+        "url": "https://www.opera.com/",
+        "icon": "fab fa-opera",
+        "id": "opera-browser-1777461800001"
+    },
+    {
+        "name": "Waterfox",
+        "desc": "Privacy-conscious and highly customizable Firefox-based browser.",
+        "cat": "browser",
+        "url": "https://www.waterfox.com/",
+        "icon": "fas fa-water",
+        "id": "waterfox-1777461800002"
+    },
+    {
+        "name": "Arc Browser",
+        "desc": "The browser that helps you browse less, focusing on productivity and space.",
+        "cat": "browser",
+        "url": "https://arc.net/",
+        "icon": "fas fa-compass",
+        "id": "arc-browser-1777461800003"
+    },
+    {
+        "name": "Firefox Browser",
+        "desc": "The independent, privacy-first browser by Mozilla, built for everyone.",
+        "cat": "browser",
+        "url": "https://www.firefox.com/en-US/",
+        "icon": "fab fa-firefox-browser",
+        "id": "firefox-browser-1777461800004"
+    },
+    {
+        "name": "Opera GX",
+        "desc": "The first browser built specifically for gamers with RAM and CPU limiters.",
+        "cat": "browser",
+        "url": "https://www.opera.com/gx",
+        "icon": "fab fa-opera",
+        "id": "opera-gx-1777461800005"
+    },
+    {
+        "name": "Browser Use",
+        "desc": "An open-source AI agent that can use your browser to perform any task on the web.",
+        "cat": "ai",
+        "url": "https://browser-use.com/",
+        "icon": "fas fa-robot",
+        "id": "browser-use-1777461800006"
+    },
+    {
+        "name": "Samsung Internet",
+        "desc": "A fast, reliable, and secure web browser optimized for mobile and privacy.",
+        "cat": "browser",
+        "url": "https://browser.samsung.com/",
+        "icon": "fas fa-mobile-screen",
+        "id": "samsung-internet-1777461800007"
+    },
+    {
+        "name": "Via Browser",
+        "desc": "Extremely lightweight and fast minimalist browser for Android.",
+        "cat": "browser",
+        "url": "https://viayoo.com/en/",
+        "icon": "fas fa-leaf",
+        "id": "via-browser-1777461800008"
     }
 ]
