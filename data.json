@@ -1,5 +1,45 @@
 [
     {
+        "name": "JSONPlaceholder",
+        "desc": "Free fake REST API for prototyping, mock data, and testing network requests.",
+        "cat": "tools",
+        "url": "https://jsonplaceholder.typicode.com/",
+        "icon": "fas fa-database",
+        "id": "jsonplaceholder-dev-api"
+    },
+    {
+        "name": "HTTPBin Echo REST",
+        "desc": "A robust request and response service, ideal for debugging HTTP headers and payloads.",
+        "cat": "tools",
+        "url": "https://httpbin.org/",
+        "icon": "fas fa-exchange-alt",
+        "id": "httpbin-dev-api"
+    },
+    {
+        "name": "ReqRes Mock Platform",
+        "desc": "A hosted REST API ready for testing mock user profiles, authentication tokens, and CRUD operations.",
+        "cat": "tools",
+        "url": "https://reqres.in/",
+        "icon": "fas fa-users-cog",
+        "id": "reqres-dev-api"
+    },
+    {
+        "name": "IPify Address API",
+        "desc": "A simple public IPv4 address query resolver responding in raw text or formatted JSON.",
+        "cat": "tools",
+        "url": "https://api.ipify.org?format=json",
+        "icon": "fas fa-network-wired",
+        "id": "ipify-dev-api"
+    },
+    {
+        "name": "CoinGecko Market Data",
+        "desc": "Access historical coin pricing, exchange volumes, and token index feeds.",
+        "cat": "tools",
+        "url": "https://api.coingecko.com/api/v3/ping",
+        "icon": "fas fa-coins",
+        "id": "coingecko-dev-api"
+    },
+    {
         "name": "CHYA Official Discord",
         "desc": "Join our community hub for updates and chat.",
         "cat": "social",
@@ -1841,7 +1881,7 @@
     },
     {
         "name": "animekai",
-        "desc": " Watch Free Anime Online, Stream Subbed &amp; Dubbed Anime in HD<",
+        "desc": "Watch Free Anime Online, Stream Subbed & Dubbed Anime in HD.",
         "cat": "anime",
         "url": "https://animekai.to/home",
         "icon": "fas fa-play",

@@ -138,6 +138,7 @@ window.onload = async () => {
         setTimeout(() => d.classList.add('visible'), i * 150);
     });
     renderInstalled();
+    renderCategoriesHub();
     updateClock();
     updateStats();
     handleDeepLink();
@@ -171,12 +172,32 @@ function showToast(message, icon = 'fa-info-circle') {
     }, 3000);
 }
 
+// Friendly Category Hashes Mapping to Database IDs
+const categoryHashMap = {
+    'community': 'social', 'social': 'social',
+    'ai-tools': 'ai', 'ai': 'ai',
+    'movies': 'movies',
+    'anime': 'anime',
+    'cartoons': 'cartoon', 'cartoon': 'cartoon',
+    'kurdish': 'kurdish',
+    'live-sports': 'sports', 'sports': 'sports',
+    'live-tv': 'livetv', 'livetv': 'livetv',
+    'pc-games': 'games', 'games': 'games',
+    'game-mods': 'mods', 'mods': 'mods',
+    'pc-tools': 'tools', 'tools': 'tools',
+    'web-browsers': 'browser', 'browser': 'browser',
+    'automation-scripts': 'scripts', 'scripts': 'scripts',
+    'ad-blockers': 'ads', 'ads': 'ads'
+};
+
 function handleDeepLink() {
-    const hash = window.location.hash.substring(1); // Remove '#'
-    if (!hash) return;
+    const rawHash = window.location.hash.substring(1);
+    if (!rawHash) return;
+    
+    const hash = rawHash.toLowerCase();
 
     if (hash.startsWith('url=')) {
-        const targetUrl = decodeURIComponent(hash.substring(4));
+        const targetUrl = decodeURIComponent(rawHash.substring(4));
         if (targetUrl) {
             if (targetUrl.includes('kurdcinama-stream-seeker')) {
                 switchTab('kurdstream');
@@ -194,15 +215,28 @@ function handleDeepLink() {
             }
         }
     } else {
-        const tabId = hash.toLowerCase();
         const validTabs = [
-            'home', 'installed', 'search', 'tiktok', 'instagram', 
+            'home', 'categories-hub', 'installed', 'search', 'tiktok', 'instagram', 
             'google', 'anime-search', 'kurdstream', 'kurddoblazh', 'api-hub', 'faq', 'about', 
             'privacy', 'contact', 'status'
         ];
-        if (validTabs.includes(tabId)) {
-            switchTab(tabId);
-        } else if (hash.startsWith('cat-')) {
+
+        // 1. Support `#installed/social` format
+        if (hash.startsWith('installed/')) {
+            const catId = hash.substring(10);
+            filterCategory(catId);
+        }
+        // 2. Support standard valid tabs
+        else if (validTabs.includes(hash)) {
+            switchTab(hash);
+        }
+        // 3. Support direct category names as hashes, e.g. `#community` or `#live-sports`
+        else if (categoryHashMap[hash]) {
+            const catId = categoryHashMap[hash];
+            filterCategory(catId);
+        }
+        // 4. Support legacy `#cat-social` formats
+        else if (hash.startsWith('cat-')) {
             const catId = hash.substring(4);
             filterCategory(catId);
         }
@@ -348,7 +382,7 @@ function switchTab(tabId, el = null) {
     }
 
     const titles = {
-        'home': 'Home', 'installed': 'Packages', 'search': 'Search',
+        'home': 'Home', 'categories-hub': 'Categories', 'installed': 'Packages', 'search': 'Search',
         'tiktok': 'TikTok', 'instagram': 'Insta Lookup', 'google': 'Google Search',
         'anime-search': 'Anime Search', 'kurdstream': 'KurdStream', 'api-hub': 'API Hub',
         'faq': 'FAQ', 'about': 'About', 'privacy': 'Terms & Privacy',
@@ -418,9 +452,72 @@ function renderInstalled(filterCat = null) {
     container.innerHTML = html;
 }
 
-function filterCategory(cat, el) {
+function filterCategory(cat, el = null) {
+    // If no sidebar element is passed, let's find the matching sidebar item to activate it visually
+    if (!el) {
+        el = Array.from(document.querySelectorAll('.sidebar-item')).find(item => {
+            const onclickStr = item.getAttribute('onclick') || '';
+            return onclickStr.includes(`filterCategory('${cat}'`);
+        });
+    }
+
     switchTab('installed', el);
     renderInstalled(cat);
+    
+    // Set URL hash to reflect the active category instead of overriding to generic "#installed"
+    history.replaceState(null, null, `#installed/${cat}`);
+}
+
+function renderCategoriesHub() {
+    const container = document.getElementById('categories-grid-container');
+    if (!container) return;
+
+    const categoriesList = [
+        { id: 'social', name: 'Community', icon: 'fab fa-discord', color: '#7289da' },
+        { id: 'ai', name: 'AI Tools', icon: 'fas fa-robot', color: '#10b981' },
+        { id: 'movies', name: 'Movies', icon: 'fas fa-film', color: '#ef4444' },
+        { id: 'anime', name: 'Anime', icon: 'fas fa-ghost', color: '#ec4899' },
+        { id: 'cartoon', name: 'Cartoons', icon: 'fas fa-child', color: '#f59e0b' },
+        { id: 'kurdish', name: 'Kurdish', icon: 'fas fa-language', color: '#8b5cf6' },
+        { id: 'sports', name: 'Live Sports', icon: 'fas fa-futbol', color: '#3b82f6' },
+        { id: 'livetv', name: 'Live TV', icon: 'fas fa-satellite-dish', color: '#06b6d4' },
+        { id: 'games', name: 'PC Games', icon: 'fas fa-gamepad', color: '#14b8a6' },
+        { id: 'mods', name: 'Game Mods', icon: 'fas fa-wrench', color: '#f97316' },
+        { id: 'tools', name: 'PC Tools', icon: 'fas fa-toolbox', color: '#3b82f6' },
+        { id: 'browser', name: 'Web Browsers', icon: 'fas fa-globe', color: '#10b981' },
+        { id: 'scripts', name: 'Automation Scripts', icon: 'fas fa-scroll', color: '#8b5cf6' },
+        { id: 'ads', name: 'Ad Blockers', icon: 'fas fa-shield-alt', color: '#ef4444' }
+    ];
+
+    container.innerHTML = '';
+    categoriesList.forEach(cat => {
+        const count = packageData.filter(p => p.cat === cat.id).length;
+
+        const card = document.createElement('div');
+        card.className = 'category-card';
+        
+        // Synchronize dynamic redirection and visual sidebar item triggers
+        card.onclick = () => {
+            const sidebarItem = Array.from(document.querySelectorAll('.sidebar-item')).find(item => {
+                const onclickStr = item.getAttribute('onclick') || '';
+                return onclickStr.includes(`filterCategory('${cat.id}'`);
+            });
+            filterCategory(cat.id, sidebarItem);
+        };
+
+        card.innerHTML = `
+            <div class="category-card-glow" style="background: radial-gradient(circle at center, ${cat.color}18 0%, transparent 70%);"></div>
+            <div class="category-card-icon" style="color: ${cat.color}; background: ${cat.color}0c; border: 1px solid ${cat.color}15;">
+                <i class="${cat.icon}"></i>
+            </div>
+            <div class="category-card-info">
+                <span class="category-card-name">${cat.name}</span>
+                <span class="category-card-count">${count} packages</span>
+            </div>
+            <span class="category-card-arrow">›</span>
+        `;
+        container.appendChild(card);
+    });
 }
 
 function toggleFaq(el) {
@@ -930,31 +1027,305 @@ function switchApiTab(paneId, el) {
     el.classList.add('active');
 }
 
+// Developer API Hub Global State & Helpers
+let lastApiTestResponseData = null;
+
+// Centralized Robust API Request Wrapper with 10s Timeout & Auto-CORS Fallback
+async function secureFetch(url, options = {}) {
+    const TIMEOUT_MS = 10000;
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+    const fetchOptions = {
+        ...options,
+        signal: controller.signal
+    };
+
+    try {
+        console.log(`%c[secureFetch] Direct Request: ${options.method || 'GET'} ${url}`, "color: #60a5fa; font-weight: 500;");
+        const response = await fetch(url, fetchOptions);
+        clearTimeout(id);
+        return response;
+    } catch (err) {
+        clearTimeout(id);
+        
+        if (err.name === 'AbortError') {
+            throw new Error("Connection timed out. The server took too long to respond (10s limit).");
+        }
+
+        // Catch TypeError (usually network offline or CORS block) and fallback automatically
+        if (err instanceof TypeError) {
+            console.warn(`%c[secureFetch] Direct fetch failed (CORS blocked). Attempting AllOrigins Proxy Fallback for: ${url}`, "color: #fbbf24; font-style: italic;");
+            
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`;
+            const proxyController = new AbortController();
+            const proxyId = setTimeout(() => proxyController.abort(), TIMEOUT_MS);
+            
+            try {
+                const proxyResponse = await fetch(proxyUrl, { signal: proxyController.signal });
+                clearTimeout(proxyId);
+                
+                if (!proxyResponse.ok) {
+                    throw new Error(`CORS Fallback proxy returned HTTP error ${proxyResponse.status}`);
+                }
+                
+                const proxyData = await proxyResponse.json();
+                const contents = proxyData.contents;
+                const bodyText = typeof contents === 'string' ? contents : JSON.stringify(contents);
+                
+                // Construct a mock standard Response to avoid breaking downstream callers
+                return new Response(bodyText, {
+                    status: 200,
+                    statusText: 'OK (Proxied)',
+                    headers: new Headers({
+                        'Content-Type': 'application/json',
+                        'X-Proxied-By': 'AllOrigins'
+                    })
+                });
+            } catch (proxyErr) {
+                clearTimeout(proxyId);
+                throw new Error(`Network request failed. Direct access was blocked by CORS policy, and the fallback proxy also failed: ${proxyErr.message}`);
+            }
+        }
+
+        throw err;
+    }
+}
+
+// Dynamic Request Headers Row Builder
+function addApiHeaderRow(key = '', val = '') {
+    const container = document.getElementById('api-headers-container');
+    if (!container) return;
+
+    const row = document.createElement('div');
+    row.className = 'api-header-row';
+    row.innerHTML = `
+        <input type="text" placeholder="Key" class="api-header-key" value="${key}">
+        <input type="text" placeholder="Value" class="api-header-val" value="${val}">
+        <div class="remove-header-btn" onclick="this.parentElement.remove()"><i class="fas fa-trash-alt"></i></div>
+    `;
+    container.appendChild(row);
+}
+
+// Request Body Panel Toggle (JSON text area)
+function toggleApiBody() {
+    const header = document.getElementById('api-body-header');
+    const container = document.getElementById('api-body-container');
+    if (!header || !container) return;
+
+    if (container.style.display === 'none') {
+        container.style.display = 'block';
+        header.classList.remove('collapsed');
+    } else {
+        container.style.display = 'none';
+        header.classList.add('collapsed');
+    }
+}
+
+// Show/Hide Request Body option based on HTTP Method Selection
+function handleApiMethodChange() {
+    const method = document.getElementById('api-test-method').value;
+    const wrapper = document.querySelector('.api-body-wrapper');
+    const container = document.getElementById('api-body-container');
+    const header = document.getElementById('api-body-header');
+
+    if (!wrapper) return;
+
+    if (method === 'GET') {
+        wrapper.style.display = 'none';
+        if (container) container.style.display = 'none';
+        if (header) header.classList.add('collapsed');
+    } else {
+        wrapper.style.display = 'flex';
+    }
+}
+
+// Quick-load presets directly from Documentation links
+function loadApiPreset(method, url) {
+    const methodSelect = document.getElementById('api-test-method');
+    const urlInput = document.getElementById('api-test-url');
+    if (!methodSelect || !urlInput) return;
+
+    methodSelect.value = method;
+    urlInput.value = url;
+    
+    // Trigger body view visibility update
+    handleApiMethodChange();
+
+    // Clear dynamic headers & load standard preset headers if any
+    const container = document.getElementById('api-headers-container');
+    if (container) container.innerHTML = '';
+    
+    // Add default Accept header
+    addApiHeaderRow('Accept', 'application/json');
+
+    // Switch view tab to API Tester
+    const testerTab = Array.from(document.querySelectorAll('.api-tab')).find(t => t.innerText.includes('Tester'));
+    if (testerTab) {
+        switchApiTab('tester', testerTab);
+    }
+    
+    // Auto run test for instant feedback!
+    runApiTest();
+}
+
+// Clipboard Actions
+function copyApiResponse() {
+    if (!lastApiTestResponseData) {
+        showToast('No response data available to copy.', 'fa-exclamation-triangle');
+        return;
+    }
+    const text = typeof lastApiTestResponseData === 'object' ? JSON.stringify(lastApiTestResponseData, null, 2) : lastApiTestResponseData;
+    navigator.clipboard.writeText(text);
+    showToast('Response copied to clipboard!', 'fa-check-circle');
+}
+
+// Download Actions
+function downloadApiResponse() {
+    if (!lastApiTestResponseData) {
+        showToast('No response data available to download.', 'fa-exclamation-triangle');
+        return;
+    }
+    const text = typeof lastApiTestResponseData === 'object' ? JSON.stringify(lastApiTestResponseData, null, 2) : lastApiTestResponseData;
+    const blob = new Blob([text], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'cydia_api_response.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Response file download started.', 'fa-download');
+}
+
+// API Tester Run Process
 async function runApiTest() {
     const url = document.getElementById('api-test-url').value.trim();
     const method = document.getElementById('api-test-method').value;
     const loader = document.getElementById('api-test-loader');
     const responseBox = document.getElementById('api-test-response');
+    const responseSection = document.getElementById('api-response-section');
+    const resStatus = document.getElementById('api-res-status');
+    const resTime = document.getElementById('api-res-time');
+    const resSize = document.getElementById('api-res-size');
 
     if (!url) { showToast('Please enter an API URL.', 'fa-code'); return; }
 
     loader.style.display = 'block';
-    responseBox.style.display = 'none';
+    if (responseSection) responseSection.style.display = 'none';
     responseBox.innerHTML = "";
+    lastApiTestResponseData = null;
+
+    // Collect Dynamic Custom Headers
+    const headers = {};
+    const headerRows = document.querySelectorAll('.api-header-row');
+    headerRows.forEach(row => {
+        const keyInput = row.querySelector('.api-header-key');
+        const valInput = row.querySelector('.api-header-val');
+        if (keyInput && valInput) {
+            const key = keyInput.value.trim();
+            const val = valInput.value.trim();
+            if (key) headers[key] = val;
+        }
+    });
+
+    // Collect request body if not GET
+    let body = null;
+    if (method !== 'GET') {
+        const bodyText = document.getElementById('api-test-body').value.trim();
+        if (bodyText) {
+            try {
+                if (bodyText.startsWith('{') || bodyText.startsWith('[')) {
+                    JSON.parse(bodyText);
+                }
+                body = bodyText;
+            } catch (e) {
+                showToast('Warning: Invalid JSON payload in body.', 'fa-exclamation-triangle');
+                body = bodyText;
+            }
+        }
+    }
+
+    const startTime = performance.now();
 
     try {
-        const response = await fetch(url, { method });
-        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        const options = { method, headers };
+        if (body) {
+            options.body = body;
+            if (!headers['Content-Type']) {
+                headers['Content-Type'] = 'application/json';
+            }
+        }
+
+        const response = await secureFetch(url, options);
+        const endTime = performance.now();
+        const latency = Math.round(endTime - startTime);
+
+        // Read response body text & calculate size
+        const responseText = await response.text();
+        const byteSize = new Blob([responseText]).size;
         
-        const data = await response.json();
-        responseBox.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-        responseBox.style.display = 'block';
+        let sizeText = `${byteSize} B`;
+        if (byteSize > 1024 * 1024) {
+            sizeText = `${(byteSize / (1024 * 1024)).toFixed(2)} MB`;
+        } else if (byteSize > 1024) {
+            sizeText = `${(byteSize / 1024).toFixed(2)} KB`;
+        }
+
+        resTime.innerText = `${latency} ms`;
+        resSize.innerText = sizeText;
+
+        // Render Status Code Badge
+        resStatus.innerText = `${response.status} ${response.statusText || (response.ok ? 'OK' : '')}`;
+        resStatus.className = 'badge-status'; // reset
+        if (response.status >= 200 && response.status < 300) {
+            resStatus.classList.add('badge-success');
+        } else if (response.status >= 400 && response.status < 500) {
+            resStatus.classList.add('badge-warning');
+        } else {
+            resStatus.classList.add('badge-danger');
+        }
+
+        // Beautify Response JSON if applicable
+        try {
+            const jsonData = JSON.parse(responseText);
+            lastApiTestResponseData = jsonData;
+            responseBox.innerHTML = `<pre>${JSON.stringify(jsonData, null, 2)}</pre>`;
+        } catch (e) {
+            lastApiTestResponseData = responseText;
+            responseBox.innerHTML = `<pre style="white-space: pre-wrap; font-family: monospace; font-size: 0.82rem; color: rgba(255,255,255,0.85);">${escapeHTML(responseText)}</pre>`;
+        }
+
+        if (responseSection) responseSection.style.display = 'block';
     } catch (err) {
-        responseBox.innerHTML = `<div style="color: #ef4444;">Error: ${err.message}</div>`;
-        responseBox.style.display = 'block';
+        const endTime = performance.now();
+        const latency = Math.round(endTime - startTime);
+        
+        resTime.innerText = `${latency} ms`;
+        resSize.innerText = '0 B';
+        resStatus.innerText = 'ERROR';
+        resStatus.className = 'badge-status badge-danger';
+
+        responseBox.innerHTML = `<div style="color: #ef4444; font-family: monospace; font-size: 0.82rem; padding: 12px; background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px;">Error: ${err.message}</div>`;
+        if (responseSection) responseSection.style.display = 'block';
     } finally {
         loader.style.display = 'none';
     }
+}
+
+// HTML Entity escaper
+function escapeHTML(str) {
+    if (!str) return '';
+    return str.replace(/[&<>'"]/g, 
+        tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag] || tag)
+    );
 }
 
 // VIDEASY & TMDB Global State
@@ -3482,4 +3853,44 @@ function renderTrendingAnimeGrid(items, targetId) {
     html += `</div>`;
     container.innerHTML = html;
 }
+
+// FAQ Center Interactive Filtering
+let activeFaqCategory = 'all';
+
+function switchFaqTab(cat, el) {
+    activeFaqCategory = cat;
+    
+    // Toggle active visual classes on tab chips
+    document.querySelectorAll('.faq-tabs .api-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    
+    filterFaqs();
+}
+
+function filterFaqs() {
+    const q = document.getElementById('faq-search-input').value.toLowerCase().trim();
+    const items = document.querySelectorAll('.faq-grid .faq-item');
+    
+    items.forEach(item => {
+        const cat = item.getAttribute('data-cat');
+        const questionText = item.querySelector('.faq-question span').innerText.toLowerCase();
+        const answerText = item.querySelector('.faq-answer p').innerText.toLowerCase();
+        
+        // 1. Check tab filter matches
+        const matchesCat = (activeFaqCategory === 'all' || cat === activeFaqCategory);
+        
+        // 2. Check search input keyword matches
+        const matchesSearch = (!q || questionText.includes(q) || answerText.includes(q));
+        
+        if (matchesCat && matchesSearch) {
+            item.classList.remove('hidden-cat', 'hidden-search');
+            item.style.display = 'block';
+        } else {
+            if (!matchesCat) item.classList.add('hidden-cat');
+            if (!matchesSearch) item.classList.add('hidden-search');
+            item.style.display = 'none';
+        }
+    });
+}
+
 

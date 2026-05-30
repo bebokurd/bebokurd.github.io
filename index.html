@@ -90,6 +90,7 @@
 
             <div class="sidebar-title">Store</div>
             <div class="sidebar-item active" onclick="switchTab('home', this)"><i class="fas fa-home"></i> Home</div>
+            <div class="sidebar-item" onclick="switchTab('categories-hub', this)"><i class="fas fa-th-large"></i> Categories</div>
             <div class="sidebar-item" onclick="switchTab('installed', this)"><i class="fas fa-download"></i> Packages
             </div>
             <div class="sidebar-item" onclick="switchTab('search', this)"><i class="fas fa-search"></i> Search</div>
@@ -262,6 +263,16 @@
                         id="bio-text"></div>
                 </div>
 
+                <div id="view-categories-hub" class="view-content">
+                    <div class="tool-container">
+                        <div class="tool-hero">
+                            <i class="fas fa-th-large" style="color: #c084fc;"></i>
+                            <h2>Registry Categories</h2>
+                            <p>Browse package tweaks & utilities by section</p>
+                        </div>
+                        <div class="categories-grid" id="categories-grid-container" style="padding-bottom: 20px;"></div>
+                    </div>
+                </div>
 
                 <div id="view-installed" class="view-content">
 
@@ -506,7 +517,10 @@
                                 fetch the full database of packages and utilities in JSON format.</p>
 
                             <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Endpoint URL</div>
-                            <div class="code-block" id="api-endpoint-url">https://bebokurd.github.io/data.json</div>
+                            <div class="code-block" id="api-endpoint-url" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                <span>https://bebokurd.github.io/data.json</span>
+                                <span class="api-preset-badge" onclick="loadApiPreset('GET', 'https://bebokurd.github.io/data.json')"><i class="fas fa-play"></i> Try now</span>
+                            </div>
 
                             <button class="app-btn"
                                 onclick="navigator.clipboard.writeText('https://bebokurd.github.io/data.json'); showToast('API Endpoint copied!', 'fa-check-circle');">
@@ -554,14 +568,34 @@
                                 Routes</div>
                             <div class="detail-group"
                                 style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
-                                <div class="detail-row"><span class="label">Search</span><span
-                                        class="val">/search?q={query}</span></div>
-                                <div class="detail-row"><span class="label">Movie</span><span
-                                        class="val">/movie/{id}</span></div>
-                                <div class="detail-row"><span class="label">Series</span><span
-                                        class="val">/series/{id}</span></div>
-                                <div class="detail-row"><span class="label">Embed</span><span
-                                        class="val">/embed?movieId={id}</span></div>
+                                <div class="detail-row">
+                                    <span class="label">Search</span>
+                                    <span class="val" style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/search?q={query}</span>
+                                        <span class="api-preset-badge" onclick="loadApiPreset('GET', 'https://kurdcinama-stream-seeker.lovable.app/api/public/search?q=hero')"><i class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Movie Details</span>
+                                    <span class="val" style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/movie/{id}</span>
+                                        <span class="api-preset-badge" onclick="loadApiPreset('GET', 'https://kurdcinama-stream-seeker.lovable.app/api/public/movie/1400')"><i class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Series Details</span>
+                                    <span class="val" style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/series/{id}</span>
+                                        <span class="api-preset-badge" onclick="loadApiPreset('GET', 'https://kurdcinama-stream-seeker.lovable.app/api/public/series/100')"><i class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Embed Stream</span>
+                                    <span class="val" style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/embed?movieId={id}</span>
+                                        <span class="api-preset-badge" onclick="loadApiPreset('GET', 'https://kurdcinama-stream-seeker.lovable.app/api/public/embed?movieId=1400')"><i class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
                             </div>
 
                             <button class="app-btn"
@@ -574,45 +608,111 @@
                                 KurdDoblazh.com content, optimized for mobile and spatial browsers.</p>
 
                             <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Base Endpoint</div>
-                            <div class="code-block">https://kurd-doblazh-api.lovable.app</div>
+                            <div class="code-block">https://kurd-doblazh-api.lovable.app/api</div>
 
                             <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Available
                                 Routes</div>
                             <div class="detail-group"
                                 style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
-                                <div class="detail-row"><span class="label">Search</span><span
-                                        class="val">/api/kd/search?q={q}</span></div>
-                                <div class="detail-row"><span class="label">Latest</span><span
-                                        class="val">/api/kd/latest?limit={n}</span></div>
-                                <div class="detail-row"><span class="label">Labels</span><span
-                                        class="val">/api/kd/labels</span></div>
-                                <div class="detail-row"><span class="label">Resolve</span><span
-                                        class="val">/api/kd/resolve?input={url}</span></div>
+                                <div class="detail-row">
+                                    <span class="label">Search</span>
+                                    <span class="val" style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/kd/search?q={q}</span>
+                                        <span class="api-preset-badge" onclick="loadApiPreset('GET', 'https://kurd-doblazh-api.lovable.app/api/kd/search?q=batman')"><i class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Latest Dubs</span>
+                                    <span class="val" style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/kd/latest?limit={n}</span>
+                                        <span class="api-preset-badge" onclick="loadApiPreset('GET', 'https://kurd-doblazh-api.lovable.app/api/kd/latest?limit=10')"><i class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Labels/Categories</span>
+                                    <span class="val" style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/kd/labels</span>
+                                        <span class="api-preset-badge" onclick="loadApiPreset('GET', 'https://kurd-doblazh-api.lovable.app/api/kd/labels')"><i class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Resolve Post</span>
+                                    <span class="val" style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/kd/resolve?input={url}</span>
+                                        <span class="api-preset-badge" onclick="loadApiPreset('GET', 'https://kurd-doblazh-api.lovable.app/api/kd/resolve?input=https://www.kurddoblazh.com/2023/12/aquaman-and-lost-kingdom.html')"><i class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
                         <div id="api-pane-tester" class="api-pane">
                             <div class="api-tester-ui">
                                 <div style="display: flex; gap: 10px;">
-                                    <select id="api-test-method" class="api-method-select">
+                                    <select id="api-test-method" class="api-method-select" onchange="handleApiMethodChange()">
                                         <option value="GET">GET</option>
                                         <option value="POST">POST</option>
+                                        <option value="PUT">PUT</option>
+                                        <option value="DELETE">DELETE</option>
                                     </select>
                                     <input type="text" id="api-test-url" class="tool-input"
                                         style="flex: 1; margin-bottom: 0;" placeholder="https://api.example.com/data">
                                 </div>
-                                <button class="tool-btn" style="width: 100%;" onclick="runApiTest()">Send
-                                    Request</button>
+
+                                <!-- Dynamic Headers Section -->
+                                <div class="api-headers-title">
+                                    <span>Request Headers</span>
+                                    <button class="add-header-btn" onclick="addApiHeaderRow()"><i class="fas fa-plus"></i> Add Header</button>
+                                </div>
+                                <div id="api-headers-container" class="api-headers-container">
+                                    <!-- Dynamic header rows injected here -->
+                                </div>
+
+                                <!-- Dynamic Body Payload Section -->
+                                <div class="api-body-wrapper">
+                                    <div id="api-body-header" class="api-body-header collapsed" onclick="toggleApiBody()">
+                                        <i class="fas fa-chevron-down"></i>
+                                        <span>Request Body (JSON)</span>
+                                    </div>
+                                    <div id="api-body-container" class="api-body-container" style="display: none; margin-top: 8px;">
+                                        <textarea id="api-test-body" class="api-body-textarea" placeholder='{&#10;  "key": "value"&#10;}'></textarea>
+                                    </div>
+                                </div>
+
+                                <button class="tool-btn" style="width: 100%; margin-top: 10px;" onclick="runApiTest()">Send Request</button>
                             </div>
 
                             <div id="api-test-loader" class="loader" style="margin-top: 20px;">
                                 <i class="fas fa-spinner"></i>
-                                <div style="margin-top: 10px; font-weight: bold; color: #fff;">Fetching API Response...
-                                </div>
+                                <div style="margin-top: 10px; font-weight: bold; color: #fff;">Fetching API Response...</div>
                             </div>
 
-                            <div class="section-header" style="margin-top: 30px;">Response Viewer</div>
-                            <div id="api-test-response" class="api-response-viewer"></div>
+                            <!-- Interactive Response Section -->
+                            <div id="api-response-section" style="display: none; margin-top: 30px;">
+                                <div class="api-response-header-wrap" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                                    <div class="section-header" style="margin-top: 0; margin-bottom: 0;">Response Viewer</div>
+                                    <div class="api-response-controls">
+                                        <button class="api-ctrl-btn" onclick="copyApiResponse()"><i class="fas fa-copy"></i> Copy</button>
+                                        <button class="api-ctrl-btn" onclick="downloadApiResponse()"><i class="fas fa-download"></i> Download</button>
+                                    </div>
+                                </div>
+
+                                <div id="api-metrics-bar" class="api-metrics-bar">
+                                    <div class="metric-item">
+                                        <span>Status:</span>
+                                        <span id="api-res-status" class="badge-status">---</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span>Latency:</span>
+                                        <strong id="api-res-time">0 ms</strong>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span>Size:</span>
+                                        <strong id="api-res-size">0 B</strong>
+                                    </div>
+                                </div>
+
+                                <div id="api-test-response" class="api-response-viewer" style="margin-top: 15px;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -622,11 +722,28 @@
                     <div class="tool-container">
                         <div class="tool-hero">
                             <i class="fas fa-question-circle" style="color: #3b82f6;"></i>
-                            <h2>Frequently Asked Questions</h2>
-                            <p>Everything you need to know about Cydia Elite</p>
+                            <h2>Developer Help Center</h2>
+                            <p>Everything you need to know about Cydia Elite features</p>
                         </div>
+
+                        <!-- FAQ search and category filter controls -->
+                        <div class="faq-search-box" style="margin-bottom: 20px;">
+                            <div class="tool-input-wrap" style="margin-bottom: 0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);">
+                                <input type="text" id="faq-search-input" class="tool-input" placeholder="Search questions & answers..." oninput="filterFaqs()" autocomplete="off" style="margin-bottom: 0;">
+                                <button class="tool-btn" style="pointer-events: none; border-left: 1px solid rgba(255,255,255,0.06);"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="faq-tabs" style="display: flex; gap: 8px; margin-bottom: 25px; overflow-x: auto; padding-bottom: 5px;">
+                            <div class="api-tab active" onclick="switchFaqTab('all', this)" style="padding: 8px 16px; font-size: 0.8rem; border-radius: 10px;">All</div>
+                            <div class="api-tab" onclick="switchFaqTab('general', this)" style="padding: 8px 16px; font-size: 0.8rem; border-radius: 10px;">General</div>
+                            <div class="api-tab" onclick="switchFaqTab('dev', this)" style="padding: 8px 16px; font-size: 0.8rem; border-radius: 10px;">Developer</div>
+                            <div class="api-tab" onclick="switchFaqTab('privacy', this)" style="padding: 8px 16px; font-size: 0.8rem; border-radius: 10px;">Privacy & DB</div>
+                        </div>
+
                         <div class="faq-grid">
-                            <div class="faq-item">
+                            <!-- General Category -->
+                            <div class="faq-item" data-cat="general">
                                 <div class="faq-question" onclick="toggleFaq(this)">
                                     <div class="faq-q-icon"><i class="fas fa-hand-holding-usd"></i></div>
                                     <span>Is Cydia Elite free to use?</span>
@@ -639,7 +756,7 @@
                                 </div>
                             </div>
 
-                            <div class="faq-item">
+                            <div class="faq-item" data-cat="general">
                                 <div class="faq-question" onclick="toggleFaq(this)">
                                     <div class="faq-q-icon"><i class="fas fa-download"></i></div>
                                     <span>How do I install packages?</span>
@@ -652,33 +769,7 @@
                                 </div>
                             </div>
 
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
-                                    <div class="faq-q-icon"><i class="fas fa-user-secret"></i></div>
-                                    <span>Are my searches and downloads private?</span>
-                                    <i class="fas fa-chevron-down chevron-state"></i>
-                                </div>
-                                <div class="faq-answer">
-                                    <p>Privacy is our core pillar. We do not log your search queries, IP addresses, or
-                                        download history. All tool processing happens in real-time and data is cleared
-                                        immediately after your session.</p>
-                                </div>
-                            </div>
-
-                            <div class="faq-item">
-                                <div class="faq-question" onclick="toggleFaq(this)">
-                                    <div class="faq-q-icon"><i class="fas fa-sync-alt"></i></div>
-                                    <span>How often is the database updated?</span>
-                                    <i class="fas fa-chevron-down chevron-state"></i>
-                                </div>
-                                <div class="faq-answer">
-                                    <p>Our package database (data.json) is updated frequently. New tools, streaming
-                                        links, and security patches are usually added weekly to ensure everything
-                                        remains operational.</p>
-                                </div>
-                            </div>
-
-                            <div class="faq-item">
+                            <div class="faq-item" data-cat="general">
                                 <div class="faq-question" onclick="toggleFaq(this)">
                                     <div class="faq-q-icon"><i class="fas fa-mobile-alt"></i></div>
                                     <span>Does it work on mobile?</span>
@@ -691,7 +782,7 @@
                                 </div>
                             </div>
 
-                            <div class="faq-item">
+                            <div class="faq-item" data-cat="general">
                                 <div class="faq-question" onclick="toggleFaq(this)">
                                     <div class="faq-q-icon"><i class="fas fa-plus-circle"></i></div>
                                     <span>Can I request a new tool?</span>
@@ -701,6 +792,78 @@
                                     <p>We love community feedback! You can join our Discord server or message Chya on
                                         Instagram to suggest new tools, scripts, or streaming sources to be added to the
                                         portal.</p>
+                                </div>
+                            </div>
+
+                            <!-- Developer Category -->
+                            <div class="faq-item" data-cat="dev">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <div class="faq-q-icon"><i class="fas fa-terminal"></i></div>
+                                    <span>How do I use the Developer API Hub?</span>
+                                    <i class="fas fa-chevron-down chevron-state"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>The Developer API Hub is a sandboxed playground. In the 'Documentation' tab, you can click glowing 'Try Now' badges next to routes to instantly switch to the 'API Tester' tab and pre-fill details. The 'API Tester' lets you configure HTTP methods (GET, POST, PUT, DELETE), dynamically build key-value HTTP headers, add raw JSON request payloads, and visualize execution metrics.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-cat="dev">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <div class="faq-q-icon"><i class="fas fa-shield-halved"></i></div>
+                                    <span>What is the secureFetch network engine?</span>
+                                    <i class="fas fa-chevron-down chevron-state"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Our centralized secureFetch engine ensures network request safety. It uses AbortController to enforce a strict 10-second request timeout limit. Additionally, if a direct REST query gets blocked due to CORS browser policies, secureFetch automatically fallbacks and routes the request securely via the AllOrigins proxy, reconstructs a valid Response, and resolves it flawlessly.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-cat="dev">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <div class="faq-q-icon"><i class="fas fa-route"></i></div>
+                                    <span>How do I use custom URL hash routing?</span>
+                                    <i class="fas fa-chevron-down chevron-state"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>URL hash routing preserves filter states. Clicking category links creates paths like #installed/social. You can also visit clean, bookmarked aliases directly (e.g. #community, #live-sports, or #ad-blockers) and the portal router will immediately parse, filter, and synchronize visual sidebar highlights automatically.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-cat="dev">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <div class="faq-q-icon"><i class="fas fa-table-list"></i></div>
+                                    <span>How does the Admin Dashboard pagination work?</span>
+                                    <i class="fas fa-chevron-down chevron-state"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Navigating to /admin loads our database management dashboard. It uses a high-performance pagination bar supporting page sizes (10, 15, 25, 50, 100). Selecting 'All' disables bounds, listing all 220+ entries simultaneously in the DOM table, which simplifies sweeping edits.</p>
+                                </div>
+                            </div>
+
+                            <!-- Privacy & DB Category -->
+                            <div class="faq-item" data-cat="privacy">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <div class="faq-q-icon"><i class="fas fa-user-secret"></i></div>
+                                    <span>Are my searches and downloads private?</span>
+                                    <i class="fas fa-chevron-down chevron-state"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Privacy is our core pillar. We do not log your search queries, IP addresses, or
+                                        download history. All tool processing happens in real-time and data is cleared
+                                        immediately after your session.</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item" data-cat="privacy">
+                                <div class="faq-question" onclick="toggleFaq(this)">
+                                    <div class="faq-q-icon"><i class="fas fa-sync-alt"></i></div>
+                                    <span>How often is the database updated?</span>
+                                    <i class="fas fa-chevron-down chevron-state"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Our package database (data.json) is updated frequently. New tools, streaming
+                                        links, and security patches are usually added weekly to ensure everything
+                                        remains operational.</p>
                                 </div>
                             </div>
                         </div>
@@ -1156,7 +1319,7 @@
                 class="fab fa-discord"></i> Discord Community</a>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 
 </html>

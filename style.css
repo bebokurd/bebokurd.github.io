@@ -1,15 +1,15 @@
 :root {
     --bg-accent: #6b21a8;
     --bg-accent2: #2563eb;
-    --glass-bg: rgba(12, 12, 18, 0.55);
-    --glass-border: rgba(255, 255, 255, 0.07);
-    --glass-highlight: rgba(255, 255, 255, 0.03);
+    --glass-bg: rgba(18, 18, 24, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.05);
     --text-main: #ffffff;
     --text-dim: #9ca3af;
-    --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    --radius-lg: 20px;
-    --radius-md: 14px;
-    --shadow-ambient: 0 20px 60px rgba(0, 0, 0, 0.4);
+    --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --shadow-ambient: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -4266,3 +4266,373 @@ select.ks-details-input option {
     border-color: transparent !important;
 }
 
+/* ==========================================================================
+   DEVELOPER API HUB & TESTER UPGRADES
+   ========================================================================== */
+
+/* API Try-Now Preset Buttons */
+.api-preset-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: #93c5fd;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.api-preset-badge:hover {
+    background: rgba(59, 130, 246, 0.25);
+    border-color: #60a5fa;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* API Tester Layout Tweaks */
+.api-tester-ui {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+/* Dynamic Headers List Styles */
+.api-headers-title {
+    font-weight: 700;
+    color: #fff;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-header-btn {
+    background: rgba(139, 92, 246, 0.12);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    color: #c084fc;
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.add-header-btn:hover {
+    background: rgba(139, 92, 246, 0.25);
+    border-color: #c084fc;
+    color: #fff;
+}
+
+.api-headers-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.api-header-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.api-header-row input {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #fff;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    outline: none;
+    flex: 1;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.api-header-row input:focus {
+    border-color: #3b82f6;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.remove-header-btn {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.remove-header-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: #ef4444;
+    color: #fff;
+}
+
+/* API Request Body Styles */
+.api-body-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.api-body-header {
+    font-weight: 700;
+    color: #fff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.api-body-header i {
+    font-size: 0.75rem;
+    transition: transform 0.3s;
+}
+
+.api-body-header.collapsed i {
+    transform: rotate(-90deg);
+}
+
+.api-body-container {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.api-body-textarea {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    color: #34d399;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.82rem;
+    padding: 12px;
+    width: 100%;
+    min-height: 100px;
+    outline: none;
+    resize: vertical;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.api-body-textarea:focus {
+    border-color: #10b981;
+    background: rgba(0, 0, 0, 0.55);
+}
+
+/* Response Diagnostics Styles */
+.api-metrics-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 15px;
+    padding: 12px 18px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.metric-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+}
+
+.metric-item strong {
+    color: #fff;
+}
+
+/* Badges for HTTP status */
+.badge-status {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.badge-success {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    color: #34d399;
+}
+
+.badge-warning {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    color: #fbbf24;
+}
+
+.badge-danger {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #f87171;
+}
+
+/* Controls inside Response area */
+.api-response-controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.api-ctrl-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.75rem;
+    padding: 5px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.api-ctrl-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   CATEGORIES HUB PAGE VIEW SYSTEM
+   ========================================================================== */
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.category-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    overflow: hidden;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2), inset 0 1px 0 var(--glass-highlight);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.category-card-glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.85;
+    transition: opacity 0.4s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-3px) scale(1.025);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 255, 255, 0.03);
+}
+
+.category-card-icon {
+    position: relative;
+    z-index: 1;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.category-card:hover .category-card-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.category-card-info {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 3px;
+    text-align: left;
+}
+
+.category-card-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.2px;
+}
+
+.category-card-count {
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--text-dim);
+}
+
+.category-card-arrow {
+    position: relative;
+    z-index: 1;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.2);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    font-weight: 300;
+}
+
+.category-card:hover .category-card-arrow {
+    color: var(--text-main);
+    transform: translateX(4px) scale(1.1);
+}
+
+/* === FAQ Center Upgrades === */
+.faq-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 25px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.faq-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.faq-item {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.faq-item.hidden-cat,
+.faq-item.hidden-search {
+    display: none !important;
+}
