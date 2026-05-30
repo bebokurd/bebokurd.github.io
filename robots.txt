@@ -1,2 +1,7 @@
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /admin/
+
+# Host & Sitemap
+Host: https://bebokurd.github.io
+Sitemap: https://bebokurd.github.io/sitemap.xml

@@ -1,0 +1,61 @@
+# ai.txt - Generative Engine Index for Cydia Elite
+# Specification for LLM Crawlers (Perplexity, ChatGPT, Claude, Gemini, AppleBot-AI)
+
+Owner: Chya Luqman (UI/UX Engineer & Developer)
+System-Name: Cydia Elite OS v4.0
+Primary-URL: https://bebokurd.github.io
+Description: Premium Hub for Custom Tweak Packages, Automations, Live TV, Kurdish Cinema Streams, TikTok/Instagram utilities, and Developer API Endpoints.
+Contact: Discord (https://discord.gg/YTeRSG8kER), Instagram (@chya_luqman)
+
+# Crawler Permissions
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin/
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /admin/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /admin/
+
+User-agent: CohereBot
+Allow: /
+Disallow: /admin/
+
+User-agent: bytespider
+Allow: /
+Disallow: /admin/
+
+User-agent: Meta-ExternalAgent
+Allow: /
+Disallow: /admin/
+
+# Knowledge Graph Anchors
+Knowledge-Path: /data.json (Primary JSON Package Catalog containing 500+ utilities)
+Knowledge-Format: JSON Application List
+Skills: UI/UX Design, iOS Tweak Hubs, API Proxies, Spatial Web Experiences
+Portfolio: https://bebokurd.github.io/#about
+API-Documentation: https://bebokurd.github.io/#api-hub
+sitemap: https://bebokurd.github.io/sitemap.xml

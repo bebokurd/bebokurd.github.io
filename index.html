@@ -4,8 +4,82 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="CHYA LUQMAN - link">
+    <meta name="description" content="Explore CHYA LUQMAN's Cydia Elite - A state-of-the-art spatial developer portfolio, featuring interactive tools, curated package tweaks, TikTok/Instagram downloaders, Kurdish streaming portals, and public developer APIs." />
+    <meta name="keywords" content="Chya Luqman, Cydia Elite, Spatial Computing, UI/UX Engineer, Kurdish Cinema, TikTok Downloader, API Hub, Kurdish Dubbing, Tweak Registry, Portfolio, Web Developer" />
+    <meta name="author" content="Chya Luqman" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://bebokurd.github.io" />
     <title>CHYA | Cydia Elite</title>
+
+    <!-- Open Graph Protocol (OGP) for Social Media & AI Embeds -->
+    <meta property="og:title" content="CHYA | Cydia Elite" />
+    <meta property="og:description" content="Explore Chya Luqman's premium spatial portfolio & tweak registry - featuring custom software packages, TikTok downloaders, KurdStream integrations, and developer APIs." />
+    <meta property="og:image" content="https://i.pinimg.com/1200x/eb/48/73/eb487359acc13ab1ad5e1918e14cd49e.jpg" />
+    <meta property="og:url" content="https://bebokurd.github.io" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Cydia Elite Hub" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CHYA | Cydia Elite" />
+    <meta name="twitter:description" content="Explore Chya Luqman's premium spatial portfolio & tweak registry - featuring custom software packages, TikTok downloaders, KurdStream integrations, and developer APIs." />
+    <meta name="twitter:image" content="https://i.pinimg.com/1200x/eb/48/73/eb487359acc13ab1ad5e1918e14cd49e.jpg" />
+
+    <!-- JSON-LD Schema.org Structured Data for Classic & AI Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://bebokurd.github.io/#person",
+          "name": "Chya Luqman",
+          "jobTitle": "UI/UX Engineer & Developer",
+          "url": "https://bebokurd.github.io",
+          "image": "https://i.pinimg.com/1200x/eb/48/73/eb487359acc13ab1ad5e1918e14cd49e.jpg",
+          "description": "UI/UX Engineer and developer specializing in modern front-end architectures, spatial web designs, API hubs, and utility tools.",
+          "sameAs": [
+            "https://www.instagram.com/chya_luqman/",
+            "https://discord.gg/YTeRSG8kER"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://bebokurd.github.io/#website",
+          "url": "https://bebokurd.github.io",
+          "name": "Cydia Elite",
+          "description": "Premium spatial catalog of tweak packages, developer tools, downloaders, and Kurdish databases.",
+          "publisher": {
+            "@id": "https://bebokurd.github.io/#person"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://bebokurd.github.io/#search?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://bebokurd.github.io/#software",
+          "name": "Cydia Elite Tweak Registry",
+          "operatingSystem": "Web, iOS, Android, Desktop",
+          "applicationCategory": "DeveloperApplication",
+          "offers": {
+            "@type": "Offer",
+            "price": "0.00",
+            "priceCurrency": "USD"
+          },
+          "author": {
+            "@id": "https://bebokurd.github.io/#person"
+          }
+        }
+      ]
+    }
+    </script>
 
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -102,7 +176,7 @@
             <div class="sidebar-item" onclick="switchTab('instagram', this)"><i class="fab fa-instagram"></i> Insta
                 LookUp
             </div>
-            <div class="sidebar-item" onclick="switchTab('google', this)"><i class="fab fa-google"></i> Google Search
+            <div class="sidebar-item" onclick="switchTab('google', this)"><i class="fas fa-robot"></i> AI Search
             </div>
             <div class="sidebar-item" onclick="switchTab('anime-search', this)"><i class="fas fa-camera"></i> Anime
                 Search
@@ -343,37 +417,118 @@
                 <div id="view-google" class="view-content">
                     <div class="tool-container">
                         <div class="tool-hero">
-                            <i class="fab fa-google"
-                                style="background: linear-gradient(45deg, #4285F4, #EA4335, #FBBC05, #34A853); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
-                            <h2>Google Search</h2>
-                            <p>Explore the web • Spatial Engine</p>
+                            <i class="fas fa-robot"
+                                style="background: linear-gradient(135deg, #60a5fa, #a855f7, #ec4899); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.4));"></i>
+                            <h2>AI Search Hub</h2>
+                            <p>Interact with Chya's portfolio intelligence & web search</p>
                         </div>
 
-                        <div class="tool-input-wrap">
-                            <input type="text" id="google-query" class="tool-input"
-                                placeholder="What are you looking for?" autocomplete="off"
-                                onkeydown="if(event.key === 'Enter') performGoogleSearch()">
-                            <button class="tool-btn" onclick="performGoogleSearch()">Search</button>
+                        <!-- Segmented Tab Switcher -->
+                        <div class="ai-search-modes">
+                            <button class="ai-mode-tab active" id="btn-mode-copilot" onclick="switchSearchMode('copilot')">
+                                <i class="fas fa-sparkles"></i> AI Copilot
+                            </button>
+                            <button class="ai-mode-tab" id="btn-mode-web" onclick="switchSearchMode('web')">
+                                <i class="fab fa-google"></i> Google Web
+                            </button>
                         </div>
 
-                        <div class="section-header">Quick Search</div>
-                        <div class="detail-group" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));">
-                            <div class="pkg-list-item"
-                                onclick="document.getElementById('google-query').value='Latest Tech News'; performGoogleSearch()">
-                                <div class="pkg-list-info" style="text-align: center;">
-                                    <span class="pkg-list-name" style="font-size: 0.85rem;">Tech News</span>
+                        <!-- 1. AI COPILOT MODE -->
+                        <div id="panel-ai-copilot" class="ai-search-panel active">
+                            <div class="tool-input-wrap">
+                                <input type="text" id="ai-query" class="tool-input"
+                                    placeholder="Ask anything about Chya, tweak categories, or downloaders..." autocomplete="off"
+                                    onkeydown="if(event.key === 'Enter') performAiSearch()">
+                                <button class="tool-btn" id="ai-search-btn" onclick="performAiSearch()">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+
+                            <!-- Suggestion Pills -->
+                            <div class="ai-suggestions-grid">
+                                <button class="suggestion-chip" onclick="runAiSuggestion('Who is Chya Luqman?')">
+                                    <i class="fas fa-user-astronaut" style="color: #60a5fa;"></i> Who is Chya?
+                                </button>
+                                <button class="suggestion-chip" onclick="runAiSuggestion('How do I download TikTok videos without watermark?')">
+                                    <i class="fab fa-tiktok" style="color: #ee1d52;"></i> TikTok Downloader
+                                </button>
+                                <button class="suggestion-chip" onclick="runAiSuggestion('Search for Kurdish live TV apps and films')">
+                                    <i class="fas fa-language" style="color: #8b5cf6;"></i> Kurdish Media
+                                </button>
+                                <button class="suggestion-chip" onclick="runAiSuggestion('List some of the best AI models for programming')">
+                                    <i class="fas fa-code-branch" style="color: #10b981;"></i> Coding AIs
+                                </button>
+                            </div>
+
+                            <!-- Chat Box Results -->
+                            <div id="ai-results-box" class="ai-chat-results">
+                                <div class="ai-chat-welcome" id="ai-chat-welcome-screen">
+                                    <i class="fas fa-brain-circuit welcome-brain"></i>
+                                    <h3>Cydia Elite AI Assistant</h3>
+                                    <p>I am highly trained on Chya's projects, Cydia Elite's 500+ package registry, FAQ databases, and technical developer specifications. Ask me anything to get instant, interactive answers.</p>
+                                </div>
+                                <div id="ai-response-feed" style="display: none;">
+                                    <!-- Thinking Animation -->
+                                    <div id="ai-thinking-indicator" class="ai-thinking-bubble" style="display: none;">
+                                        <div class="ai-thinking-glow"></div>
+                                        <div class="thinking-dots">
+                                            <span></span><span></span><span></span>
+                                        </div>
+                                        <span class="thinking-label">Synthesizing semantic graph...</span>
+                                    </div>
+                                    <!-- LLM Response Body -->
+                                    <div class="ai-response-card" id="ai-response-card" style="display: none;">
+                                        <div class="ai-card-header">
+                                            <div class="ai-avatar"><i class="fas fa-robot"></i></div>
+                                            <div class="ai-title-info">
+                                                <span class="ai-name">Elite Copilot v4.0</span>
+                                                <span class="ai-status">Verified Agent</span>
+                                            </div>
+                                            <div class="ai-response-actions">
+                                                <button class="ai-action-btn" onclick="copyAiResponse()" title="Copy Answer"><i class="fas fa-copy"></i></button>
+                                                <button class="ai-action-btn" onclick="clearAiChat()" title="Reset Chat"><i class="fas fa-redo-alt"></i></button>
+                                            </div>
+                                        </div>
+                                        <div class="ai-response-body" id="ai-response-text"></div>
+                                        
+                                        <!-- Citation Cards (Direct tools matching from local search index) -->
+                                        <div class="ai-citations-section" id="ai-citations-container" style="display: none;">
+                                            <div class="citations-header"><i class="fas fa-quote-left"></i> Portfolio Citations</div>
+                                            <div class="citations-grid" id="ai-citations-grid"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="pkg-list-item"
-                                onclick="document.getElementById('google-query').value='AI Developments 2026'; performGoogleSearch()">
-                                <div class="pkg-list-info" style="text-align: center;">
-                                    <span class="pkg-list-name" style="font-size: 0.85rem;">AI Trends</span>
-                                </div>
+                        </div>
+
+                        <!-- 2. GOOGLE WEB SEARCH MODE -->
+                        <div id="panel-google-web" class="ai-search-panel">
+                            <div class="tool-input-wrap">
+                                <input type="text" id="google-query" class="tool-input"
+                                    placeholder="Explore the web via standard search..." autocomplete="off"
+                                    onkeydown="if(event.key === 'Enter') performGoogleSearch()">
+                                <button class="tool-btn" onclick="performGoogleSearch()">Search</button>
                             </div>
-                            <div class="pkg-list-item"
-                                onclick="document.getElementById('google-query').value='Spatial Computing'; performGoogleSearch()">
-                                <div class="pkg-list-info" style="text-align: center;">
-                                    <span class="pkg-list-name" style="font-size: 0.85rem;">Spatial</span>
+
+                            <div class="section-header">Quick Search</div>
+                            <div class="detail-group" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));">
+                                <div class="pkg-list-item"
+                                    onclick="document.getElementById('google-query').value='Latest Tech News'; performGoogleSearch()">
+                                    <div class="pkg-list-info" style="text-align: center;">
+                                        <span class="pkg-list-name" style="font-size: 0.85rem;">Tech News</span>
+                                    </div>
+                                </div>
+                                <div class="pkg-list-item"
+                                    onclick="document.getElementById('google-query').value='AI Developments 2026'; performGoogleSearch()">
+                                    <div class="pkg-list-info" style="text-align: center;">
+                                        <span class="pkg-list-name" style="font-size: 0.85rem;">AI Trends</span>
+                                    </div>
+                                </div>
+                                <div class="pkg-list-item"
+                                    onclick="document.getElementById('google-query').value='Spatial Computing'; performGoogleSearch()">
+                                    <div class="pkg-list-info" style="text-align: center;">
+                                        <span class="pkg-list-name" style="font-size: 0.85rem;">Spatial</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
