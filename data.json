@@ -24,6 +24,14 @@
         "id": "reqres-dev-api"
     },
     {
+        "name": "Supabase Web Indexer",
+        "desc": "A high-performance web indexing engine that analyzes and serves structured web data with TF-IDF magic and Supabase as the brain.",
+        "cat": "tools",
+        "url": "https://supabase.com/",
+        "icon": "fas fa-brain-circuit",
+        "id": "supabase-tfidf-indexer"
+    },
+    {
         "name": "IPify Address API",
         "desc": "A simple public IPv4 address query resolver responding in raw text or formatted JSON.",
         "cat": "tools",
@@ -1966,5 +1974,21 @@
         "url": "https://viayoo.com/en/",
         "icon": "fas fa-leaf",
         "id": "via-browser-1777461800008"
+    },
+    {
+        "name": "Google Chrome",
+        "desc": "The fast, secure, and free web browser built for the modern web by Google.",
+        "cat": "browser",
+        "url": "https://www.google.com/chrome/",
+        "icon": "fab fa-chrome",
+        "id": "google-chrome-1777461800009"
+    },
+    {
+        "name": "Microsoft Edge",
+        "desc": "The fast and secure web browser with built-in AI features from Microsoft.",
+        "cat": "browser",
+        "url": "https://www.microsoft.com/edge",
+        "icon": "fab fa-edge",
+        "id": "microsoft-edge-1777461800010"
     }
 ]

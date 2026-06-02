@@ -14,19 +14,19 @@ const isMobileDevice = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgen
 
 document.addEventListener('contextmenu', e => {
     e.preventDefault();
-    
+
     const { clientX: mouseX, clientY: mouseY } = e;
     const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
-    
+
     customMenu.style.display = 'block';
-    
+
     // Position adjustments to prevent menu from going off-screen
     let posX = mouseX;
     let posY = mouseY;
-    
+
     if (mouseX + 220 > windowWidth) posX = windowWidth - 230;
     if (mouseY + 300 > windowHeight) posY = windowHeight - 310;
-    
+
     customMenu.style.left = `${posX}px`;
     customMenu.style.top = `${posY}px`;
     customMenu.style.transformOrigin = (mouseX + 220 > windowWidth) ? 'top right' : 'top left';
@@ -40,7 +40,7 @@ document.addEventListener('click', () => {
 let lastParticleTime = 0;
 document.addEventListener('mousemove', e => {
     const { clientX: x, clientY: y } = e;
-    
+
     // Spawn particles with a rate limit for a "short" clean trail
     const now = Date.now();
     if (now - lastParticleTime > 40) {
@@ -54,13 +54,13 @@ function spawnParticle(x, y) {
     p.className = 'pointer-particle';
     p.style.left = `${x}px`;
     p.style.top = `${y}px`;
-    
+
     // Add slight random drift for more visibility and fluid motion
     const driftX = (Math.random() - 0.5) * 20;
     const driftY = (Math.random() - 0.5) * 20;
     p.style.setProperty('--drift-x', `${driftX}px`);
     p.style.setProperty('--drift-y', `${driftY}px`);
-    
+
     document.body.appendChild(p);
     setTimeout(() => p.remove(), 500);
 }
@@ -74,13 +74,13 @@ console.log("%cSecurity Active", "color: #3b82f6; font-size: 20px; font-weight: 
 console.log("Cydia Elite Spatial System Protected.");
 
 // Anti-Debugger Logic
-(function() {
+(function () {
     const intruderAlert = () => {
         function check(i) {
             if (("" + i / i).length !== 1 || i % 20 === 0) {
-                (function() {}.constructor("debugger")());
+                (function () { }.constructor("debugger")());
             } else {
-                (function() {}.constructor("debugger")());
+                (function () { }.constructor("debugger")());
             }
             check(++i);
         }
@@ -92,7 +92,7 @@ console.log("Cydia Elite Spatial System Protected.");
     };
     // Uncomment the line below to enable aggressive anti-debugging
     // intruderAlert();
-    
+
     // Subtle version: only trigger if devtools might be open
     setInterval(() => {
         const start = Date.now();
@@ -142,7 +142,10 @@ window.onload = async () => {
     updateClock();
     updateStats();
     handleDeepLink();
-    
+    initializeFaqAiFeatures();
+    startHomeActivityMonitor();
+    initializeAiSettingsUI();
+
     // Setup LIVE YTS/TMDB empty query handler
     const ksSearchInput = document.getElementById('ks-search-input');
     if (ksSearchInput) {
@@ -193,7 +196,7 @@ const categoryHashMap = {
 function handleDeepLink() {
     const rawHash = window.location.hash.substring(1);
     if (!rawHash) return;
-    
+
     const hash = rawHash.toLowerCase();
 
     if (hash.startsWith('url=')) {
@@ -216,9 +219,9 @@ function handleDeepLink() {
         }
     } else {
         const validTabs = [
-            'home', 'categories-hub', 'installed', 'search', 'tiktok', 'instagram', 
-            'google', 'anime-search', 'kurdstream', 'kurddoblazh', 'api-hub', 'faq', 'about', 
-            'privacy', 'contact', 'status'
+            'home', 'categories-hub', 'installed', 'search', 'tiktok', 'instagram',
+            'google', 'anime-search', 'kurdstream', 'kurddoblazh', 'api-hub', 'faq', 'about',
+            'privacy', 'contact', 'status', 'free-games'
         ];
 
         // 1. Support `#installed/social` format
@@ -249,12 +252,28 @@ function updateStats() {
     if (!packageData) return;
     const totalLinks = packageData.length;
     const uniqueCategories = new Set(packageData.map(p => p.cat)).size;
-    
+
     const linksEl = document.getElementById('stats-total-links');
     const catsEl = document.getElementById('stats-total-categories');
-    
+
     if (linksEl) linksEl.innerText = totalLinks.toLocaleString();
     if (catsEl) catsEl.innerText = uniqueCategories;
+
+    // Count categories dynamically for Home Dashboard breakdown
+    const countAi = packageData.filter(p => p.cat === 'ai').length;
+    const countTools = packageData.filter(p => p.cat === 'tools').length;
+    const countKurdish = packageData.filter(p => p.cat === 'kurdish').length;
+    const countSports = packageData.filter(p => p.cat === 'sports').length;
+    
+    const countAiEl = document.getElementById('count-ai');
+    const countToolsEl = document.getElementById('count-tools');
+    const countKurdishEl = document.getElementById('count-kurdish');
+    const countSportsEl = document.getElementById('count-sports');
+    
+    if (countAiEl) countAiEl.innerText = countAi;
+    if (countToolsEl) countToolsEl.innerText = countTools;
+    if (countKurdishEl) countKurdishEl.innerText = countKurdish;
+    if (countSportsEl) countSportsEl.innerText = countSports;
 }
 
 function createBiometricDots() {
@@ -276,14 +295,14 @@ entry.addEventListener('click', () => {
     // Force video play on user interaction for mobile
     const bgVideo = document.getElementById('bg-video');
     if (bgVideo) bgVideo.play().catch(() => { });
-    
+
     setTimeout(() => {
         entry.style.display = 'none';
         const lockScreen = document.getElementById('spatial-lock');
         const lockLabel = document.getElementById('lock-label');
         lockScreen.style.display = 'flex';
         createBiometricDots();
-        
+
         setTimeout(() => {
             lockLabel.innerText = "Identity Verified";
             lockLabel.style.color = "#4ade80";
@@ -322,13 +341,13 @@ function updateClock() {
     hours = hours ? hours : 12; // the hour '0' should be '12'
     minutes = minutes < 10 ? '0' + minutes : minutes;
     const strTime = hours + ':' + minutes + ' ' + ampm;
-    
+
     const timeEl = document.getElementById('iphone-time');
     if (timeEl) timeEl.innerText = strTime;
-    
+
     const mainClock = document.getElementById('main-clock-time');
     if (mainClock) mainClock.innerText = strTime;
-    
+
     const mainDate = document.getElementById('main-clock-date');
     if (mainDate) {
         const options = { weekday: 'long', month: 'long', day: 'numeric' };
@@ -373,7 +392,7 @@ function switchTab(tabId, el = null) {
 
     document.getElementById('main-scroll').scrollTop = 0;
     if (window.innerWidth < 1024) toggleMenu(false);
-    
+
     // Update URL hash without triggering handleDeepLink recursively if possible
     // Using history.replaceState to avoid hashchange firing if needed, 
     // but standard hash update is fine since handleDeepLink checks validity.
@@ -446,11 +465,15 @@ function switchTab(tabId, el = null) {
         'status': {
             nav: 'System Status',
             seo: 'Server Registry Mirrors & System Status | Cydia Elite'
+        },
+        'free-games': {
+            nav: 'Free Games',
+            seo: 'Free Games Tracker - Claim Steam, Epic Games & GOG Giveaways | Cydia Elite'
         }
     };
 
     const metadata = tabSeoMetadata[tabId] || { nav: tabId, seo: 'CHYA | Cydia Elite' };
-    
+
     // Update both displayed viewport labels and actual browser document title dynamically
     document.getElementById('nav-title-label').innerText = metadata.nav;
     document.title = metadata.seo;
@@ -462,6 +485,9 @@ function switchTab(tabId, el = null) {
             fetchKurdDoblazhLatest();
             fetchKurdDoblazhLabels();
         }
+    }
+    if (tabId === 'free-games') {
+        loadFreeGames();
     }
 }
 
@@ -482,10 +508,10 @@ function renderInstalled(filterCat = null) {
     let html = "";
     // Cache filtered results to avoid re-calculating on every render
     if (!window._pkgCache) window._pkgCache = {};
-    
+
     for (const [key, label] of Object.entries(categories)) {
         if (filterCat && filterCat !== key) continue;
-        
+
         const cacheKey = key;
         if (!window._pkgCache[cacheKey]) {
             window._pkgCache[cacheKey] = packageData.filter(p => p.cat === key);
@@ -528,7 +554,7 @@ function filterCategory(cat, el = null) {
 
     switchTab('installed', el);
     renderInstalled(cat);
-    
+
     // Set URL hash to reflect the active category instead of overriding to generic "#installed"
     history.replaceState(null, null, `#installed/${cat}`);
 
@@ -591,12 +617,19 @@ function filterCategory(cat, el = null) {
             seo: 'Download Ad Blockers & Security Shields | Cydia Elite'
         }
     };
-    
+
     const meta = categorySeoMetadata[cat];
     if (meta) {
         document.getElementById('nav-title-label').innerText = meta.nav;
         document.title = meta.seo;
     }
+}
+
+function hexToRgb(hex) {
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    const fullHex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
+    return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
 }
 
 function renderCategoriesHub() {
@@ -627,6 +660,13 @@ function renderCategoriesHub() {
         const card = document.createElement('div');
         card.className = 'category-card';
         
+        // Expose dynamic color tokens as CSS variables for premium styling
+        card.style.setProperty('--cat-color', cat.color);
+        const rgb = hexToRgb(cat.color);
+        if (rgb) {
+            card.style.setProperty('--cat-color-rgb', rgb);
+        }
+
         // Synchronize dynamic redirection and visual sidebar item triggers
         card.onclick = () => {
             const sidebarItem = Array.from(document.querySelectorAll('.sidebar-item')).find(item => {
@@ -654,10 +694,10 @@ function renderCategoriesHub() {
 function toggleFaq(el) {
     const item = el.parentElement;
     const isActive = item.classList.contains('active');
-    
+
     // Optional: Close other FAQ items
     document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
-    
+
     if (!isActive) {
         item.classList.add('active');
     }
@@ -668,14 +708,14 @@ function handleSearch(e) {
     searchInput.value = e.target.value;
     pcSearchInput.value = e.target.value;
     const rc = document.getElementById('search-results-container');
-    
-    if (query === "") { 
+
+    if (query === "") {
         rc.innerHTML = `
             <div class="search-empty-state">
                 <i class="fas fa-search"></i>
                 <p>Search for packages, tools, or tweaks</p>
-            </div>`; 
-        return; 
+            </div>`;
+        return;
     }
 
     const results = packageData.filter(p => p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query));
@@ -714,13 +754,222 @@ function handleSearch(e) {
     }
 }
 
-function performGoogleSearch() {
-    const query = document.getElementById('google-query').value.trim();
-    if (query) {
-        window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
-    } else {
-        showToast('Please enter a search query.', 'fa-exclamation-triangle');
+// Dynamic AI Synthesis action connector
+window.synthesizeResultWithAi = function (title, snippet) {
+    switchSearchMode('copilot');
+    const aiInput = document.getElementById('ai-query');
+    if (aiInput) {
+        aiInput.value = `Synthesize this web result:\nTitle: ${title}\nDescription: ${snippet}\n\nExplain this tech topic and its significance briefly.`;
+        performAiSearch();
     }
+};
+
+// Clipboard copy action handle
+window.copyToClipboardText = function (text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Link copied to clipboard!', 'fa-check-circle');
+    }).catch(() => {
+        showToast('Failed to copy link.', 'fa-times-circle');
+    });
+};
+
+function generateFallbackSearchCards(query) {
+    const q = query.toLowerCase();
+    let cards = [];
+
+    if (q.includes('tech') || q.includes('news') || q.includes('latest')) {
+        cards = [
+            { title: "TechCrunch - Startup and Technology News", snippet: "Technology news and analysis with a focus on founders and startup teams. Read about late-breaking developments in computing, social apps, and hardware.", url: "https://techcrunch.com/", displayUrl: "techcrunch.com > news" },
+            { title: "The Verge - Vox Media Technology Coverage", snippet: "The Verge is a vox-media powered technological review journal. Find tech logs, spatial updates, gaming specifications, and browser news.", url: "https://theverge.com/", displayUrl: "theverge.com > tech" },
+            { title: "Wired - Technology, Science, and Culture Insights", snippet: "In-depth coverage of current and future trends in technology, science, business, and design logs. Explore modern developments.", url: "https://wired.com/", displayUrl: "wired.com > business" }
+        ];
+    } else if (q.includes('ai') || q.includes('development') || q.includes('model') || q.includes('llm') || q.includes('deepseek') || q.includes('gpt')) {
+        cards = [
+            { title: "Hugging Face - The AI Community & Repository", snippet: "The platform where the world builds and shares machine learning models, datasets, and serverless LLM pipelines. Find state-of-the-art coder models.", url: "https://huggingface.co/", displayUrl: "huggingface.co > models" },
+            { title: "OpenAI Blog - Advanced Intelligence Research", snippet: "Read about OpenAI's latest developments, model benchmarks, GPT-4o capabilities, and systems engineered for spatial workflows.", url: "https://openai.com/blog", displayUrl: "openai.com > blog" },
+            { title: "DeepMind Google - Advanced AI Research Projects", snippet: "Google DeepMind's official journal logs documenting breakthroughs in multi-agent environments, Gemini 1.5 Pro architectures, and code assistants.", url: "https://deepmind.google/", displayUrl: "deepmind.google > research" }
+        ];
+    } else if (q.includes('spatial') || q.includes('computing') || q.includes('design') || q.includes('canvas') || q.includes('three')) {
+        cards = [
+            { title: "Apple Vision Pro - Spatial OS Specifications", snippet: "Explore the developer guidelines, design tokens, and physics-based motion rendering rules for spatial glassmorphism in visionOS.", url: "https://developer.apple.com/visionos/", displayUrl: "developer.apple > visionos" },
+            { title: "Three.js - WebGL Physics Canvas Framework", snippet: "An easy-to-use, lightweight, cross-browser 3D library in vanilla Javascript. Create advanced motion backgrounds and physics campuses.", url: "https://threejs.org/", displayUrl: "threejs.org > 3d" },
+            { title: "A-Frame - Spatial WebVR Virtual Reality Engine", snippet: "A web framework for building virtual reality experiences. Create responsive, physics-based 3D assets designed for modern browsers.", url: "https://aframe.io/", displayUrl: "aframe.io > virtual-reality" }
+        ];
+    } else {
+        cards = [
+            { title: `Wikipedia - Global Search: "${query}"`, snippet: `Comprehensive encyclopedia index of information, history, context, and bibliography regarding "${query}" in technology and science.`, url: `https://en.wikipedia.org/wiki/Search?search=${encodeURIComponent(query)}`, displayUrl: `en.wikipedia.org > wiki > ${query}` },
+            { title: `Medium - Developer Logs & Articles on "${query}"`, snippet: `Explore shared articles, programming guides, UI/UX showcases, and developer tutorials written about "${query}" by leading technical professionals.`, url: "https://medium.com/", displayUrl: `medium.com > topics > ${query}` },
+            { title: `GitHub Repositories - Open Source "${query}"`, snippet: `Discover thousands of open-source scripts, plugins, registry entries, and custom packages matching your query "${query}" on GitHub.`, url: `https://github.com/search?q=${encodeURIComponent(query)}`, displayUrl: `github.com > search > ${query}` }
+        ];
+    }
+    return cards;
+}
+
+async function performGoogleSearch() {
+    const query = document.getElementById('google-query').value.trim();
+    if (!query) {
+        showToast('Please enter a search query.', 'fa-exclamation-triangle');
+        return;
+    }
+
+    const resultsBox = document.getElementById('google-results-box');
+    const loader = document.getElementById('google-search-loader');
+    const resultsList = document.getElementById('google-results-list');
+
+    if (!resultsBox || !loader || !resultsList) {
+        window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
+        return;
+    }
+
+    resultsBox.style.display = 'block';
+    loader.style.display = 'flex';
+    resultsList.innerHTML = '';
+
+    const mainScroll = document.getElementById('main-scroll');
+    if (mainScroll) mainScroll.scrollTop = mainScroll.scrollHeight;
+
+    try {
+        // 1. Attempt real-time DuckDuckGo HTML scraping over proxy
+        const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(searchUrl)}&timestamp=${Date.now()}`;
+        
+        console.log("Fetching real web search results via proxy:", proxyUrl);
+        const response = await fetch(proxyUrl);
+        if (!response.ok) throw new Error("CORS Proxy search failed");
+        
+        const data = await response.json();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data.contents, "text/html");
+        
+        const resultElements = doc.querySelectorAll(".result");
+        let cards = [];
+        
+        resultElements.forEach(el => {
+            if (cards.length >= 6) return;
+            const titleEl = el.querySelector(".result__a");
+            const snippetEl = el.querySelector(".result__snippet");
+            const urlEl = el.querySelector(".result__url");
+            
+            if (titleEl && snippetEl) {
+                const title = titleEl.innerText.trim();
+                const snippet = snippetEl.innerText.trim();
+                const rawUrl = titleEl.getAttribute("href");
+                
+                let url = rawUrl;
+                if (rawUrl && rawUrl.includes("uddg=")) {
+                    const uddgMatch = rawUrl.match(/uddg=([^&]+)/);
+                    if (uddgMatch) {
+                        url = decodeURIComponent(uddgMatch[1]);
+                    }
+                }
+                
+                let displayUrl = urlEl ? urlEl.innerText.trim() : url;
+                if (url.startsWith("//")) {
+                    url = "https:" + url;
+                }
+                
+                cards.push({
+                    title,
+                    snippet,
+                    url,
+                    displayUrl
+                });
+            }
+        });
+
+        if (cards.length === 0) {
+            throw new Error("No parsed search elements found");
+        }
+        
+        renderSerpCards(cards, query);
+
+    } catch (err) {
+        console.warn("Real-time proxy search failed, querying simulated LLM web crawl fallback...", err);
+        try {
+            const payload = {
+                inputs: `[System Instructions]: You are a high-performance web search crawler and search engine indexing robot.
+Analyze the search query and output a strict JSON array containing exactly 5 highly realistic, informative, and domain-diverse search result items.
+Do NOT output any markdown blocks, normal conversational text, or wrapper brackets. Output ONLY the raw JSON array string.
+Each object in the array must contain:
+- "title": Title of the page
+- "snippet": Description snippet of the page contents
+- "url": absolute URL address
+- "displayUrl": Short breadcrumb style display link
+
+[User Search Query]: ${query}
+
+Strict JSON Array Response:`,
+                parameters: { max_new_tokens: 600, temperature: 0.5 }
+            };
+
+            const rawJsonText = await fetchLlmResponse(payload);
+            let cards = [];
+            const startIdx = rawJsonText.indexOf('[');
+            const endIdx = rawJsonText.lastIndexOf(']');
+            if (startIdx !== -1 && endIdx !== -1) {
+                const cleanedJson = rawJsonText.substring(startIdx, endIdx + 1);
+                cards = JSON.parse(cleanedJson);
+            } else {
+                throw new Error("No JSON boundaries found");
+            }
+            renderSerpCards(cards, query);
+        } catch (llmErr) {
+            console.warn("Simulated LLM crawl failed, triggering offline clientside fallback indices...", llmErr);
+            const cards = generateFallbackSearchCards(query);
+            renderSerpCards(cards, query);
+        }
+    } finally {
+        loader.style.display = 'none';
+        if (mainScroll) mainScroll.scrollTop = mainScroll.scrollHeight;
+    }
+}
+
+function renderSerpCards(cards, query) {
+    const resultsList = document.getElementById('google-results-list');
+    if (!resultsList) return;
+
+    let html = '';
+    cards.forEach(card => {
+        const cleanTitle = (card.title || 'Search Result').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+        const cleanSnippet = (card.snippet || 'Description unavailable.').replace(/'/g, "\\'").replace(/"/g, "&quot;");
+        const targetUrl = card.url || 'https://www.google.com';
+        const displayLink = card.displayUrl || targetUrl;
+
+        // Extract domain to fetch favicon
+        let domain = 'google.com';
+        try {
+            domain = new URL(targetUrl).hostname;
+        } catch (e) { }
+
+        const faviconUrl = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+
+        html += `
+        <div class="google-result-card">
+            <div class="google-result-meta">
+                <img class="google-result-favicon" src="${faviconUrl}" onerror="this.src='https://www.google.com/s2/favicons?sz=64&domain=google.com'" alt="favicon">
+                <span>${displayLink}</span>
+            </div>
+            <a href="${targetUrl}" target="_blank" class="google-result-title">${card.title}</a>
+            <div class="google-result-snippet">${card.snippet}</div>
+            <div class="google-result-actions">
+                <a href="${targetUrl}" target="_blank" class="google-action-link"><i class="fas fa-external-link-alt"></i> Open</a>
+                <span class="google-action-link" onclick="copyToClipboardText('${targetUrl}')"><i class="fas fa-copy"></i> Copy Link</span>
+                <span class="google-action-link" onclick="synthesizeResultWithAi('${cleanTitle}', '${cleanSnippet}')"><i class="fas fa-sparkles" style="color: #60a5fa;"></i> Synthesize with AI</span>
+            </div>
+        </div>
+        `;
+    });
+
+    // Append the primary redirect button at the bottom of cards
+    html += `
+    <div style="margin-top: 15px; text-align: center; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
+        <button class="app-btn" onclick="window.open('https://www.google.com/search?q=' + encodeURIComponent('${query.replace(/'/g, "\\'")}'), '_blank')" style="background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(59, 130, 246, 0.1)); border-color: rgba(96, 165, 250, 0.25);">
+            <i class="fab fa-google"></i> Search globally on Google.com
+        </button>
+    </div>
+    `;
+
+    resultsList.innerHTML = html;
 }
 
 const bgVideo = document.getElementById('bg-video');
@@ -766,19 +1015,157 @@ if (animeDropZone) {
     });
 }
 
+// Google Lens & Yandex Visual Search Logic
+const lensDropZone = document.getElementById('lens-drop-zone');
+const lensFileInput = document.getElementById('lens-file-input');
+
+let activeLensFile = null;
+let activeLensImageUrl = null;
+
+if (lensDropZone) {
+    lensDropZone.addEventListener('click', () => lensFileInput.click());
+
+    lensFileInput.addEventListener('change', (e) => {
+        if (lensFileInput.files.length) {
+            handleLensImage(lensFileInput.files[0]);
+        }
+    });
+
+    lensDropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        lensDropZone.classList.add('drop-zone--over');
+    });
+
+    ['dragleave', 'dragend'].forEach(type => {
+        lensDropZone.addEventListener(type, () => lensDropZone.classList.remove('drop-zone--over'));
+    });
+
+    lensDropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (e.dataTransfer.files.length) {
+            lensFileInput.files = e.dataTransfer.files;
+            handleLensImage(e.dataTransfer.files[0]);
+        }
+        lensDropZone.classList.remove('drop-zone--over');
+    });
+}
+
 window.addEventListener('paste', (e) => {
     const animeSearch = document.getElementById('view-anime-search');
-    if (animeSearch && animeSearch.classList.contains('active')) {
-        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-        for (let index in items) {
-            const item = items[index];
-            if (item.kind === 'file') {
-                const blob = item.getAsFile();
+    const lensSearch = document.getElementById('view-lens-search');
+
+    const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    for (let index in items) {
+        const item = items[index];
+        if (item.kind === 'file') {
+            const blob = item.getAsFile();
+            if (animeSearch && animeSearch.classList.contains('active')) {
                 handleAnimeImage(blob);
+            } else if (lensSearch && lensSearch.classList.contains('active')) {
+                handleLensImage(blob);
             }
         }
     }
 });
+
+function handleLensImage(file) {
+    if (!file.type.startsWith('image/')) {
+        showToast('Please upload an image file.', 'fa-image');
+        return;
+    }
+
+    activeLensFile = file;
+    activeLensImageUrl = null;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+        lensDropZone.innerHTML = `<div class="drop-zone__thumb" style="background-image: url('${reader.result}')"></div>`;
+        // Show triggers grid
+        document.getElementById('lens-search-actions').style.display = 'flex';
+    };
+}
+
+async function searchLensViaUrl() {
+    const urlInput = document.getElementById('lens-url-input');
+    const url = urlInput.value.trim();
+    if (!url) { showToast('Please enter an image URL.', 'fa-link'); return; }
+
+    activeLensImageUrl = url;
+    activeLensFile = null;
+
+    lensDropZone.innerHTML = `<div class="drop-zone__thumb" style="background-image: url('${url}')"></div>`;
+    document.getElementById('lens-search-actions').style.display = 'flex';
+    showToast('Image URL loaded. Choose a search engine below.', 'fa-check');
+}
+
+// Temporary host uploader (tmpfiles.org) with direct raw-download link builder
+async function uploadImageToHost(file) {
+    const loader = document.getElementById('lens-search-loader');
+    if (loader) loader.style.display = 'flex';
+
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch("https://tmpfiles.org/api/v1/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!response.ok) throw new Error("Anonymous upload server rejected image");
+
+        const data = await response.json();
+        const rawUrl = data.data.url;
+        // tmpfiles.org URLs need /dl/ to deliver the direct binary stream externally
+        const directUrl = rawUrl.replace("https://tmpfiles.org/", "https://tmpfiles.org/dl/");
+        return directUrl;
+    } finally {
+        if (loader) loader.style.display = 'none';
+    }
+}
+
+async function triggerLensSearch() {
+    if (activeLensImageUrl) {
+        window.open('https://lens.google.com/uploadbyurl?url=' + encodeURIComponent(activeLensImageUrl), '_blank');
+        return;
+    }
+
+    if (activeLensFile) {
+        try {
+            showToast('Uploading image to host...', 'fa-upload');
+            const hostedUrl = await uploadImageToHost(activeLensFile);
+            window.open('https://lens.google.com/uploadbyurl?url=' + encodeURIComponent(hostedUrl), '_blank');
+        } catch (err) {
+            console.error("Visual search upload error:", err);
+            showToast("Failed to upload image. Please try pasting a direct image link.", 'fa-exclamation-triangle');
+        }
+        return;
+    }
+
+    showToast('Please select or upload an image first.', 'fa-exclamation-triangle');
+}
+
+async function triggerYandexSearch() {
+    if (activeLensImageUrl) {
+        window.open('https://yandex.com/images/search?rpt=imageview&url=' + encodeURIComponent(activeLensImageUrl), '_blank');
+        return;
+    }
+
+    if (activeLensFile) {
+        try {
+            showToast('Uploading image to host...', 'fa-upload');
+            const hostedUrl = await uploadImageToHost(activeLensFile);
+            window.open('https://yandex.com/images/search?rpt=imageview&url=' + encodeURIComponent(hostedUrl), '_blank');
+        } catch (err) {
+            console.error("Visual search upload error:", err);
+            showToast("Failed to upload image. Please try pasting a direct image link.", 'fa-exclamation-triangle');
+        }
+        return;
+    }
+
+    showToast('Please select or upload an image first.', 'fa-exclamation-triangle');
+}
 
 function handleAnimeImage(file) {
     if (!file.type.startsWith('image/')) {
@@ -798,7 +1185,7 @@ async function searchAnimeViaUrl() {
     const urlInput = document.getElementById('anime-url-input');
     const url = urlInput.value.trim();
     if (!url) { showToast('Please enter an image URL.', 'fa-link'); return; }
-    
+
     animeDropZone.innerHTML = `<div class="drop-zone__thumb" style="background-image: url('${url}')"></div>`;
     searchAnimeScene(null, url);
 }
@@ -842,7 +1229,7 @@ function renderAnimeResults(results, imageUrl = null) {
     }
 
     resultsBox.innerHTML = `<div class="section-header">Top Match (${(results[0].similarity * 100).toFixed(1)}% Certainty)</div>`;
-    
+
     const res = results[0];
     const title = res.anilist.title.english || res.anilist.title.romaji || res.anilist.title.native;
     const nativeTitle = res.anilist.title.native;
@@ -878,10 +1265,27 @@ function renderAnimeResults(results, imageUrl = null) {
                         <i class="fas fa-search-plus"></i> View Official
                     </button>
                 </div>
+                
+                <button class="app-btn" style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.15)); border-color: rgba(168, 85, 247, 0.35); box-shadow: 0 4px 15px rgba(236, 72, 153, 0.15);" 
+                    onclick="askCopilotAboutAnime('${title.replace(/'/g, "\\'")}', '${nativeTitle.replace(/'/g, "\\'")}')">
+                    <i class="fas fa-sparkles" style="color: #ec4899;"></i> Ask Copilot about this Anime
+                </button>
             </div>
         </div>
     `;
 }
+
+// Tab routing and search auto-trigger for identified anime scene results
+window.askCopilotAboutAnime = function (title, nativeTitle) {
+    switchTab('google');
+    switchSearchMode('copilot');
+
+    const aiInput = document.getElementById('ai-query');
+    if (aiInput) {
+        aiInput.value = `Tell me all about the anime "${title}" (${nativeTitle}). Provide a plot summary, genres, major characters, and recommendation highlights.`;
+        performAiSearch();
+    }
+};
 
 function formatTime(seconds) {
     const h = Math.floor(seconds / 3600);
@@ -1179,7 +1583,7 @@ async function secureFetch(url, options = {}) {
         return response;
     } catch (err) {
         clearTimeout(id);
-        
+
         if (err.name === 'AbortError') {
             throw new Error("Connection timed out. The server took too long to respond (10s limit).");
         }
@@ -1187,23 +1591,23 @@ async function secureFetch(url, options = {}) {
         // Catch TypeError (usually network offline or CORS block) and fallback automatically
         if (err instanceof TypeError) {
             console.warn(`%c[secureFetch] Direct fetch failed (CORS blocked). Attempting AllOrigins Proxy Fallback for: ${url}`, "color: #fbbf24; font-style: italic;");
-            
+
             const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`;
             const proxyController = new AbortController();
             const proxyId = setTimeout(() => proxyController.abort(), TIMEOUT_MS);
-            
+
             try {
                 const proxyResponse = await fetch(proxyUrl, { signal: proxyController.signal });
                 clearTimeout(proxyId);
-                
+
                 if (!proxyResponse.ok) {
                     throw new Error(`CORS Fallback proxy returned HTTP error ${proxyResponse.status}`);
                 }
-                
+
                 const proxyData = await proxyResponse.json();
                 const contents = proxyData.contents;
                 const bodyText = typeof contents === 'string' ? contents : JSON.stringify(contents);
-                
+
                 // Construct a mock standard Response to avoid breaking downstream callers
                 return new Response(bodyText, {
                     status: 200,
@@ -1279,14 +1683,14 @@ function loadApiPreset(method, url) {
 
     methodSelect.value = method;
     urlInput.value = url;
-    
+
     // Trigger body view visibility update
     handleApiMethodChange();
 
     // Clear dynamic headers & load standard preset headers if any
     const container = document.getElementById('api-headers-container');
     if (container) container.innerHTML = '';
-    
+
     // Add default Accept header
     addApiHeaderRow('Accept', 'application/json');
 
@@ -1295,7 +1699,7 @@ function loadApiPreset(method, url) {
     if (testerTab) {
         switchApiTab('tester', testerTab);
     }
-    
+
     // Auto run test for instant feedback!
     runApiTest();
 }
@@ -1396,7 +1800,7 @@ async function runApiTest() {
         // Read response body text & calculate size
         const responseText = await response.text();
         const byteSize = new Blob([responseText]).size;
-        
+
         let sizeText = `${byteSize} B`;
         if (byteSize > 1024 * 1024) {
             sizeText = `${(byteSize / (1024 * 1024)).toFixed(2)} MB`;
@@ -1432,7 +1836,7 @@ async function runApiTest() {
     } catch (err) {
         const endTime = performance.now();
         const latency = Math.round(endTime - startTime);
-        
+
         resTime.innerText = `${latency} ms`;
         resSize.innerText = '0 B';
         resStatus.innerText = 'ERROR';
@@ -1448,7 +1852,7 @@ async function runApiTest() {
 // HTML Entity escaper
 function escapeHTML(str) {
     if (!str) return '';
-    return str.replace(/[&<>'"]/g, 
+    return str.replace(/[&<>'"]/g,
         tag => ({
             '&': '&amp;',
             '<': '&lt;',
@@ -1457,6 +1861,479 @@ function escapeHTML(str) {
             '"': '&quot;'
         }[tag] || tag)
     );
+}
+
+// ==========================================================================
+// FREE GAMES TRACKER & AGGREGATOR ENGINE
+// ==========================================================================
+let freeGamesCache = null;
+let freeGamesF2PCache = null;
+let currentFreeGamesPlatform = 'all';
+let currentFreeGamesQuery = '';
+let currentFreeGamesSort = 'default';
+
+function getClaimedGames() {
+    return new Set(JSON.parse(localStorage.getItem('fg_claimed_games') || '[]'));
+}
+
+function toggleClaimedGame(gameId) {
+    const claimed = getClaimedGames();
+    const idStr = String(gameId);
+    if (claimed.has(idStr)) {
+        claimed.delete(idStr);
+    } else {
+        claimed.add(idStr);
+    }
+    localStorage.setItem('fg_claimed_games', JSON.stringify(Array.from(claimed)));
+    executeFreeGamesRender();
+}
+
+function setupCardGlowInteraction(card) {
+    card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+    });
+}
+
+function showFreeGamesSkeleton() {
+    const container = document.getElementById('free-games-container');
+    if (!container) return;
+    container.innerHTML = Array(6).fill().map(() => `
+        <div class="game-card skeleton-card">
+            <div class="skeleton-image"></div>
+            <div class="game-card-content">
+                <div class="skeleton-meta">
+                    <div class="skeleton-text skeleton-badge"></div>
+                    <div class="skeleton-text skeleton-badge"></div>
+                </div>
+                <div class="skeleton-text skeleton-title"></div>
+                <div class="skeleton-text skeleton-desc"></div>
+                <div class="skeleton-text skeleton-desc" style="width: 80%;"></div>
+                <div class="skeleton-meta" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                    <div class="skeleton-text skeleton-footer-item"></div>
+                    <div class="skeleton-text skeleton-footer-item"></div>
+                </div>
+                <div class="skeleton-button"></div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function updateFreeGamesStats(games, isF2P = false) {
+    const countEl = document.getElementById('fg-stat-count');
+    const valueEl = document.getElementById('fg-stat-value');
+    const topEl = document.getElementById('fg-stat-top');
+    if (!countEl || !valueEl || !topEl) return;
+
+    if (!games || games.length === 0) {
+        countEl.textContent = '0';
+        valueEl.textContent = '$0.00';
+        topEl.textContent = 'N/A';
+        return;
+    }
+
+    if (isF2P) {
+        countEl.textContent = Math.min(games.length, 60);
+        valueEl.textContent = 'Permanently Free';
+        
+        let platCounts = {};
+        games.slice(0, 60).forEach(g => {
+            let plat = g.platform.toLowerCase().includes('pc') ? 'PC' : 'Web';
+            platCounts[plat] = (platCounts[plat] || 0) + 1;
+        });
+        let topPlat = 'PC (Windows)';
+        if ((platCounts['Web'] || 0) > (platCounts['PC'] || 0)) {
+            topPlat = 'Web Browser';
+        }
+        topEl.textContent = topPlat;
+    } else {
+        countEl.textContent = games.length;
+
+        let totalWorth = 0;
+        let storeCounts = {};
+
+        games.forEach(g => {
+            if (g.worth && g.worth !== 'N/A') {
+                const worthVal = parseFloat(g.worth.replace(/[^0-9.]/g, ''));
+                if (!isNaN(worthVal)) {
+                    totalWorth += worthVal;
+                }
+            }
+            
+            let plat = g.platforms.toLowerCase();
+            let store = 'Other';
+            if (plat.includes('epic')) store = 'Epic Games';
+            else if (plat.includes('steam')) store = 'Steam';
+            else if (plat.includes('gog')) store = 'GOG';
+            
+            storeCounts[store] = (storeCounts[store] || 0) + 1;
+        });
+
+        valueEl.textContent = `$${totalWorth.toFixed(2)}`;
+
+        let topStore = 'N/A';
+        let maxCount = -1;
+        for (const [store, count] of Object.entries(storeCounts)) {
+            if (count > maxCount) {
+                maxCount = count;
+                topStore = store;
+            }
+        }
+        topEl.textContent = topStore;
+    }
+}
+
+async function loadFreeGames() {
+    const container = document.getElementById('free-games-container');
+    if (!container) return;
+
+    if (freeGamesCache) {
+        executeFreeGamesRender();
+        return;
+    }
+
+    showFreeGamesSkeleton();
+
+    try {
+        const response = await secureFetch('https://www.gamerpower.com/api/giveaways');
+        if (!response.ok) throw new Error('Failed to load giveaways');
+        const data = await response.json();
+        
+        freeGamesCache = data;
+        executeFreeGamesRender();
+    } catch (err) {
+        console.error('[Free Games Tracker] Error:', err);
+        container.innerHTML = `
+            <div style="text-align: center; color: #ef4444; padding: 40px 20px; grid-column: 1 / -1;" class="animated-card">
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                <p>Failed to scan active giveaways database. Please check your network or proxy connection.</p>
+                <button class="app-btn" onclick="loadFreeGames()" style="margin-top: 15px; margin-left: auto; margin-right: auto; display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-sync"></i> Retry Scanner
+                </button>
+            </div>
+        `;
+        updateFreeGamesStats([], false);
+    }
+}
+
+async function filterFreeGames(platform, btn) {
+    if (!btn) return;
+    
+    btn.parentElement.querySelectorAll('.fg-filter-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    currentFreeGamesPlatform = platform;
+    const container = document.getElementById('free-games-container');
+    if (!container) return;
+
+    if (platform === 'f2p') {
+        if (freeGamesF2PCache) {
+            executeFreeGamesRender();
+            return;
+        }
+        showFreeGamesSkeleton();
+        try {
+            const response = await secureFetch('https://www.freetogame.com/api/games');
+            if (!response.ok) throw new Error('Failed to fetch F2P games catalog');
+            const data = await response.json();
+            freeGamesF2PCache = data;
+            executeFreeGamesRender();
+        } catch (err) {
+            console.error('[F2P Catalog] Error:', err);
+            container.innerHTML = `
+                <div style="text-align: center; color: #ef4444; padding: 40px 20px; grid-column: 1 / -1;" class="animated-card">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <p>Failed to retrieve Free-To-Play games catalog. Please try again later.</p>
+                </div>
+            `;
+            updateFreeGamesStats([], true);
+        }
+    } else {
+        if (!freeGamesCache) {
+            await loadFreeGames();
+        } else {
+            executeFreeGamesRender();
+        }
+    }
+}
+
+function handleFreeGamesSearch() {
+    const input = document.getElementById('fg-search-input');
+    const clearBtn = document.getElementById('fg-search-clear');
+    if (!input) return;
+    
+    currentFreeGamesQuery = input.value.trim().toLowerCase();
+    if (clearBtn) {
+        clearBtn.style.display = currentFreeGamesQuery ? 'flex' : 'none';
+    }
+    
+    executeFreeGamesRender();
+}
+
+function clearFreeGamesSearch() {
+    const input = document.getElementById('fg-search-input');
+    const clearBtn = document.getElementById('fg-search-clear');
+    if (input) {
+        input.value = '';
+        currentFreeGamesQuery = '';
+    }
+    if (clearBtn) {
+        clearBtn.style.display = 'none';
+    }
+    executeFreeGamesRender();
+}
+
+function handleFreeGamesSort() {
+    const select = document.getElementById('fg-sort-select');
+    if (!select) return;
+    currentFreeGamesSort = select.value;
+    executeFreeGamesRender();
+}
+
+function executeFreeGamesRender() {
+    if (currentFreeGamesPlatform === 'f2p') {
+        renderF2PGames(freeGamesF2PCache || []);
+    } else {
+        renderFreeGames(freeGamesCache || [], currentFreeGamesPlatform);
+    }
+}
+
+function renderFreeGames(games, platform) {
+    const container = document.getElementById('free-games-container');
+    if (!container) return;
+
+    let filtered = games;
+    
+    if (platform !== 'all') {
+        filtered = games.filter(g => {
+            const platLower = g.platforms.toLowerCase();
+            if (platform === 'epic-games-store') {
+                return platLower.includes('epic') || platLower.includes('egs');
+            }
+            if (platform === 'steam') {
+                return platLower.includes('steam');
+            }
+            if (platform === 'gog') {
+                return platLower.includes('gog');
+            }
+            return platLower.includes(platform);
+        });
+    }
+
+    updateFreeGamesStats(filtered, false);
+
+    if (currentFreeGamesQuery) {
+        filtered = filtered.filter(g => {
+            const title = (g.title || '').toLowerCase();
+            const desc = (g.description || '').toLowerCase();
+            const type = (g.type || '').toLowerCase();
+            const store = (g.platforms || '').toLowerCase();
+            return title.includes(currentFreeGamesQuery) || 
+                   desc.includes(currentFreeGamesQuery) || 
+                   type.includes(currentFreeGamesQuery) ||
+                   store.includes(currentFreeGamesQuery);
+        });
+    }
+
+    if (currentFreeGamesSort !== 'default') {
+        filtered = [...filtered];
+        if (currentFreeGamesSort === 'value-high') {
+            filtered.sort((a, b) => {
+                const valA = a.worth === 'N/A' ? 0 : parseFloat(a.worth.replace(/[^0-9.]/g, '')) || 0;
+                const valB = b.worth === 'N/A' ? 0 : parseFloat(b.worth.replace(/[^0-9.]/g, '')) || 0;
+                return valB - valA;
+            });
+        } else if (currentFreeGamesSort === 'title-asc') {
+            filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+        } else if (currentFreeGamesSort === 'store') {
+            filtered.sort((a, b) => (a.platforms || '').localeCompare(b.platforms || ''));
+        }
+    }
+
+    container.innerHTML = '';
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; color: rgba(255,255,255,0.4); padding: 50px 0; grid-column: 1 / -1;" class="animated-card">
+                <i class="fas fa-search" style="font-size: 2.5rem; margin-bottom: 15px; color: rgba(255,255,255,0.2);"></i>
+                <p style="font-size: 1rem; font-weight: 500;">No active giveaways match your filters.</p>
+                <p style="font-size: 0.85rem; color: rgba(255,255,255,0.3); margin-top: 5px;">Try clearing your search query or choosing another platform.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const claimed = getClaimedGames();
+
+    filtered.forEach((game, index) => {
+        const card = document.createElement('div');
+        const isClaimed = claimed.has(String(game.id));
+        card.className = `game-card animated-card ${isClaimed ? 'claimed' : ''}`;
+        card.style.animationDelay = `${Math.min(index, 12) * 0.05}s`;
+        
+        let storeBadge = '';
+        let badgeIcon = 'fas fa-gamepad';
+        let gameColor = '#10b981';
+        let gameColorRgb = '16, 185, 129';
+        const plat = game.platforms.toLowerCase();
+
+        if (plat.includes('epic')) {
+            storeBadge = 'Epic Games';
+            badgeIcon = 'fab fa-windows';
+            gameColor = '#0078f2';
+            gameColorRgb = '0, 120, 242';
+        } else if (plat.includes('steam')) {
+            storeBadge = 'Steam';
+            badgeIcon = 'fab fa-steam';
+            gameColor = '#66c0f4';
+            gameColorRgb = '102, 192, 244';
+        } else if (plat.includes('gog')) {
+            storeBadge = 'GOG Store';
+            badgeIcon = 'fas fa-download';
+            gameColor = '#9b51e0';
+            gameColorRgb = '155, 81, 224';
+        } else {
+            storeBadge = game.platforms.split(',')[0];
+        }
+
+        card.style.setProperty('--game-color', gameColor);
+        card.style.setProperty('--game-color-rgb', gameColorRgb);
+
+        const worthStr = game.worth === 'N/A' ? 'Freebie' : `Was ${game.worth}`;
+
+        card.innerHTML = `
+            <div class="game-card-glow"></div>
+            ${isClaimed ? `<div class="game-card-claimed-badge"><i class="fas fa-check-circle"></i> Claimed</div>` : ''}
+            <div class="game-card-image-wrap">
+                <img class="game-card-image" src="${game.image}" alt="${escapeHTML(game.title)}" loading="lazy">
+                <div class="game-card-worth-badge" style="background: ${game.worth === 'N/A' ? '#10b981' : 'rgba(239, 68, 68, 0.85)'};">${worthStr}</div>
+            </div>
+            <div class="game-card-content">
+                <div class="game-card-meta">
+                    <span class="game-card-platform"><i class="${badgeIcon}"></i> ${storeBadge}</span>
+                    <span class="game-card-type">${game.type}</span>
+                </div>
+                <h3 class="game-card-title">${escapeHTML(game.title)}</h3>
+                <p class="game-card-desc">${escapeHTML(game.description)}</p>
+                <div class="game-card-footer-meta">
+                    <span class="worth-saved"><i class="fas fa-tags"></i> 100% Off</span>
+                    <span class="game-status"><span class="status-pulse-dot" style="background: ${isClaimed ? '#9ca3af' : '#4ade80'}; box-shadow: 0 0 8px ${isClaimed ? '#9ca3af' : '#4ade80'};"></span> ${isClaimed ? 'In Library' : 'Active'}</span>
+                </div>
+                <div class="game-card-footer">
+                    <a class="game-card-btn" href="${game.open_giveaway_url}" target="_blank">
+                        ${isClaimed ? 'Launch Store <i class="fas fa-external-link-alt"></i>' : 'Claim Game <i class="fas fa-external-link-alt"></i>'}
+                    </a>
+                    <div class="fg-claim-toggle-wrapper">
+                        <div class="fg-claim-toggle" onclick="event.preventDefault(); toggleClaimedGame('${game.id}')">
+                            <i class="${isClaimed ? 'fas fa-check-square' : 'far fa-square'}"></i>
+                            <span>${isClaimed ? 'Marked as Claimed' : 'Mark as Claimed'}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        setupCardGlowInteraction(card);
+        container.appendChild(card);
+    });
+}
+
+function renderF2PGames(games) {
+    const container = document.getElementById('free-games-container');
+    if (!container) return;
+
+    let filtered = games;
+
+    updateFreeGamesStats(filtered, true);
+
+    if (currentFreeGamesQuery) {
+        filtered = filtered.filter(g => {
+            const title = (g.title || '').toLowerCase();
+            const desc = (g.short_description || '').toLowerCase();
+            const genre = (g.genre || '').toLowerCase();
+            const platform = (g.platform || '').toLowerCase();
+            return title.includes(currentFreeGamesQuery) || 
+                   desc.includes(currentFreeGamesQuery) || 
+                   genre.includes(currentFreeGamesQuery) ||
+                   platform.includes(currentFreeGamesQuery);
+        });
+    }
+
+    if (currentFreeGamesSort !== 'default') {
+        filtered = [...filtered];
+        if (currentFreeGamesSort === 'value-high') {
+            filtered.sort((a, b) => (a.genre || '').localeCompare(b.genre || ''));
+        } else if (currentFreeGamesSort === 'title-asc') {
+            filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+        } else if (currentFreeGamesSort === 'store') {
+            filtered.sort((a, b) => (a.platform || '').localeCompare(b.platform || ''));
+        }
+    }
+
+    const list = filtered.slice(0, 60);
+
+    container.innerHTML = '';
+    if (list.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; color: rgba(255,255,255,0.4); padding: 50px 0; grid-column: 1 / -1;" class="animated-card">
+                <i class="fas fa-search" style="font-size: 2.5rem; margin-bottom: 15px; color: rgba(255,255,255,0.2);"></i>
+                <p style="font-size: 1rem; font-weight: 500;">No F2P database games match your search query.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const claimed = getClaimedGames();
+
+    list.forEach((game, index) => {
+        const card = document.createElement('div');
+        const isClaimed = claimed.has(String(game.id));
+        card.className = `game-card animated-card ${isClaimed ? 'claimed' : ''}`;
+        card.style.animationDelay = `${Math.min(index, 12) * 0.05}s`;
+        
+        card.style.setProperty('--game-color', '#10b981');
+        card.style.setProperty('--game-color-rgb', '16, 185, 129');
+
+        const platformText = game.platform.toLowerCase().includes('pc') ? 'PC (Windows)' : 'Web Browser';
+        const platformIcon = game.platform.toLowerCase().includes('pc') ? 'fab fa-windows' : 'fas fa-globe';
+
+        card.innerHTML = `
+            <div class="game-card-glow"></div>
+            ${isClaimed ? `<div class="game-card-claimed-badge"><i class="fas fa-check-circle"></i> Claimed</div>` : ''}
+            <div class="game-card-image-wrap">
+                <img class="game-card-image" src="${game.thumbnail}" alt="${escapeHTML(game.title)}" loading="lazy">
+                <div class="game-card-worth-badge" style="background: #10b981;">F2P Catalog</div>
+            </div>
+            <div class="game-card-content">
+                <div class="game-card-meta">
+                    <span class="game-card-platform"><i class="${platformIcon}"></i> ${platformText}</span>
+                    <span class="game-card-type">${game.genre}</span>
+                </div>
+                <h3 class="game-card-title">${escapeHTML(game.title)}</h3>
+                <p class="game-card-desc">${escapeHTML(game.short_description)}</p>
+                <div class="game-card-footer-meta">
+                    <span class="worth-saved"><i class="fas fa-play"></i> Free-to-Play</span>
+                    <span class="game-status"><span class="status-pulse-dot" style="background: ${isClaimed ? '#9ca3af' : '#10b981'}; box-shadow: 0 0 8px ${isClaimed ? '#9ca3af' : '#10b981'};"></span> ${isClaimed ? 'Claimed' : 'Online'}</span>
+                </div>
+                <div class="game-card-footer">
+                    <a class="game-card-btn" href="${game.game_url}" target="_blank">
+                        Play Free <i class="fas fa-play"></i>
+                    </a>
+                    <div class="fg-claim-toggle-wrapper">
+                        <div class="fg-claim-toggle" onclick="event.preventDefault(); toggleClaimedGame('${game.id}')">
+                            <i class="${isClaimed ? 'fas fa-check-square' : 'far fa-square'}"></i>
+                            <span>${isClaimed ? 'Marked as Claimed' : 'Mark as Claimed'}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        setupCardGlowInteraction(card);
+        container.appendChild(card);
+    });
 }
 
 // VIDEASY & TMDB Global State
@@ -1491,26 +2368,26 @@ let megaplayLanguage = localStorage.getItem('vds_mp_lan') || 'sub';
 // Switch Source Tab
 function switchKsSource(source, el) {
     ksCurrentSource = source;
-    
+
     // Toggle active state
     document.querySelectorAll('.ks-source-tab').forEach(t => t.classList.remove('active'));
     if (el) el.classList.add('active');
-    
+
     // Show/hide subtabs & update search placeholders
     const subtabs = document.getElementById('ks-videasy-subtabs');
     const searchInput = document.getElementById('ks-search-input');
     const resultsBox = document.getElementById('ks-results');
     const detailsBox = document.getElementById('ks-details');
-    
+
     // Clear views
     resultsBox.innerHTML = '';
     detailsBox.style.display = 'none';
     resultsBox.style.display = 'block';
-    
+
     if (source === 'videasy') {
         if (subtabs) subtabs.style.display = 'flex';
         updateVideasySearchPlaceholder();
-        
+
         // Auto-load home if search query is empty
         if (searchInput && !searchInput.value.trim()) {
             loadVideasyHome();
@@ -1526,21 +2403,21 @@ function switchKsSource(source, el) {
 // Switch VIDEASY sub-tab (TMDB vs Anime)
 function switchVideasySub(tab, el) {
     videasyActiveTab = tab;
-    
+
     // Toggle active state
     const subtabs = document.getElementById('ks-videasy-subtabs');
     if (subtabs) {
         subtabs.querySelectorAll('.kd-label-chip').forEach(c => c.classList.remove('active'));
     }
     if (el) el.classList.add('active');
-    
+
     // Clear results
     document.getElementById('ks-results').innerHTML = '';
     document.getElementById('ks-details').style.display = 'none';
     document.getElementById('ks-results').style.display = 'block';
-    
+
     updateVideasySearchPlaceholder();
-    
+
     // Auto-load home if search query is empty
     const searchInput = document.getElementById('ks-search-input');
     if (searchInput && !searchInput.value.trim()) {
@@ -1609,7 +2486,7 @@ function renderTMDBResults(results) {
     const resultsBox = document.getElementById('ks-results');
     // Filter results to only movies and tv shows
     const filtered = results.filter(item => item.media_type === 'movie' || item.media_type === 'tv');
-    
+
     if (!filtered || filtered.length === 0) {
         resultsBox.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.4);"><i class="fas fa-film" style="font-size:4rem; margin-bottom:20px; display:block; opacity:0.1;"></i>No matching movies or TV shows found on TMDB.</div>';
         return;
@@ -1621,7 +2498,7 @@ function renderTMDBResults(results) {
         const poster = res.poster_path ? `https://image.tmdb.org/t/p/w500${res.poster_path}` : 'https://placehold.co/500x750/000000/ffffff/png?text=No+Poster';
         const year = (res.release_date || res.first_air_date || '').split('-')[0] || 'N/A';
         const typeLabel = res.media_type === 'movie' ? 'Movie' : 'TV Show';
-        
+
         html += `
             <div class="ks-card" onclick="fetchTMDBDetails(${res.id}, '${res.media_type}')">
                 <div class="ks-card-badge">${typeLabel}</div>
@@ -1659,7 +2536,7 @@ async function searchAniList(query) {
       }
     }
     `;
-    
+
     const response = await fetch('https://graphql.anilist.co', {
         method: 'POST',
         headers: {
@@ -1671,7 +2548,7 @@ async function searchAniList(query) {
             variables: { search: query }
         })
     });
-    
+
     const resData = await response.json();
     const items = resData?.data?.Page?.media || [];
     renderAniListResults(items);
@@ -1690,7 +2567,7 @@ function renderAniListResults(items) {
         const poster = res.coverImage.large || '';
         const year = res.seasonYear || 'N/A';
         const format = res.format || 'Anime';
-        
+
         html += `
             <div class="ks-card" onclick="fetchAniListDetails(${res.id})">
                 <div class="ks-card-badge">${format}</div>
@@ -1713,7 +2590,7 @@ async function fetchTMDBDetails(id, type) {
     const detailsBox = document.getElementById('ks-details');
     const resultsBox = document.getElementById('ks-results');
     const loader = document.getElementById('ks-loader');
-    
+
     resultsBox.style.display = 'none';
     detailsBox.style.display = 'none';
     loader.style.display = 'flex';
@@ -1723,7 +2600,7 @@ async function fetchTMDBDetails(id, type) {
         const url = `https://api.themoviedb.org/3/${type}/${id}?api_key=${TMDB_API_KEY}&append_to_response=credits,recommendations,videos`;
         const response = await fetch(url);
         const data = await response.json();
-        
+
         if (type === 'movie') {
             renderTMDBMovieDetail(data);
         } else {
@@ -1741,13 +2618,13 @@ async function fetchTMDBDetails(id, type) {
 function renderTMDBMovieDetail(movie) {
     const detailsBox = document.getElementById('ks-details');
     detailsBox.style.display = 'block';
-    
+
     // Cache media metadata
     currentMediaMeta = {
         poster: movie.poster_path ? `https://image.tmdb.org/t/p/w300${movie.poster_path}` : '',
         year: (movie.release_date || '').split('-')[0] || ''
     };
-    
+
     const title = movie.title || movie.original_title || 'Untitled';
     const backdrop = movie.backdrop_path ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}` : (movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '');
     const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://placehold.co/500x750/000000/ffffff/png?text=No+Poster';
@@ -1755,7 +2632,7 @@ function renderTMDBMovieDetail(movie) {
     const runtime = movie.runtime ? `${movie.runtime} min` : 'N/A';
     const year = (movie.release_date || '').split('-')[0] || 'N/A';
     const genres = (movie.genres || []).map(g => `<span class="ks-meta-tag genre">${g.name}</span>`).join('');
-    
+
     // Cast list
     let castHtml = '';
     const cast = (movie.credits?.cast || []).slice(0, 10);
@@ -1773,17 +2650,17 @@ function renderTMDBMovieDetail(movie) {
         });
         castHtml += `</div>`;
     }
-    
+
     // Progress Resume block
     const progressBlockHtml = getWatchProgressHtml(movie.id, 'movie', title);
-    
+
     // Extract trailer key
     let trailerKey = '';
     if (movie.videos?.results) {
         const trailer = movie.videos.results.find(v => v.type === 'Trailer' && v.site === 'YouTube') || movie.videos.results.find(v => v.site === 'YouTube');
         if (trailer) trailerKey = trailer.key;
     }
-    
+
     let trailerBtnHtml = '';
     let trailerSectionHtml = '';
     if (trailerKey) {
@@ -1799,7 +2676,7 @@ function renderTMDBMovieDetail(movie) {
             </div>
         `;
     }
-    
+
     // Settings panel
     const settingsPanelHtml = getVideasySettingsPanelHtml('movie', movie.id, title);
 
@@ -1862,26 +2739,26 @@ function renderTMDBMovieDetail(movie) {
 async function renderTMDBTvDetail(show) {
     const detailsBox = document.getElementById('ks-details');
     detailsBox.style.display = 'block';
-    
+
     // Cache media metadata
     currentMediaMeta = {
         poster: show.poster_path ? `https://image.tmdb.org/t/p/w300${show.poster_path}` : '',
         year: (show.first_air_date || '').split('-')[0] || ''
     };
-    
+
     const title = show.name || show.original_name || 'Untitled';
     const backdrop = show.backdrop_path ? `https://image.tmdb.org/t/p/w1280${show.backdrop_path}` : (show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : '');
     const rating = show.vote_average ? show.vote_average.toFixed(1) : 'N/A';
     const year = (show.first_air_date || '').split('-')[0] || 'N/A';
     const genres = (show.genres || []).map(g => `<span class="ks-meta-tag genre">${g.name}</span>`).join('');
-    
+
     // Extract trailer key
     let trailerKey = '';
     if (show.videos?.results) {
         const trailer = show.videos.results.find(v => v.type === 'Trailer' && v.site === 'YouTube') || show.videos.results.find(v => v.site === 'YouTube');
         if (trailer) trailerKey = trailer.key;
     }
-    
+
     let trailerBtnHtml = '';
     let trailerSectionHtml = '';
     if (trailerKey) {
@@ -1899,7 +2776,7 @@ async function renderTMDBTvDetail(show) {
             </div>
         `;
     }
-    
+
     // Cast list
     let castHtml = '';
     const cast = (show.credits?.cast || []).slice(0, 10);
@@ -1923,7 +2800,7 @@ async function renderTMDBTvDetail(show) {
     if (seasons.length === 0 && (show.seasons || []).length > 0) {
         seasons.push(show.seasons[0]);
     }
-    
+
     let seasonSelectHtml = '';
     if (seasons.length > 0) {
         seasonSelectHtml += `
@@ -1940,7 +2817,7 @@ async function renderTMDBTvDetail(show) {
         });
         seasonSelectHtml += `</div>`;
     }
-    
+
     // Settings panel
     const settingsPanelHtml = getVideasySettingsPanelHtml('tv', show.id, title);
 
@@ -1985,7 +2862,7 @@ async function renderTMDBTvDetail(show) {
         <div style="margin-top: 35px;"></div>
         ${castHtml}
     `;
-    
+
     // Auto-load Season 1
     if (seasons.length > 0) {
         await loadTvSeasonEpisodes(show.id, seasons[0].season_number, title);
@@ -2001,31 +2878,31 @@ async function switchSeason(showId, seasonNumber, btn, showTitle) {
 async function loadTvSeasonEpisodes(showId, seasonNumber, showTitle) {
     const listContainer = document.getElementById('tv-episodes-list');
     const loader = document.getElementById('tv-episodes-loader');
-    
+
     if (listContainer) listContainer.innerHTML = '';
     if (loader) loader.style.display = 'flex';
-    
+
     try {
         const url = `https://api.themoviedb.org/3/tv/${showId}/season/${seasonNumber}?api_key=${TMDB_API_KEY}`;
         const response = await fetch(url);
         const data = await response.json();
-        
+
         let html = '';
         const episodes = data.episodes || [];
-        
+
         if (episodes.length === 0) {
             if (listContainer) listContainer.innerHTML = '<div style="grid-column: 1/-1; padding: 20px; text-align: center; color: rgba(255,255,255,0.4);">No episodes found in this season.</div>';
             return;
         }
-        
+
         episodes.forEach(ep => {
             const epThumb = ep.still_path ? `https://image.tmdb.org/t/p/w300${ep.still_path}` : 'https://placehold.co/300x170/111111/ffffff/png?text=No+Thumbnail';
             const epTitle = ep.name || `Episode ${ep.episode_number}`;
             const epDate = ep.air_date || 'Unknown Air Date';
-            
+
             // Check if there is saved progress for this episode
             const progressHtml = getWatchProgressHtml(showId, 'tv', `${showTitle} - S${seasonNumber}E${ep.episode_number}`, seasonNumber, ep.episode_number);
-            
+
             html += `
                 <div class="tv-ep-card" onclick="playVideasyMedia('${showId}', 'tv', '${showTitle.replace(/'/g, "\\'")}', false, ${seasonNumber}, ${ep.episode_number})">
                     <div class="tv-ep-thumb-wrapper">
@@ -2055,7 +2932,7 @@ async function loadTvSeasonEpisodes(showId, seasonNumber, showTitle) {
                 </div>
             `;
         });
-        
+
         if (listContainer) listContainer.innerHTML = html;
     } catch (err) {
         console.error(err);
@@ -2069,7 +2946,7 @@ async function fetchAniListDetails(id) {
     const detailsBox = document.getElementById('ks-details');
     const resultsBox = document.getElementById('ks-results');
     const loader = document.getElementById('ks-loader');
-    
+
     resultsBox.style.display = 'none';
     detailsBox.style.display = 'none';
     loader.style.display = 'flex';
@@ -2099,7 +2976,7 @@ async function fetchAniListDetails(id) {
           }
         }
         `;
-        
+
         const response = await fetch('https://graphql.anilist.co', {
             method: 'POST',
             headers: {
@@ -2111,7 +2988,7 @@ async function fetchAniListDetails(id) {
                 variables: { id: id }
             })
         });
-        
+
         const resData = await response.json();
         const media = resData?.data?.Media;
         if (media) {
@@ -2131,23 +3008,23 @@ async function fetchAniListDetails(id) {
 function renderAniListDetail(anime) {
     const detailsBox = document.getElementById('ks-details');
     detailsBox.style.display = 'block';
-    
+
     // Cache media metadata
     currentMediaMeta = {
         poster: anime.coverImage.large || '',
         year: anime.seasonYear || ''
     };
-    
+
     const title = anime.title.english || anime.title.romaji || 'Untitled Anime';
     const banner = anime.bannerImage || anime.coverImage.large || '';
     const rating = anime.averageScore ? `${anime.averageScore}%` : 'N/A';
     const year = anime.seasonYear || 'N/A';
     const status = anime.status || 'N/A';
     const genres = (anime.genres || []).map(g => `<span class="ks-meta-tag genre">${g}</span>`).join('');
-    
+
     // Check if it has multiple episodes (is a show vs movie)
     const isMovie = anime.episodes === 1;
-    
+
     let episodeSelectHtml = '';
     if (!isMovie) {
         const epCount = anime.episodes || 12; // default if not specified
@@ -2155,7 +3032,7 @@ function renderAniListDetail(anime) {
             <div class="section-header">Select Episode</div>
             <div class="tv-episode-grid-list">
         `;
-        
+
         for (let i = 1; i <= epCount; i++) {
             const progressHtml = getWatchProgressHtml(anime.id, 'anime', `${title} - Episode ${i}`, null, i);
             episodeSelectHtml += `
@@ -2183,7 +3060,7 @@ function renderAniListDetail(anime) {
             </div>
         `;
     }
-    
+
     // Settings panel
     const settingsPanelHtml = getVideasySettingsPanelHtml('anime', anime.id, title);
 
@@ -2222,20 +3099,20 @@ function renderAniListDetail(anime) {
 async function fetchYtsDownloads(imdbId, movieTitle) {
     const ytsContainer = document.getElementById('ks-yts-downloads');
     if (!ytsContainer) return;
-    
+
     if (!imdbId) {
         ytsContainer.innerHTML = '<div style="color: rgba(255,255,255,0.4); font-size: 0.85rem; padding: 10px;">No IMDb ID found for this title. YTS Torrents are unavailable.</div>';
         return;
     }
-    
+
     try {
         const response = await fetch(`https://movies-api.accel.li/api/v2/movie_details.json?imdb_id=${imdbId}`);
         const data = await response.json();
-        
+
         if (data && data.status === 'ok' && data.data && data.data.movie && data.data.movie.torrents) {
             const torrents = data.data.movie.torrents;
             const titleEncoded = encodeURIComponent(movieTitle);
-            
+
             // Standard high-speed trackers from documentation
             const trackers = [
                 'udp://tracker.opentrackr.org:1337/announce',
@@ -2249,18 +3126,18 @@ async function fetchYtsDownloads(imdbId, movieTitle) {
                 'https://tracker.zhuqiy.com:443/announce',
                 'https://tracker.pmman.tech:443/announce'
             ].map(tr => `&tr=${encodeURIComponent(tr)}`).join('');
-            
+
             let html = `
                 <div class="videasy-settings-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); margin-top: 10px;">
             `;
-            
+
             torrents.forEach(tor => {
                 const magnetLink = `magnet:?xt=urn:btih:${tor.hash}&dn=${titleEncoded}${trackers}`;
                 const size = tor.size || 'N/A';
                 const quality = tor.quality || 'N/A';
                 const seeds = tor.seeds || 0;
                 const peers = tor.peers || 0;
-                
+
                 html += `
                     <div class="videasy-setting-item" style="flex-direction: column; align-items: stretch; gap: 12px; padding: 15px; margin: 0;">
                         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
@@ -2286,7 +3163,7 @@ async function fetchYtsDownloads(imdbId, movieTitle) {
                     </div>
                 `;
             });
-            
+
             html += `</div>`;
             ytsContainer.innerHTML = html;
         } else {
@@ -2576,12 +3453,12 @@ let currentTrackingMedia = null;
 function playVideasyMedia(mediaId, mediaType, title, resume = false, season = null, episode = null) {
     let baseUrl = '';
     const params = new URLSearchParams();
-    
+
     // Choose active server: for anime, fallback to videasy unless megaplay is chosen
-    const activeServer = (mediaType === 'anime') 
-        ? (ksDefaultServer === 'megaplay' ? 'megaplay' : 'videasy') 
+    const activeServer = (mediaType === 'anime')
+        ? (ksDefaultServer === 'megaplay' ? 'megaplay' : 'videasy')
         : ksDefaultServer;
-    
+
     if (activeServer === 'videasy') {
         // Construct base URL structure
         if (mediaType === 'movie') {
@@ -2597,14 +3474,14 @@ function playVideasyMedia(mediaId, mediaType, title, resume = false, season = nu
                 baseUrl = `https://player.videasy.net/anime/${mediaId}`;
             }
         }
-        
+
         // Construct Query Parameters
         if (videasyCustomColor) params.append('color', videasyCustomColor);
         if (videasyNextEpisode) params.append('nextEpisode', 'true');
         if (videasyAutoplay) params.append('autoplayNextEpisode', 'true');
         if (videasyOverlay) params.append('overlay', 'true');
         if (mediaType === 'tv' && videasySelector) params.append('episodeSelector', 'true');
-        
+
     } else if (activeServer === 'vidsrc_to') {
         // VidSrc.to
         if (mediaType === 'movie') {
@@ -2617,7 +3494,7 @@ function playVideasyMedia(mediaId, mediaType, title, resume = false, season = nu
                 baseUrl = `https://vidsrc.to/embed/tv/${mediaId}/${s}`;
             }
         }
-        
+
         // Construct subtitle parameters if configured
         if (vidsrcToSubtitleUrl) {
             // Check if user entered a JSON array for multiple subtitles
@@ -2626,7 +3503,7 @@ function playVideasyMedia(mediaId, mediaType, title, resume = false, season = nu
                     // Try parsing and encoding it
                     const jsonSub = JSON.parse(vidsrcToSubtitleUrl);
                     params.append('sub.info', JSON.stringify(jsonSub));
-                } catch(e) {
+                } catch (e) {
                     // If parsing fails, treat it as a single subtitle URL
                     params.append('sub_file', vidsrcToSubtitleUrl);
                     if (vidsrcToSubtitleLabel) {
@@ -2649,7 +3526,7 @@ function playVideasyMedia(mediaId, mediaType, title, resume = false, season = nu
             const e = episode || 1;
             baseUrl = `https://cinemaos.tech/player/${mediaId}/${s}/${e}`;
         }
-        
+
         // Theme parameter
         if (videasyCustomColor) {
             params.append('theme', videasyCustomColor);
@@ -2688,15 +3565,15 @@ function playVideasyMedia(mediaId, mediaType, title, resume = false, season = nu
             const e = episode || 1;
             baseUrl = `https://peachify.top/embed/tv/${mediaId}/${s}/${e}`;
         }
-        
+
         if (peachifyServer) params.append('server', peachifyServer);
         if (peachifyDub) params.append('dub', peachifyDub);
         if (peachifySub) params.append('sub', peachifySub);
-        
+
         if (!videasyAutoplay) {
             params.append('autoPlay', 'false');
         }
-        
+
         if (mediaType === 'tv') {
             if (videasyAutoplay) {
                 params.append('autoNext', '30');
@@ -2705,7 +3582,7 @@ function playVideasyMedia(mediaId, mediaType, title, resume = false, season = nu
                 params.append('showNextBtn', 'false');
             }
         }
-        
+
         if (peachifyHideCast) params.append('cast', 'hide');
         if (peachifyHidePip) params.append('pip', 'hide');
         if (peachifyHideServers) params.append('servers', 'hide');
@@ -2718,7 +3595,7 @@ function playVideasyMedia(mediaId, mediaType, title, resume = false, season = nu
             const e = episode || 1;
             baseUrl = `https://vidsrc.ru/tv/${mediaId}/${s}/${e}`;
         }
-        
+
         // Construct Query Parameters
         params.append('autoplay', videasyAutoplay ? 'true' : 'false');
         if (videasyCustomColor) params.append('colour', videasyCustomColor);
@@ -2728,11 +3605,11 @@ function playVideasyMedia(mediaId, mediaType, title, resume = false, season = nu
         if (videasyLogoUrl) params.append('logo', videasyLogoUrl);
         if (videasyIdleCheck > 0) params.append('idlecheck', videasyIdleCheck.toString());
     }
-    
+
     // Watch Progress loading
     const progressKey = getWatchProgressKey(mediaId, mediaType, season, episode);
     const saved = localStorage.getItem(progressKey);
-    
+
     if (saved) {
         try {
             const progressData = JSON.parse(saved);
@@ -2744,12 +3621,12 @@ function playVideasyMedia(mediaId, mediaType, title, resume = false, season = nu
                 }
                 showToast(`Resuming at ${Math.floor(progressData.progress)}%`, 'fa-clock');
             }
-        } catch(e){}
+        } catch (e) { }
     }
-    
+
     const finalUrl = `${baseUrl}?${params.toString()}`;
     console.log("Playing server URL:", finalUrl);
-    
+
     // Save metadata for continue watching resume cards
     const metaKey = `videasy_meta_${mediaType}_${mediaId}`;
     localStorage.setItem(metaKey, JSON.stringify({
@@ -2762,7 +3639,7 @@ function playVideasyMedia(mediaId, mediaType, title, resume = false, season = nu
         episode: episode,
         updatedAt: Date.now()
     }));
-    
+
     // Construct tmdbServers list to pass to renderKSEmbed
     const tmdbServers = [
         { id: 'videasy', name: 'VIDEASY' },
@@ -2774,10 +3651,10 @@ function playVideasyMedia(mediaId, mediaType, title, resume = false, season = nu
         { id: 'peachify', name: 'Peachify' },
         { id: 'megaplay', name: 'MegaPlay' }
     ];
-    
+
     // Open player modal/overlay
     renderKSEmbed(finalUrl, title, tmdbServers, 'tmdb_videasy');
-    
+
     // Set tracking media
     currentTrackingMedia = {
         id: mediaId,
@@ -2799,28 +3676,28 @@ function getWatchProgressKey(id, type, season = null, episode = null) {
 function getWatchProgressHtml(id, type, title, season = null, episode = null) {
     const key = getWatchProgressKey(id, type, season, episode);
     const saved = localStorage.getItem(key);
-    
+
     if (!saved) return '';
-    
+
     try {
         const data = JSON.parse(saved);
         const percent = Math.floor(data.progress || 0);
         const timestamp = data.timestamp || 0;
         const duration = data.duration || 0;
-        
+
         const formatTime = (secs) => {
             const h = Math.floor(secs / 3600);
             const m = Math.floor((secs % 3600) / 60);
             const s = Math.floor(secs % 60);
-            return h > 0 
+            return h > 0
                 ? `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
                 : `${m}:${s.toString().padStart(2, '0')}`;
         };
-        
-        const timeLabel = duration 
+
+        const timeLabel = duration
             ? `${formatTime(timestamp)} / ${formatTime(duration)}`
             : `${formatTime(timestamp)}`;
-            
+
         if (season || episode) {
             return `
                 <div style="margin-top: 10px;">
@@ -2831,7 +3708,7 @@ function getWatchProgressHtml(id, type, title, season = null, episode = null) {
                 </div>
             `;
         }
-        
+
         return `
             <div class="resume-playback-wrapper">
                 <button class="resume-btn" onclick="playVideasyMedia('${id}', '${type}', '${title.replace(/'/g, "\\'")}', true)">
@@ -2846,7 +3723,7 @@ function getWatchProgressHtml(id, type, title, season = null, episode = null) {
                 </div>
             </div>
         `;
-    } catch(e) {
+    } catch (e) {
         return '';
     }
 }
@@ -2854,22 +3731,22 @@ function getWatchProgressHtml(id, type, title, season = null, episode = null) {
 // Window watch progress postMessage listener
 window.addEventListener("message", function (event) {
     if (!event.origin.includes("videasy.net") && !event.origin.includes("vidsrc.ru") && !event.origin.includes("vidsrc.to") && !event.origin.includes("cinemaos.tech") && !event.origin.includes("vidplay.to") && !event.origin.includes("screenscape.me") && !event.origin.includes("peachify.top") && !event.origin.includes("megaplay.buzz")) return;
-    
+
     try {
         let eventData = event.data;
-        
+
         if (typeof eventData === "string") {
             try {
                 eventData = JSON.parse(eventData);
-            } catch (e) {}
+            } catch (e) { }
         }
-        
+
         // 00. Check for Anikoto / MegaPlay message format
         if (eventData && (eventData.channel === 'megacloud' || eventData.type === 'watching-log' || eventData.event === 'time' || eventData.event === 'complete')) {
             let watchedTime = 0;
             let duration = 0;
             let percent = 0;
-            
+
             if (eventData.event === 'time') {
                 watchedTime = eventData.time;
                 duration = eventData.duration;
@@ -2882,13 +3759,13 @@ window.addEventListener("message", function (event) {
                 percent = 100;
                 watchedTime = duration;
             }
-            
+
             if (watchedTime > 0 || percent > 0) {
                 const id = currentTrackingMedia?.id;
                 const type = currentTrackingMedia?.type;
                 const s = currentTrackingMedia?.season || null;
                 const e = currentTrackingMedia?.episode || null;
-                
+
                 if (id && type) {
                     const key = getWatchProgressKey(id, type, s, e);
                     const trackingObj = {
@@ -2899,13 +3776,13 @@ window.addEventListener("message", function (event) {
                         episode: e,
                         lastWatched: Date.now()
                     };
-                    
+
                     localStorage.setItem(key, JSON.stringify(trackingObj));
                     if (s || e) {
                         const parentKey = getWatchProgressKey(id, type);
                         localStorage.setItem(parentKey, JSON.stringify(trackingObj));
                     }
-                    
+
                     // Sync with official watch_progress storage key
                     try {
                         const STORAGE_KEY = 'watch_progress';
@@ -2922,12 +3799,12 @@ window.addEventListener("message", function (event) {
                             last_updated: Date.now()
                         };
                         localStorage.setItem(STORAGE_KEY, JSON.stringify(watchProgress));
-                    } catch (err) {}
+                    } catch (err) { }
                 }
             }
             return;
         }
-        
+
         // 0. Check for Peachify PLAYER_EVENT progress format
         if (eventData && eventData.type === 'PLAYER_EVENT') {
             const playerEventData = eventData.data;
@@ -2939,7 +3816,7 @@ window.addEventListener("message", function (event) {
                 const progressPercent = duration ? (watchedTime / duration) * 100 : 0;
                 const s = playerEventData.season || null;
                 const e = playerEventData.episode || null;
-                
+
                 const key = getWatchProgressKey(id, type, s, e);
                 const trackingObj = {
                     progress: progressPercent,
@@ -2949,9 +3826,9 @@ window.addEventListener("message", function (event) {
                     episode: e,
                     lastWatched: Date.now()
                 };
-                
+
                 localStorage.setItem(key, JSON.stringify(trackingObj));
-                
+
                 if (s || e) {
                     const parentKey = getWatchProgressKey(id, type);
                     localStorage.setItem(parentKey, JSON.stringify(trackingObj));
@@ -2973,16 +3850,16 @@ window.addEventListener("message", function (event) {
                         last_updated: Date.now()
                     };
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(watchProgress));
-                } catch (err) {}
+                } catch (err) { }
             }
             return;
         }
-        
+
         // 1. Check for MEDIA_DATA progress event format (VidSrc or Peachify)
         if (eventData && eventData.type === 'MEDIA_DATA') {
             if (event.origin.includes("peachify.top")) {
                 localStorage.setItem('peachifyProgress', JSON.stringify(eventData.data));
-                
+
                 // Real-time progress mapping sync from Peachify dictionary if available
                 try {
                     const keys = Object.keys(eventData.data);
@@ -2994,10 +3871,10 @@ window.addEventListener("message", function (event) {
                             const watchedTime = item.progress.watched;
                             const duration = item.progress.duration;
                             const progressPercent = duration ? (watchedTime / duration) * 100 : 0;
-                            
+
                             const s = item.last_season_watched ? parseInt(item.last_season_watched, 10) : null;
                             const e = item.last_episode_watched ? parseInt(item.last_episode_watched, 10) : null;
-                            
+
                             const key = getWatchProgressKey(id, type, s, e);
                             const trackingObj = {
                                 progress: progressPercent,
@@ -3007,7 +3884,7 @@ window.addEventListener("message", function (event) {
                                 episode: e,
                                 lastWatched: Date.now()
                             };
-                            
+
                             localStorage.setItem(key, JSON.stringify(trackingObj));
                             if (s || e) {
                                 const parentKey = getWatchProgressKey(id, type);
@@ -3015,7 +3892,7 @@ window.addEventListener("message", function (event) {
                             }
                         }
                     }
-                } catch (e) {}
+                } catch (e) { }
             } else {
                 // VidSrc MEDIA_DATA
                 const mediaData = eventData.data;
@@ -3025,10 +3902,10 @@ window.addEventListener("message", function (event) {
                     const watchedTime = mediaData.progress.watched_time;
                     const duration = mediaData.progress.duration;
                     const progressPercent = (watchedTime / duration) * 100;
-                    
+
                     const s = (currentTrackingMedia?.id === id || currentTrackingMedia?.id === Number(id)) ? currentTrackingMedia.season : null;
                     const e = (currentTrackingMedia?.id === id || currentTrackingMedia?.id === Number(id)) ? currentTrackingMedia.episode : null;
-                    
+
                     const key = getWatchProgressKey(id, type, s, e);
                     const trackingObj = {
                         progress: progressPercent,
@@ -3038,9 +3915,9 @@ window.addEventListener("message", function (event) {
                         episode: e,
                         lastWatched: Date.now()
                     };
-                    
+
                     localStorage.setItem(key, JSON.stringify(trackingObj));
-                    
+
                     if (s || e) {
                         const parentKey = getWatchProgressKey(id, type);
                         localStorage.setItem(parentKey, JSON.stringify(trackingObj));
@@ -3056,19 +3933,19 @@ window.addEventListener("message", function (event) {
                             last_updated: Date.now()
                         };
                         localStorage.setItem(STORAGE_KEY, JSON.stringify(watchProgress));
-                    } catch (err) {}
+                    } catch (err) { }
                 }
             }
             return;
         }
-        
+
         // 2. Check for VIDEASY progress event format
         if (typeof eventData === "string") {
             eventData = JSON.parse(eventData);
         }
-        
+
         console.log("Message received from player:", eventData);
-        
+
         if (eventData && eventData.id) {
             const id = eventData.id;
             const type = eventData.type;
@@ -3077,7 +3954,7 @@ window.addEventListener("message", function (event) {
             const duration = eventData.duration;
             const season = eventData.season;
             const episode = eventData.episode;
-            
+
             const key = getWatchProgressKey(id, type, season, episode);
             const trackingObj = {
                 progress,
@@ -3087,9 +3964,9 @@ window.addEventListener("message", function (event) {
                 episode,
                 lastWatched: Date.now()
             };
-            
+
             localStorage.setItem(key, JSON.stringify(trackingObj));
-            
+
             if (season || episode) {
                 const parentKey = getWatchProgressKey(id, type);
                 localStorage.setItem(parentKey, JSON.stringify(trackingObj));
@@ -3111,7 +3988,7 @@ window.addEventListener("message", function (event) {
                     last_updated: Date.now()
                 };
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(watchProgress));
-            } catch (err) {}
+            } catch (err) { }
         }
     } catch (e) {
         // Safe fail
@@ -3148,7 +4025,7 @@ async function fetchKSMovie(id) {
     const detailsBox = document.getElementById('ks-details');
     const resultsBox = document.getElementById('ks-results');
     const loader = document.getElementById('ks-loader');
-    
+
     resultsBox.style.display = 'none';
     detailsBox.style.display = 'none';
     loader.style.display = 'flex';
@@ -3168,7 +4045,7 @@ async function fetchKSMovie(id) {
 function renderKSMovie(movie) {
     const detailsBox = document.getElementById('ks-details');
     detailsBox.style.display = 'block';
-    
+
     let serverBtns = '';
     const baseEmbed = `https://kurdcinama-stream-seeker.lovable.app/api/public/embed?movieId=${movie.id}`;
     movie.servers.forEach(srv => {
@@ -3221,7 +4098,7 @@ function renderKSMovie(movie) {
 async function selectKSServer(id, url, btn, title, servers = [], baseUrl = '') {
     document.querySelectorAll('.ks-server-btn').forEach(b => b.classList.remove('active-server'));
     if (btn) btn.classList.add('active-server');
-    
+
     // If it's a direct stream URL (not our API), load it directly
     if (!url.includes('kurdcinama-stream-seeker.lovable.app/api/public/embed')) {
         renderKSEmbed(url, title, servers, baseUrl);
@@ -3230,7 +4107,7 @@ async function selectKSServer(id, url, btn, title, servers = [], baseUrl = '') {
 
     const loader = document.getElementById('ks-loader');
     if (loader) loader.style.display = 'flex';
-    
+
     try {
         const res = await fetch(url);
         const data = await res.json();
@@ -3246,7 +4123,7 @@ async function fetchKSSeries(id) {
     const detailsBox = document.getElementById('ks-details');
     const resultsBox = document.getElementById('ks-results');
     const loader = document.getElementById('ks-loader');
-    
+
     resultsBox.style.display = 'none';
     detailsBox.style.display = 'none';
     loader.style.display = 'flex';
@@ -3266,7 +4143,7 @@ async function fetchKSSeries(id) {
 function renderKSSeries(series) {
     const detailsBox = document.getElementById('ks-details');
     detailsBox.style.display = 'block';
-    
+
     let seasonsHtml = '';
     series.seasons.forEach((season, idx) => {
         let episodesHtml = '';
@@ -3315,7 +4192,7 @@ function renderKSSeries(series) {
 async function viewKSEpisode(type, stype, name, el, title) {
     const loader = document.getElementById('ks-loader');
     loader.style.display = 'flex';
-    
+
     // Highlight active episode
     document.querySelectorAll('.ks-ep-item').forEach(item => {
         item.classList.remove('active-episode');
@@ -3332,7 +4209,7 @@ async function viewKSEpisode(type, stype, name, el, title) {
         const response = await fetch(`https://kurdcinama-stream-seeker.lovable.app/api/public/episode?type=${type}&stype=${stype}&name=${name}`);
         const data = await response.json();
         const baseEmbed = `https://kurdcinama-stream-seeker.lovable.app/api/public/embed?type=${type}&stype=${stype}&name=${name}`;
-        
+
         renderKSEmbed(data.iframeUrl, title, data.servers, baseEmbed);
         if (el) el.querySelector('.ks-ep-icon').className = 'fas fa-volume-up ks-ep-icon';
     } catch (err) {
@@ -3373,9 +4250,9 @@ function renderKSEmbed(url, title = 'KurdStream Player', servers = [], baseUrl =
         `;
         document.body.appendChild(playerOverlay);
     }
-    
+
     document.getElementById('ks-player-title').innerHTML = `<i class="fas fa-play-circle" style="color:#f59e0b; margin-right:8px;"></i> ${title}`;
-    
+
     const serverBox = document.getElementById('ks-player-servers');
     serverBox.innerHTML = '';
     if (servers && servers.length > 0) {
@@ -3383,7 +4260,7 @@ function renderKSEmbed(url, title = 'KurdStream Player', servers = [], baseUrl =
             const btn = document.createElement('button');
             btn.className = 'ks-mini-server-btn';
             btn.innerText = srv.name;
-            
+
             // Highlight the active server button
             if (baseUrl === 'tmdb_videasy') {
                 const activeServer = (currentTrackingMedia?.type === 'anime') ? 'videasy' : ksDefaultServer;
@@ -3391,13 +4268,13 @@ function renderKSEmbed(url, title = 'KurdStream Player', servers = [], baseUrl =
                     btn.classList.add('active');
                 }
             }
-            
+
             btn.onclick = async () => {
                 document.querySelectorAll('.ks-mini-server-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 const loader = document.getElementById('ks-player-loader');
                 loader.style.display = 'flex';
-                
+
                 if (baseUrl === 'tmdb_videasy') {
                     try {
                         setKsStreamingServer(srv.id);
@@ -3411,7 +4288,7 @@ function renderKSEmbed(url, title = 'KurdStream Player', servers = [], baseUrl =
                                 currentTrackingMedia.episode
                             );
                         }
-                    } catch (e) {}
+                    } catch (e) { }
                     loader.style.display = 'none';
                 } else {
                     try {
@@ -3429,7 +4306,7 @@ function renderKSEmbed(url, title = 'KurdStream Player', servers = [], baseUrl =
             serverBox.appendChild(btn);
         });
     }
-    
+
     document.getElementById('ks-iframe').src = url;
 }
 
@@ -3459,7 +4336,7 @@ async function fetchKurdDoblazhLatest(label = '', start = 1) {
     const detailsBox = document.getElementById('kd-details');
     const loader = document.getElementById('kd-loader');
     const pagination = document.getElementById('kd-pagination');
-    
+
     kdCurrentMode = 'latest';
     kdCurrentLabel = label;
     kdCurrentStart = start;
@@ -3472,13 +4349,13 @@ async function fetchKurdDoblazhLatest(label = '', start = 1) {
     try {
         let url = `${KD_PROXY_API}/kd/latest?limit=24&start=${start}&include=html`;
         if (label) url += `&label=${encodeURIComponent(label)}`;
-        
+
         const response = await fetch(url);
         const data = await response.json();
-        
-        resultsBox.innerHTML = `<div class="section-header" style="grid-column: 1/-1; margin-top: 0;">${label ? `Category: ${label}` : 'Latest Dubbed Posts'} (Page ${Math.floor(start/24) + 1})</div>`;
+
+        resultsBox.innerHTML = `<div class="section-header" style="grid-column: 1/-1; margin-top: 0;">${label ? `Category: ${label}` : 'Latest Dubbed Posts'} (Page ${Math.floor(start / 24) + 1})</div>`;
         renderKDResults(data.items || [], true);
-        
+
         // Show pagination if we have items
         if (data.items && data.items.length > 0) {
             pagination.style.display = 'flex';
@@ -3504,7 +4381,7 @@ async function searchKurdDoblazh(query = '', start = 1) {
 
     // Check if input is a URL, path or slug that should be resolved
     const isUrlOrPath = q.includes('kurddoblazh.com') || q.startsWith('/') || (q.includes('.html') && !q.includes(' '));
-    
+
     if (isUrlOrPath && start === 1) {
         showToast('Resolving link...', 'fa-link');
         try {
@@ -3538,7 +4415,7 @@ async function searchKurdDoblazh(query = '', start = 1) {
     try {
         const response = await fetch(`${KD_PROXY_API}/kd/search?q=${encodeURIComponent(q)}&limit=24&start=${start}&include=html`);
         const data = await response.json();
-        resultsBox.innerHTML = `<div class="section-header" style="grid-column: 1/-1; margin-top: 0;">Search Results for "${q}" (Page ${Math.floor(start/24) + 1})</div>`;
+        resultsBox.innerHTML = `<div class="section-header" style="grid-column: 1/-1; margin-top: 0;">Search Results for "${q}" (Page ${Math.floor(start / 24) + 1})</div>`;
         renderKDResults(data.items || [], true);
 
         if (data.items && data.items.length > 0) {
@@ -3561,7 +4438,7 @@ async function fetchKurdDoblazhLabels() {
     try {
         const response = await fetch(`${KD_PROXY_API}/kd/labels`);
         const labels = await response.json();
-        
+
         let html = `<button class="kd-label-chip active" onclick="filterKDByLabel('', this)">All</button>`;
         labels.forEach(label => {
             html += `<button class="kd-label-chip" onclick="filterKDByLabel('${label}', this)">${label}</button>`;
@@ -3625,7 +4502,7 @@ async function fetchKDPost(input) {
     const detailsBox = document.getElementById('kd-details');
     const loader = document.getElementById('kd-loader');
     const pagination = document.getElementById('kd-pagination');
-    
+
     resultsBox.style.display = 'none';
     pagination.style.display = 'none';
     loader.style.display = 'flex';
@@ -3635,15 +4512,15 @@ async function fetchKDPost(input) {
         const isUrl = input.startsWith('http');
         const endpoint = isUrl ? 'post?url=' : 'resolve?input=';
         const fetchUrl = `${KD_PROXY_API}/kd/${endpoint}${encodeURIComponent(input)}&include=html`;
-        
+
         console.log("Fetching KD Post:", fetchUrl);
         const response = await fetch(fetchUrl);
-        
+
         if (!response.ok) {
             const errorText = await response.text();
             throw new Error(`API Error ${response.status}: ${errorText}`);
         }
-        
+
         const data = await response.json();
         renderKDDetails(data);
         loader.style.display = 'none';
@@ -3661,7 +4538,7 @@ async function fetchKDPost(input) {
 function renderKDDetails(rawData) {
     console.log("KurdDoblazh Post Data:", rawData);
     const detailsBox = document.getElementById('kd-details');
-    
+
     // Support nested response structures if they exist
     const data = rawData.post || rawData.item || rawData;
 
@@ -3680,7 +4557,7 @@ function renderKDDetails(rawData) {
 
     const streams = data.streams || [];
     const html = data.content_html || data.content || "";
-    
+
     // Extract metadata from Blogger script if available
     const extract = (key) => {
         const regex = new RegExp(`var ${key} =\\s*"(.*?)"`, 'i');
@@ -3773,15 +4650,15 @@ function renderKDDetails(rawData) {
 async function loadVideasyHome() {
     const resultsBox = document.getElementById('ks-results');
     if (!resultsBox) return;
-    
+
     resultsBox.innerHTML = '';
-    
+
     // 1. Render Continue Watching
     const continueHtml = renderContinueWatchingSection();
     if (continueHtml) {
         resultsBox.innerHTML += continueHtml;
     }
-    
+
     // 2. Render Loader for Trending Section
     const trendingSectionId = `ks-trending-${Date.now()}`;
     resultsBox.innerHTML += `
@@ -3793,7 +4670,7 @@ async function loadVideasyHome() {
             </div>
         </div>
     `;
-    
+
     // 3. Fetch and Render Trending
     try {
         if (videasyActiveTab === 'tmdb') {
@@ -3822,7 +4699,7 @@ async function loadVideasyHome() {
               }
             }
             `;
-            
+
             const response = await fetch('https://graphql.anilist.co', {
                 method: 'POST',
                 headers: {
@@ -3831,12 +4708,12 @@ async function loadVideasyHome() {
                 },
                 body: JSON.stringify({ query: graphqlQuery })
             });
-            
+
             const resData = await response.json();
             const items = resData?.data?.Page?.media || [];
             renderTrendingAnimeGrid(items, trendingSectionId);
         }
-    } catch(e) {
+    } catch (e) {
         console.error("Failed to load trending:", e);
         const container = document.getElementById(trendingSectionId);
         if (container) {
@@ -3853,19 +4730,19 @@ function renderContinueWatchingSection() {
             progressKeys.push(key);
         }
     }
-    
+
     if (progressKeys.length === 0) return '';
-    
+
     const items = [];
     progressKeys.forEach(key => {
         try {
             const progressData = JSON.parse(localStorage.getItem(key));
-            
+
             // Extract media parts
             const parts = key.split('_');
             const type = parts[2];
             const id = parts[3];
-            
+
             // Look up metadata
             const metaKey = `videasy_meta_${type}_${id}`;
             const metaStr = localStorage.getItem(metaKey);
@@ -3879,34 +4756,34 @@ function renderContinueWatchingSection() {
                     updatedAt: progressData.lastWatched || meta.updatedAt || 0
                 });
             }
-        } catch(e){}
+        } catch (e) { }
     });
-    
+
     if (items.length === 0) return '';
-    
+
     // Sort items by last watched date descending
     items.sort((a, b) => b.updatedAt - a.updatedAt);
-    
+
     // Slice to top 6 items
     const topItems = items.slice(0, 6);
-    
+
     let html = `
         <div class="section-header" style="margin-top: 10px;">Continue Watching</div>
         <div style="display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px 20px 5px; margin-bottom: 10px; scrollbar-width: thin;">
     `;
-    
+
     topItems.forEach(item => {
         const percent = Math.floor(item.progress || 0);
         const poster = item.poster || 'https://placehold.co/150x220/111111/ffffff/png?text=No+Poster';
         const typeBadge = item.type === 'movie' ? 'Movie' : (item.type === 'tv' ? 'TV' : 'Anime');
-        const detailAction = item.type === 'anime' 
+        const detailAction = item.type === 'anime'
             ? `fetchAniListDetails(${item.id})`
             : `fetchTMDBDetails(${item.id}, '${item.type}')`;
-            
-        const episodeLabel = item.type === 'movie' 
-            ? 'Movie' 
+
+        const episodeLabel = item.type === 'movie'
+            ? 'Movie'
             : (item.season ? `S${item.season} E${item.episode}` : `Ep ${item.episode}`);
-            
+
         html += `
             <div class="ks-card" style="flex: 0 0 140px; cursor: pointer; height: auto; position: relative;" onclick="${detailAction}">
                 <div class="ks-card-badge" style="background: #10b981; font-size: 0.6rem; padding: 2px 6px; border-radius: 6px;">${typeBadge}</div>
@@ -3923,23 +4800,23 @@ function renderContinueWatchingSection() {
             </div>
         `;
     });
-    
+
     html += `</div>`;
     return html;
 }
 
-  
+
 function renderTrendingGrid(results, targetId) {
     const container = document.getElementById(targetId);
     if (!container) return;
-    
+
     let html = `<div class="ks-grid" style="padding: 10px 0;">`;
     results.forEach(res => {
         const title = res.title || res.name || 'Untitled';
         const poster = res.poster_path ? `https://image.tmdb.org/t/p/w500${res.poster_path}` : 'https://placehold.co/500x750/000000/ffffff/png?text=No+Poster';
         const year = (res.release_date || res.first_air_date || '').split('-')[0] || 'N/A';
         const typeLabel = res.media_type === 'movie' ? 'Movie' : 'TV Show';
-        
+
         html += `
             <div class="ks-card" onclick="fetchTMDBDetails(${res.id}, '${res.media_type}')">
                 <div class="ks-card-badge">${typeLabel}</div>
@@ -3956,18 +4833,18 @@ function renderTrendingGrid(results, targetId) {
     html += `</div>`;
     container.innerHTML = html;
 }
-  
+
 function renderTrendingAnimeGrid(items, targetId) {
     const container = document.getElementById(targetId);
     if (!container) return;
-    
+
     let html = `<div class="ks-grid" style="padding: 10px 0;">`;
     items.forEach(res => {
         const title = res.title.english || res.title.romaji || 'Untitled Anime';
         const poster = res.coverImage.large || '';
         const year = res.seasonYear || 'N/A';
         const format = res.format || 'Anime';
-        
+
         html += `
             <div class="ks-card" onclick="fetchAniListDetails(${res.id})">
                 <div class="ks-card-badge">${format}</div>
@@ -3990,17 +4867,18 @@ let activeFaqCategory = 'all';
 
 function switchFaqTab(cat, el) {
     activeFaqCategory = cat;
-    
+
     // Toggle active visual classes on tab chips
     document.querySelectorAll('.faq-tabs .api-tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
-    
+
     filterFaqs();
 }
 
 function filterFaqs() {
     const q = document.getElementById('faq-search-input').value.toLowerCase().trim();
     const items = document.querySelectorAll('.faq-grid .faq-item');
+    let visibleCount = 0;
     
     items.forEach(item => {
         const cat = item.getAttribute('data-cat');
@@ -4016,12 +4894,136 @@ function filterFaqs() {
         if (matchesCat && matchesSearch) {
             item.classList.remove('hidden-cat', 'hidden-search');
             item.style.display = 'block';
+            visibleCount++;
         } else {
             if (!matchesCat) item.classList.add('hidden-cat');
             if (!matchesSearch) item.classList.add('hidden-search');
             item.style.display = 'none';
         }
     });
+
+    // Toggle intelligent AI fallback card visibility if no results matched
+    const fallbackEl = document.getElementById('faq-ai-fallback');
+    if (fallbackEl) {
+        if (visibleCount === 0) {
+            fallbackEl.style.display = 'block';
+        } else {
+            fallbackEl.style.display = 'none';
+        }
+    }
+}
+
+// FAQ-to-Copilot tab-routing helper
+window.askFaqQuestionCopilot = function(question) {
+    switchTab('google');
+    switchSearchMode('copilot');
+    const aiInput = document.getElementById('ai-query');
+    if (aiInput) {
+        aiInput.value = `Explain in detail this FAQ topic: "${question}". Provide a helpful step-by-step developer walkthrough.`;
+        performAiSearch();
+    }
+};
+
+// Routing helper from raw input value when no direct match exists
+window.askFaqCopilotFromInput = function() {
+    const q = document.getElementById('faq-search-input').value.trim();
+    if (q) {
+        switchTab('google');
+        switchSearchMode('copilot');
+        const aiInput = document.getElementById('ai-query');
+        if (aiInput) {
+            aiInput.value = `As a developer, I am looking for answers regarding: "${q}". Can you synthesize the relevant technical walkthrough or system specification?`;
+            performAiSearch();
+        }
+    } else {
+        showToast('Please type a search query first.', 'fa-exclamation-triangle');
+    }
+};
+
+// Appends "Ask Copilot" button dynamically inside all FAQ answer blocks
+function initializeFaqAiFeatures() {
+    const items = document.querySelectorAll('.faq-grid .faq-item');
+    items.forEach(item => {
+        const questionEl = item.querySelector('.faq-question span');
+        if (!questionEl) return;
+        const question = questionEl.innerText;
+        const answerBlock = item.querySelector('.faq-answer');
+        if (answerBlock) {
+            const askAiHtml = `
+            <div style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; text-align: right;">
+                <span class="google-action-link" style="font-size: 0.72rem;" onclick="askFaqQuestionCopilot('${question.replace(/'/g, "\\'")}')">
+                    <i class="fas fa-sparkles" style="color: #c084fc;"></i> Ask Copilot to explain
+                </span>
+            </div>`;
+            answerBlock.insertAdjacentHTML('beforeend', askAiHtml);
+        }
+    });
+}
+
+// Home Quick AI Search trigger helper
+window.triggerHomeAiSearch = function() {
+    const homeInput = document.getElementById('home-ai-input');
+    if (!homeInput) return;
+    const q = homeInput.value.trim();
+    if (!q) {
+        showToast('Please type a question first.', 'fa-exclamation-triangle');
+        return;
+    }
+    
+    // Switch to AI Search tab
+    switchTab('google');
+    switchSearchMode('copilot');
+    
+    // Fill AI search input and submit
+    const aiInput = document.getElementById('ai-query');
+    if (aiInput) {
+        aiInput.value = q;
+        performAiSearch();
+    }
+    
+    // Clear home input
+    homeInput.value = '';
+};
+
+// Simulated Core Monitor updates for spatial dashboard feel
+function startHomeActivityMonitor() {
+    const consoleEl = document.getElementById('home-console-logs');
+    if (!consoleEl) return;
+    
+    const logs = [
+        "SYS: Core kernel active (thread_pool: 64)",
+        "SEC: Sandbox authorization token verified",
+        "API: TMDB & Videasy server endpoints synced",
+        "RAG: Local package vocabulary catalog indexed",
+        "NET: secureFetch routing pool configured",
+        "SYS: memory_usage = 42.1 MB / 512 MB",
+        "DB: data.json checksum verified",
+        "SEC: Active shielding daemon - operational",
+        "API: Hugging Face triple fallback chain ready",
+        "SYS: connection_status = STABLE (RTT: 4ms)",
+        "OS: Respring daemon loaded successfully"
+    ];
+    
+    // Pre-populate with 4 random logs
+    for (let i = 0; i < 4; i++) {
+        const line = logs[Math.floor(Math.random() * logs.length)];
+        const timeStr = new Date().toLocaleTimeString(undefined, { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        consoleEl.insertAdjacentHTML('beforeend', `<div style="opacity: 0.85;">[${timeStr}] ${line}</div>`);
+    }
+    
+    // Cycle and append new logs continuously
+    setInterval(() => {
+        const line = logs[Math.floor(Math.random() * logs.length)];
+        const timeStr = new Date().toLocaleTimeString(undefined, { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        
+        // Remove first log line if limit exceeded to avoid height overflow
+        if (consoleEl.children.length >= 6) {
+            consoleEl.children[0].remove();
+        }
+        
+        const logLineHtml = `<div style="animation: fadeIn 0.3s ease-out;">[${timeStr}] ${line}</div>`;
+        consoleEl.insertAdjacentHTML('beforeend', logLineHtml);
+    }, 4500);
 }
 
 /* ==========================================================================
@@ -4032,13 +5034,24 @@ let currentSearchMode = 'copilot';
 let activeAiQuery = '';
 let activeAiResponseCitations = [];
 
+// AI Enhancements Global Configuration & State
+let aiCustomToken = localStorage.getItem('ai_custom_token') || '';
+let aiPreferredModel = localStorage.getItem('ai_preferred_model') || 'Qwen/Qwen2.5-Coder-7B-Instruct';
+let aiSystemPrompt = localStorage.getItem('ai_system_prompt') || `[System Instructions]: You are Elite Copilot v4.0, a verified spatial AI tech assistant integrated inside Chya Luqman's premium tweak repository and website. 
+Be highly conversational, professional, concise, and format answers using Markdown bold, bullet lists, or code blocks.
+Whenever relevant, refer back to the scored portfolio items and direct users to them.`;
+let aiVoiceEnabled = localStorage.getItem('ai_voice_enabled') === 'true';
+
+let activeSpeechUtterance = null;
+let activeSpeakingButton = null;
+
 /**
  * Switch between AI Copilot mode and Google Web Search panel
  * @param {string} mode - 'copilot' or 'web'
  */
 function switchSearchMode(mode) {
     currentSearchMode = mode;
-    
+
     // Toggle active visual states on segmented button tabs
     const btnCopilot = document.getElementById('btn-mode-copilot');
     const btnWeb = document.getElementById('btn-mode-web');
@@ -4062,7 +5075,7 @@ function switchSearchMode(mode) {
             panelWeb.classList.remove('active');
         }
     }
-    
+
     // Autofocus input
     if (mode === 'copilot') {
         const aiInput = document.getElementById('ai-query');
@@ -4093,17 +5106,17 @@ function runAiSuggestion(text) {
  */
 function scoreQueryAgainstPackages(query) {
     if (!packageData || !packageData.length) return [];
-    
+
     // Clean query text
     const queryCleaned = query.toLowerCase().trim();
-    
+
     // Preprocess query terms (lowercase, filter short stopwords)
     const stopWords = ['the', 'and', 'for', 'you', 'with', 'this', 'that', 'from', 'your', 'about'];
     const terms = queryCleaned
-                       .replace(/[^\w\s\u0600-\u06FF]/g, '') // Keep alphanumeric and Arabic/Kurdish character sets
-                       .split(/\s+/)
-                       .filter(t => t.length > 1 && !stopWords.includes(t));
-                       
+        .replace(/[^\w\s\u0600-\u06FF]/g, '') // Keep alphanumeric and Arabic/Kurdish character sets
+        .split(/\s+/)
+        .filter(t => t.length > 1 && !stopWords.includes(t));
+
     // Kurdish search intent expansion (translates Kurdish query tokens to match database keywords)
     const kurdishLexicon = {
         'یاری': ['game', 'mod', 'pc games', 'pc game', 'mods'],
@@ -4134,7 +5147,7 @@ function scoreQueryAgainstPackages(query) {
         'ژیری': ['ai', 'robot', 'brain', 'intelligence'],
         'ژیر': ['ai', 'robot', 'brain', 'intelligence']
     };
-    
+
     // Scan terms and expand with translated terms if matched
     const expandedTerms = [...terms];
     terms.forEach(term => {
@@ -4142,15 +5155,15 @@ function scoreQueryAgainstPackages(query) {
             expandedTerms.push(...kurdishLexicon[term]);
         }
     });
-    
+
     if (expandedTerms.length === 0) return [];
-    
+
     const scoredList = packageData.map(pkg => {
         let score = 0;
         const nameLower = pkg.name.toLowerCase();
         const descLower = pkg.desc ? pkg.desc.toLowerCase() : '';
         const catLower = pkg.cat ? pkg.cat.toLowerCase() : '';
-        
+
         expandedTerms.forEach(term => {
             // High weight for matching package title
             if (nameLower.includes(term)) {
@@ -4166,20 +5179,20 @@ function scoreQueryAgainstPackages(query) {
                 score += 3;
             }
         });
-        
+
         // Exact query match bonus
         const cleanQuery = query.toLowerCase().trim();
         if (nameLower.includes(cleanQuery)) score += 20;
         if (descLower.includes(cleanQuery)) score += 10;
-        
+
         return { package: pkg, score: score };
     });
-    
+
     // Sort descending and return top 6 matching items
     return scoredList.filter(item => item.score > 0)
-                     .sort((a, b) => b.score - a.score)
-                     .slice(0, 6)
-                     .map(item => item.package);
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 6)
+        .map(item => item.package);
 }
 
 /**
@@ -4191,31 +5204,31 @@ function scoreQueryAgainstPackages(query) {
  */
 function synthesizeLocalAiResponse(query, packages) {
     const q = query.toLowerCase();
-    
+
     // 1. Bio / Portfolio request matches
     if (q.includes('who is') || q.includes('chya') || q.includes('luqman') || q.includes('creator') || q.includes('author') || q.includes('portfolio')) {
         let response = `**Chya Luqman** is an elite **UI/UX Engineer & Developer** specializing in state-of-the-art spatial web environments, custom front-end frameworks, and advanced application registries. He is the master architect behind **Cydia Elite v4.0** (Build 12A402).\n\n### Skills & Specialties\n*   **Design Systems**: Minimalist glassmorphism, dynamic motion micro-animations, and high-performance physics-based background canvases.\n*   **Development Layer**: Highly responsive architectures, custom developer API hubs, proxy streaming engines, and binary downloader handlers.\n*   **Core Ideology**: Architecting seamless spatial experiences designed for 2026 browsers.\n\n### Interactive Communities\n*   **Discord Portal**: You can connect with Chya directly on the [Official Discord Community](https://discord.gg/YTeRSG8kER) (currently housing a highly active community of **2.5k+ members**). \n*   **Design Logs**: Follow his latest UI layouts on [Instagram (@chya_luqman)](https://www.instagram.com/chya_luqman/).\n\nTo explore Chya's official community integrations in this portal, you can jump directly to the **Community** [1] category in your registry list. Let me know if you would like me to list other developer tools!`;
-        
+
         // Find community items in packages if possible to attach citation
         const discordPkg = packageData.find(p => p.cat === 'social' && p.name.includes('Discord'));
         activeAiResponseCitations = discordPkg ? [discordPkg] : (packages.length ? [packages[0]] : []);
         return response;
     }
-    
+
     // 2. Downloaders matches
     if (q.includes('download') || q.includes('tiktok') || q.includes('instagram') || q.includes('downlo')) {
         let response = `Cydia Elite includes high-speed client-side media downloaders directly inside the left panel. These tools operate dynamically without page refreshes:\n\n1.  **TikTok Downloader**: Located in your sidebar utilities list. It parses ByteDance stream servers on-the-fly and downloads HD video streams and audio MP3 tracks without any watermarks. It features an integrated phone proxy fix for flawless downloads on mobile safari/chrome webviews.\n2.  **Instagram Directory**: Located under **Insta LookUp**. Search public Instagram accounts and fetch profile indexes immediately.\n\nTo quickly fetch a TikTok stream, click the **TikTok Downloader** [1] utility in the sidebar or browse **PC Tools** [2] for downloadable software packages.`;
-        
+
         const tiktokPkg = { name: "TikTok Downloader", desc: "Download high definition ByteDance videos with no watermark.", cat: "tools", url: "#tiktok", icon: "fab fa-tiktok", id: "tiktok-downloader-citation" };
         const toolsPkg = packageData.find(p => p.cat === 'tools') || packages[0];
         activeAiResponseCitations = toolsPkg ? [tiktokPkg, toolsPkg] : [tiktokPkg];
         return response;
     }
-    
+
     // 3. Kurdish databases & streaming matches
     if (q.includes('kurdstream') || q.includes('kurd stream') || q.includes('cinema') || q.includes('movie') || q.includes('doblazh') || q.includes('dubbed') || q.includes('kurdish')) {
         let response = `Cydia Elite features two high-fidelity Kurdish entertainment platforms fully optimized for spatial and standard browsers:\n\n*   **KurdStream Search**: Powered by a robust public cinema search seeker API. It lets you query HD movies and series, browse categories, and play streams dynamically. It features a dual-source engine: the **KurdStream DB** and a **TMDB & Videasy** resolver integration (with support for AniList anime tracing).\n*   **KurdDoblazh Hub**: A proxy gateway that indexes dubbed movies and series directly from KurdDoblazh.com, bypassing mobile blocks and delivering high-quality streaming interfaces.\n\nYou can access **KurdStream Search** [1] directly or browse **Kurdish Dubbed Content** [2] from the sidebar.`;
-        
+
         const ksPkg = { name: "KurdStream Search", desc: "Search movies and series from KurdStream & TMDB database.", cat: "kurdish", url: "#kurdstream", icon: "fas fa-play-circle", id: "kurdstream-citation" };
         const kdPkg = { name: "KurdDoblazh Hub", desc: "Kurdish dubbed series and movies proxy scraper portal.", cat: "kurdish", url: "#kurddoblazh", icon: "fas fa-microphone-alt", id: "kurddoblazh-citation" };
         activeAiResponseCitations = [ksPkg, kdPkg];
@@ -4226,19 +5239,149 @@ function synthesizeLocalAiResponse(query, packages) {
     if (packages.length > 0) {
         activeAiResponseCitations = [...packages];
         let response = `I have scanned Cydia Elite's semantic package graph and found **${packages.length} premium utilities** matching your search:\n\n`;
-        
+
         packages.forEach((pkg, index) => {
             const num = index + 1;
             response += `${num}.  **${pkg.name}** [${num}]: ${pkg.desc} *(Category: ${pkg.cat.toUpperCase()})*\n`;
         });
-        
+
         response += `\n*   **Action Hint**: Click any of the interactive **Portfolio Citation Cards** listed below to instantly open the link or copy the quick developer command directly to your clipboard!`;
         return response;
     }
-    
+
     // Default Fallback
     activeAiResponseCitations = [];
     return `I scanned Cydia Elite's local software registry but did not find any package matching **"${query}"**.\n\nHowever, as your developer copilot, I suggest:\n*   Checking Chya's **API Hub** for backend endpoints.\n*   Refining your search keywords (e.g., try *"AI"*, *"Tools"*, *"Kurdish"*, or *"TikTok"*).\n*   Performing a global web search using the **Google Web** panel above.`;
+}
+
+let chatHistory = []; // Persistent conversational memory thread
+let currentLlmMessageId = ''; // Holds active copilot bubble ID
+
+// Global function to copy code from terminal block
+window.copyTerminalCode = function (blockId, btn) {
+    const codeEl = document.getElementById(blockId);
+    if (codeEl) {
+        // Decode HTML entities if present to copy raw text
+        const tempTextarea = document.createElement('textarea');
+        tempTextarea.innerHTML = codeEl.innerHTML;
+        const rawText = tempTextarea.value;
+
+        navigator.clipboard.writeText(rawText).then(() => {
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.classList.add('copied');
+            showToast('Code copied to clipboard!', 'fa-check-circle');
+
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+                btn.classList.remove('copied');
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            showToast('Copy failed, please copy manually.', 'fa-times-circle');
+        });
+    }
+};
+
+// Robust HF endpoint fetcher walking through a sequence of models for triple uptime reliability
+async function fetchLlmResponse(payload) {
+    const endpoints = [];
+    if (aiPreferredModel) {
+        endpoints.push(`https://api-inference.huggingface.co/models/${aiPreferredModel}`);
+    }
+    const fallbacks = [
+        "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-Coder-7B-Instruct",
+        "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-7B-Instruct",
+        "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta"
+    ];
+    fallbacks.forEach(f => {
+        if (!endpoints.includes(f)) endpoints.push(f);
+    });
+
+    const headers = { "Content-Type": "application/json" };
+    if (aiCustomToken) {
+        headers["Authorization"] = `Bearer ${aiCustomToken}`;
+    }
+
+    for (const url of endpoints) {
+        try {
+            console.log(`Querying Hugging Face endpoint: ${url}`);
+            const response = await fetch(url, {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify(payload),
+                signal: AbortSignal.timeout ? AbortSignal.timeout(7000) : null // 7s timeout
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                let answer = "";
+                if (Array.isArray(data) && data[0] && data[0].generated_text) {
+                    answer = data[0].generated_text;
+                } else if (data && data.generated_text) {
+                    answer = data.generated_text;
+                }
+
+                if (answer && answer.trim().length > 0) {
+                    return answer;
+                }
+            }
+        } catch (e) {
+            console.warn(`Hugging Face endpoint failed (${url}):`, e);
+        }
+    }
+    throw new Error("All endpoints offline or rate-limited");
+}
+
+// Injects dynamic user bubble and active assistant bubble with a loaders
+function createNewConversationalBubbles(query) {
+    const resultsBox = document.getElementById('ai-results-box');
+    if (!resultsBox) return;
+
+    // Hide welcome screen
+    const welcome = document.getElementById('ai-chat-welcome-screen');
+    if (welcome) welcome.style.display = 'none';
+
+    // Append User Bubble
+    const userMsgHtml = `
+    <div class="chat-message-user">
+        <div class="chat-bubble-user">${query}</div>
+        <div class="chat-avatar-user"><i class="fas fa-user-astronaut" style="color: #60a5fa;"></i> You</div>
+    </div>
+    `;
+    resultsBox.insertAdjacentHTML('beforeend', userMsgHtml);
+
+    // Append Assistant Bubble
+    const msgId = 'ai-bubble-' + Date.now();
+    currentLlmMessageId = msgId; // Store globally for streamAiResponse
+
+    const copilotMsgHtml = `
+    <div class="chat-message-copilot" id="${msgId}">
+        <div class="ai-avatar"><i class="fas fa-robot"></i></div>
+        <div class="chat-bubble-copilot">
+            <!-- Inline Thinking Loader -->
+            <div class="ai-thinking-bubble" id="thinking-${msgId}" style="padding: 10px 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;">
+                <div class="thinking-dots">
+                    <span></span><span></span><span></span>
+                </div>
+                <span class="thinking-label" style="font-size:0.7rem; letter-spacing:1px; margin-top:2px;">Synthesizing semantic graph...</span>
+            </div>
+            
+            <!-- Response text container -->
+            <div class="ai-response-body" id="text-${msgId}" style="display: none;"></div>
+            
+            <!-- Citation Section -->
+            <div class="ai-citations-section" id="citations-${msgId}" style="display: none;">
+                <div class="citations-header" style="font-size: 0.75rem; margin-bottom: 8px; font-weight:700;"><i class="fas fa-quote-left"></i> Portfolio Citations</div>
+                <div class="citations-grid" id="grid-${msgId}"></div>
+            </div>
+        </div>
+    </div>
+    `;
+    resultsBox.insertAdjacentHTML('beforeend', copilotMsgHtml);
+
+    // Scroll resultsBox into view
+    resultsBox.scrollTop = resultsBox.scrollHeight;
 }
 
 /**
@@ -4249,136 +5392,181 @@ function synthesizeLocalAiResponse(query, packages) {
  */
 function parseMarkdownToHtml(text) {
     let html = text;
-    
-    // Escape standard HTML tags to prevent injections
+
+    // Escape standard HTML tags to prevent injections (excluding what we explicitly build)
     html = html.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    
+
     // Parse bold text: **text**
     html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-    
+
     // Parse italic text: *text*
     html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-    
+
     // Parse block headers: ### text
     html = html.replace(/^###\s+(.+)$/gm, '<h4>$1</h4>');
-    
-    // Parse pre code blocks
-    html = html.replace(/```([\s\S]+?)```/g, '<pre><code>$1</code></pre>');
-    
-    // Parse inline code segments
+
+    // Parse pre code blocks with language specifiers into terminal-style cards with a Copy Button
+    html = html.replace(/```(\w*)\n([\s\S]+?)```/g, (match, lang, code) => {
+        const cleanLang = lang || 'code';
+        const escapedCode = code.trim();
+        const blockId = 'code-' + Math.random().toString(36).substring(2, 9);
+
+        return `
+        <div class="terminal-code-block">
+            <div class="terminal-header">
+                <div class="terminal-dots">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                </div>
+                <span class="terminal-lang">${cleanLang}</span>
+                <button class="terminal-copy-btn" onclick="copyTerminalCode('${blockId}', this)">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+            <pre class="terminal-code-content"><code id="${blockId}">${escapedCode}</code></pre>
+        </div>
+        `;
+    });
+
+    // Parse pre code blocks without specified language
+    html = html.replace(/```([\s\S]+?)```/g, (match, code) => {
+        const escapedCode = code.trim();
+        const blockId = 'code-' + Math.random().toString(36).substring(2, 9);
+        return `
+        <div class="terminal-code-block">
+            <div class="terminal-header">
+                <div class="terminal-dots">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                </div>
+                <span class="terminal-lang">code</span>
+                <button class="terminal-copy-btn" onclick="copyTerminalCode('${blockId}', this)">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+            <pre class="terminal-code-content"><code id="${blockId}">${escapedCode}</code></pre>
+        </div>
+        `;
+    });
+
+    // Parse inline code segments: `code`
     html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-    
+
     // Parse lists
     html = html.replace(/^\*\s+(.+)$/gm, '<li>$1</li>');
     html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
-    
+
     // Group adjacent <li> elements into lists
     html = html.replace(/(<li>[\s\S]+?<\/li>)/g, '<ul>$1</ul>');
     html = html.replace(/<\/ul>\s*<ul>/g, ''); // deduplicate ul groups
-    
+
     // Parse standard markdown links [text](url)
     html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
-    
-    // Parse custom bracket citations: [N] -> <span class="citation-number" onclick="scrollToCitation(N)">N</span>
+
+    // Parse custom bracket citations: [N] -> triggerCitationAction(N-1)
     html = html.replace(/\[(\d+)\]/g, (match, num) => {
         return `<span class="citation-number" onclick="triggerCitationAction(${parseInt(num) - 1})">${num}</span>`;
     });
-    
-    // Replace newline blocks with paragraphs
+
+    // Replace double newline blocks with paragraphs
     html = html.split('\n\n').map(p => {
-        if (p.trim().startsWith('<ul') || p.trim().startsWith('<h4') || p.trim().startsWith('<pre')) {
+        const trimmed = p.trim();
+        if (trimmed.startsWith('<ul') || trimmed.startsWith('<h4') || trimmed.startsWith('<div class="terminal') || trimmed.startsWith('<pre')) {
             return p;
         }
         return `<p>${p.replace(/\n/g, '<br>')}</p>`;
     }).join('');
-    
+
     return html;
 }
 
 /**
- * Stream typing animation simulation
+ * Stream typing animation simulation inside the latest conversational bubble
  * @param {string} rawMarkdown - Text to render
  * @param {Array} citations - Citation list
  */
 function streamAiResponse(rawMarkdown, citations) {
-    const responseFeed = document.getElementById('ai-response-feed');
-    const thinkingIndicator = document.getElementById('ai-thinking-indicator');
-    const responseCard = document.getElementById('ai-response-card');
-    const textContainer = document.getElementById('ai-response-text');
-    const citationsContainer = document.getElementById('ai-citations-container');
-    const citationsGrid = document.getElementById('ai-citations-grid');
+    const resultsBox = document.getElementById('ai-results-box');
+    const msgId = currentLlmMessageId;
+    if (!msgId || !resultsBox) return;
 
-    if (!textContainer || !responseCard) return;
+    const thinking = document.getElementById(`thinking-${msgId}`);
+    const textContainer = document.getElementById(`text-${msgId}`);
+    const citationsContainer = document.getElementById(`citations-${msgId}`);
+    const citationsGrid = document.getElementById(`grid-${msgId}`);
 
-    // 1. Hide welcome state, show results feed
-    document.getElementById('ai-chat-welcome-screen').style.display = 'none';
-    responseFeed.style.display = 'block';
-    
-    // 2. Clear old states
-    textContainer.innerHTML = '';
-    responseCard.style.display = 'none';
-    citationsContainer.style.display = 'none';
-    citationsGrid.innerHTML = '';
-    
-    // 3. Show dynamic loader
-    thinkingIndicator.style.display = 'flex';
-    
-    // Simulate natural thinking delay (RAG retrieval & semantic mapping simulation)
-    setTimeout(() => {
-        thinkingIndicator.style.display = 'none';
-        responseCard.style.display = 'block';
-        
-        // 4. Begin typewriter character streaming
-        let index = 0;
-        const totalLength = rawMarkdown.length;
-        const increment = 3; // Type 3 characters at a time for high speed but fluid feel
-        
-        function typeChar() {
-            if (index < totalLength) {
-                index += increment;
-                const visibleSub = rawMarkdown.substring(0, Math.min(index, totalLength));
-                textContainer.innerHTML = parseMarkdownToHtml(visibleSub) + '<span class="typewriter-cursor">|</span>';
-                
-                // Keep view scroll snapped to bottom
-                const mainScroll = document.getElementById('main-scroll');
-                if (mainScroll) mainScroll.scrollTop = mainScroll.scrollHeight;
-                
-                setTimeout(typeChar, 15);
-            } else {
-                // Done typing - clean up cursor
-                textContainer.innerHTML = parseMarkdownToHtml(rawMarkdown);
-                
-                // 5. Render citation cards if matches exist
-                if (citations && citations.length > 0) {
-                    citationsGrid.innerHTML = '';
-                    citations.forEach((pkg, idx) => {
-                        const num = idx + 1;
-                        const icon = pkg.icon || 'fas fa-box';
-                        const actionIcon = pkg.cmd ? 'fa-copy' : 'fa-external-link-alt';
-                        const cleanDesc = pkg.desc ? pkg.desc.substring(0, 50) + (pkg.desc.length > 50 ? '...' : '') : 'Portfolio Package Tweak';
-                        
-                        citationsGrid.innerHTML += `
-                            <div class="citation-card" onclick="triggerCitationAction(${idx})">
-                                <div class="citation-badge">${num}</div>
-                                <div class="citation-info">
-                                    <span class="citation-name">${pkg.name}</span>
-                                    <span class="citation-desc">${cleanDesc}</span>
-                                </div>
-                                <div class="citation-action"><i class="fas ${actionIcon}"></i></div>
-                            </div>
-                        `;
-                    });
-                    
-                    citationsContainer.style.display = 'block';
-                }
-                
-                const mainScroll = document.getElementById('main-scroll');
-                if (mainScroll) mainScroll.scrollTop = mainScroll.scrollHeight;
+    if (!textContainer || !thinking) return;
+
+    // Toggle displays
+    thinking.style.display = 'none';
+    textContainer.style.display = 'block';
+
+    // Begin typewriter character streaming
+    let index = 0;
+    const totalLength = rawMarkdown.length;
+    const increment = 3; // Fluid typing speed
+
+    function typeChar() {
+        if (index < totalLength) {
+            index += increment;
+            const visibleSub = rawMarkdown.substring(0, Math.min(index, totalLength));
+            textContainer.innerHTML = parseMarkdownToHtml(visibleSub) + '<span class="typewriter-cursor">|</span>';
+
+            // Keep container scrolled to bottom
+            resultsBox.scrollTop = resultsBox.scrollHeight;
+
+            setTimeout(typeChar, 10);
+        } else {
+            // Done streaming - render complete markdown with no cursor
+            textContainer.innerHTML = parseMarkdownToHtml(rawMarkdown);
+
+            if (aiVoiceEnabled) {
+                const speakBtnHtml = `
+                <div style="margin-top: 10px; display: flex; gap: 8px;">
+                    <button class="ai-speak-btn" id="speak-btn-${msgId}" onclick="toggleSpeechSynthesis('${rawMarkdown.replace(/'/g, "\\'").replace(/\r/g, '').replace(/\n/g, ' ')}', '${msgId}', this)">
+                        <i class="fas fa-volume-up"></i> Speak Answer
+                    </button>
+                </div>
+                `;
+                textContainer.insertAdjacentHTML('beforeend', speakBtnHtml);
             }
+
+            // Render citation cards if matches exist
+            if (citations && citations.length > 0) {
+                citationsGrid.innerHTML = '';
+                citations.forEach((pkg, idx) => {
+                    const num = idx + 1;
+                    const actionIcon = pkg.cmd ? 'fa-copy' : 'fa-external-link-alt';
+                    const cleanDesc = pkg.desc ? pkg.desc.substring(0, 50) + (pkg.desc.length > 50 ? '...' : '') : 'Portfolio Package Tweak';
+
+                    citationsGrid.innerHTML += `
+                        <div class="citation-card" onclick="triggerCitationAction(${idx})">
+                            <div class="citation-badge">${num}</div>
+                            <div class="citation-info">
+                                <span class="citation-name">${pkg.name}</span>
+                                <span class="citation-desc">${cleanDesc}</span>
+                            </div>
+                            <div class="citation-action"><i class="fas ${actionIcon}"></i></div>
+                        </div>
+                    `;
+                });
+                citationsContainer.style.display = 'block';
+            }
+
+            // Push history when message completes streaming
+            chatHistory.push({ role: 'user', content: activeAiQuery });
+            chatHistory.push({ role: 'assistant', content: rawMarkdown });
+
+            // Keep context size bounded (max 20 messages)
+            if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+
+            resultsBox.scrollTop = resultsBox.scrollHeight;
         }
-        
-        typeChar();
-    }, 1500);
+    }
+
+    typeChar();
 }
 
 /**
@@ -4388,7 +5576,7 @@ function streamAiResponse(rawMarkdown, citations) {
 function triggerCitationAction(idx) {
     if (!activeAiResponseCitations || !activeAiResponseCitations[idx]) return;
     const pkg = activeAiResponseCitations[idx];
-    
+
     if (pkg.cmd) {
         const safeCmd = pkg.cmd.replace(/'/g, "\\'").replace(/"/g, "&quot;");
         navigator.clipboard.writeText(safeCmd);
@@ -4409,23 +5597,37 @@ function triggerCitationAction(idx) {
 function clearAiChat() {
     const aiInput = document.getElementById('ai-query');
     if (aiInput) aiInput.value = '';
-    
-    document.getElementById('ai-chat-welcome-screen').style.display = 'flex';
-    document.getElementById('ai-response-feed').style.display = 'none';
-    
+
+    const resultsBox = document.getElementById('ai-results-box');
+    if (resultsBox) {
+        resultsBox.innerHTML = `
+        <div class="ai-chat-welcome" id="ai-chat-welcome-screen">
+            <i class="fas fa-brain-circuit welcome-brain"></i>
+            <h3>Cydia Elite AI Assistant</h3>
+            <p>I am highly trained on Chya's projects, Cydia Elite's 500+ package registry, FAQ databases, and technical developer specifications. Ask me anything to get instant, interactive answers.</p>
+        </div>
+        `;
+    }
+
+    chatHistory = [];
     activeAiQuery = '';
     activeAiResponseCitations = [];
+    showToast('Conversation cleared.', 'fa-trash-alt');
 }
 
 /**
- * Copies the raw typed response block to browser clipboard
+ * Copies the raw latest typed response block to browser clipboard
  */
 function copyAiResponse() {
-    const responseText = document.getElementById('ai-response-text');
-    if (responseText) {
-        navigator.clipboard.writeText(responseText.innerText);
-        showToast('AI response copied to clipboard!', 'fa-check-circle');
+    if (chatHistory.length > 0) {
+        const lastAssistantMsg = [...chatHistory].reverse().find(m => m.role === 'assistant');
+        if (lastAssistantMsg) {
+            navigator.clipboard.writeText(lastAssistantMsg.content);
+            showToast('Latest response copied!', 'fa-check-circle');
+            return;
+        }
     }
+    showToast('No response available to copy.', 'fa-exclamation-triangle');
 }
 
 /**
@@ -4435,97 +5637,304 @@ function copyAiResponse() {
 async function performAiSearch() {
     const input = document.getElementById('ai-query');
     if (!input) return;
-    
+
     const query = input.value.trim();
     if (!query) {
         showToast('Please type a search question first.', 'fa-exclamation-triangle');
         return;
     }
-    
+
     activeAiQuery = query;
     activeAiResponseCitations = [];
-    
-    // 1. Run TF-IDF local index scorer
+
+    input.value = '';
+
+    createNewConversationalBubbles(query);
+
+    updateAiStatusIndicator('thinking', 'AI Core: Processing...');
+
     const matchedPackages = scoreQueryAgainstPackages(query);
-    
-    // 2. Synthesize portfolio RAG baseline content
+
     const localMarkdown = synthesizeLocalAiResponse(query, matchedPackages);
-    
-    // 3. Connect to Hugging Face serverless client (for general web/tech topics)
-    // To maintain CORS compatibility and keyless operation, we query public serverless models.
-    const isLocalSpecific = query.toLowerCase().includes('chya') || 
-                            query.toLowerCase().includes('cydia') || 
-                            query.toLowerCase().includes('download') || 
-                            query.toLowerCase().includes('tiktok') || 
-                            query.toLowerCase().includes('kurdstream');
-                            
+
+    const isLocalSpecific = query.toLowerCase().includes('chya') ||
+        query.toLowerCase().includes('cydia') ||
+        query.toLowerCase().includes('download') ||
+        query.toLowerCase().includes('tiktok') ||
+        query.toLowerCase().includes('kurdstream');
+
     if (isLocalSpecific) {
-        // High fidelity portfolio questions use the native fast client-side RAG engine immediately.
-        streamAiResponse(localMarkdown, activeAiResponseCitations);
+        setTimeout(() => {
+            activeAiResponseCitations = matchedPackages.length ? matchedPackages : (activeAiResponseCitations.length ? activeAiResponseCitations : []);
+            streamAiResponse(localMarkdown, activeAiResponseCitations);
+            updateAiStatusIndicator('ready');
+        }, 600);
         return;
     }
-    
-    // Otherwise, attempt Hugging Face serverless live indexing with local-RAG fallback
+
     try {
-        // Show loading state immediately while API resolves
-        document.getElementById('ai-chat-welcome-screen').style.display = 'none';
-        document.getElementById('ai-response-feed').style.display = 'block';
-        document.getElementById('ai-thinking-indicator').style.display = 'flex';
-        document.getElementById('ai-response-card').style.display = 'none';
-        
+        const historyContext = chatHistory.slice(-6).map(m => {
+            return m.role === 'user' ? `[User]: ${m.content}` : `[Copilot]: ${m.content}`;
+        }).join("\n\n");
+
         const payload = {
-            inputs: `[System Prompt]: You are Cydia Elite Copilot, an elite AI technical assistant integrated directly inside Chya Luqman's premium portfolio and package tweaks repository. Be highly professional, brief, format answers using Markdown, and naturally introduce relevant items from this portfolio.
-            
-            [Chya Luqman Bio]: UI/UX Engineer and developer who built Cydia Elite. Discord community has 2.5k members: https://discord.gg/YTeRSG8kER. Instagram is @chya_luqman.
-            
-            [User Question]: ${query}
-            
-            [Scored Portfolio Matches]: ${matchedPackages.map(p => p.name + " (" + p.desc + ")").join(", ")}
-            
-            Please provide a direct, conversational answer answering the user's question, format with markdown bold, bullet points or pre/code blocks if writing code.`,
-            parameters: { max_new_tokens: 450, temperature: 0.7 }
+            inputs: `${aiSystemPrompt}
+
+[Owner/Creator Bio]: Chya Luqman is an elite UI/UX engineer and developer. Connect on Discord (https://discord.gg/YTeRSG8kER - 2.5k members) or Instagram (@chya_luqman).
+
+[Scored Portfolio Matches]: ${matchedPackages.map(p => p.name + " (" + p.desc + ")").join(", ")}
+
+[Conversation History]:
+${historyContext || "No previous history."}
+
+[User Question]: ${query}
+
+Please provide the next direct conversational response:`,
+            parameters: { max_new_tokens: 500, temperature: 0.7 }
         };
-        
-        // Zero-key public serverless endpoint (free model instance)
-        const response = await fetch("https://api-inference.huggingface.co/models/Qwen/Qwen2.5-Coder-7B-Instruct", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-        
-        if (!response.ok) throw new Error("Serverless API offline or rate-limited");
-        
-        const data = await response.json();
-        let answer = "";
-        
-        if (Array.isArray(data) && data[0] && data[0].generated_text) {
-            answer = data[0].generated_text;
-        } else if (data && data.generated_text) {
-            answer = data.generated_text;
-        } else {
-            throw new Error("Invalid model response structure");
-        }
-        
-        // Clean system prompt remnants from response if generated
+
+        let answer = await fetchLlmResponse(payload);
+
         if (answer.includes("[User Question]:")) {
             answer = answer.substring(answer.lastIndexOf("[User Question]:") + 16 + query.length).trim();
         }
-        if (answer.includes("Please provide a direct, conversational answer")) {
-            answer = answer.substring(answer.lastIndexOf("Please provide a direct, conversational answer") + 46).trim();
+        if (answer.includes("Please provide the next direct conversational response:")) {
+            answer = answer.substring(answer.lastIndexOf("Please provide the next direct conversational response:") + 55).trim();
         }
-        
-        // Link matched local search index packages as citations at the bottom
+        if (answer.includes("Elite Copilot v4.0:")) {
+            answer = answer.substring(answer.lastIndexOf("Elite Copilot v4.0:") + 19).trim();
+        }
+
         activeAiResponseCitations = [...matchedPackages];
-        
-        // Hide loader and stream typed response
-        document.getElementById('ai-thinking-indicator').style.display = 'none';
+
         streamAiResponse(answer.trim(), activeAiResponseCitations);
-        
+        updateAiStatusIndicator('ready');
+
     } catch (err) {
-        console.warn("Hugging Face API unavailable. Falling back to local portfolio-intelligence RAG graph...", err);
-        // Seamlessly execute local RAG baseline generator. User gets a perfect, beautiful experience with 0 errors!
+        console.warn("Hugging Face API failed. Falling back to local portfolio-intelligence RAG graph...", err);
+        activeAiResponseCitations = [...matchedPackages];
         streamAiResponse(localMarkdown, activeAiResponseCitations);
+        updateAiStatusIndicator('local-fallback');
     }
+}
+
+// AI settings cogs modal functions
+function openAiSettings() {
+    const modal = document.getElementById('ai-settings-modal');
+    if (modal) {
+        modal.classList.add('active');
+        initializeAiSettingsUI();
+    }
+}
+
+function closeAiSettings() {
+    const modal = document.getElementById('ai-settings-modal');
+    if (modal) modal.classList.remove('active');
+}
+
+function initializeAiSettingsUI() {
+    const tokenInput = document.getElementById('ai-settings-token');
+    const modelSelect = document.getElementById('ai-settings-model');
+    const systemPromptInput = document.getElementById('ai-settings-system');
+    const voiceCheckbox = document.getElementById('ai-settings-voice');
+
+    if (tokenInput) tokenInput.value = aiCustomToken;
+    if (modelSelect) modelSelect.value = aiPreferredModel;
+    if (systemPromptInput) systemPromptInput.value = aiSystemPrompt;
+    if (voiceCheckbox) voiceCheckbox.checked = aiVoiceEnabled;
+
+    updateAiStatusIndicator('ready');
+}
+
+function saveAiSettings() {
+    const tokenInput = document.getElementById('ai-settings-token');
+    const modelSelect = document.getElementById('ai-settings-model');
+    const systemPromptInput = document.getElementById('ai-settings-system');
+    const voiceCheckbox = document.getElementById('ai-settings-voice');
+
+    if (tokenInput) {
+        aiCustomToken = tokenInput.value.trim();
+        localStorage.setItem('ai_custom_token', aiCustomToken);
+    }
+    if (modelSelect) {
+        aiPreferredModel = modelSelect.value;
+        localStorage.setItem('ai_preferred_model', aiPreferredModel);
+    }
+    if (systemPromptInput) {
+        aiSystemPrompt = systemPromptInput.value.trim();
+        localStorage.setItem('ai_system_prompt', aiSystemPrompt);
+    }
+    if (voiceCheckbox) {
+        aiVoiceEnabled = voiceCheckbox.checked;
+        localStorage.setItem('ai_voice_enabled', aiVoiceEnabled ? 'true' : 'false');
+    }
+
+    closeAiSettings();
+    showToast('AI Configuration saved!', 'fa-check-circle');
+    updateAiStatusIndicator('ready');
+}
+
+function resetAiSettings() {
+    localStorage.removeItem('ai_custom_token');
+    localStorage.removeItem('ai_preferred_model');
+    localStorage.removeItem('ai_system_prompt');
+    localStorage.removeItem('ai_voice_enabled');
+
+    aiCustomToken = '';
+    aiPreferredModel = 'Qwen/Qwen2.5-Coder-7B-Instruct';
+    aiSystemPrompt = `[System Instructions]: You are Elite Copilot v4.0, a verified spatial AI tech assistant integrated inside Chya Luqman's premium tweak repository and website. 
+Be highly conversational, professional, concise, and format answers using Markdown bold, bullet lists, or code blocks.
+Whenever relevant, refer back to the scored portfolio items and direct users to them.`;
+    aiVoiceEnabled = false;
+
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+
+    initializeAiSettingsUI();
+    showToast('Settings reset to defaults', 'fa-history');
+}
+
+function updateAiStatusIndicator(state, message = '') {
+    const dot = document.getElementById('ai-core-status-dot');
+    const text = document.getElementById('ai-core-status-text');
+    if (!dot || !text) return;
+
+    dot.className = 'status-dot';
+
+    const getModelShortName = (fullName) => {
+        if (fullName.includes('Coder')) return 'Qwen Coder';
+        if (fullName.includes('Qwen2.5')) return 'Qwen 2.5';
+        if (fullName.includes('zephyr')) return 'Zephyr';
+        if (fullName.includes('Llama')) return 'Llama 3.1';
+        return 'Custom';
+    };
+
+    const modelName = getModelShortName(aiPreferredModel);
+
+    switch (state) {
+        case 'thinking':
+            dot.classList.add('processing');
+            text.innerText = message || 'AI Core: Thinking...';
+            break;
+        case 'local-fallback':
+            dot.classList.add('local-mode');
+            text.innerText = `AI Core: Local Fallback (${modelName})`;
+            break;
+        case 'ready':
+        default:
+            dot.classList.add('online');
+            text.innerText = `AI Core: Online (${modelName})`;
+            break;
+    }
+}
+
+// Speech Recognition & Voice Synthesis Features
+function startSpeechRecognition(inputId, btn) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        showToast('Speech Recognition not supported in this browser.', 'fa-microphone-slash');
+        return;
+    }
+
+    if (btn.classList.contains('recording')) {
+        if (window._activeRecognition) {
+            window._activeRecognition.stop();
+        }
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+        btn.classList.add('recording');
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+        showToast('Listening...', 'fa-microphone');
+        window._activeRecognition = recognition;
+    };
+
+    recognition.onresult = (event) => {
+        const result = event.results[0][0].transcript;
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.value = result;
+            showToast(`Speech recognized: "${result}"`, 'fa-comment-alt');
+        }
+    };
+
+    recognition.onerror = (event) => {
+        console.error("Speech recognition error", event.error);
+        showToast(`Speech Error: ${event.error}`, 'fa-exclamation-triangle');
+    };
+
+    recognition.onend = () => {
+        btn.classList.remove('recording');
+        btn.innerHTML = '<i class="fas fa-microphone"></i>';
+        window._activeRecognition = null;
+    };
+
+    recognition.start();
+}
+
+function toggleSpeechSynthesis(text, msgId, btn) {
+    if (!window.speechSynthesis) {
+        showToast('Voice Synthesis not supported in this browser.', 'fa-volume-mute');
+        return;
+    }
+
+    const bubble = document.getElementById(msgId);
+
+    if (activeSpeechUtterance && activeSpeakingButton === btn) {
+        window.speechSynthesis.cancel();
+        activeSpeechUtterance = null;
+        activeSpeakingButton = null;
+        btn.classList.remove('speaking');
+        btn.innerHTML = '<i class="fas fa-volume-up"></i> Speak Answer';
+        if (bubble) bubble.classList.remove('speaking');
+        showToast('Speech stopped.', 'fa-volume-mute');
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+    if (activeSpeakingButton) {
+        activeSpeakingButton.classList.remove('speaking');
+        activeSpeakingButton.innerHTML = '<i class="fas fa-volume-up"></i> Speak Answer';
+        const activeBubble = document.getElementById(activeSpeakingButton.id.replace('speak-btn-', ''));
+        if (activeBubble) activeBubble.classList.remove('speaking');
+    }
+
+    const cleanText = text.replace(/[*#`_\-]/g, '').trim();
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+
+    utterance.onstart = () => {
+        btn.classList.add('speaking');
+        btn.innerHTML = '<i class="fas fa-pause-circle"></i> Speaking...';
+        if (bubble) bubble.classList.add('speaking');
+        activeSpeechUtterance = utterance;
+        activeSpeakingButton = btn;
+    };
+
+    utterance.onend = () => {
+        btn.classList.remove('speaking');
+        btn.innerHTML = '<i class="fas fa-volume-up"></i> Speak Answer';
+        if (bubble) bubble.classList.remove('speaking');
+        activeSpeechUtterance = null;
+        activeSpeakingButton = null;
+    };
+
+    utterance.onerror = () => {
+        btn.classList.remove('speaking');
+        btn.innerHTML = '<i class="fas fa-volume-up"></i> Speak Answer';
+        if (bubble) bubble.classList.remove('speaking');
+        activeSpeechUtterance = null;
+        activeSpeakingButton = null;
+    };
+
+    window.speechSynthesis.speak(utterance);
 }
 
 
