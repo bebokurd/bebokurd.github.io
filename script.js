@@ -369,13 +369,21 @@ function typeWriter(text, i) {
 
 // Songs Player & Playlist Management
 let playlist = [
-    { name: "Lala (Default Background)", url: "lala.mp3", isDefault: true },
-    { name: "Synthwave Retro Beats", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", isDefault: true },
-    { name: "Chill Ambient Vibes", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", isDefault: true },
-    { name: "Lo-Fi Beats for Coding", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", isDefault: true }
+    { name: "Lala (Default Background)", url: "lala.mp3", isDefault: true, color: "#a855f7", colorRgb: "168, 85, 247" },
+    { name: "Synthwave Retro Beats", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", isDefault: true, color: "#f43f5e", colorRgb: "244, 63, 94" },
+    { name: "Chill Ambient Vibes", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", isDefault: true, color: "#06b6d4", colorRgb: "6, 182, 212" },
+    { name: "Lo-Fi Beats for Coding", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", isDefault: true, color: "#f59e0b", colorRgb: "245, 158, 11" }
 ];
 let currentSongIndex = 0;
 let preMuteVolume = 0.3;
+
+const colorPresets = [
+    { color: "#a855f7", rgb: "168, 85, 247" }, // Purple
+    { color: "#f43f5e", rgb: "244, 63, 94" },   // Rose
+    { color: "#06b6d4", rgb: "6, 182, 212" },   // Cyan
+    { color: "#f59e0b", rgb: "245, 158, 11" },   // Amber
+    { color: "#10b981", rgb: "16, 185, 129" }    // Emerald
+];
 
 function formatTime(secs) {
     if (isNaN(secs) || secs === Infinity) return "0:00";
@@ -490,10 +498,13 @@ function renderPlaylist() {
         const activeClass = isActive ? 'active' : '';
         const iconClass = isActive && isPlaying ? 'fas fa-volume-up' : 'fas fa-music';
         
+        // Define inline style to show dynamic accent color bullet next to song name
+        const bulletColor = song.color || '#3b82f6';
+        
         html += `
             <div class="playlist-item ${activeClass}" onclick="selectSong(${index})">
                 <div class="playlist-item-name-wrap">
-                    <span class="playlist-item-icon"><i class="${iconClass}"></i></span>
+                    <span class="playlist-item-icon" style="color: ${isActive ? bulletColor : 'rgba(255,255,255,0.35)'};"><i class="${iconClass}"></i></span>
                     <span class="playlist-item-name" title="${song.name}">${song.name}</span>
                 </div>
                 ${!song.isDefault ? `
@@ -521,6 +532,9 @@ function updateSongsPlayerUI() {
         if (statusEl) statusEl.innerText = isPlaying ? "Playing" : "Paused";
         
         if (containerEl) {
+            containerEl.style.setProperty('--player-accent', song.color || '#3b82f6');
+            containerEl.style.setProperty('--player-accent-rgb', song.colorRgb || '59, 130, 246');
+            
             if (isPlaying) {
                 containerEl.classList.add('playing');
             } else {
@@ -545,9 +559,13 @@ function updateSongsPlayerUI() {
             if (isPlaying) {
                 fabBtn.classList.add('pulse-glow-green'); // Add visual cue to floating button
                 fabBtn.style.animation = "spin 12s linear infinite";
+                fabBtn.style.setProperty('box-shadow', `0 15px 40px rgba(${song.colorRgb || '255,255,255'}, 0.3)`);
+                fabBtn.style.setProperty('border-color', song.color || '#fff');
             } else {
                 fabBtn.classList.remove('pulse-glow-green');
                 fabBtn.style.animation = "none";
+                fabBtn.style.removeProperty('box-shadow');
+                fabBtn.style.removeProperty('border-color');
             }
         }
         
@@ -663,8 +681,15 @@ function addCustomSong() {
         return;
     }
     
-    // Add song
-    playlist.push({ name, url, isDefault: false });
+    // Add song with a random accent color preset
+    const randomColor = colorPresets[Math.floor(Math.random() * colorPresets.length)];
+    playlist.push({ 
+        name, 
+        url, 
+        isDefault: false, 
+        color: randomColor.color, 
+        colorRgb: randomColor.rgb 
+    });
     localStorage.setItem('songs_playlist', JSON.stringify(playlist));
     
     nameInput.value = "";
