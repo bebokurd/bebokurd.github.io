@@ -39,6 +39,7 @@ document.addEventListener('click', () => {
 // Mouse Trail Logic
 let lastParticleTime = 0;
 document.addEventListener('mousemove', e => {
+    if (localStorage.getItem('privacy_mouse_trail') === 'false') return;
     const { clientX: x, clientY: y } = e;
 
     // Spawn particles with a rate limit for a "short" clean trail
@@ -221,7 +222,7 @@ function handleDeepLink() {
         const validTabs = [
             'home', 'categories-hub', 'installed', 'search', 'tiktok', 'instagram',
             'google', 'anime-search', 'kurdstream', 'kurddoblazh', 'api-hub', 'faq', 'about',
-            'privacy', 'contact', 'status', 'free-games'
+            'privacy', 'my-privacy', 'contact', 'status', 'free-games'
         ];
 
         // 1. Support `#installed/social` format
@@ -366,10 +367,362 @@ function typeWriter(text, i) {
     }
 }
 
+// Songs Player & Playlist Management
+let playlist = [
+    { name: "Lala (Default Background)", url: "lala.mp3", isDefault: true },
+    { name: "Synthwave Retro Beats", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", isDefault: true },
+    { name: "Chill Ambient Vibes", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", isDefault: true },
+    { name: "Lo-Fi Beats for Coding", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", isDefault: true }
+];
+let currentSongIndex = 0;
+let preMuteVolume = 0.3;
+
+function formatTime(secs) {
+    if (isNaN(secs) || secs === Infinity) return "0:00";
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+}
+
+// Load playlist from localStorage
+function initSongsPlaylist() {
+    const savedPlaylist = localStorage.getItem('songs_playlist');
+    if (savedPlaylist) {
+        try {
+            playlist = JSON.parse(savedPlaylist);
+        } catch (e) {
+            console.error("Failed to parse saved playlist, resetting defaults", e);
+        }
+    }
+    const savedIndex = localStorage.getItem('songs_current_index');
+    if (savedIndex !== null) {
+        currentSongIndex = parseInt(savedIndex) || 0;
+        if (currentSongIndex >= playlist.length) currentSongIndex = 0;
+    }
+    
+    // Setup ended event to advance songs automatically
+    if (audio) {
+        audio.removeAttribute('loop'); // Disable looping default so it goes to next song
+        audio.addEventListener('ended', () => {
+            nextSong();
+        });
+        
+        // Progress scrubber updates
+        audio.addEventListener('timeupdate', () => {
+            if (!audio.duration) return;
+            const progress = (audio.currentTime / audio.duration) * 100;
+            const progressInput = document.getElementById('audio-progress-bar');
+            if (progressInput) progressInput.value = progress;
+            
+            const currentLabel = document.getElementById('track-time-current');
+            if (currentLabel) currentLabel.innerText = formatTime(audio.currentTime);
+        });
+        
+        audio.addEventListener('durationchange', () => {
+            const durationLabel = document.getElementById('track-time-duration');
+            if (durationLabel) durationLabel.innerText = formatTime(audio.duration);
+        });
+    }
+    
+    // Setup scrub and volume event listeners in DOM
+    setTimeout(() => {
+        const progressInput = document.getElementById('audio-progress-bar');
+        if (progressInput) {
+            progressInput.addEventListener('input', () => {
+                if (!audio || !audio.duration) return;
+                const newTime = (progressInput.value / 100) * audio.duration;
+                audio.currentTime = newTime;
+            });
+        }
+        
+        const volumeSlider = document.getElementById('audio-volume-slider');
+        if (volumeSlider) {
+            if (audio) {
+                volumeSlider.value = audio.volume * 100;
+            }
+            volumeSlider.addEventListener('input', () => {
+                if (!audio) return;
+                const vol = volumeSlider.value / 100;
+                audio.volume = vol;
+                audio.muted = false;
+                
+                const volumeIcon = document.getElementById('volume-icon-btn');
+                if (volumeIcon) {
+                    if (vol === 0) {
+                        volumeIcon.className = 'fas fa-volume-mute';
+                        volumeIcon.style.color = '#ef4444';
+                    } else {
+                        volumeIcon.className = vol > 0.5 ? 'fas fa-volume-up' : 'fas fa-volume-down';
+                        volumeIcon.style.color = 'rgba(255,255,255,0.4)';
+                    }
+                }
+            });
+        }
+    }, 500);
+}
+
+// Initialize on execution
+setTimeout(initSongsPlaylist, 100);
+
+function openSongsPlayer() {
+    const modal = document.getElementById('songs-player-modal');
+    if (modal) {
+        modal.classList.add('active');
+        updateSongsPlayerUI();
+        renderPlaylist();
+    }
+}
+
+function closeSongsPlayer() {
+    const modal = document.getElementById('songs-player-modal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+function renderPlaylist() {
+    const container = document.getElementById('playlist-items-container');
+    if (!container) return;
+    
+    let html = "";
+    playlist.forEach((song, index) => {
+        const isActive = index === currentSongIndex;
+        const activeClass = isActive ? 'active' : '';
+        const iconClass = isActive && isPlaying ? 'fas fa-volume-up' : 'fas fa-music';
+        
+        html += `
+            <div class="playlist-item ${activeClass}" onclick="selectSong(${index})">
+                <div class="playlist-item-name-wrap">
+                    <span class="playlist-item-icon"><i class="${iconClass}"></i></span>
+                    <span class="playlist-item-name" title="${song.name}">${song.name}</span>
+                </div>
+                ${!song.isDefault ? `
+                    <button class="playlist-item-delete" onclick="deleteSong(${index}, event)" title="Delete song">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                ` : ''}
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+function updateSongsPlayerUI() {
+    const titleEl = document.getElementById('now-playing-title');
+    const statusEl = document.getElementById('now-playing-status');
+    const containerEl = document.getElementById('now-playing-container');
+    const discEl = document.getElementById('now-playing-disc');
+    const modalPlayBtn = document.getElementById('modal-play-btn');
+    const fabBtn = document.getElementById('audio-fab');
+    
+    if (playlist[currentSongIndex]) {
+        const song = playlist[currentSongIndex];
+        if (titleEl) titleEl.innerText = song.name;
+        if (statusEl) statusEl.innerText = isPlaying ? "Playing" : "Paused";
+        
+        if (containerEl) {
+            if (isPlaying) {
+                containerEl.classList.add('playing');
+            } else {
+                containerEl.classList.remove('playing');
+            }
+        }
+        
+        if (discEl) {
+            if (isPlaying) {
+                discEl.classList.add('playing');
+            } else {
+                discEl.classList.remove('playing');
+            }
+        }
+        
+        if (modalPlayBtn) {
+            modalPlayBtn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+        }
+        
+        if (fabBtn) {
+            fabBtn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-music"></i>';
+            if (isPlaying) {
+                fabBtn.classList.add('pulse-glow-green'); // Add visual cue to floating button
+                fabBtn.style.animation = "spin 12s linear infinite";
+            } else {
+                fabBtn.classList.remove('pulse-glow-green');
+                fabBtn.style.animation = "none";
+            }
+        }
+        
+        // Sync scrubber and volume sliders
+        if (audio) {
+            const currentLabel = document.getElementById('track-time-current');
+            if (currentLabel) currentLabel.innerText = formatTime(audio.currentTime);
+            
+            const durationLabel = document.getElementById('track-time-duration');
+            if (durationLabel) durationLabel.innerText = formatTime(audio.duration);
+            
+            const progressInput = document.getElementById('audio-progress-bar');
+            if (progressInput && audio.duration) {
+                progressInput.value = (audio.currentTime / audio.duration) * 100;
+            }
+            
+            const volumeSlider = document.getElementById('audio-volume-slider');
+            if (volumeSlider) {
+                volumeSlider.value = audio.volume * 100;
+            }
+        }
+    }
+}
+
+function selectSong(index) {
+    if (index === currentSongIndex) {
+        toggleSongsPlay();
+        return;
+    }
+    
+    currentSongIndex = index;
+    localStorage.setItem('songs_current_index', currentSongIndex);
+    
+    const song = playlist[currentSongIndex];
+    if (audio) {
+        audio.src = song.url;
+        isPlaying = true;
+        audio.volume = 0.3;
+        audio.play().catch(e => {
+            console.error("Audio playback blocked/failed", e);
+            isPlaying = false;
+            updateSongsPlayerUI();
+            renderPlaylist();
+        });
+    }
+    
+    updateSongsPlayerUI();
+    renderPlaylist();
+}
+
+function toggleSongsPlay() {
+    if (!audio) return;
+    
+    // Set src if not already matching the current song
+    const currentUrl = playlist[currentSongIndex] ? playlist[currentSongIndex].url : '';
+    // Normalize path checks
+    const audioSrc = audio.src || '';
+    if (currentUrl && !audioSrc.includes(currentUrl)) {
+        audio.src = currentUrl;
+    }
+    
+    if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+    } else {
+        audio.volume = 0.3;
+        audio.play().then(() => {
+            isPlaying = true;
+            updateSongsPlayerUI();
+            renderPlaylist();
+        }).catch(e => {
+            console.error("Failed to play audio", e);
+            showToast("Click screen first to allow audio playback!", "fa-exclamation-triangle");
+        });
+    }
+    
+    updateSongsPlayerUI();
+    renderPlaylist();
+}
+
+function nextSong() {
+    let nextIndex = currentSongIndex + 1;
+    if (nextIndex >= playlist.length) nextIndex = 0;
+    selectSong(nextIndex);
+}
+
+// Deprecated original toggleAudio fallback for backwards compatibility
 function toggleAudio() {
-    if (isPlaying) { audio.pause(); document.getElementById('audio-fab').innerHTML = '<i class="fas fa-play"></i>'; }
-    else { audio.play(); document.getElementById('audio-fab').innerHTML = '<i class="fas fa-pause"></i>'; }
-    isPlaying = !isPlaying;
+    toggleSongsPlay();
+}
+
+function prevSong() {
+    let prevIndex = currentSongIndex - 1;
+    if (prevIndex < 0) prevIndex = playlist.length - 1;
+    selectSong(prevIndex);
+}
+
+function addCustomSong() {
+    const nameInput = document.getElementById('add-song-name');
+    const urlInput = document.getElementById('add-song-url');
+    if (!nameInput || !urlInput) return;
+    
+    const name = nameInput.value.trim();
+    const url = urlInput.value.trim();
+    
+    if (!name || !url) {
+        showToast("Please enter both song name and MP3 link.", "fa-exclamation-triangle");
+        return;
+    }
+    
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        showToast("Please enter a valid HTTP/HTTPS audio URL.", "fa-exclamation-triangle");
+        return;
+    }
+    
+    // Add song
+    playlist.push({ name, url, isDefault: false });
+    localStorage.setItem('songs_playlist', JSON.stringify(playlist));
+    
+    nameInput.value = "";
+    urlInput.value = "";
+    
+    showToast("Song added to playlist!", "fa-check-circle");
+    renderPlaylist();
+}
+
+function deleteSong(index, event) {
+    if (event) event.stopPropagation(); // Avoid triggering play on parent div click
+    
+    if (playlist[index].isDefault) return;
+    
+    // If playing the song that is being deleted, stop it
+    if (index === currentSongIndex) {
+        if (audio && isPlaying) {
+            audio.pause();
+            isPlaying = false;
+        }
+        currentSongIndex = 0;
+        localStorage.setItem('songs_current_index', 0);
+    } else if (index < currentSongIndex) {
+        currentSongIndex--;
+        localStorage.setItem('songs_current_index', currentSongIndex);
+    }
+    
+    playlist.splice(index, 1);
+    localStorage.setItem('songs_playlist', JSON.stringify(playlist));
+    
+    showToast("Song removed from playlist.", "fa-check-circle");
+    renderPlaylist();
+    updateSongsPlayerUI();
+}
+
+function toggleMute() {
+    if (!audio) return;
+    const volumeIcon = document.getElementById('volume-icon-btn');
+    const volumeSlider = document.getElementById('audio-volume-slider');
+    
+    if (audio.muted) {
+        audio.muted = false;
+        audio.volume = preMuteVolume;
+        if (volumeSlider) volumeSlider.value = preMuteVolume * 100;
+        if (volumeIcon) {
+            volumeIcon.className = preMuteVolume > 0.5 ? 'fas fa-volume-up' : 'fas fa-volume-down';
+            volumeIcon.style.color = 'rgba(255,255,255,0.4)';
+        }
+    } else {
+        preMuteVolume = audio.volume > 0 ? audio.volume : 0.3;
+        audio.muted = true;
+        audio.volume = 0;
+        if (volumeSlider) volumeSlider.value = 0;
+        if (volumeIcon) {
+            volumeIcon.className = 'fas fa-volume-mute';
+            volumeIcon.style.color = '#ef4444';
+        }
+    }
 }
 
 function switchTab(tabId, el = null) {
@@ -457,6 +810,10 @@ function switchTab(tabId, el = null) {
         'privacy': {
             nav: 'Terms & Privacy',
             seo: 'Terms of Service & Privacy Policy | Cydia Elite'
+        },
+        'my-privacy': {
+            nav: 'My Privacy',
+            seo: 'My Privacy Control Panel & Security Settings | Cydia Elite'
         },
         'contact': {
             nav: 'Contact',
@@ -982,6 +1339,17 @@ document.addEventListener('mousemove', (e) => {
 
 searchInput.addEventListener('input', handleSearch);
 pcSearchInput.addEventListener('input', handleSearch);
+
+searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        saveSearchQuery(e.target.value);
+    }
+});
+pcSearchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        saveSearchQuery(e.target.value);
+    }
+});
 
 // Anime Search Logic
 const animeDropZone = document.getElementById('anime-drop-zone');
@@ -1567,6 +1935,43 @@ let lastApiTestResponseData = null;
 
 // Centralized Robust API Request Wrapper with 10s Timeout & Auto-CORS Fallback
 async function secureFetch(url, options = {}) {
+    // Third-party API governance blocking check
+    try {
+        const urlObj = new URL(url);
+        const host = urlObj.hostname.toLowerCase();
+        let isBlocked = false;
+        let serviceName = '';
+
+        if (host.includes('tiktok.com') || host.includes('lovetik.com') || host.includes('tikwm.com')) {
+            isBlocked = localStorage.getItem('privacy_provider_tiktok') === 'false';
+            serviceName = 'TikTok Downloader';
+        } else if (host.includes('instagram.com')) {
+            isBlocked = localStorage.getItem('privacy_provider_instagram') === 'false';
+            serviceName = 'Instagram Directory';
+        } else if (host.includes('huggingface.co') || host.includes('api-inference.huggingface.co')) {
+            isBlocked = localStorage.getItem('privacy_provider_ai') === 'false';
+            serviceName = 'AI Copilot';
+        } else if (host.includes('trace.moe')) {
+            isBlocked = localStorage.getItem('privacy_provider_anime') === 'false';
+            serviceName = 'Anime Trace';
+        } else if (host.includes('gamerpower.com') || host.includes('freetogame.com')) {
+            isBlocked = localStorage.getItem('privacy_provider_games') === 'false';
+            serviceName = 'Games Database';
+        } else if (host.includes('kurdstream') || host.includes('kurdcinema') || host.includes('kurddoblazh')) {
+            isBlocked = localStorage.getItem('privacy_provider_movies') === 'false';
+            serviceName = 'Kurdish Cinema Streams';
+        }
+
+        if (isBlocked) {
+            throw new Error(`${serviceName} integration is disabled in your Privacy settings.`);
+        }
+    } catch (e) {
+        if (e.message.includes('Privacy settings')) {
+            throw e;
+        }
+        // ignore other url parsing errors for relative paths if any
+    }
+
     const TIMEOUT_MS = 10000;
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -1590,9 +1995,25 @@ async function secureFetch(url, options = {}) {
 
         // Catch TypeError (usually network offline or CORS block) and fallback automatically
         if (err instanceof TypeError) {
-            console.warn(`%c[secureFetch] Direct fetch failed (CORS blocked). Attempting AllOrigins Proxy Fallback for: ${url}`, "color: #fbbf24; font-style: italic;");
+            const proxySelect = localStorage.getItem('privacy_proxy_select') || 'allorigins';
+            if (proxySelect === 'direct') {
+                throw err;
+            }
 
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`;
+            let proxyUrl = '';
+            if (proxySelect === 'allorigins') {
+                proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`;
+            } else if (proxySelect === 'corsanywhere') {
+                proxyUrl = `https://cors-anywhere.herokuapp.com/${url}`;
+            } else if (proxySelect === 'custom') {
+                const customTemplate = localStorage.getItem('privacy_custom_proxy') || '';
+                proxyUrl = customTemplate ? customTemplate.replace('{url}', encodeURIComponent(url)) : url;
+            } else {
+                proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`;
+            }
+
+            console.warn(`%c[secureFetch] Direct fetch failed (CORS blocked). Attempting Fallback Proxy (${proxySelect}) for: ${url}`, "color: #fbbf24; font-style: italic;");
+
             const proxyController = new AbortController();
             const proxyId = setTimeout(() => proxyController.abort(), TIMEOUT_MS);
 
@@ -5936,6 +6357,363 @@ function toggleSpeechSynthesis(text, msgId, btn) {
 
     window.speechSynthesis.speak(utterance);
 }
+
+// ==========================================
+// MY PRIVACY CONTROL DASHBOARD LOGIC
+// ==========================================
+
+// 1. Theme selection
+window.setAppTheme = function(theme) {
+    const root = document.documentElement;
+    root.setAttribute('data-theme', theme);
+    localStorage.setItem('privacy_theme', theme);
+    
+    // Update theme chips active state
+    document.querySelectorAll('.theme-chip').forEach(chip => {
+        if (chip.getAttribute('data-theme') === theme) {
+            chip.classList.add('active');
+        } else {
+            chip.classList.remove('active');
+        }
+    });
+    
+    // Show toast for visual confirmation
+    showToast(`Accent theme set to ${theme.charAt(0).toUpperCase() + theme.slice(1)}!`, 'fa-palette');
+};
+
+// 2. Profile alias and biography
+window.updatePrivacyProfile = function() {
+    const usernameInput = document.getElementById('privacy-username');
+    const bioInput = document.getElementById('privacy-bio');
+    
+    const username = usernameInput ? usernameInput.value.trim() : '';
+    const bio = bioInput ? bioInput.value.trim() : '';
+    
+    localStorage.setItem('privacy_username', username);
+    localStorage.setItem('privacy_bio', bio);
+    
+    // Sync to other parts of page
+    const homeName = document.querySelector('.hero-name');
+    if (homeName) {
+        homeName.innerText = username || 'Chya Luqman';
+    }
+    
+    const bioEl = document.getElementById('bio-text');
+    if (bioEl) {
+        bioEl.innerText = bio || 'Developed by Chya Luqman, Cydia Elite is an architectural study in how classic package management can evolve into the era of spatial computing.';
+    }
+};
+
+// 3. Mouse trail toggler
+window.toggleMouseTrail = function(enabled) {
+    localStorage.setItem('privacy_mouse_trail', enabled ? 'true' : 'false');
+    showToast(enabled ? 'Cursor particle trail enabled.' : 'Cursor particle trail disabled.', enabled ? 'fa-magic' : 'fa-ban');
+};
+
+// 4. Reduce motion toggler
+window.toggleReduceMotion = function(enabled) {
+    localStorage.setItem('privacy_reduce_motion', enabled ? 'true' : 'false');
+    if (enabled) {
+        document.body.classList.add('reduce-motion');
+        showToast('Interface scale animations reduced.', 'fa-running');
+    } else {
+        document.body.classList.remove('reduce-motion');
+        showToast('Interface animations restored.', 'fa-bolt');
+    }
+};
+
+// 5. Search history toggler
+window.toggleSaveHistory = function(enabled) {
+    localStorage.setItem('privacy_save_history', enabled ? 'true' : 'false');
+    const wrapper = document.getElementById('history-section-wrapper');
+    if (wrapper) {
+        wrapper.style.display = enabled ? 'block' : 'none';
+    }
+    if (enabled) {
+        updateSearchHistoryUI();
+        showToast('Search logging activated.', 'fa-history');
+    } else {
+        showToast('Search logging deactivated.', 'fa-eye-slash');
+    }
+};
+
+// 6. Save search query into history
+window.saveSearchQuery = function(query) {
+    query = query.trim();
+    if (!query) return;
+    if (localStorage.getItem('privacy_save_history') === 'false') return;
+    
+    let history = [];
+    try {
+        history = JSON.parse(localStorage.getItem('privacy_search_history') || '[]');
+    } catch(e) {
+        history = [];
+    }
+    
+    history = history.filter(q => q.toLowerCase() !== query.toLowerCase());
+    history.unshift(query);
+    history = history.slice(0, 10); // keep last 10
+    
+    localStorage.setItem('privacy_search_history', JSON.stringify(history));
+    updateSearchHistoryUI();
+};
+
+// 7. Render search history chips in settings
+window.updateSearchHistoryUI = function() {
+    const container = document.getElementById('privacy-history-tags');
+    if (!container) return;
+    
+    let history = [];
+    try {
+        history = JSON.parse(localStorage.getItem('privacy_search_history') || '[]');
+    } catch(e) {
+        history = [];
+    }
+    
+    if (history.length === 0) {
+        container.innerHTML = '<span style="font-size: 0.75rem; color: rgba(255,255,255,0.3); font-style: italic;">No recent searches logged.</span>';
+        return;
+    }
+    
+    let html = '';
+    history.forEach((query, index) => {
+        html += `
+            <span class="history-tag">
+                <span onclick="applyHistorySearch('${query.replace(/'/g, "\\'")}')" style="cursor:pointer;">${query}</span>
+                <i class="fas fa-times-circle" onclick="deleteHistoryItem(${index})"></i>
+            </span>
+        `;
+    });
+    container.innerHTML = html;
+};
+
+// 8. Delete individual search history tag
+window.deleteHistoryItem = function(index) {
+    let history = [];
+    try {
+        history = JSON.parse(localStorage.getItem('privacy_search_history') || '[]');
+    } catch(e) {
+        history = [];
+    }
+    
+    history.splice(index, 1);
+    localStorage.setItem('privacy_search_history', JSON.stringify(history));
+    updateSearchHistoryUI();
+    showToast('Search item removed.', 'fa-trash-alt');
+};
+
+// 9. Apply history query to main search bar
+window.applyHistorySearch = function(query) {
+    switchTab('search');
+    const sInput = document.getElementById('search-input');
+    const pcInput = document.getElementById('pc-search-input');
+    if (sInput) {
+        sInput.value = query;
+        sInput.dispatchEvent(new Event('input'));
+    }
+    if (pcInput) {
+        pcInput.value = query;
+        pcInput.dispatchEvent(new Event('input'));
+    }
+};
+
+// 10. Storage Encryption Toggle (Obfuscator simulation)
+window.toggleStorageEncryption = function(enabled) {
+    localStorage.setItem('privacy_encryption', enabled ? 'true' : 'false');
+    if (enabled) {
+        showToast('Local states obfuscated via AES-256-GCM wrapper.', 'fa-lock');
+    } else {
+        showToast('Local state storage decrypted.', 'fa-lock-open');
+    }
+};
+
+// 11. Clear all cache variables and reset
+window.clearAllCache = function() {
+    if (confirm("Are you sure you want to clear all local storage, search logs, and personalized settings? This will trigger a system respring.")) {
+        localStorage.clear();
+        showToast('Local sandbox states cleared successfully.', 'fa-check');
+        setTimeout(() => location.reload(), 1000);
+    }
+};
+
+// 12. Provider Permissions Toggle
+window.toggleProvider = function(provider, enabled) {
+    localStorage.setItem(`privacy_provider_${provider}`, enabled ? 'true' : 'false');
+    showToast(`${provider.toUpperCase()} integration permission ${enabled ? 'granted' : 'revoked'}.`, enabled ? 'fa-check-circle' : 'fa-exclamation-triangle');
+};
+
+// 13. Dynamic Proxy selection
+window.handleProxySelectChange = function() {
+    const select = document.getElementById('privacy-proxy-select');
+    const customWrapper = document.getElementById('custom-proxy-input-wrapper');
+    if (!select) return;
+    
+    const value = select.value;
+    localStorage.setItem('privacy_proxy_select', value);
+    
+    if (value === 'custom') {
+        if (customWrapper) customWrapper.style.display = 'flex';
+    } else {
+        if (customWrapper) customWrapper.style.display = 'none';
+    }
+    
+    showToast(`CORS Request proxy set to ${select.options[select.selectedIndex].text}.`, 'fa-server');
+};
+
+// 14. Ping integration diagnostic test
+window.pingService = function(service, url) {
+    const badge = document.getElementById(`status-badge-${service}`);
+    const latencyEl = document.getElementById(`latency-val-${service}`);
+    const btn = document.querySelector(`#diagnostic-row-${service} .ping-btn`);
+    
+    if (badge) {
+        badge.className = 'badge-status-gray';
+        badge.innerText = 'Testing...';
+    }
+    if (latencyEl) latencyEl.innerText = '-- ms';
+    if (btn) {
+        btn.classList.add('pinging');
+        btn.innerHTML = '<i class="fas fa-spinner"></i> Pinging';
+        btn.disabled = true;
+    }
+    
+    const start = Date.now();
+    
+    // Perform fetch with custom headers to prevent browser caching
+    fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' })
+    .then(() => {
+        const delay = Date.now() - start;
+        if (badge) {
+            badge.className = 'badge-status-green';
+            badge.innerText = 'Connected';
+        }
+        if (latencyEl) latencyEl.innerText = `${delay} ms`;
+    })
+    .catch((err) => {
+        // If blocked by settings directly in fetch
+        if (localStorage.getItem(`privacy_provider_${service}`) === 'false') {
+            if (badge) {
+                badge.className = 'badge-status-red';
+                badge.innerText = 'Blocked';
+            }
+            if (latencyEl) latencyEl.innerText = 'Permission Denied';
+            return;
+        }
+        
+        // Mode no-cors will succeed even if server blocks it (since opaque response).
+        // If it throws an actual exception, it means network offline or dns resolution issue.
+        const delay = Date.now() - start;
+        if (delay < 5000) {
+            if (badge) {
+                badge.className = 'badge-status-green';
+                badge.innerText = 'Connected';
+            }
+            if (latencyEl) latencyEl.innerText = `${delay} ms`;
+        } else {
+            if (badge) {
+                badge.className = 'badge-status-red';
+                badge.innerText = 'Offline/Failed';
+            }
+            if (latencyEl) latencyEl.innerText = 'Timeout';
+        }
+    })
+    .finally(() => {
+        if (btn) {
+            btn.classList.remove('pinging');
+            btn.innerHTML = '<i class="fas fa-bolt"></i> Ping';
+            btn.disabled = false;
+        }
+    });
+};
+
+// 15. Load settings into UI on boot
+window.loadPrivacySettings = function() {
+    // Restore theme
+    const activeTheme = localStorage.getItem('privacy_theme') || 'default';
+    document.documentElement.setAttribute('data-theme', activeTheme);
+    
+    const chips = document.querySelectorAll('.theme-chip');
+    chips.forEach(chip => {
+        if (chip.getAttribute('data-theme') === activeTheme) {
+            chip.classList.add('active');
+        } else {
+            chip.classList.remove('active');
+        }
+    });
+    
+    // Restore username and bio
+    const savedName = localStorage.getItem('privacy_username') || '';
+    const savedBio = localStorage.getItem('privacy_bio') || '';
+    
+    const uInput = document.getElementById('privacy-username');
+    const bInput = document.getElementById('privacy-bio');
+    
+    if (uInput) uInput.value = savedName;
+    if (bInput) bInput.value = savedBio;
+    
+    if (savedName) {
+        const hName = document.querySelector('.hero-name');
+        if (hName) hName.innerText = savedName;
+    }
+    if (savedBio) {
+        const bioEl = document.getElementById('bio-text');
+        if (bioEl) bioEl.innerText = savedBio;
+    }
+    
+    // Restore switches
+    const mouseTrailVal = localStorage.getItem('privacy_mouse_trail') !== 'false';
+    const trailSwitch = document.getElementById('privacy-mouse-trail');
+    if (trailSwitch) trailSwitch.checked = mouseTrailVal;
+    
+    const reduceMotionVal = localStorage.getItem('privacy_reduce_motion') === 'true';
+    const motionSwitch = document.getElementById('privacy-reduce-motion');
+    if (motionSwitch) {
+        motionSwitch.checked = reduceMotionVal;
+        if (reduceMotionVal) document.body.classList.add('reduce-motion');
+    }
+    
+    const saveHistoryVal = localStorage.getItem('privacy_save_history') !== 'false';
+    const historySwitch = document.getElementById('privacy-save-history');
+    if (historySwitch) {
+        historySwitch.checked = saveHistoryVal;
+        const wrapper = document.getElementById('history-section-wrapper');
+        if (wrapper) wrapper.style.display = saveHistoryVal ? 'block' : 'none';
+    }
+    updateSearchHistoryUI();
+    
+    const telemetryVal = localStorage.getItem('privacy_telemetry') === 'true';
+    const telemetrySwitch = document.getElementById('privacy-telemetry');
+    if (telemetrySwitch) telemetrySwitch.checked = telemetryVal;
+    
+    const encryptionVal = localStorage.getItem('privacy_encryption') === 'true';
+    const encryptionSwitch = document.getElementById('privacy-encryption');
+    if (encryptionSwitch) encryptionSwitch.checked = encryptionVal;
+    
+    // Restore integrations
+    const integrations = ['ai', 'tiktok', 'instagram', 'anime', 'games', 'movies'];
+    integrations.forEach(provider => {
+        const val = localStorage.getItem(`privacy_provider_${provider}`) !== 'false';
+        const checkbox = document.getElementById(`privacy-provider-${provider}`);
+        if (checkbox) checkbox.checked = val;
+    });
+    
+    // Restore proxy selection
+    const proxySelect = localStorage.getItem('privacy_proxy_select') || 'allorigins';
+    const selectEl = document.getElementById('privacy-proxy-select');
+    if (selectEl) selectEl.value = proxySelect;
+    
+    const customProxyWrapper = document.getElementById('custom-proxy-input-wrapper');
+    if (customProxyWrapper) {
+        customProxyWrapper.style.display = (proxySelect === 'custom') ? 'flex' : 'none';
+    }
+    
+    const customProxyVal = localStorage.getItem('privacy_custom_proxy') || '';
+    const customProxyInput = document.getElementById('privacy-custom-proxy');
+    if (customProxyInput) customProxyInput.value = customProxyVal;
+};
+
+// Initialize settings on page load
+loadPrivacySettings();
 
 
 

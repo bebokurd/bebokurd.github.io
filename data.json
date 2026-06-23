@@ -1990,5 +1990,21 @@
         "url": "https://www.microsoft.com/edge",
         "icon": "fab fa-edge",
         "id": "microsoft-edge-1777461800010"
+    },
+    {
+        "name": "Windowstan",
+        "desc": "Download Windows operating system ISOs (Windows 95 to Windows 11), MS Office, software, and tools.",
+        "cat": "tools",
+        "url": "https://windowstan.com/",
+        "icon": "fab fa-windows",
+        "id": "windowstan-1777461800011"
+    },
+    {
+        "name": "Arena AI",
+        "desc": "Autonomous AI systems and multimodal foundation models designed to optimize enterprise business operations.",
+        "cat": "ai",
+        "url": "https://arena.ai/",
+        "icon": "fas fa-robot",
+        "id": "arena-ai-1777461800012"
     }
 ]
