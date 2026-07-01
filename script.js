@@ -221,7 +221,7 @@ function handleDeepLink() {
     } else {
         const validTabs = [
             'home', 'categories-hub', 'installed', 'search', 'tiktok', 'instagram',
-            'google', 'anime-search', 'kurdstream', 'kurddoblazh', 'api-hub', 'faq', 'about',
+            'google', 'anime-search', 'kurdstream', 'kurddoblazh', 'live-sports', 'api-hub', 'faq', 'about',
             'privacy', 'my-privacy', 'contact', 'status', 'free-games'
         ];
 
@@ -820,6 +820,10 @@ function switchTab(tabId, el = null) {
             nav: 'KurdDoblazh',
             seo: 'KurdDoblazh Dubbed Movies & Series Proxy Hub | Cydia Elite'
         },
+        'live-sports': {
+            nav: 'Live Sports',
+            seo: 'Live Sports Matches & Streams • Streamed.pk | Cydia Elite'
+        },
         'api-hub': {
             nav: 'API Hub',
             seo: 'Developer Public API Center & JSON Database Endpoints | Cydia Elite'
@@ -870,6 +874,9 @@ function switchTab(tabId, el = null) {
     }
     if (tabId === 'free-games') {
         loadFreeGames();
+    }
+    if (tabId === 'live-sports') {
+        loadLiveSportsPortal();
     }
 }
 
@@ -6736,6 +6743,626 @@ window.loadPrivacySettings = function() {
     const customProxyInput = document.getElementById('privacy-custom-proxy');
     if (customProxyInput) customProxyInput.value = customProxyVal;
 };
+
+// Initialize settings on page load
+loadPrivacySettings();
+
+/* ==========================================================================
+   LIVE SPORTS STREAMED.PK API PORTAL
+   ========================================================================== */
+
+let sportsCategoriesList = [];
+let activeSportId = '';
+let sportsMatchesList = [];
+let currentSportsSearch = '';
+
+// Pre-fetched fallback categories if API is unavailable
+const fallbackSportsCategories = [
+    {"id":"football","name":"Football"},
+    {"id":"basketball","name":"Basketball"},
+    {"id":"american-football","name":"American Football"},
+    {"id":"hockey","name":"Hockey"},
+    {"id":"baseball","name":"Baseball"},
+    {"id":"motor-sports","name":"Motor Sports"},
+    {"id":"fight","name":"Fight (UFC, Boxing)"},
+    {"id":"tennis","name":"Tennis"},
+    {"id":"rugby","name":"Rugby"},
+    {"id":"golf","name":"Golf"},
+    {"id":"billiards","name":"Billiards"},
+    {"id":"afl","name":"AFL"},
+    {"id":"darts","name":"Darts"},
+    {"id":"cricket","name":"Cricket"},
+    {"id":"other","name":"Other"}
+];
+
+async function loadLiveSportsPortal() {
+    const categoriesContainer = document.getElementById('sports-categories');
+    if (!categoriesContainer) return;
+    
+    // Clear details if open
+    const detailsContainer = document.getElementById('sports-details');
+    if (detailsContainer) detailsContainer.style.display = 'none';
+    const resultsContainer = document.getElementById('sports-results');
+    if (resultsContainer) resultsContainer.style.display = 'grid';
+
+    // Show loading
+    showSportsLoader(true, 'Loading categories...');
+
+    try {
+        const res = await fetch('https://streamed.pk/api/sports');
+        if (!res.ok) throw new Error('API failed');
+        sportsCategoriesList = await res.json();
+    } catch (err) {
+        console.warn("Using fallback sports categories:", err);
+        sportsCategoriesList = fallbackSportsCategories;
+    }
+
+    renderSportsCategories();
+    
+    // Auto load matches for the first category if none is active
+    if (sportsCategoriesList.length > 0) {
+        if (!activeSportId) {
+            activeSportId = sportsCategoriesList[0].id;
+        }
+        
+        // Highlight active chip
+        const chips = document.querySelectorAll('.sports-chip');
+        chips.forEach(chip => {
+            if (chip.getAttribute('data-id') === activeSportId) {
+                chip.classList.add('active');
+            } else {
+                chip.classList.remove('active');
+            }
+        });
+
+        loadSportsMatches(activeSportId);
+    } else {
+        showSportsLoader(false);
+        resultsContainer.innerHTML = '<div style="color: rgba(255,255,255,0.4); text-align: center; grid-column: 1/-1; padding: 40px;">No categories found</div>';
+    }
+}
+
+function renderSportsCategories() {
+    const container = document.getElementById('sports-categories');
+    if (!container) return;
+
+    let html = '';
+    sportsCategoriesList.forEach((cat, index) => {
+        let iconClass = 'fa-futbol';
+        const name = cat.name.toLowerCase();
+        if (name.includes('basketball')) iconClass = 'fa-basketball-ball';
+        else if (name.includes('american')) iconClass = 'fa-football-ball';
+        else if (name.includes('hockey')) iconClass = 'fa-hockey-puck';
+        else if (name.includes('baseball')) iconClass = 'fa-baseball-ball';
+        else if (name.includes('motor')) iconClass = 'fa-car';
+        else if (name.includes('fight') || name.includes('ufc') || name.includes('boxing')) iconClass = 'fa-user-ninja';
+        else if (name.includes('tennis')) iconClass = 'fa-table-tennis';
+        else if (name.includes('rugby')) iconClass = 'fa-football-ball';
+        else if (name.includes('golf')) iconClass = 'fa-golf-ball';
+        else if (name.includes('billiards')) iconClass = 'fa-circle';
+        else if (name.includes('darts')) iconClass = 'fa-bullseye';
+        else if (name.includes('cricket')) iconClass = 'fa-bat';
+        
+        html += `
+            <div class="sports-chip ${cat.id === activeSportId ? 'active' : ''}" data-id="${cat.id}" onclick="selectSportCategory('${cat.id}')">
+                <i class="fas ${iconClass}"></i>
+                <span>${cat.name}</span>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+function selectSportCategory(sportId) {
+    activeSportId = sportId;
+    
+    // Highlight chip
+    const chips = document.querySelectorAll('.sports-chip');
+    chips.forEach(chip => {
+        if (chip.getAttribute('data-id') === sportId) {
+            chip.classList.add('active');
+        } else {
+            chip.classList.remove('active');
+        }
+    });
+
+    // Reset search filter
+    const searchInput = document.getElementById('sports-search-input');
+    if (searchInput) searchInput.value = '';
+    currentSportsSearch = '';
+
+    loadSportsMatches(sportId);
+}
+
+async function loadSportsMatches(sportId) {
+    showSportsLoader(true, `Loading ${sportId} matches...`);
+    const resultsContainer = document.getElementById('sports-results');
+    const detailsContainer = document.getElementById('sports-details');
+    
+    if (resultsContainer) resultsContainer.innerHTML = '';
+    if (detailsContainer) detailsContainer.style.display = 'none';
+    if (resultsContainer) resultsContainer.style.display = 'grid';
+
+    try {
+        const res = await fetch(`https://streamed.pk/api/matches/${sportId}`);
+        if (!res.ok) throw new Error('Failed to fetch matches');
+        sportsMatchesList = await res.json();
+        renderSportsMatches(sportsMatchesList);
+    } catch (err) {
+        console.error("Failed to load sports matches:", err);
+        showSportsLoader(false);
+        if (resultsContainer) {
+            resultsContainer.innerHTML = `
+                <div style="color: rgba(255,255,255,0.4); text-align: center; grid-column: 1/-1; padding: 40px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 18px;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #ef4444; margin-bottom: 12px;"></i>
+                    <p>Failed to load matches. The Streamed.pk API might be offline.</p>
+                    <button class="app-btn" onclick="loadSportsMatches('${sportId}')" style="margin-top: 15px; display: inline-flex;"><i class="fas fa-sync"></i> Retry</button>
+                </div>
+            `;
+        }
+    }
+}
+
+function renderSportsMatches(matches) {
+    showSportsLoader(false);
+    const resultsContainer = document.getElementById('sports-results');
+    if (!resultsContainer) return;
+
+    if (matches.length === 0) {
+        resultsContainer.innerHTML = '<div style="color: rgba(255,255,255,0.4); text-align: center; grid-column: 1/-1; padding: 40px;">No matches currently available in this category.</div>';
+        return;
+    }
+
+    let html = '';
+    matches.forEach(match => {
+        // Parse names and badges
+        let homeName = 'Team A';
+        let awayName = 'Team B';
+        let homeBadge = '';
+        let awayBadge = '';
+        
+        if (match.teams) {
+            if (match.teams.home) {
+                homeName = match.teams.home.name || match.teams.home;
+                homeBadge = match.teams.home.badge;
+            }
+            if (match.teams.away) {
+                awayName = match.teams.away.name || match.teams.away;
+                awayBadge = match.teams.away.badge;
+            }
+        } else if (match.homeTeam && match.awayTeam) {
+            homeName = match.homeTeam.name || match.homeTeam;
+            homeBadge = match.homeTeam.logo || match.homeTeam.badge;
+            awayName = match.awayTeam.name || match.awayTeam;
+            awayBadge = match.awayTeam.logo || match.awayTeam.badge;
+        } else if (match.home && match.away) {
+            homeName = match.home.name || match.home;
+            homeBadge = match.home.logo || match.home.badge;
+            awayName = match.away.name || match.away;
+            awayBadge = match.away.logo || match.away.badge;
+        } else if (match.title || match.name) {
+            const title = match.title || match.name;
+            const parts = title.split(/\s+vs\s+|\s+-\s+/i);
+            homeName = parts[0] || title;
+            awayName = parts[1] || 'TBD';
+        }
+
+        const homeLogoHtml = getLogoHtml(homeName, homeBadge);
+        const awayLogoHtml = getLogoHtml(awayName, awayBadge);
+
+        // Status
+        const isLive = match.live || match.status?.toLowerCase() === 'live' || match.isLive;
+        const statusHtml = isLive 
+            ? '<span class="match-status-badge live"><span class="pulse-dot"></span> LIVE</span>'
+            : '<span class="match-status-badge upcoming"><i class="far fa-clock"></i> Upcoming</span>';
+
+        // Time
+        const matchTimeStr = match.time || match.date || 'Live Now';
+
+        // Stream Sources count
+        const streamCount = match.sources ? match.sources.length : 0;
+        const streamsLabel = streamCount === 1 ? '1 Stream' : `${streamCount} Streams`;
+
+        const matchId = match.id || encodeURIComponent(homeName + '-' + awayName);
+
+        html += `
+            <div class="match-card" onclick="viewMatchDetails('${matchId}')">
+                <div class="match-card-overlay">
+                    <span class="overlay-btn"><i class="fas fa-play"></i> Watch Stream</span>
+                </div>
+                <div class="match-header">
+                    <span class="match-sport-badge">${activeSportId}</span>
+                    <span class="match-servers-count">${streamsLabel}</span>
+                </div>
+                <div class="match-scoreboard-main">
+                    <div class="scoreboard-team home">
+                        ${homeLogoHtml}
+                        <span class="scoreboard-team-name">${homeName}</span>
+                    </div>
+                    <div class="scoreboard-vs">
+                        <span class="vs-badge">VS</span>
+                        ${statusHtml}
+                    </div>
+                    <div class="scoreboard-team away">
+                        ${awayLogoHtml}
+                        <span class="scoreboard-team-name">${awayName}</span>
+                    </div>
+                </div>
+                <div class="match-footer">
+                    <span class="match-time"><i class="fas fa-calendar-alt"></i> ${matchTimeStr}</span>
+                </div>
+            </div>
+        `;
+    });
+
+    resultsContainer.innerHTML = html;
+}
+
+function getLogoHtml(teamName, badge) {
+    if (badge) {
+        let fullPath = badge;
+        // If badge is just an ID (does not start with http or / and has no dot), wrap in Images API path
+        if (!badge.startsWith('http') && !badge.startsWith('/') && !badge.includes('.')) {
+            fullPath = `https://streamed.pk/api/images/badge/${badge}.webp`;
+        } else if (badge.startsWith('/')) {
+            fullPath = `https://streamed.pk${badge}`;
+            if (!fullPath.endsWith('.webp')) {
+                fullPath += '.webp';
+            }
+        }
+        return `<div class="match-team-logo"><img src="${fullPath}" alt="${teamName}" loading="lazy" onerror="this.outerHTML='${teamName.charAt(0)}'"></div>`;
+    }
+    const initial = teamName ? teamName.trim().charAt(0).toUpperCase() : 'T';
+    return `<div class="match-team-logo">${initial}</div>`;
+}
+
+function showSportsLoader(show, text = 'Loading...') {
+    const loader = document.getElementById('sports-loader');
+    const loaderText = document.getElementById('sports-loader-text');
+    if (!loader) return;
+
+    if (show) {
+        if (loaderText) loaderText.innerText = text;
+        loader.style.display = 'flex';
+    } else {
+        loader.style.display = 'none';
+    }
+}
+
+function searchSportsMatches() {
+    const searchInput = document.getElementById('sports-search-input');
+    if (!searchInput) return;
+
+    const query = searchInput.value.toLowerCase().trim();
+    currentSportsSearch = query;
+
+    if (!query) {
+        renderSportsMatches(sportsMatchesList);
+        return;
+    }
+
+    const filtered = sportsMatchesList.filter(match => {
+        const title = (match.title || match.name || '').toLowerCase();
+        const home = (match.homeTeam?.name || match.homeTeam || match.home?.name || match.home || match.teams?.home?.name || '').toLowerCase();
+        const away = (match.awayTeam?.name || match.awayTeam || match.away?.name || match.away || match.teams?.away?.name || '').toLowerCase();
+        return title.includes(query) || home.includes(query) || away.includes(query);
+    });
+
+    renderSportsMatches(filtered);
+}
+
+async function viewMatchDetails(matchId) {
+    const resultsContainer = document.getElementById('sports-results');
+    const detailsContainer = document.getElementById('sports-details');
+    if (!resultsContainer || !detailsContainer) return;
+
+    // Find the match
+    let match = sportsMatchesList.find(m => m.id === matchId);
+    if (!match) {
+        // Fallback for custom URI matchIds
+        match = sportsMatchesList.find(m => {
+            const home = m.teams?.home?.name || m.homeTeam?.name || m.homeTeam || m.home?.name || m.home || '';
+            const away = m.teams?.away?.name || m.awayTeam?.name || m.awayTeam || m.away?.name || m.away || '';
+            const testId = encodeURIComponent(home + '-' + away);
+            return testId === matchId;
+        });
+    }
+
+    if (!match) return;
+
+    resultsContainer.style.display = 'none';
+    detailsContainer.style.display = 'block';
+    
+    // Parse team details and badges
+    let homeName = 'Team A';
+    let awayName = 'Team B';
+    let homeBadge = '';
+    let awayBadge = '';
+    
+    if (match.teams) {
+        if (match.teams.home) {
+            homeName = match.teams.home.name || match.teams.home;
+            homeBadge = match.teams.home.badge;
+        }
+        if (match.teams.away) {
+            awayName = match.teams.away.name || match.teams.away;
+            awayBadge = match.teams.away.badge;
+        }
+    } else if (match.homeTeam && match.awayTeam) {
+        homeName = match.homeTeam.name || match.homeTeam;
+        homeBadge = match.homeTeam.logo || match.homeTeam.badge;
+        awayName = match.awayTeam.name || match.awayTeam;
+        awayBadge = match.awayTeam.logo || match.awayTeam.badge;
+    } else if (match.home && match.away) {
+        homeName = match.home.name || match.home;
+        homeBadge = match.home.logo || match.home.badge;
+        awayName = match.away.name || match.away;
+        awayBadge = match.away.logo || match.away.badge;
+    } else if (match.title || match.name) {
+        const title = match.title || match.name;
+        const parts = title.split(/\s+vs\s+|\s+-\s+/i);
+        homeName = parts[0] || title;
+        awayName = parts[1] || 'TBD';
+    }
+
+    const homeLogoHtml = getLogoHtml(homeName, homeBadge).replace('match-team-logo', 'sports-vs-logo');
+    const awayLogoHtml = getLogoHtml(awayName, awayBadge).replace('match-team-logo', 'sports-vs-logo');
+
+    // Parse match poster banner
+    let posterHtml = '';
+    if (match.poster) {
+        let posterUrl = match.poster;
+        if (match.poster.startsWith('/')) {
+            posterUrl = `https://streamed.pk${match.poster}`;
+        }
+        if (!posterUrl.endsWith('.webp') && !posterUrl.includes('?')) {
+            posterUrl += '.webp';
+        }
+        posterHtml = `
+            <div class="sports-match-poster" style="width: 100%; height: 180px; overflow: hidden; border-radius: 16px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); position: relative;">
+                <img src="${posterUrl}" alt="${match.title || (homeName + ' vs ' + awayName)}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.65);" loading="lazy">
+                <div style="position: absolute; bottom: 15px; left: 20px; font-size: 1.1rem; font-weight: 700; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${match.title || (homeName + ' vs ' + awayName)}</div>
+            </div>
+        `;
+    }
+
+    // Build base HTML
+    detailsContainer.innerHTML = `
+        <button class="ks-back-btn" onclick="backToMatchesList()">
+            <i class="fas fa-chevron-left"></i> Back to Matches
+        </button>
+
+        <div class="sports-details-card">
+            ${posterHtml}
+            
+            <div class="sports-match-versus-header">
+                <div class="sports-vs-team">
+                    ${homeLogoHtml}
+                    <span class="sports-vs-name">${homeName}</span>
+                </div>
+                <div class="sports-vs-text">VS</div>
+                <div class="sports-vs-team">
+                    ${awayLogoHtml}
+                    <span class="sports-vs-name">${awayName}</span>
+                </div>
+            </div>
+
+            <div style="font-weight: 700; color: #fff; margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-tv" style="color: #10b981;"></i> Select Broadcast Server
+            </div>
+            <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px; font-size: 0.9rem;">
+                Select one of the stream sources below to load the available broadcast options.
+            </p>
+
+            <div id="sports-sources-grid" class="ks-server-grid"></div>
+
+            <div id="sports-stream-options-wrapper" style="display: none; margin-top: 30px;">
+                <div style="font-weight: 700; color: #fff; margin-bottom: 12px; font-size: 1.0rem; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-list-ul" style="color: #10b981;"></i> Select Stream Quality / Language
+                </div>
+                <p style="color: rgba(255,255,255,0.6); margin-bottom: 15px; font-size: 0.85rem;">
+                    Multiple qualities or commentators may be available. Select one:
+                </p>
+                <div id="sports-stream-options" class="kd-labels-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;"></div>
+            </div>
+
+            <div id="sports-player-section" style="display: none; margin-top: 30px;">
+                <div class="ks-hero-meta" style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <strong style="color: #fff;" id="active-sports-server-name">Loading Server...</strong>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="app-btn" id="sports-btn-app" onclick="playSportsStreamInApp()"><i class="fas fa-play"></i> Watch in App</button>
+                        <button class="app-btn" id="sports-btn-external" target="_blank"><i class="fas fa-external-link-alt"></i> External Player</button>
+                    </div>
+                </div>
+
+                <div id="sports-iframe-wrapper" style="position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; display: none;">
+                    <iframe id="sports-stream-iframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+                </div>
+
+                <div class="sports-player-controls-dashboard" style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; padding: 12px 20px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px;">
+                    <div style="display: flex; gap: 15px; align-items: center; font-size: 0.8rem; color: rgba(255,255,255,0.5);">
+                        <span><i class="fas fa-circle" style="color: #10b981; font-size: 8px; margin-right: 6px;"></i> Signal: Stable</span>
+                        <span><i class="fas fa-bolt" style="color: #f59e0b; margin-right: 4px;"></i> Latency: 0.8s</span>
+                        <span><i class="fas fa-expand" style="color: #3b82f6; margin-right: 4px;"></i> Stream format: WebP/Adaptive</span>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="app-btn" style="padding: 6px 12px; font-size: 0.75rem; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06);" onclick="reloadSportsPlayer()"><i class="fas fa-sync"></i> Refresh</button>
+                        <button class="app-btn" style="padding: 6px 12px; font-size: 0.75rem; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06);" onclick="toggleSportsTheaterMode()"><i class="fas fa-expand-alt"></i> Theater</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Load available sources
+    const sourcesGrid = document.getElementById('sports-sources-grid');
+    if (!sourcesGrid) return;
+
+    if (!match.sources || match.sources.length === 0) {
+        sourcesGrid.innerHTML = '<div style="color: rgba(255,255,255,0.4); padding: 10px;">No broadcast sources available for this event yet.</div>';
+        return;
+    }
+
+    let sourcesHtml = '';
+    match.sources.forEach((src, idx) => {
+        const sourceName = src.source ? src.source.toUpperCase() : `Server ${idx + 1}`;
+        sourcesHtml += `
+            <button class="ks-server-btn" onclick="fetchSportsStreamLinks('${src.source}', '${src.id}', '${sourceName}', this)">
+                <i class="fas fa-play"></i> ${sourceName}
+            </button>
+        `;
+    });
+    sourcesGrid.innerHTML = sourcesHtml;
+    
+    // Automatically trigger the first server
+    const firstServerBtn = sourcesGrid.querySelector('.ks-server-btn');
+    if (firstServerBtn) {
+        firstServerBtn.click();
+    }
+}
+
+let activeStreamUrl = '';
+
+async function fetchSportsStreamLinks(source, id, serverName, btnElement) {
+    // Toggle active server button highlights
+    const buttons = document.querySelectorAll('.ks-server-btn');
+    buttons.forEach(btn => btn.classList.remove('active-server'));
+    if (btnElement) btnElement.classList.add('active-server');
+
+    const playerSection = document.getElementById('sports-player-section');
+    const serverLabel = document.getElementById('active-sports-server-name');
+    const iframeWrapper = document.getElementById('sports-iframe-wrapper');
+    const iframe = document.getElementById('sports-stream-iframe');
+    const extBtn = document.getElementById('sports-btn-external');
+    const optionsWrapper = document.getElementById('sports-stream-options-wrapper');
+    const optionsContainer = document.getElementById('sports-stream-options');
+
+    if (!playerSection || !serverLabel || !optionsWrapper || !optionsContainer) return;
+
+    // Reset views
+    playerSection.style.display = 'none';
+    optionsWrapper.style.display = 'block';
+    optionsContainer.innerHTML = '<div style="color: rgba(255,255,255,0.4); padding: 5px;">Fetching broadcast links...</div>';
+    if (iframeWrapper) iframeWrapper.style.display = 'none';
+    if (iframe) iframe.src = 'about:blank';
+    
+    activeStreamUrl = '';
+
+    try {
+        const res = await fetch(`https://streamed.pk/api/stream/${source}/${id}`);
+        if (!res.ok) throw new Error('API failed');
+        const streams = await res.json();
+        
+        let streamsArray = [];
+        if (Array.isArray(streams)) {
+            streamsArray = streams;
+        } else if (streams && typeof streams === 'object') {
+            streamsArray = [streams];
+        }
+
+        if (streamsArray.length === 0) {
+            throw new Error('No streams resolved');
+        }
+
+        optionsContainer.innerHTML = '';
+        
+        streamsArray.forEach((stream, idx) => {
+            const streamNo = stream.streamNo || (idx + 1);
+            const language = stream.language || 'English';
+            const qualityLabel = stream.hd ? 'HD' : 'SD';
+            const embedUrl = stream.embedUrl || stream.url || stream.link || stream;
+            
+            const btn = document.createElement('button');
+            btn.className = 'sports-chip';
+            btn.innerHTML = `
+                <i class="fas fa-desktop"></i>
+                <span>Stream #${streamNo} - ${language} (${qualityLabel})</span>
+            `;
+            btn.onclick = () => {
+                // Remove active from other chips
+                optionsContainer.querySelectorAll('.sports-chip').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Set and load stream
+                activeStreamUrl = embedUrl;
+                playerSection.style.display = 'block';
+                serverLabel.innerText = `${serverName} - Option #${streamNo} (${language})`;
+                
+                if (extBtn) {
+                    extBtn.setAttribute('onclick', `window.open('${embedUrl}', '_blank'); showToast('Opening stream externally', 'fa-external-link-alt');`);
+                }
+                
+                playSportsStreamInApp();
+            };
+            
+            optionsContainer.appendChild(btn);
+        });
+
+        // Automatically trigger the first option
+        const firstOption = optionsContainer.querySelector('.sports-chip');
+        if (firstOption) {
+            firstOption.click();
+        }
+    } catch (err) {
+        console.error("Error loading stream:", err);
+        optionsContainer.innerHTML = `
+            <div style="color: #f87171; padding: 5px; font-size: 0.9rem;">
+                <i class="fas fa-exclamation-circle"></i> Failed to retrieve streams for this source.
+            </div>
+        `;
+        showToast('Stream link resolution failed', 'fa-exclamation-circle');
+    }
+}
+
+function playSportsStreamInApp() {
+    const iframeWrapper = document.getElementById('sports-iframe-wrapper');
+    const iframe = document.getElementById('sports-stream-iframe');
+    if (!iframeWrapper || !iframe || !activeStreamUrl) return;
+
+    iframeWrapper.style.display = 'block';
+    iframe.src = activeStreamUrl;
+    
+    // Smooth scroll player into view
+    iframeWrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function backToMatchesList() {
+    const resultsContainer = document.getElementById('sports-results');
+    const detailsContainer = document.getElementById('sports-details');
+    const iframe = document.getElementById('sports-stream-iframe');
+
+    if (iframe) iframe.src = 'about:blank';
+    if (detailsContainer) detailsContainer.style.display = 'none';
+    if (resultsContainer) resultsContainer.style.display = 'grid';
+}
+
+function reloadSportsPlayer() {
+    const iframe = document.getElementById('sports-stream-iframe');
+    if (iframe && iframe.src !== 'about:blank') {
+        const currentSrc = iframe.src;
+        iframe.src = 'about:blank';
+        setTimeout(() => {
+            iframe.src = currentSrc;
+            showToast('Broadcast stream refreshed!', 'fa-sync');
+        }, 100);
+    }
+}
+
+function toggleSportsTheaterMode() {
+    const wrapper = document.getElementById('sports-iframe-wrapper');
+    if (wrapper) {
+        wrapper.classList.toggle('theater-mode');
+        if (wrapper.classList.contains('theater-mode')) {
+            wrapper.style.borderColor = '#10b981';
+            wrapper.style.boxShadow = '0 30px 80px rgba(0, 0, 0, 0.8), 0 0 50px rgba(16, 185, 129, 0.35)';
+            showToast('Theater mode enabled', 'fa-expand-alt');
+        } else {
+            wrapper.style.borderColor = 'rgba(255,255,255,0.08)';
+            wrapper.style.boxShadow = '0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(16, 185, 129, 0.15)';
+            showToast('Theater mode disabled', 'fa-compress-alt');
+        }
+    }
+}
 
 // Initialize settings on page load
 loadPrivacySettings();

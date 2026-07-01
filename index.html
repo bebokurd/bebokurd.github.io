@@ -194,6 +194,7 @@
             <div class="sidebar-item" onclick="switchTab('kurddoblazh', this)"><i class="fas fa-microphone-alt"></i>
                 KurdDoblazh
             </div>
+            <div class="sidebar-item" onclick="switchTab('live-sports', this)"><i class="fas fa-futbol"></i> Live Sports</div>
             <div class="sidebar-item" onclick="switchTab('api-hub', this)"><i class="fas fa-code"></i> API Hub
             </div>
             <div class="sidebar-item" onclick="switchTab('free-games', this)"><i class="fas fa-gamepad"></i> Free Games
@@ -942,6 +943,47 @@
                     </div>
                 </div>
 
+                <div id="view-live-sports" class="view-content">
+                    <div class="tool-container">
+                        <div class="tool-hero">
+                            <i class="fas fa-futbol"
+                                style="background: linear-gradient(45deg, #10b981, #059669); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
+                            <h2>Live Sports</h2>
+                            <p>Live matches, sports streams, and scores • Streamed.pk API</p>
+                        </div>
+
+                        <!-- Categories Container -->
+                        <div id="sports-categories" class="kd-labels-container"
+                            style="margin-bottom: 20px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px;">
+                        </div>
+
+                        <div class="sports-search-container" style="display: flex; gap: 15px; margin-bottom: 25px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                            <div class="tool-input-wrap" style="flex: 1; min-width: 250px; margin: 0; position: relative;">
+                                <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4); font-size: 0.9rem;"></i>
+                                <input type="text" id="sports-search-input" class="tool-input"
+                                    placeholder="Search live matches, teams..." autocomplete="off"
+                                    style="padding-left: 45px; width: 100%;"
+                                    onkeydown="if(event.key === 'Enter') searchSportsMatches()">
+                            </div>
+                            <div>
+                                <button id="sports-search-btn" class="tool-btn"
+                                    style="background: linear-gradient(135deg, #10b981, #059669); border: none; box-shadow: 0 4px 12px rgba(16,185,129,0.25); display: flex; align-items: center; gap: 8px; margin: 0;"
+                                    onclick="searchSportsMatches()"><i class="fas fa-search"></i> Search</button>
+                            </div>
+                        </div>
+
+                        <div id="sports-loader" class="tt-custom-loader" style="display: none;">
+                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #10b981, #059669);"><i
+                                    class="fas fa-futbol"></i></div>
+                            <div class="tt-loading-text" id="sports-loader-text">Fetching sports events...</div>
+                        </div>
+
+                        <div id="sports-results" class="sports-grid" style="margin-top: 20px;"></div>
+
+                        <div id="sports-details" class="ks-details-view" style="display: none;"></div>
+                    </div>
+                </div>
+
                 <div id="view-free-games" class="view-content">
                     <div class="tool-container">
                         <div class="tool-hero">
@@ -1209,6 +1251,121 @@
                                         <span>/kd/resolve?input={url}</span>
                                         <span class="api-preset-badge"
                                             onclick="loadApiPreset('GET', 'https://kurd-doblazh-api.lovable.app/api/kd/resolve?input=https://www.kurddoblazh.com/2023/12/aquaman-and-lost-kingdom.html')"><i
+                                                class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="section-header" style="margin-top: 30px;">Streamed REST API</div>
+                            <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Access sports categories, matches, and live streams dynamically from Streamed.pk database.</p>
+
+                            <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Base Endpoint</div>
+                            <div class="code-block">https://streamed.pk/api</div>
+
+                            <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Available Routes</div>
+                            <div class="detail-group"
+                                style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
+                                <div class="detail-row">
+                                    <span class="label">Sports Categories</span>
+                                    <span class="val"
+                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/sports</span>
+                                        <span class="api-preset-badge"
+                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/sports')"><i
+                                                class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Matches By Sport</span>
+                                    <span class="val"
+                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/matches/{sport_id}</span>
+                                        <span class="api-preset-badge"
+                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/matches/football')"><i
+                                                class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Live Matches</span>
+                                    <span class="val"
+                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/matches/live</span>
+                                        <span class="api-preset-badge"
+                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/matches/live')"><i
+                                                class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Stream Sources</span>
+                                    <span class="val"
+                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/stream/{source}/{id}</span>
+                                        <span class="api-preset-badge"
+                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/stream/alpha/match123')"><i
+                                                class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Stream Object Structure</div>
+                            <div class="code-block" style="font-family: monospace; font-size: 0.85rem; line-height: 1.4;">interface Stream {
+    id: string;        // Unique identifier for the stream
+    streamNo: number;  // Stream number/index
+    language: string;  // Stream language (e.g., "English")
+    hd: boolean;       // Whether the stream is HD quality
+    embedUrl: string;  // URL that can be used to embed in iframe
+    source: string;    // Source identifier (e.g., "alpha")
+}</div>
+
+                            <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Supported Stream Sources</div>
+                            <div class="detail-group"
+                                style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02); max-height: 200px; overflow-y: auto;">
+                                <div class="detail-row"><span class="label">Alpha</span><span class="val">/api/stream/alpha/[id]</span></div>
+                                <div class="detail-row"><span class="label">Bravo</span><span class="val">/api/stream/bravo/[id]</span></div>
+                                <div class="detail-row"><span class="label">Charlie</span><span class="val">/api/stream/charlie/[id]</span></div>
+                                <div class="detail-row"><span class="label">Delta</span><span class="val">/api/stream/delta/[id]</span></div>
+                                <div class="detail-row"><span class="label">Echo</span><span class="val">/api/stream/echo/[id]</span></div>
+                                <div class="detail-row"><span class="label">Foxtrot</span><span class="val">/api/stream/foxtrot/[id]</span></div>
+                                <div class="detail-row"><span class="label">Golf</span><span class="val">/api/stream/golf/[id]</span></div>
+                                <div class="detail-row"><span class="label">Hotel</span><span class="val">/api/stream/hotel/[id]</span></div>
+                            </div>
+
+                            <div class="section-header" style="margin-top: 30px;">Streamed Images API</div>
+                            <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Access optimized WebP assets for matches, teams, and events.</p>
+
+                            <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Base URL</div>
+                            <div class="code-block">https://streamed.pk/api/images</div>
+
+                            <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Available Routes</div>
+                            <div class="detail-group"
+                                style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
+                                <div class="detail-row">
+                                    <span class="label">Team Badge</span>
+                                    <span class="val"
+                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/badge/{id}.webp</span>
+                                        <span class="api-preset-badge"
+                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/images/badge/man-utd-badge.webp')"><i
+                                                class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Match Poster</span>
+                                    <span class="val"
+                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/poster/{home_badge_id}/{away_badge_id}.webp</span>
+                                        <span class="api-preset-badge"
+                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/images/poster/man-utd-badge/liverpool-badge.webp')"><i
+                                                class="fas fa-play"></i> Try</span>
+                                    </span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Proxied Image</span>
+                                    <span class="val"
+                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
+                                        <span>/proxy/{poster_id}.webp</span>
+                                        <span class="api-preset-badge"
+                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/images/proxy/custom-event-poster.webp')"><i
                                                 class="fas fa-play"></i> Try</span>
                                     </span>
                                 </div>

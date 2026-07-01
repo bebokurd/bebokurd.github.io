@@ -7703,3 +7703,450 @@ select.ks-details-input option {
     box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4) !important;
     transform: translateY(-1px);
 }
+
+/* ==========================================================================
+   LIVE SPORTS PORTAL STYLING (PREMIUM SCOREBOARD GLASSMORPHIC THEME)
+   ========================================================================== */
+
+.sports-chip {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.65);
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.sports-chip:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border-color: rgba(16, 185, 129, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.15);
+}
+
+.sports-chip.active {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%);
+    color: #10b981;
+    border-color: #10b981;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.25), inset 0 0 12px rgba(16, 185, 129, 0.1);
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.sports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 24px 0;
+}
+
+.match-card {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 24px;
+    padding: 22px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Glow Border effect on hover */
+.match-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 1.5px;
+    background: linear-gradient(135deg, #10b981, #059669, #3b82f6);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.match-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), 0 0 25px rgba(16, 185, 129, 0.15);
+}
+
+.match-card:hover::before {
+    opacity: 1;
+}
+
+.match-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2;
+}
+
+.match-sport-badge {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #10b981;
+    letter-spacing: 0.8px;
+}
+
+.match-status-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 50px;
+}
+
+.match-status-badge.live {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+.match-status-badge.upcoming {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.match-status-badge.live .pulse-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #ef4444;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    animation: livePulse 1.6s infinite;
+}
+
+@keyframes livePulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+}
+
+/* Scoreboard Main Layout */
+.match-scoreboard-main {
+    display: grid;
+    grid-template-columns: 1fr 75px 1fr;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    margin: 12px 0;
+    z-index: 2;
+}
+
+.scoreboard-team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.scoreboard-team-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    max-width: 110px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.1px;
+}
+
+.scoreboard-vs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.vs-badge {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 3px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.match-team-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 800;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #fff;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.match-card:hover .match-team-logo {
+    border-color: rgba(16, 185, 129, 0.3);
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.15);
+}
+
+.match-team-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.match-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    padding-top: 12px;
+}
+
+.match-time {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.match-time i {
+    color: #10b981;
+}
+
+.match-servers-count {
+    font-size: 0.75rem;
+    color: #10b981;
+    font-weight: 700;
+    background: rgba(16, 185, 129, 0.08);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+/* Match Details and Player Screen Styling */
+.sports-details-card {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 28px;
+    padding: 30px;
+    margin-top: 24px;
+    z-index: 2;
+    position: relative;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.sports-match-poster {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.sports-match-poster::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.8) 100%);
+    z-index: 1;
+}
+
+.sports-match-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.65) contrast(1.1);
+    transition: transform 0.5s ease;
+}
+
+.sports-match-poster:hover img {
+    transform: scale(1.03);
+}
+
+.sports-match-versus-header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 35px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+}
+
+.sports-vs-team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+}
+
+.sports-vs-logo {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sports-vs-team:hover .sports-vs-logo {
+    transform: scale(1.1) translateY(-3px);
+    border-color: #10b981;
+    box-shadow: 0 12px 30px rgba(16, 185, 129, 0.2);
+}
+
+.sports-vs-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.sports-vs-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.sports-vs-text {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.12);
+    font-style: italic;
+    letter-spacing: 2px;
+    padding: 0 25px;
+    background: linear-gradient(135deg, #10b981, #3b82f6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+}
+
+/* Beautiful Cinematic Screen Glow around Player Frame */
+#sports-iframe-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    background: #000;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(16, 185, 129, 0.15);
+    transition: all 0.4s ease;
+}
+
+#sports-iframe-wrapper:hover {
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(16, 185, 129, 0.25);
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Hover Overlay Styles */
+.match-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 5;
+    border-radius: 24px;
+}
+
+.match-card:hover .match-card-overlay {
+    opacity: 1;
+}
+
+.overlay-btn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+    transform: translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+}
+
+.match-card:hover .overlay-btn {
+    transform: translateY(0);
+}
+
+.overlay-btn:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+}
+
+/* Hide scrollbars for sports categories bar */
+#sports-categories::-webkit-scrollbar {
+    display: none;
+}
+#sports-categories {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
