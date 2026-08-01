@@ -1,5 +1,17 @@
 [
   {
+    "name": "From Up on Poppy Hill",
+    "type": "anime",
+    "year": 2011,
+    "imdbId": "tt1798188",
+    "sourceName": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/rRLYX4RZIyloHSJwvZKAhphAjiB.jpg",
+    "streamUrl": "https://archive.org/download/index492/index.m3u8",
+    "id": 19,
+    "createdAt": "2026-08-01T23:12:58.412Z",
+    "updatedAt": "2026-08-01T23:12:58.413Z"
+  },
+  {
     "name": "3abo Taxi",
     "type": "movie",
     "year": 2010,
