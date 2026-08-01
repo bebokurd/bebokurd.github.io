@@ -39,13 +39,13 @@
     "id": 2,
     "name": "Anastasia",
     "year": 1997,
-    "type": "movie",
+    "type": "kids",
     "posterUrl": "https://image.tmdb.org/t/p/w500/bppGWGA8zq1sRvTdDJnUzVW9GcH.jpg",
     "streamUrl": "https://archive.org/download/index552/index.m3u8",
     "sourceName": null,
     "imdbId": "tt0118617",
     "createdAt": "2026-07-17T16:49:48.980Z",
-    "updatedAt": "2026-08-01T10:01:39.061Z"
+    "updatedAt": "2026-08-01T22:50:09.726Z"
   },
   {
     "id": 3,
@@ -123,25 +123,25 @@
     "id": 12,
     "name": "The Nut Job 2: Nutty by Nature",
     "year": 2017,
-    "type": "movie",
+    "type": "kids",
     "posterUrl": "https://image.tmdb.org/t/p/w500/xOfdQHNF9TlrdujyAjiKfUhxSXy.jpg",
     "streamUrl": "https://archive.org/download/azadedarstan_hd/azadedarstan_hd.mp4",
     "sourceName": null,
     "imdbId": "tt3486626",
     "createdAt": "2026-07-17T17:43:09.669Z",
-    "updatedAt": "2026-08-01T10:01:56.770Z"
+    "updatedAt": "2026-08-01T22:50:18.567Z"
   },
   {
     "id": 13,
     "name": "Sahara Hare",
     "year": 1955,
-    "type": "movie",
+    "type": "kids",
     "posterUrl": "https://image.tmdb.org/t/p/w500/uYwlVE4y2yW32H3yjBlY9apiXh2.jpg",
     "streamUrl": "https://archive.org/download/output55/output.m3u8",
     "sourceName": null,
     "imdbId": "tt0048576",
     "createdAt": "2026-07-20T19:27:07.880Z",
-    "updatedAt": "2026-08-01T10:01:59.517Z"
+    "updatedAt": "2026-08-01T22:50:14.739Z"
   },
   {
     "id": 15,
@@ -182,6 +182,6 @@
       }
     ],
     "createdAt": "2026-07-28T20:10:00.000Z",
-    "updatedAt": "2026-08-01T10:04:24.686Z"
+    "updatedAt": "2026-08-01T10:08:05.039Z"
   }
 ]
