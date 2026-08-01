@@ -40,117 +40,127 @@
     "name": "Anastasia",
     "year": 1997,
     "type": "movie",
-    "posterUrl": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/bppGWGA8zq1sRvTdDJnUzVW9GcH.jpg",
     "streamUrl": "https://archive.org/download/index552/index.m3u8",
     "sourceName": null,
     "imdbId": "tt0118617",
-    "createdAt": "2026-07-17T16:49:48.980Z"
+    "createdAt": "2026-07-17T16:49:48.980Z",
+    "updatedAt": "2026-08-01T10:01:39.061Z"
   },
   {
     "id": 3,
     "name": "Kuch Kuch Hota Hai",
     "year": 1998,
     "type": "movie",
-    "posterUrl": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/5FmtHHDGPofW5Zjns1EM1D8503c.jpg",
     "streamUrl": "https://archive.org/download/output699/output.m3u8",
     "sourceName": null,
     "imdbId": "tt0172684",
-    "createdAt": "2026-07-17T16:49:49.098Z"
+    "createdAt": "2026-07-17T16:49:49.098Z",
+    "updatedAt": "2026-08-01T10:01:41.385Z"
   },
   {
     "id": 5,
     "name": "Gori Tere Pyaar Mein! ",
     "year": 2013,
     "type": "movie",
-    "posterUrl": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/icfBtvHEYI99OE8KYfLoEwMrm80.jpg",
     "streamUrl": "https://cdn.jwplayer.com/manifests/5B0oJXMH.m3u8",
     "sourceName": null,
     "imdbId": "tt2275794",
-    "createdAt": "2026-07-17T17:07:11.314Z"
+    "createdAt": "2026-07-17T17:07:11.314Z",
+    "updatedAt": "2026-08-01T10:01:44.309Z"
   },
   {
     "id": 6,
     "name": "Main Hoon Na",
     "year": 2004,
     "type": "movie",
-    "posterUrl": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/btqFmumVIWUbN0EoSn0S3dnjGEB.jpg",
     "streamUrl": "https://archive.org/download/index339/index.m3u8",
     "sourceName": null,
     "imdbId": "tt0347473",
-    "createdAt": "2026-07-17T17:11:05.522Z"
+    "createdAt": "2026-07-17T17:11:05.522Z",
+    "updatedAt": "2026-08-01T10:01:48.767Z"
   },
   {
     "id": 7,
     "name": "Skiptrace ",
     "year": 2016,
     "type": "movie",
-    "posterUrl": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/jki396PIIGja0NoFjUq1AdBbMGc.jpg",
     "streamUrl": "https://archive.org/download/skiptrace-2016-1080p-blu-ray-kurddoblazh.com/Skiptrace%20%282016%29%20%5B1080p%5D%20%5BBluRay%5D%20%5Bkurddoblazh.com%5D.mp4",
     "sourceName": null,
     "imdbId": "tt2238032",
-    "createdAt": "2026-07-17T17:16:21.248Z"
+    "createdAt": "2026-07-17T17:16:21.248Z",
+    "updatedAt": "2026-08-01T10:01:50.943Z"
   },
   {
     "id": 9,
     "name": "Kambakkht Ishq",
     "year": 2009,
     "type": "movie",
-    "posterUrl": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/yiOoPDxP0r5bb3YGBtHI5rBp1xS.jpg",
     "streamUrl": "https://archive.org/download/0116_20260116/0116.ia.mp4",
     "sourceName": null,
     "imdbId": "tt1144804",
-    "createdAt": "2026-07-17T17:20:16.708Z"
+    "createdAt": "2026-07-17T17:20:16.708Z",
+    "updatedAt": "2026-08-01T10:01:52.798Z"
   },
   {
     "id": 10,
     "name": "Besharam",
     "year": 2013,
     "type": "movie",
-    "posterUrl": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/79xt4XA6FBY9c9gBzEKrpKQ5Mz6.jpg",
     "streamUrl": "https://archive.org/download/index516/index.m3u8",
     "sourceName": null,
     "imdbId": "tt2576450",
-    "createdAt": "2026-07-17T17:25:23.822Z"
+    "createdAt": "2026-07-17T17:25:23.822Z",
+    "updatedAt": "2026-08-01T10:01:54.866Z"
   },
   {
     "id": 12,
     "name": "The Nut Job 2: Nutty by Nature",
     "year": 2017,
     "type": "movie",
-    "posterUrl": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/xOfdQHNF9TlrdujyAjiKfUhxSXy.jpg",
     "streamUrl": "https://archive.org/download/azadedarstan_hd/azadedarstan_hd.mp4",
     "sourceName": null,
     "imdbId": "tt3486626",
-    "createdAt": "2026-07-17T17:43:09.669Z"
+    "createdAt": "2026-07-17T17:43:09.669Z",
+    "updatedAt": "2026-08-01T10:01:56.770Z"
   },
   {
     "id": 13,
     "name": "Sahara Hare",
     "year": 1955,
     "type": "movie",
-    "posterUrl": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/uYwlVE4y2yW32H3yjBlY9apiXh2.jpg",
     "streamUrl": "https://archive.org/download/output55/output.m3u8",
     "sourceName": null,
     "imdbId": "tt0048576",
-    "createdAt": "2026-07-20T19:27:07.880Z"
+    "createdAt": "2026-07-20T19:27:07.880Z",
+    "updatedAt": "2026-08-01T10:01:59.517Z"
   },
   {
     "id": 15,
     "name": "The Flash",
     "year": 2023,
     "type": "movie",
-    "posterUrl": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/rktDFPbfHfUbArZ6OOOKsXcv0Bm.jpg",
     "streamUrl": "https://ia601902.us.archive.org/17/items/output116/output.m3u8",
     "sourceName": null,
     "imdbId": "tt0439572",
-    "createdAt": "2026-07-21T20:43:30.744Z"
+    "createdAt": "2026-07-21T20:43:30.744Z",
+    "updatedAt": "2026-08-01T10:02:02.656Z"
   },
   {
     "id": 16,
     "name": "What's Wrong with Secretary Kim",
     "year": 2018,
     "type": "series",
-    "posterUrl": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/qmq7vKRPoK2VHOTeaUdwwe3l5bB.jpg",
     "streamUrl": "https://archive.org/download/whats.-wrong.-with.-secretary.-kim.-s-01-e-01-3/.What%27s.Wrong.With.Secretary.Kim.S01E01%20-%20%D8%B1%DB%95%D8%B4%DB%95%D8%A8%D8%A7_3.mp4",
     "sourceName": null,
     "imdbId": "tt8242904",
@@ -164,8 +174,14 @@
         "number": 2,
         "name": "Episode 2",
         "streamUrl": "https://archive.org/download/whats.-wrong.-with.-secretary.-kim.-s-01-e-02-2/.What%27s.Wrong.With.Secretary.Kim.S01E02%20-%20%D8%B1%DB%95%D8%B4%DB%95%D8%A8%D8%A7_2.mp4"
+      },
+      {
+        "number": 3,
+        "name": "Episode 3",
+        "streamUrl": "https://archive.org/download/whats.-wrong.-with.-secretary.-kim.-s-01-e-03-2/.What%27s.Wrong.With.Secretary.Kim.S01E03%20-%20%D8%B1%DB%95%D8%B4%DB%95%D8%A8%D8%A7_2.mp4"
       }
     ],
-    "createdAt": "2026-07-28T20:10:00.000Z"
+    "createdAt": "2026-07-28T20:10:00.000Z",
+    "updatedAt": "2026-08-01T10:04:24.686Z"
   }
 ]
