@@ -1,5 +1,17 @@
 [
   {
+    "name": "ben 10",
+    "type": "movie",
+    "year": 2009,
+    "imdbId": "tt1327701",
+    "sourceName": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/4emrSFOwIlx35OawRcqlwH66TZD.jpg",
+    "streamUrl": "https://archive.org/download/ben-10-alien-swarm-bluray-hd/Ben%2010%20Alien%20Swarm%20Bluray%20HD.mp4",
+    "id": 20,
+    "createdAt": "2026-08-06T11:07:43.718Z",
+    "updatedAt": "2026-08-06T11:07:43.718Z"
+  },
+  {
     "name": "From Up on Poppy Hill",
     "type": "anime",
     "year": 2011,
@@ -9,7 +21,8 @@
     "streamUrl": "https://archive.org/download/index492/index.m3u8",
     "id": 19,
     "createdAt": "2026-08-01T23:12:58.412Z",
-    "updatedAt": "2026-08-01T23:12:58.413Z"
+    "updatedAt": "2026-08-01T23:12:58.413Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://archive.org/download/index492/index.m3u8"
   },
   {
     "name": "3abo Taxi",
@@ -21,7 +34,8 @@
     "streamUrl": "https://archive.org/download/flimi-kurdi-comedy-3abo-taxi/Flimi%20Kurdi%20Comedy%203abo%20Taxi.mp4",
     "id": 18,
     "createdAt": "2026-08-01T04:52:57.347Z",
-    "updatedAt": "2026-08-01T04:52:57.347Z"
+    "updatedAt": "2026-08-01T04:52:57.347Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://archive.org/download/flimi-kurdi-comedy-3abo-taxi/Flimi%20Kurdi%20Comedy%203abo%20Taxi.mp4"
   },
   {
     "id": 17,
@@ -33,7 +47,8 @@
     "sourceName": null,
     "imdbId": null,
     "createdAt": "2026-07-28T20:58:09.141Z",
-    "updatedAt": "2026-07-28T22:27:04.613Z"
+    "updatedAt": "2026-07-28T22:27:04.613Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://archive.org/download/the-nun-kurdmovie/The%20Nun%20%E2%80%93%20kurdmovie.mp4"
   },
   {
     "id": 1,
@@ -45,7 +60,8 @@
     "sourceName": null,
     "imdbId": "tt2178470",
     "createdAt": "2026-07-17T16:49:48.880Z",
-    "updatedAt": "2026-07-28T20:58:17.570Z"
+    "updatedAt": "2026-07-28T20:58:17.570Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://archive.org/download/index477/index.m3u8"
   },
   {
     "id": 2,
@@ -57,7 +73,8 @@
     "sourceName": null,
     "imdbId": "tt0118617",
     "createdAt": "2026-07-17T16:49:48.980Z",
-    "updatedAt": "2026-08-01T22:50:09.726Z"
+    "updatedAt": "2026-08-01T22:50:09.726Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://archive.org/download/index552/index.m3u8"
   },
   {
     "id": 3,
@@ -69,7 +86,8 @@
     "sourceName": null,
     "imdbId": "tt0172684",
     "createdAt": "2026-07-17T16:49:49.098Z",
-    "updatedAt": "2026-08-01T10:01:41.385Z"
+    "updatedAt": "2026-08-01T10:01:41.385Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://archive.org/download/output699/output.m3u8"
   },
   {
     "id": 5,
@@ -81,7 +99,8 @@
     "sourceName": null,
     "imdbId": "tt2275794",
     "createdAt": "2026-07-17T17:07:11.314Z",
-    "updatedAt": "2026-08-01T10:01:44.309Z"
+    "updatedAt": "2026-08-01T10:01:44.309Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://cdn.jwplayer.com/manifests/5B0oJXMH.m3u8"
   },
   {
     "id": 6,
@@ -93,7 +112,8 @@
     "sourceName": null,
     "imdbId": "tt0347473",
     "createdAt": "2026-07-17T17:11:05.522Z",
-    "updatedAt": "2026-08-01T10:01:48.767Z"
+    "updatedAt": "2026-08-01T10:01:48.767Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://archive.org/download/index339/index.m3u8"
   },
   {
     "id": 7,
@@ -105,7 +125,8 @@
     "sourceName": null,
     "imdbId": "tt2238032",
     "createdAt": "2026-07-17T17:16:21.248Z",
-    "updatedAt": "2026-08-01T10:01:50.943Z"
+    "updatedAt": "2026-08-01T10:01:50.943Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://archive.org/download/skiptrace-2016-1080p-blu-ray-kurddoblazh.com/Skiptrace%20%282016%29%20%5B1080p%5D%20%5BBluRay%5D%20%5Bkurddoblazh.com%5D.mp4"
   },
   {
     "id": 9,
@@ -117,7 +138,8 @@
     "sourceName": null,
     "imdbId": "tt1144804",
     "createdAt": "2026-07-17T17:20:16.708Z",
-    "updatedAt": "2026-08-01T10:01:52.798Z"
+    "updatedAt": "2026-08-01T10:01:52.798Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://archive.org/download/0116_20260116/0116.ia.mp4"
   },
   {
     "id": 10,
@@ -129,7 +151,8 @@
     "sourceName": null,
     "imdbId": "tt2576450",
     "createdAt": "2026-07-17T17:25:23.822Z",
-    "updatedAt": "2026-08-01T10:01:54.866Z"
+    "updatedAt": "2026-08-01T10:01:54.866Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://archive.org/download/index516/index.m3u8"
   },
   {
     "id": 12,
@@ -141,7 +164,8 @@
     "sourceName": null,
     "imdbId": "tt3486626",
     "createdAt": "2026-07-17T17:43:09.669Z",
-    "updatedAt": "2026-08-01T22:50:18.567Z"
+    "updatedAt": "2026-08-01T22:50:18.567Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://archive.org/download/azadedarstan_hd/azadedarstan_hd.mp4"
   },
   {
     "id": 13,
@@ -153,7 +177,8 @@
     "sourceName": null,
     "imdbId": "tt0048576",
     "createdAt": "2026-07-20T19:27:07.880Z",
-    "updatedAt": "2026-08-01T22:50:14.739Z"
+    "updatedAt": "2026-08-01T22:50:14.739Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://archive.org/download/output55/output.m3u8"
   },
   {
     "id": 15,
@@ -165,7 +190,8 @@
     "sourceName": null,
     "imdbId": "tt0439572",
     "createdAt": "2026-07-21T20:43:30.744Z",
-    "updatedAt": "2026-08-01T10:02:02.656Z"
+    "updatedAt": "2026-08-01T10:02:02.656Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://ia601902.us.archive.org/17/items/output116/output.m3u8"
   },
   {
     "id": 16,
@@ -178,22 +204,26 @@
     "imdbId": "tt8242904",
     "episodes": [
       {
+        "season": 1,
         "number": 1,
         "name": "Episode 1",
         "streamUrl": "https://archive.org/download/whats.-wrong.-with.-secretary.-kim.-s-01-e-01-3/.What%27s.Wrong.With.Secretary.Kim.S01E01%20-%20%D8%B1%DB%95%D8%B4%DB%95%D8%A8%D8%A7_3.mp4"
       },
       {
+        "season": 1,
         "number": 2,
         "name": "Episode 2",
         "streamUrl": "https://archive.org/download/whats.-wrong.-with.-secretary.-kim.-s-01-e-02-2/.What%27s.Wrong.With.Secretary.Kim.S01E02%20-%20%D8%B1%DB%95%D8%B4%DB%95%D8%A8%D8%A7_2.mp4"
       },
       {
+        "season": 1,
         "number": 3,
         "name": "Episode 3",
         "streamUrl": "https://archive.org/download/whats.-wrong.-with.-secretary.-kim.-s-01-e-03-2/.What%27s.Wrong.With.Secretary.Kim.S01E03%20-%20%D8%B1%DB%95%D8%B4%DB%95%D8%A8%D8%A7_2.mp4"
       }
     ],
     "createdAt": "2026-07-28T20:10:00.000Z",
-    "updatedAt": "2026-08-01T10:08:05.039Z"
+    "updatedAt": "2026-08-02T08:39:55.057Z",
+    "embedUrl": "https://chatytyoik09-streamu.vercel.app/embed?url=https://archive.org/download/whats.-wrong.-with.-secretary.-kim.-s-01-e-01-3/.What%27s.Wrong.With.Secretary.Kim.S01E01%20-%20%D8%B1%DB%95%D8%B4%DB%95%D8%A8%D8%A7_3.mp4"
   }
 ]
