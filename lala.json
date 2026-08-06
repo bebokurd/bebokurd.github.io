@@ -1,6 +1,46 @@
 [
   {
+    "name": "Evim Sensin",
+    "nameKurdish": "ماڵەکەم تۆی",
+    "type": "movie",
+    "year": 2012,
+    "imdbId": "tt2261505",
+    "sourceName": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/iTcQK4nPROXM0S20WiBYV7OVu7y.jpg",
+    "streamUrl": "https://dn721603.ca.archive.org/0/items/evim-sensin-2012/Evim%20Sensin%20%282012%29.ia.mp4",
+    "id": 23,
+    "createdAt": "2026-08-06T16:24:55.524Z",
+    "updatedAt": "2026-08-06T16:24:55.524Z"
+  },
+  {
+    "name": "Ikinci Sans ",
+    "nameKurdish": "دەرفەتی دووەم",
+    "type": "movie",
+    "year": 2016,
+    "imdbId": "tt5719222",
+    "sourceName": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/1BAdN2rHBfxfA3LEC8J61reRVAU.jpg",
+    "streamUrl": "https://dn710004.ca.archive.org/0/items/ikinci-sans-2016/Ikinci%20Sans%20%282016%29.ia.mp4",
+    "id": 22,
+    "createdAt": "2026-08-06T16:23:31.833Z",
+    "updatedAt": "2026-08-06T16:23:31.833Z"
+  },
+  {
+    "name": "Sevimli Tehlikeli ",
+    "nameKurdish": "شۆخ و مەترسیدار",
+    "type": "movie",
+    "year": 2015,
+    "imdbId": "tt4306308",
+    "sourceName": null,
+    "posterUrl": "https://image.tmdb.org/t/p/w500/8fuHx6uoLbK0Qr7jRRfrugdfHlU.jpg",
+    "streamUrl": "https://dn601206.us.archive.org/0/items/SevimliTehlikeli/My%20project.ia.mp4?cnt=0",
+    "id": 21,
+    "createdAt": "2026-08-06T16:22:15.082Z",
+    "updatedAt": "2026-08-06T16:22:15.082Z"
+  },
+  {
     "name": "ben 10",
+    "nameKurdish": "بن تێن",
     "type": "movie",
     "year": 2009,
     "imdbId": "tt1327701",
@@ -13,6 +53,7 @@
   },
   {
     "name": "From Up on Poppy Hill",
+    "nameKurdish": "لە بەرزاییەکانی گردی پۆپی",
     "type": "anime",
     "year": 2011,
     "imdbId": "tt1798188",
@@ -26,6 +67,7 @@
   },
   {
     "name": "3abo Taxi",
+    "nameKurdish": "عەبۆ تاکسی",
     "type": "movie",
     "year": 2010,
     "imdbId": null,
@@ -40,6 +82,7 @@
   {
     "id": 17,
     "name": "The Nun",
+    "nameKurdish": "ڕاهیبەکە",
     "year": 2018,
     "type": "movie",
     "posterUrl": "https://image.tmdb.org/t/p/w500/sFC1ElvoKGdHJIWRpNB3xWJ9lJA.jpg",
@@ -53,6 +96,7 @@
   {
     "id": 1,
     "name": "Yeh Jawaani Hai Deewani",
+    "nameKurdish": "ئەم گەنجییە شێتانەیە",
     "year": 2013,
     "type": "movie",
     "posterUrl": "https://image.tmdb.org/t/p/w500/em39H81XLCDgXsI7V4IcBZseEO6.jpg",
@@ -66,6 +110,7 @@
   {
     "id": 2,
     "name": "Anastasia",
+    "nameKurdish": "ئاناستاسیا",
     "year": 1997,
     "type": "kids",
     "posterUrl": "https://image.tmdb.org/t/p/w500/bppGWGA8zq1sRvTdDJnUzVW9GcH.jpg",
@@ -79,6 +124,7 @@
   {
     "id": 3,
     "name": "Kuch Kuch Hota Hai",
+    "nameKurdish": "شتێک ڕوودەدات",
     "year": 1998,
     "type": "movie",
     "posterUrl": "https://image.tmdb.org/t/p/w500/5FmtHHDGPofW5Zjns1EM1D8503c.jpg",
@@ -92,6 +138,7 @@
   {
     "id": 5,
     "name": "Gori Tere Pyaar Mein! ",
+    "nameKurdish": "شۆخەکەم لە خۆشەویستی تۆدا",
     "year": 2013,
     "type": "movie",
     "posterUrl": "https://image.tmdb.org/t/p/w500/icfBtvHEYI99OE8KYfLoEwMrm80.jpg",
@@ -105,6 +152,7 @@
   {
     "id": 6,
     "name": "Main Hoon Na",
+    "nameKurdish": "من لێرەم",
     "year": 2004,
     "type": "movie",
     "posterUrl": "https://image.tmdb.org/t/p/w500/btqFmumVIWUbN0EoSn0S3dnjGEB.jpg",
@@ -118,6 +166,7 @@
   {
     "id": 7,
     "name": "Skiptrace ",
+    "nameKurdish": "سکپترەیس",
     "year": 2016,
     "type": "movie",
     "posterUrl": "https://image.tmdb.org/t/p/w500/jki396PIIGja0NoFjUq1AdBbMGc.jpg",
@@ -131,6 +180,7 @@
   {
     "id": 9,
     "name": "Kambakkht Ishq",
+    "nameKurdish": "عیشقی نەفرەتی",
     "year": 2009,
     "type": "movie",
     "posterUrl": "https://image.tmdb.org/t/p/w500/yiOoPDxP0r5bb3YGBtHI5rBp1xS.jpg",
@@ -144,6 +194,7 @@
   {
     "id": 10,
     "name": "Besharam",
+    "nameKurdish": "بێشەرم",
     "year": 2013,
     "type": "movie",
     "posterUrl": "https://image.tmdb.org/t/p/w500/79xt4XA6FBY9c9gBzEKrpKQ5Mz6.jpg",
@@ -157,6 +208,7 @@
   {
     "id": 12,
     "name": "The Nut Job 2: Nutty by Nature",
+    "nameKurdish": "دەستەی بەڕووەکان ۲",
     "year": 2017,
     "type": "kids",
     "posterUrl": "https://image.tmdb.org/t/p/w500/xOfdQHNF9TlrdujyAjiKfUhxSXy.jpg",
@@ -170,6 +222,7 @@
   {
     "id": 13,
     "name": "Sahara Hare",
+    "nameKurdish": "کەروێشکی سەحرا",
     "year": 1955,
     "type": "kids",
     "posterUrl": "https://image.tmdb.org/t/p/w500/uYwlVE4y2yW32H3yjBlY9apiXh2.jpg",
@@ -183,6 +236,7 @@
   {
     "id": 15,
     "name": "The Flash",
+    "nameKurdish": "فلاش",
     "year": 2023,
     "type": "movie",
     "posterUrl": "https://image.tmdb.org/t/p/w500/rktDFPbfHfUbArZ6OOOKsXcv0Bm.jpg",
@@ -196,6 +250,7 @@
   {
     "id": 16,
     "name": "What's Wrong with Secretary Kim",
+    "nameKurdish": "کێشەی سکرتێر کیم چییە",
     "year": 2018,
     "type": "series",
     "posterUrl": "https://image.tmdb.org/t/p/w500/qmq7vKRPoK2VHOTeaUdwwe3l5bB.jpg",
