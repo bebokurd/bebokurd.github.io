@@ -3,7 +3,7 @@
 
 Owner: Chya Luqman (UI/UX Engineer & Developer)
 System-Name: Cydia Elite OS v4.0
-Primary-URL: https://bebokurd.github.io
+Primary-URL: https://chya.netlify.app
 Description: Premium Hub for Custom Tweak Packages, Automations, Live TV, Kurdish Cinema Streams, TikTok/Instagram utilities, and Developer API Endpoints.
 Contact: Discord (https://discord.gg/YTeRSG8kER), Instagram (@chya_luqman)
 
@@ -56,6 +56,6 @@ Disallow: /admin/
 Knowledge-Path: /data.json (Primary JSON Package Catalog containing 500+ utilities)
 Knowledge-Format: JSON Application List
 Skills: UI/UX Design, iOS Tweak Hubs, API Proxies, Spatial Web Experiences
-Portfolio: https://bebokurd.github.io/#about
-API-Documentation: https://bebokurd.github.io/#api-hub
-sitemap: https://bebokurd.github.io/sitemap.xml
+Portfolio: https://chya.netlify.app/#about
+API-Documentation: https://chya.netlify.app/#api-hub
+sitemap: https://chya.netlify.app/sitemap.xml

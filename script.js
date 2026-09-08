@@ -114,12 +114,84 @@ function resumeFakeDebugger() {
 }
 
 
+function indexPackages() {
+    window._pkgCache = {};
+    if (!packageData) return;
+    packageData.forEach(p => {
+        if (!window._pkgCache[p.cat]) {
+            window._pkgCache[p.cat] = [];
+        }
+        window._pkgCache[p.cat].push(p);
+    });
+}
+
 window.onload = async () => {
+    // 1. Try to load cached data for instant initial render (Stale-While-Revalidate)
+    const cachedData = localStorage.getItem('cydia_package_data_cache');
+    let hasRenderedCached = false;
+    if (cachedData) {
+        try {
+            packageData = JSON.parse(cachedData);
+            if (Array.isArray(packageData) && packageData.length > 0) {
+                indexPackages();
+                hasRenderedCached = true;
+            }
+        } catch (e) {
+            console.error("Failed to parse cached packageData", e);
+        }
+    }
+
+    const initUI = () => {
+        renderInstalled();
+        renderCategoriesHub();
+        updateClock();
+        startAnalogClockSmoothLoop();
+        updateStats();
+        loadMarqueeTmdbNews();
+        handleDeepLink();
+        initializeFaqAiFeatures();
+        startHomeActivityMonitor();
+        initializeAiSettingsUI();
+        initTempMail();
+        if (bioText && !bioText.innerText) {
+            typeWriter("Spatial Computing Portfolio & Tweak Registry • Crafted by Chya Luqman", 0);
+        }
+    };
+
+    // Render immediately if we loaded cached data
+    if (hasRenderedCached) {
+        initUI();
+    }
+
+    // 2. Fetch fresh package data in the background
     try {
         const response = await fetch('data.json');
-        packageData = await response.json();
+        const freshData = await response.json();
+        
+        if (freshData && Array.isArray(freshData)) {
+            const freshDataStr = JSON.stringify(freshData);
+            const cachedDataStr = cachedData || '';
+            if (freshDataStr !== cachedDataStr) {
+                packageData = freshData;
+                localStorage.setItem('cydia_package_data_cache', freshDataStr);
+                indexPackages();
+                
+                if (!hasRenderedCached) {
+                    initUI();
+                } else {
+                    renderInstalled();
+                    renderCategoriesHub();
+                    updateStats();
+                }
+            } else if (!hasRenderedCached) {
+                initUI();
+            }
+        }
     } catch (err) {
         console.error("Failed to load packages via API: ", err);
+        if (!hasRenderedCached) {
+            initUI();
+        }
     }
 
     const bootLines = [
@@ -138,14 +210,6 @@ window.onload = async () => {
         logBox.appendChild(d);
         setTimeout(() => d.classList.add('visible'), i * 150);
     });
-    renderInstalled();
-    renderCategoriesHub();
-    updateClock();
-    updateStats();
-    handleDeepLink();
-    initializeFaqAiFeatures();
-    startHomeActivityMonitor();
-    initializeAiSettingsUI();
 
     // Setup LIVE YTS/TMDB empty query handler
     const ksSearchInput = document.getElementById('ks-search-input');
@@ -176,6 +240,67 @@ function showToast(message, icon = 'fa-info-circle') {
     }, 3000);
 }
 
+let homeMonitorInterval = null;
+function startHomeActivityMonitor() {
+    const logBox = document.getElementById('home-console-logs');
+    if (!logBox) return;
+    
+    const sampleLogs = [
+        { tag: 'KERNEL', color: '#60a5fa', msg: 'Spatial microkernel active (Build 12A402)' },
+        { tag: 'REGISTRY', color: '#34d399', msg: 'Indexed tweak catalogs & verified package signatures' },
+        { tag: 'SYNAPSE', color: '#c084fc', msg: 'AI Copilot semantic router ready for user queries' },
+        { tag: 'CACHE', color: '#38bdf8', msg: 'Local storage memory buffer status: 100% healthy' },
+        { tag: 'SPATIAL', color: '#fb7185', msg: 'VisionOS glassmorphism compositor running at 60fps' },
+        { tag: 'NETWORK', color: '#facc15', msg: 'Encrypted socket listening for live streaming feeds' },
+        { tag: 'SECURITY', color: '#4ade80', msg: 'Zero sandbox violations detected in current session' }
+    ];
+
+    function appendLog(item) {
+        const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+        const line = document.createElement('div');
+        line.className = 'console-log-entry';
+        line.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-tag" style="color: ${item.color}; font-weight: 700;">[${item.tag}]</span> <span class="log-msg">${item.msg}</span>`;
+        logBox.appendChild(line);
+        while (logBox.children.length > 5) {
+            logBox.removeChild(logBox.firstChild);
+        }
+        logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    logBox.innerHTML = '';
+    sampleLogs.slice(0, 3).forEach(appendLog);
+
+    if (homeMonitorInterval) clearInterval(homeMonitorInterval);
+    homeMonitorInterval = setInterval(() => {
+        const item = sampleLogs[Math.floor(Math.random() * sampleLogs.length)];
+        appendLog(item);
+    }, 3500);
+}
+
+function triggerHomeAiSearch() {
+    const input = document.getElementById('home-ai-input');
+    const query = input ? input.value.trim() : '';
+    if (!query) {
+        if (input) input.focus();
+        showToast('Please type a search query first', 'fa-sparkles');
+        return;
+    }
+
+    switchTab('search');
+    const pcSearch = document.getElementById('pc-search-input');
+    const mobSearch = document.getElementById('search-input');
+    if (pcSearch) {
+        pcSearch.value = query;
+        pcSearch.dispatchEvent(new Event('input'));
+    }
+    if (mobSearch) {
+        mobSearch.value = query;
+        mobSearch.dispatchEvent(new Event('input'));
+    }
+    showToast(`Searching for "${query}" across Cydia Elite...`, 'fa-magnifying-glass');
+}
+
+
 // Friendly Category Hashes Mapping to Database IDs
 const categoryHashMap = {
     'community': 'social', 'social': 'social',
@@ -187,6 +312,7 @@ const categoryHashMap = {
     'live-sports': 'sports', 'sports': 'sports',
     'live-tv': 'livetv', 'livetv': 'livetv',
     'pc-games': 'games', 'games': 'games',
+    'emulators': 'emulators',
     'game-mods': 'mods', 'mods': 'mods',
     'pc-tools': 'tools', 'tools': 'tools',
     'web-browsers': 'browser', 'browser': 'browser',
@@ -252,7 +378,7 @@ window.addEventListener('hashchange', handleDeepLink);
 function updateStats() {
     if (!packageData) return;
     const totalLinks = packageData.length;
-    const uniqueCategories = new Set(packageData.map(p => p.cat)).size;
+    const uniqueCategories = window._pkgCache ? Object.keys(window._pkgCache).length : new Set(packageData.map(p => p.cat)).size;
 
     const linksEl = document.getElementById('stats-total-links');
     const catsEl = document.getElementById('stats-total-categories');
@@ -260,21 +386,135 @@ function updateStats() {
     if (linksEl) linksEl.innerText = totalLinks.toLocaleString();
     if (catsEl) catsEl.innerText = uniqueCategories;
 
-    // Count categories dynamically for Home Dashboard breakdown
-    const countAi = packageData.filter(p => p.cat === 'ai').length;
-    const countTools = packageData.filter(p => p.cat === 'tools').length;
-    const countKurdish = packageData.filter(p => p.cat === 'kurdish').length;
-    const countSports = packageData.filter(p => p.cat === 'sports').length;
-    
+    // Update Marquee statistics
+    document.querySelectorAll('.marquee-total-links').forEach(el => el.innerText = totalLinks.toLocaleString());
+    document.querySelectorAll('.marquee-total-categories').forEach(el => el.innerText = uniqueCategories);
+
+    // Count categories dynamically for Home Dashboard breakdown using cache index
+    const countAi = window._pkgCache && window._pkgCache['ai'] ? window._pkgCache['ai'].length : packageData.filter(p => p.cat === 'ai').length;
+    const countTools = window._pkgCache && window._pkgCache['tools'] ? window._pkgCache['tools'].length : packageData.filter(p => p.cat === 'tools').length;
+    const countKurdish = window._pkgCache && window._pkgCache['kurdish'] ? window._pkgCache['kurdish'].length : packageData.filter(p => p.cat === 'kurdish').length;
+    const countSports = window._pkgCache && window._pkgCache['sports'] ? window._pkgCache['sports'].length : packageData.filter(p => p.cat === 'sports').length;
+
     const countAiEl = document.getElementById('count-ai');
     const countToolsEl = document.getElementById('count-tools');
     const countKurdishEl = document.getElementById('count-kurdish');
     const countSportsEl = document.getElementById('count-sports');
-    
+
     if (countAiEl) countAiEl.innerText = countAi;
     if (countToolsEl) countToolsEl.innerText = countTools;
     if (countKurdishEl) countKurdishEl.innerText = countKurdish;
     if (countSportsEl) countSportsEl.innerText = countSports;
+}
+
+// VIDEASY, TMDB & AniList Marquee News (Movies, TV Shows & Anime)
+async function loadMarqueeTmdbNews() {
+    try {
+        const movieUrl = `https://api.themoviedb.org/3/trending/movie/day?api_key=${TMDB_API_KEY}`;
+        const tvUrl = `https://api.themoviedb.org/3/trending/tv/day?api_key=${TMDB_API_KEY}`;
+
+        // AniList Query for trending releasing anime
+        const animeQuery = `
+        query {
+          Page (page: 1, perPage: 5) {
+            media (sort: TRENDING_DESC, type: ANIME, status: RELEASING) {
+              title {
+                english
+                romaji
+              }
+              seasonYear
+            }
+          }
+        }
+        `;
+
+        // Run all requests in parallel
+        const [movieRes, tvRes, animeRes] = await Promise.all([
+            fetch(movieUrl).then(r => r.json()).catch(() => ({ results: [] })),
+            fetch(tvUrl).then(r => r.json()).catch(() => ({ results: [] })),
+            fetch('https://graphql.anilist.co', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ query: animeQuery })
+            }).then(r => r.json()).catch(() => ({ data: { Page: { media: [] } } }))
+        ]);
+
+        const newsItems = [];
+
+        // 1. Movies (top 3)
+        const movies = (movieRes.results || []).slice(0, 3);
+        movies.forEach(m => {
+            const title = m.title || m.original_title || "Unknown Movie";
+            const year = m.release_date ? m.release_date.split('-')[0] : '';
+            const rating = m.vote_average ? m.vote_average.toFixed(1) : 'N/A';
+            newsItems.push(`<span class="marquee-item"><i class="fas fa-film" style="color: #60a5fa;"></i> Movie: <strong>${title}</strong> (${year}) • <i class="fas fa-star" style="color: #fbbf24; font-size: 0.65rem;"></i> ${rating}</span>`);
+        });
+
+        // 2. TV Shows (top 3)
+        const tvShows = (tvRes.results || []).slice(0, 3);
+        tvShows.forEach(t => {
+            const name = t.name || t.original_name || "Unknown TV Show";
+            const year = t.first_air_date ? t.first_air_date.split('-')[0] : '';
+            const rating = t.vote_average ? t.vote_average.toFixed(1) : 'N/A';
+            newsItems.push(`<span class="marquee-item"><i class="fas fa-tv" style="color: #10b981;"></i> Show: <strong>${name}</strong> (${year}) • <i class="fas fa-star" style="color: #fbbf24; font-size: 0.65rem;"></i> ${rating}</span>`);
+        });
+
+        // 3. Anime (top 3)
+        const animeList = (animeRes.data?.Page?.media || []).slice(0, 3);
+        animeList.forEach(a => {
+            const title = a.title.english || a.title.romaji || "Unknown Anime";
+            const year = a.seasonYear || '';
+            newsItems.push(`<span class="marquee-item"><i class="fas fa-ghost" style="color: #a855f7;"></i> Anime: <strong>${title}</strong> (${year})</span>`);
+        });
+
+        updateMarqueeContent(newsItems);
+    } catch (e) {
+        console.error("Error loading TMDB/AniList marquee news:", e);
+        updateMarqueeContent([]);
+    }
+}
+
+function updateMarqueeContent(movieItems = []) {
+    const staticAnnouncements = [
+        `<span class="marquee-item"><i class="fas fa-code"></i> Developer: Chya Luqman</span>`,
+        `<span class="marquee-item"><i class="fas fa-cubes"></i> Registry Packages: <strong class="marquee-total-links">...</strong></span>`,
+        `<span class="marquee-item"><i class="fas fa-th-large"></i> Active Categories: <strong class="marquee-total-categories">...</strong></span>`,
+        `<span class="marquee-item"><i class="fas fa-check-circle" style="color: #4ade80;"></i> System Status: <span style="color: #4ade80; font-weight: 700;">Operational</span></span>`,
+        `<span class="marquee-item"><i class="fab fa-discord" style="color: #5865f2;"></i> Join our Discord community for support and tweak suggestions!</span>`
+    ];
+
+    const utilityItems = [
+        `<span class="marquee-item"><i class="fab fa-tiktok"></i> TikTok Downloader: Online</span>`,
+        `<span class="marquee-item"><i class="fab fa-instagram"></i> Instagram Lookup: Active</span>`,
+        `<span class="marquee-item"><i class="fas fa-play-circle"></i> KurdStream: Connected</span>`,
+        `<span class="marquee-item"><i class="fas fa-robot"></i> AI Search Hub: Ready</span>`,
+        `<span class="marquee-item"><i class="fas fa-camera"></i> Anime Search: Online</span>`,
+        `<span class="marquee-item"><i class="fas fa-images"></i> Lens Search: Active</span>`,
+        `<span class="marquee-item"><i class="fas fa-microphone-alt"></i> KurdDoblazh: Connected</span>`,
+        `<span class="marquee-item"><i class="fas fa-futbol"></i> Live Sports: Online</span>`,
+        `<span class="marquee-item"><i class="fas fa-code"></i> API Hub: Active</span>`,
+        `<span class="marquee-item"><i class="fas fa-gamepad"></i> Free Games: Connected</span>`,
+        `<span class="marquee-item"><i class="fas fa-wifi"></i> Latency: Stable 12ms</span>`
+    ];
+
+    const allItems = [
+        ...staticAnnouncements,
+        ...movieItems,
+        ...utilityItems
+    ];
+
+    const htmlContent = allItems.join('<span class="marquee-divider">•</span>') + '<span class="marquee-divider">•</span>';
+
+    document.querySelectorAll('.marquee-content').forEach(el => {
+        el.innerHTML = htmlContent;
+    });
+
+    if (packageData) {
+        const totalLinks = packageData.length;
+        const uniqueCategories = new Set(packageData.map(p => p.cat)).size;
+        document.querySelectorAll('.marquee-total-links').forEach(el => el.innerText = totalLinks.toLocaleString());
+        document.querySelectorAll('.marquee-total-categories').forEach(el => el.innerText = uniqueCategories);
+    }
 }
 
 function createBiometricDots() {
@@ -355,7 +595,38 @@ function updateClock() {
         mainDate.innerText = now.toLocaleDateString(undefined, options);
     }
 
-    setTimeout(updateClock, 60000);
+    // Refresh digital clock once a second
+    setTimeout(updateClock, 1000);
+}
+
+function startAnalogClockSmoothLoop() {
+    function updateSmooth() {
+        const now = new Date();
+        const ms = now.getMilliseconds();
+        const seconds = now.getSeconds() + ms / 1000;
+        const minutes = now.getMinutes() + seconds / 60;
+        const hours = (now.getHours() % 12) + minutes / 60;
+
+        const secondHand = document.getElementById('second-hand');
+        const minuteHand = document.getElementById('minute-hand');
+        const hourHand = document.getElementById('hour-hand');
+
+        if (secondHand) {
+            const secDeg = (seconds / 60) * 360;
+            secondHand.style.transform = `rotate(${secDeg}deg)`;
+        }
+        if (minuteHand) {
+            const minDeg = (minutes / 60) * 360;
+            minuteHand.style.transform = `rotate(${minDeg}deg)`;
+        }
+        if (hourHand) {
+            const hourDeg = (hours / 12) * 360;
+            hourHand.style.transform = `rotate(${hourDeg}deg)`;
+        }
+
+        requestAnimationFrame(updateSmooth);
+    }
+    requestAnimationFrame(updateSmooth);
 }
 
 function typeWriter(text, i) {
@@ -370,9 +641,9 @@ function typeWriter(text, i) {
 // Songs Player & Playlist Management
 let playlist = [
     { name: "Lala (Default Background)", url: "lala.mp3", isDefault: true, color: "#a855f7", colorRgb: "168, 85, 247" },
-    { name: "Synthwave Retro Beats", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", isDefault: true, color: "#f43f5e", colorRgb: "244, 63, 94" },
-    { name: "Chill Ambient Vibes", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", isDefault: true, color: "#06b6d4", colorRgb: "6, 182, 212" },
-    { name: "Lo-Fi Beats for Coding", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", isDefault: true, color: "#f59e0b", colorRgb: "245, 158, 11" }
+    { name: "NAVID ZARDI MAMHENA MAMBA", url: "NAVID ZARDI MAMHENA MAMBA.mp3", isDefault: true, color: "#f43f5e", colorRgb: "244, 63, 94" },
+    { name: "12.Ewini be kota instrumental Huner Heme Jezza", url: "12.Ewini be kota instrumental Huner Heme Jezza.mp3", isDefault: true, color: "#06b6d4", colorRgb: "6, 182, 212" },
+    { name: "Karwan Hawramy Chav Rasha Min Official", url: "Karwan Hawramy Chav Rasha Min Official Music Video.mp3", isDefault: true, color: "#f59e0b", colorRgb: "245, 158, 11" }
 ];
 let currentSongIndex = 0;
 let preMuteVolume = 0.3;
@@ -407,31 +678,34 @@ function initSongsPlaylist() {
         currentSongIndex = parseInt(savedIndex) || 0;
         if (currentSongIndex >= playlist.length) currentSongIndex = 0;
     }
-    
+
     // Setup ended event to advance songs automatically
     if (audio) {
         audio.removeAttribute('loop'); // Disable looping default so it goes to next song
         audio.addEventListener('ended', () => {
             nextSong();
         });
-        
+
         // Progress scrubber updates
         audio.addEventListener('timeupdate', () => {
             if (!audio.duration) return;
             const progress = (audio.currentTime / audio.duration) * 100;
             const progressInput = document.getElementById('audio-progress-bar');
-            if (progressInput) progressInput.value = progress;
-            
+            if (progressInput) {
+                progressInput.value = progress;
+                progressInput.style.background = `linear-gradient(to right, #a855f7 0%, #a855f7 ${progress}%, rgba(255, 255, 255, 0.1) ${progress}%, rgba(255, 255, 255, 0.1) 100%)`;
+            }
+
             const currentLabel = document.getElementById('track-time-current');
             if (currentLabel) currentLabel.innerText = formatTime(audio.currentTime);
         });
-        
+
         audio.addEventListener('durationchange', () => {
             const durationLabel = document.getElementById('track-time-duration');
             if (durationLabel) durationLabel.innerText = formatTime(audio.duration);
         });
     }
-    
+
     // Setup scrub and volume event listeners in DOM
     setTimeout(() => {
         const progressInput = document.getElementById('audio-progress-bar');
@@ -440,20 +714,25 @@ function initSongsPlaylist() {
                 if (!audio || !audio.duration) return;
                 const newTime = (progressInput.value / 100) * audio.duration;
                 audio.currentTime = newTime;
+                progressInput.style.background = `linear-gradient(to right, #a855f7 0%, #a855f7 ${progressInput.value}%, rgba(255, 255, 255, 0.1) ${progressInput.value}%, rgba(255, 255, 255, 0.1) 100%)`;
             });
         }
-        
+
         const volumeSlider = document.getElementById('audio-volume-slider');
         if (volumeSlider) {
             if (audio) {
                 volumeSlider.value = audio.volume * 100;
             }
+            volumeSlider.style.background = `linear-gradient(to right, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) ${volumeSlider.value}%, rgba(255, 255, 255, 0.1) ${volumeSlider.value}%, rgba(255, 255, 255, 0.1) 100%)`;
+
             volumeSlider.addEventListener('input', () => {
                 if (!audio) return;
                 const vol = volumeSlider.value / 100;
                 audio.volume = vol;
                 audio.muted = false;
-                
+
+                volumeSlider.style.background = `linear-gradient(to right, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) ${volumeSlider.value}%, rgba(255, 255, 255, 0.1) ${volumeSlider.value}%, rgba(255, 255, 255, 0.1) 100%)`;
+
                 const volumeIcon = document.getElementById('volume-icon-btn');
                 if (volumeIcon) {
                     if (vol === 0) {
@@ -491,27 +770,37 @@ function closeSongsPlayer() {
 function renderPlaylist() {
     const container = document.getElementById('playlist-items-container');
     if (!container) return;
-    
+
     let html = "";
     playlist.forEach((song, index) => {
         const isActive = index === currentSongIndex;
         const activeClass = isActive ? 'active' : '';
-        const iconClass = isActive && isPlaying ? 'fas fa-volume-up' : 'fas fa-music';
         
-        // Define inline style to show dynamic accent color bullet next to song name
-        const bulletColor = song.color || '#3b82f6';
-        
+        let iconHtml;
+        if (isActive && isPlaying) {
+            iconHtml = `
+                <div class="eq-visualizer">
+                    <div class="eq-bar" style="--delay: 0.1s"></div>
+                    <div class="eq-bar" style="--delay: 0.4s"></div>
+                    <div class="eq-bar" style="--delay: 0.2s"></div>
+                    <div class="eq-bar" style="--delay: 0.6s"></div>
+                </div>`;
+        } else {
+            const bulletColor = song.color || '#3b82f6';
+            iconHtml = `<span class="playlist-item-icon" style="color: ${isActive ? bulletColor : 'rgba(255,255,255,0.35)'};"><i class="fas fa-music"></i></span>`;
+        }
+
         html += `
             <div class="playlist-item ${activeClass}" onclick="selectSong(${index})">
                 <div class="playlist-item-name-wrap">
-                    <span class="playlist-item-icon" style="color: ${isActive ? bulletColor : 'rgba(255,255,255,0.35)'};"><i class="${iconClass}"></i></span>
+                    ${iconHtml}
                     <span class="playlist-item-name" title="${song.name}">${song.name}</span>
                 </div>
-                ${!song.isDefault ? `
+                ${song.isDefault ? `<span class="playlist-badge">Default</span>` : `
                     <button class="playlist-item-delete" onclick="deleteSong(${index}, event)" title="Delete song">
                         <i class="fas fa-trash-alt"></i>
                     </button>
-                ` : ''}
+                `}
             </div>
         `;
     });
@@ -525,23 +814,23 @@ function updateSongsPlayerUI() {
     const discEl = document.getElementById('now-playing-disc');
     const modalPlayBtn = document.getElementById('modal-play-btn');
     const fabBtn = document.getElementById('audio-fab');
-    
+
     if (playlist[currentSongIndex]) {
         const song = playlist[currentSongIndex];
         if (titleEl) titleEl.innerText = song.name;
         if (statusEl) statusEl.innerText = isPlaying ? "Playing" : "Paused";
-        
+
         if (containerEl) {
             containerEl.style.setProperty('--player-accent', song.color || '#3b82f6');
             containerEl.style.setProperty('--player-accent-rgb', song.colorRgb || '59, 130, 246');
-            
+
             if (isPlaying) {
                 containerEl.classList.add('playing');
             } else {
                 containerEl.classList.remove('playing');
             }
         }
-        
+
         if (discEl) {
             if (isPlaying) {
                 discEl.classList.add('playing');
@@ -549,11 +838,11 @@ function updateSongsPlayerUI() {
                 discEl.classList.remove('playing');
             }
         }
-        
+
         if (modalPlayBtn) {
             modalPlayBtn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
         }
-        
+
         if (fabBtn) {
             fabBtn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-music"></i>';
             if (isPlaying) {
@@ -568,23 +857,27 @@ function updateSongsPlayerUI() {
                 fabBtn.style.removeProperty('border-color');
             }
         }
-        
+
         // Sync scrubber and volume sliders
         if (audio) {
             const currentLabel = document.getElementById('track-time-current');
             if (currentLabel) currentLabel.innerText = formatTime(audio.currentTime);
-            
+
             const durationLabel = document.getElementById('track-time-duration');
             if (durationLabel) durationLabel.innerText = formatTime(audio.duration);
-            
+
             const progressInput = document.getElementById('audio-progress-bar');
             if (progressInput && audio.duration) {
-                progressInput.value = (audio.currentTime / audio.duration) * 100;
+                const progress = (audio.currentTime / audio.duration) * 100;
+                progressInput.value = progress;
+                progressInput.style.background = `linear-gradient(to right, #a855f7 0%, #a855f7 ${progress}%, rgba(255, 255, 255, 0.1) ${progress}%, rgba(255, 255, 255, 0.1) 100%)`;
             }
-            
+
             const volumeSlider = document.getElementById('audio-volume-slider');
             if (volumeSlider) {
-                volumeSlider.value = audio.volume * 100;
+                const volVal = audio.volume * 100;
+                volumeSlider.value = volVal;
+                volumeSlider.style.background = `linear-gradient(to right, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) ${volVal}%, rgba(255, 255, 255, 0.1) ${volVal}%, rgba(255, 255, 255, 0.1) 100%)`;
             }
         }
     }
@@ -595,10 +888,10 @@ function selectSong(index) {
         toggleSongsPlay();
         return;
     }
-    
+
     currentSongIndex = index;
     localStorage.setItem('songs_current_index', currentSongIndex);
-    
+
     const song = playlist[currentSongIndex];
     if (audio) {
         audio.src = song.url;
@@ -611,14 +904,14 @@ function selectSong(index) {
             renderPlaylist();
         });
     }
-    
+
     updateSongsPlayerUI();
     renderPlaylist();
 }
 
 function toggleSongsPlay() {
     if (!audio) return;
-    
+
     // Set src if not already matching the current song
     const currentUrl = playlist[currentSongIndex] ? playlist[currentSongIndex].url : '';
     // Normalize path checks
@@ -626,7 +919,7 @@ function toggleSongsPlay() {
     if (currentUrl && !audioSrc.includes(currentUrl)) {
         audio.src = currentUrl;
     }
-    
+
     if (isPlaying) {
         audio.pause();
         isPlaying = false;
@@ -641,7 +934,7 @@ function toggleSongsPlay() {
             showToast("Click screen first to allow audio playback!", "fa-exclamation-triangle");
         });
     }
-    
+
     updateSongsPlayerUI();
     renderPlaylist();
 }
@@ -667,43 +960,43 @@ function addCustomSong() {
     const nameInput = document.getElementById('add-song-name');
     const urlInput = document.getElementById('add-song-url');
     if (!nameInput || !urlInput) return;
-    
+
     const name = nameInput.value.trim();
     const url = urlInput.value.trim();
-    
+
     if (!name || !url) {
         showToast("Please enter both song name and MP3 link.", "fa-exclamation-triangle");
         return;
     }
-    
+
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
         showToast("Please enter a valid HTTP/HTTPS audio URL.", "fa-exclamation-triangle");
         return;
     }
-    
+
     // Add song with a random accent color preset
     const randomColor = colorPresets[Math.floor(Math.random() * colorPresets.length)];
-    playlist.push({ 
-        name, 
-        url, 
-        isDefault: false, 
-        color: randomColor.color, 
-        colorRgb: randomColor.rgb 
+    playlist.push({
+        name,
+        url,
+        isDefault: false,
+        color: randomColor.color,
+        colorRgb: randomColor.rgb
     });
     localStorage.setItem('songs_playlist', JSON.stringify(playlist));
-    
+
     nameInput.value = "";
     urlInput.value = "";
-    
+
     showToast("Song added to playlist!", "fa-check-circle");
     renderPlaylist();
 }
 
 function deleteSong(index, event) {
     if (event) event.stopPropagation(); // Avoid triggering play on parent div click
-    
+
     if (playlist[index].isDefault) return;
-    
+
     // If playing the song that is being deleted, stop it
     if (index === currentSongIndex) {
         if (audio && isPlaying) {
@@ -716,10 +1009,10 @@ function deleteSong(index, event) {
         currentSongIndex--;
         localStorage.setItem('songs_current_index', currentSongIndex);
     }
-    
+
     playlist.splice(index, 1);
     localStorage.setItem('songs_playlist', JSON.stringify(playlist));
-    
+
     showToast("Song removed from playlist.", "fa-check-circle");
     renderPlaylist();
     updateSongsPlayerUI();
@@ -729,7 +1022,7 @@ function toggleMute() {
     if (!audio) return;
     const volumeIcon = document.getElementById('volume-icon-btn');
     const volumeSlider = document.getElementById('audio-volume-slider');
-    
+
     if (audio.muted) {
         audio.muted = false;
         audio.volume = preMuteVolume;
@@ -880,6 +1173,15 @@ function switchTab(tabId, el = null) {
     }
 }
 
+function getIconHtml(icon) {
+    if (!icon) return '<i class="fas fa-question"></i>';
+    const isUrl = icon.startsWith('http') || icon.startsWith('/') || icon.startsWith('.');
+    if (isUrl) {
+        return `<img src="${icon}" style="width: 28px; height: 28px; object-fit: contain; border-radius: 6px;" />`;
+    }
+    return `<i class="${icon}"></i>`;
+}
+
 function renderInstalled(filterCat = null) {
     const container = document.getElementById('installed-list-container');
     container.innerHTML = "";
@@ -888,7 +1190,7 @@ function renderInstalled(filterCat = null) {
         kurdish: "Kurdish Cinema", anime: "Anime & Manga",
         cartoon: "Cartoons",
         movies: "Movies & Series", tools: "Tools & Software",
-        games: "Game Downloads", mods: "Game Mods",
+        games: "Game Downloads", emulators: "Emulators", mods: "Game Mods",
         livetv: "Live TV & IPTV", ads: "Ad Blockers",
         browser: "Web Browsers",
         sports: "Live Sports", scripts: "Automation Scripts"
@@ -914,14 +1216,14 @@ function renderInstalled(filterCat = null) {
                 const safeCmd = pkg.cmd.replace(/'/g, "\\'").replace(/"/g, "&quot;");
                 html += `
                     <a href="#" onclick="navigator.clipboard.writeText('${safeCmd}'); showToast('Command copied to clipboard!', 'fa-check-circle'); event.preventDefault();" class="pkg-list-item">
-                        <div class="pkg-list-icon"><i class="${pkg.icon}"></i></div>
+                        <div class="pkg-list-icon">${getIconHtml(pkg.icon)}</div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc" style="color:#007aff; font-family:monospace; font-size:0.75rem;">[Click to Copy Command]</span></div>
                         <span class="chevron"><i class="fas fa-copy" style="font-size:0.9rem; color:#888;"></i></span>
                     </a>`;
             } else {
                 html += `
                     <a href="${pkg.url}" target="_blank" class="pkg-list-item">
-                        <div class="pkg-list-icon"><i class="${pkg.icon}"></i></div>
+                        <div class="pkg-list-icon">${getIconHtml(pkg.icon)}</div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">${pkg.desc}</span></div>
                         <span class="chevron">›</span>
                     </a>`;
@@ -1035,6 +1337,7 @@ function renderCategoriesHub() {
         { id: 'sports', name: 'Live Sports', icon: 'fas fa-futbol', color: '#3b82f6' },
         { id: 'livetv', name: 'Live TV', icon: 'fas fa-satellite-dish', color: '#06b6d4' },
         { id: 'games', name: 'PC Games', icon: 'fas fa-gamepad', color: '#14b8a6' },
+        { id: 'emulators', name: 'Emulators', icon: 'fas fa-microchip', color: '#0ea5e9' },
         { id: 'mods', name: 'Game Mods', icon: 'fas fa-wrench', color: '#f97316' },
         { id: 'tools', name: 'PC Tools', icon: 'fas fa-toolbox', color: '#3b82f6' },
         { id: 'browser', name: 'Web Browsers', icon: 'fas fa-globe', color: '#10b981' },
@@ -1044,11 +1347,11 @@ function renderCategoriesHub() {
 
     container.innerHTML = '';
     categoriesList.forEach(cat => {
-        const count = packageData.filter(p => p.cat === cat.id).length;
+        const count = window._pkgCache && window._pkgCache[cat.id] ? window._pkgCache[cat.id].length : packageData.filter(p => p.cat === cat.id).length;
 
         const card = document.createElement('div');
         card.className = 'category-card';
-        
+
         // Expose dynamic color tokens as CSS variables for premium styling
         card.style.setProperty('--cat-color', cat.color);
         const rgb = hexToRgb(cat.color);
@@ -1116,14 +1419,14 @@ function handleSearch(e) {
                 const safeCmd = pkg.cmd.replace(/'/g, "\\'").replace(/"/g, "&quot;");
                 html += `
                     <a href="#" onclick="navigator.clipboard.writeText('${safeCmd}'); showToast('Command copied!', 'fa-check-circle'); event.preventDefault();" class="pkg-list-item">
-                        <div class="pkg-list-icon"><i class="${pkg.icon}"></i></div>
+                        <div class="pkg-list-icon">${getIconHtml(pkg.icon)}</div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">Copy Command</span></div>
                         <span class="chevron"><i class="fas fa-copy"></i></span>
                     </a>`;
             } else {
                 html += `
                     <a href="${pkg.url}" target="_blank" class="pkg-list-item">
-                        <div class="pkg-list-icon"><i class="${pkg.icon}"></i></div>
+                        <div class="pkg-list-icon">${getIconHtml(pkg.icon)}</div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">${pkg.desc}</span></div>
                         <span class="chevron">›</span>
                     </a>`;
@@ -1221,29 +1524,29 @@ async function performGoogleSearch() {
         // 1. Attempt real-time DuckDuckGo HTML scraping over proxy
         const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
         const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(searchUrl)}&timestamp=${Date.now()}`;
-        
+
         console.log("Fetching real web search results via proxy:", proxyUrl);
         const response = await fetch(proxyUrl);
         if (!response.ok) throw new Error("CORS Proxy search failed");
-        
+
         const data = await response.json();
         const parser = new DOMParser();
         const doc = parser.parseFromString(data.contents, "text/html");
-        
+
         const resultElements = doc.querySelectorAll(".result");
         let cards = [];
-        
+
         resultElements.forEach(el => {
             if (cards.length >= 6) return;
             const titleEl = el.querySelector(".result__a");
             const snippetEl = el.querySelector(".result__snippet");
             const urlEl = el.querySelector(".result__url");
-            
+
             if (titleEl && snippetEl) {
                 const title = titleEl.innerText.trim();
                 const snippet = snippetEl.innerText.trim();
                 const rawUrl = titleEl.getAttribute("href");
-                
+
                 let url = rawUrl;
                 if (rawUrl && rawUrl.includes("uddg=")) {
                     const uddgMatch = rawUrl.match(/uddg=([^&]+)/);
@@ -1251,12 +1554,12 @@ async function performGoogleSearch() {
                         url = decodeURIComponent(uddgMatch[1]);
                     }
                 }
-                
+
                 let displayUrl = urlEl ? urlEl.innerText.trim() : url;
                 if (url.startsWith("//")) {
                     url = "https:" + url;
                 }
-                
+
                 cards.push({
                     title,
                     snippet,
@@ -1269,7 +1572,7 @@ async function performGoogleSearch() {
         if (cards.length === 0) {
             throw new Error("No parsed search elements found");
         }
-        
+
         renderSerpCards(cards, query);
 
     } catch (err) {
@@ -2391,7 +2694,7 @@ function updateFreeGamesStats(games, isF2P = false) {
     if (isF2P) {
         countEl.textContent = Math.min(games.length, 60);
         valueEl.textContent = 'Permanently Free';
-        
+
         let platCounts = {};
         games.slice(0, 60).forEach(g => {
             let plat = g.platform.toLowerCase().includes('pc') ? 'PC' : 'Web';
@@ -2415,13 +2718,13 @@ function updateFreeGamesStats(games, isF2P = false) {
                     totalWorth += worthVal;
                 }
             }
-            
+
             let plat = g.platforms.toLowerCase();
             let store = 'Other';
             if (plat.includes('epic')) store = 'Epic Games';
             else if (plat.includes('steam')) store = 'Steam';
             else if (plat.includes('gog')) store = 'GOG';
-            
+
             storeCounts[store] = (storeCounts[store] || 0) + 1;
         });
 
@@ -2454,7 +2757,7 @@ async function loadFreeGames() {
         const response = await secureFetch('https://www.gamerpower.com/api/giveaways');
         if (!response.ok) throw new Error('Failed to load giveaways');
         const data = await response.json();
-        
+
         freeGamesCache = data;
         executeFreeGamesRender();
     } catch (err) {
@@ -2474,10 +2777,10 @@ async function loadFreeGames() {
 
 async function filterFreeGames(platform, btn) {
     if (!btn) return;
-    
+
     btn.parentElement.querySelectorAll('.fg-filter-item').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    
+
     currentFreeGamesPlatform = platform;
     const container = document.getElementById('free-games-container');
     if (!container) return;
@@ -2517,12 +2820,12 @@ function handleFreeGamesSearch() {
     const input = document.getElementById('fg-search-input');
     const clearBtn = document.getElementById('fg-search-clear');
     if (!input) return;
-    
+
     currentFreeGamesQuery = input.value.trim().toLowerCase();
     if (clearBtn) {
         clearBtn.style.display = currentFreeGamesQuery ? 'flex' : 'none';
     }
-    
+
     executeFreeGamesRender();
 }
 
@@ -2559,7 +2862,7 @@ function renderFreeGames(games, platform) {
     if (!container) return;
 
     let filtered = games;
-    
+
     if (platform !== 'all') {
         filtered = games.filter(g => {
             const platLower = g.platforms.toLowerCase();
@@ -2584,10 +2887,10 @@ function renderFreeGames(games, platform) {
             const desc = (g.description || '').toLowerCase();
             const type = (g.type || '').toLowerCase();
             const store = (g.platforms || '').toLowerCase();
-            return title.includes(currentFreeGamesQuery) || 
-                   desc.includes(currentFreeGamesQuery) || 
-                   type.includes(currentFreeGamesQuery) ||
-                   store.includes(currentFreeGamesQuery);
+            return title.includes(currentFreeGamesQuery) ||
+                desc.includes(currentFreeGamesQuery) ||
+                type.includes(currentFreeGamesQuery) ||
+                store.includes(currentFreeGamesQuery);
         });
     }
 
@@ -2625,7 +2928,7 @@ function renderFreeGames(games, platform) {
         const isClaimed = claimed.has(String(game.id));
         card.className = `game-card animated-card ${isClaimed ? 'claimed' : ''}`;
         card.style.animationDelay = `${Math.min(index, 12) * 0.05}s`;
-        
+
         let storeBadge = '';
         let badgeIcon = 'fas fa-gamepad';
         let gameColor = '#10b981';
@@ -2687,7 +2990,7 @@ function renderFreeGames(games, platform) {
                 </div>
             </div>
         `;
-        
+
         setupCardGlowInteraction(card);
         container.appendChild(card);
     });
@@ -2707,10 +3010,10 @@ function renderF2PGames(games) {
             const desc = (g.short_description || '').toLowerCase();
             const genre = (g.genre || '').toLowerCase();
             const platform = (g.platform || '').toLowerCase();
-            return title.includes(currentFreeGamesQuery) || 
-                   desc.includes(currentFreeGamesQuery) || 
-                   genre.includes(currentFreeGamesQuery) ||
-                   platform.includes(currentFreeGamesQuery);
+            return title.includes(currentFreeGamesQuery) ||
+                desc.includes(currentFreeGamesQuery) ||
+                genre.includes(currentFreeGamesQuery) ||
+                platform.includes(currentFreeGamesQuery);
         });
     }
 
@@ -2745,7 +3048,7 @@ function renderF2PGames(games) {
         const isClaimed = claimed.has(String(game.id));
         card.className = `game-card animated-card ${isClaimed ? 'claimed' : ''}`;
         card.style.animationDelay = `${Math.min(index, 12) * 0.05}s`;
-        
+
         card.style.setProperty('--game-color', '#10b981');
         card.style.setProperty('--game-color-rgb', '16, 185, 129');
 
@@ -2783,7 +3086,7 @@ function renderF2PGames(games) {
                 </div>
             </div>
         `;
-        
+
         setupCardGlowInteraction(card);
         container.appendChild(card);
     });
@@ -5332,18 +5635,18 @@ function filterFaqs() {
     const q = document.getElementById('faq-search-input').value.toLowerCase().trim();
     const items = document.querySelectorAll('.faq-grid .faq-item');
     let visibleCount = 0;
-    
+
     items.forEach(item => {
         const cat = item.getAttribute('data-cat');
         const questionText = item.querySelector('.faq-question span').innerText.toLowerCase();
         const answerText = item.querySelector('.faq-answer p').innerText.toLowerCase();
-        
+
         // 1. Check tab filter matches
         const matchesCat = (activeFaqCategory === 'all' || cat === activeFaqCategory);
-        
+
         // 2. Check search input keyword matches
         const matchesSearch = (!q || questionText.includes(q) || answerText.includes(q));
-        
+
         if (matchesCat && matchesSearch) {
             item.classList.remove('hidden-cat', 'hidden-search');
             item.style.display = 'block';
@@ -5367,7 +5670,7 @@ function filterFaqs() {
 }
 
 // FAQ-to-Copilot tab-routing helper
-window.askFaqQuestionCopilot = function(question) {
+window.askFaqQuestionCopilot = function (question) {
     switchTab('google');
     switchSearchMode('copilot');
     const aiInput = document.getElementById('ai-query');
@@ -5378,7 +5681,7 @@ window.askFaqQuestionCopilot = function(question) {
 };
 
 // Routing helper from raw input value when no direct match exists
-window.askFaqCopilotFromInput = function() {
+window.askFaqCopilotFromInput = function () {
     const q = document.getElementById('faq-search-input').value.trim();
     if (q) {
         switchTab('google');
@@ -5414,7 +5717,7 @@ function initializeFaqAiFeatures() {
 }
 
 // Home Quick AI Search trigger helper
-window.triggerHomeAiSearch = function() {
+window.triggerHomeAiSearch = function () {
     const homeInput = document.getElementById('home-ai-input');
     if (!homeInput) return;
     const q = homeInput.value.trim();
@@ -5422,18 +5725,18 @@ window.triggerHomeAiSearch = function() {
         showToast('Please type a question first.', 'fa-exclamation-triangle');
         return;
     }
-    
+
     // Switch to AI Search tab
     switchTab('google');
     switchSearchMode('copilot');
-    
+
     // Fill AI search input and submit
     const aiInput = document.getElementById('ai-query');
     if (aiInput) {
         aiInput.value = q;
         performAiSearch();
     }
-    
+
     // Clear home input
     homeInput.value = '';
 };
@@ -5442,7 +5745,7 @@ window.triggerHomeAiSearch = function() {
 function startHomeActivityMonitor() {
     const consoleEl = document.getElementById('home-console-logs');
     if (!consoleEl) return;
-    
+
     const logs = [
         "SYS: Core kernel active (thread_pool: 64)",
         "SEC: Sandbox authorization token verified",
@@ -5456,24 +5759,24 @@ function startHomeActivityMonitor() {
         "SYS: connection_status = STABLE (RTT: 4ms)",
         "OS: Respring daemon loaded successfully"
     ];
-    
+
     // Pre-populate with 4 random logs
     for (let i = 0; i < 4; i++) {
         const line = logs[Math.floor(Math.random() * logs.length)];
         const timeStr = new Date().toLocaleTimeString(undefined, { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
         consoleEl.insertAdjacentHTML('beforeend', `<div style="opacity: 0.85;">[${timeStr}] ${line}</div>`);
     }
-    
+
     // Cycle and append new logs continuously
     setInterval(() => {
         const line = logs[Math.floor(Math.random() * logs.length)];
         const timeStr = new Date().toLocaleTimeString(undefined, { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        
+
         // Remove first log line if limit exceeded to avoid height overflow
         if (consoleEl.children.length >= 6) {
             consoleEl.children[0].remove();
         }
-        
+
         const logLineHtml = `<div style="animation: fadeIn 0.3s ease-out;">[${timeStr}] ${line}</div>`;
         consoleEl.insertAdjacentHTML('beforeend', logLineHtml);
     }, 4500);
@@ -6395,11 +6698,11 @@ function toggleSpeechSynthesis(text, msgId, btn) {
 // ==========================================
 
 // 1. Theme selection
-window.setAppTheme = function(theme) {
+window.setAppTheme = function (theme) {
     const root = document.documentElement;
     root.setAttribute('data-theme', theme);
     localStorage.setItem('privacy_theme', theme);
-    
+
     // Update theme chips active state
     document.querySelectorAll('.theme-chip').forEach(chip => {
         if (chip.getAttribute('data-theme') === theme) {
@@ -6408,28 +6711,28 @@ window.setAppTheme = function(theme) {
             chip.classList.remove('active');
         }
     });
-    
+
     // Show toast for visual confirmation
     showToast(`Accent theme set to ${theme.charAt(0).toUpperCase() + theme.slice(1)}!`, 'fa-palette');
 };
 
 // 2. Profile alias and biography
-window.updatePrivacyProfile = function() {
+window.updatePrivacyProfile = function () {
     const usernameInput = document.getElementById('privacy-username');
     const bioInput = document.getElementById('privacy-bio');
-    
+
     const username = usernameInput ? usernameInput.value.trim() : '';
     const bio = bioInput ? bioInput.value.trim() : '';
-    
+
     localStorage.setItem('privacy_username', username);
     localStorage.setItem('privacy_bio', bio);
-    
+
     // Sync to other parts of page
     const homeName = document.querySelector('.hero-name');
     if (homeName) {
         homeName.innerText = username || 'Chya Luqman';
     }
-    
+
     const bioEl = document.getElementById('bio-text');
     if (bioEl) {
         bioEl.innerText = bio || 'Developed by Chya Luqman, Cydia Elite is an architectural study in how classic package management can evolve into the era of spatial computing.';
@@ -6437,13 +6740,13 @@ window.updatePrivacyProfile = function() {
 };
 
 // 3. Mouse trail toggler
-window.toggleMouseTrail = function(enabled) {
+window.toggleMouseTrail = function (enabled) {
     localStorage.setItem('privacy_mouse_trail', enabled ? 'true' : 'false');
     showToast(enabled ? 'Cursor particle trail enabled.' : 'Cursor particle trail disabled.', enabled ? 'fa-magic' : 'fa-ban');
 };
 
 // 4. Reduce motion toggler
-window.toggleReduceMotion = function(enabled) {
+window.toggleReduceMotion = function (enabled) {
     localStorage.setItem('privacy_reduce_motion', enabled ? 'true' : 'false');
     if (enabled) {
         document.body.classList.add('reduce-motion');
@@ -6455,7 +6758,7 @@ window.toggleReduceMotion = function(enabled) {
 };
 
 // 5. Search history toggler
-window.toggleSaveHistory = function(enabled) {
+window.toggleSaveHistory = function (enabled) {
     localStorage.setItem('privacy_save_history', enabled ? 'true' : 'false');
     const wrapper = document.getElementById('history-section-wrapper');
     if (wrapper) {
@@ -6470,43 +6773,43 @@ window.toggleSaveHistory = function(enabled) {
 };
 
 // 6. Save search query into history
-window.saveSearchQuery = function(query) {
+window.saveSearchQuery = function (query) {
     query = query.trim();
     if (!query) return;
     if (localStorage.getItem('privacy_save_history') === 'false') return;
-    
+
     let history = [];
     try {
         history = JSON.parse(localStorage.getItem('privacy_search_history') || '[]');
-    } catch(e) {
+    } catch (e) {
         history = [];
     }
-    
+
     history = history.filter(q => q.toLowerCase() !== query.toLowerCase());
     history.unshift(query);
     history = history.slice(0, 10); // keep last 10
-    
+
     localStorage.setItem('privacy_search_history', JSON.stringify(history));
     updateSearchHistoryUI();
 };
 
 // 7. Render search history chips in settings
-window.updateSearchHistoryUI = function() {
+window.updateSearchHistoryUI = function () {
     const container = document.getElementById('privacy-history-tags');
     if (!container) return;
-    
+
     let history = [];
     try {
         history = JSON.parse(localStorage.getItem('privacy_search_history') || '[]');
-    } catch(e) {
+    } catch (e) {
         history = [];
     }
-    
+
     if (history.length === 0) {
         container.innerHTML = '<span style="font-size: 0.75rem; color: rgba(255,255,255,0.3); font-style: italic;">No recent searches logged.</span>';
         return;
     }
-    
+
     let html = '';
     history.forEach((query, index) => {
         html += `
@@ -6520,14 +6823,14 @@ window.updateSearchHistoryUI = function() {
 };
 
 // 8. Delete individual search history tag
-window.deleteHistoryItem = function(index) {
+window.deleteHistoryItem = function (index) {
     let history = [];
     try {
         history = JSON.parse(localStorage.getItem('privacy_search_history') || '[]');
-    } catch(e) {
+    } catch (e) {
         history = [];
     }
-    
+
     history.splice(index, 1);
     localStorage.setItem('privacy_search_history', JSON.stringify(history));
     updateSearchHistoryUI();
@@ -6535,7 +6838,7 @@ window.deleteHistoryItem = function(index) {
 };
 
 // 9. Apply history query to main search bar
-window.applyHistorySearch = function(query) {
+window.applyHistorySearch = function (query) {
     switchTab('search');
     const sInput = document.getElementById('search-input');
     const pcInput = document.getElementById('pc-search-input');
@@ -6550,7 +6853,7 @@ window.applyHistorySearch = function(query) {
 };
 
 // 10. Storage Encryption Toggle (Obfuscator simulation)
-window.toggleStorageEncryption = function(enabled) {
+window.toggleStorageEncryption = function (enabled) {
     localStorage.setItem('privacy_encryption', enabled ? 'true' : 'false');
     if (enabled) {
         showToast('Local states obfuscated via AES-256-GCM wrapper.', 'fa-lock');
@@ -6560,7 +6863,7 @@ window.toggleStorageEncryption = function(enabled) {
 };
 
 // 11. Clear all cache variables and reset
-window.clearAllCache = function() {
+window.clearAllCache = function () {
     if (confirm("Are you sure you want to clear all local storage, search logs, and personalized settings? This will trigger a system respring.")) {
         localStorage.clear();
         showToast('Local sandbox states cleared successfully.', 'fa-check');
@@ -6569,35 +6872,35 @@ window.clearAllCache = function() {
 };
 
 // 12. Provider Permissions Toggle
-window.toggleProvider = function(provider, enabled) {
+window.toggleProvider = function (provider, enabled) {
     localStorage.setItem(`privacy_provider_${provider}`, enabled ? 'true' : 'false');
     showToast(`${provider.toUpperCase()} integration permission ${enabled ? 'granted' : 'revoked'}.`, enabled ? 'fa-check-circle' : 'fa-exclamation-triangle');
 };
 
 // 13. Dynamic Proxy selection
-window.handleProxySelectChange = function() {
+window.handleProxySelectChange = function () {
     const select = document.getElementById('privacy-proxy-select');
     const customWrapper = document.getElementById('custom-proxy-input-wrapper');
     if (!select) return;
-    
+
     const value = select.value;
     localStorage.setItem('privacy_proxy_select', value);
-    
+
     if (value === 'custom') {
         if (customWrapper) customWrapper.style.display = 'flex';
     } else {
         if (customWrapper) customWrapper.style.display = 'none';
     }
-    
+
     showToast(`CORS Request proxy set to ${select.options[select.selectedIndex].text}.`, 'fa-server');
 };
 
 // 14. Ping integration diagnostic test
-window.pingService = function(service, url) {
+window.pingService = function (service, url) {
     const badge = document.getElementById(`status-badge-${service}`);
     const latencyEl = document.getElementById(`latency-val-${service}`);
     const btn = document.querySelector(`#diagnostic-row-${service} .ping-btn`);
-    
+
     if (badge) {
         badge.className = 'badge-status-gray';
         badge.innerText = 'Testing...';
@@ -6608,62 +6911,62 @@ window.pingService = function(service, url) {
         btn.innerHTML = '<i class="fas fa-spinner"></i> Pinging';
         btn.disabled = true;
     }
-    
+
     const start = Date.now();
-    
+
     // Perform fetch with custom headers to prevent browser caching
     fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' })
-    .then(() => {
-        const delay = Date.now() - start;
-        if (badge) {
-            badge.className = 'badge-status-green';
-            badge.innerText = 'Connected';
-        }
-        if (latencyEl) latencyEl.innerText = `${delay} ms`;
-    })
-    .catch((err) => {
-        // If blocked by settings directly in fetch
-        if (localStorage.getItem(`privacy_provider_${service}`) === 'false') {
-            if (badge) {
-                badge.className = 'badge-status-red';
-                badge.innerText = 'Blocked';
-            }
-            if (latencyEl) latencyEl.innerText = 'Permission Denied';
-            return;
-        }
-        
-        // Mode no-cors will succeed even if server blocks it (since opaque response).
-        // If it throws an actual exception, it means network offline or dns resolution issue.
-        const delay = Date.now() - start;
-        if (delay < 5000) {
+        .then(() => {
+            const delay = Date.now() - start;
             if (badge) {
                 badge.className = 'badge-status-green';
                 badge.innerText = 'Connected';
             }
             if (latencyEl) latencyEl.innerText = `${delay} ms`;
-        } else {
-            if (badge) {
-                badge.className = 'badge-status-red';
-                badge.innerText = 'Offline/Failed';
+        })
+        .catch((err) => {
+            // If blocked by settings directly in fetch
+            if (localStorage.getItem(`privacy_provider_${service}`) === 'false') {
+                if (badge) {
+                    badge.className = 'badge-status-red';
+                    badge.innerText = 'Blocked';
+                }
+                if (latencyEl) latencyEl.innerText = 'Permission Denied';
+                return;
             }
-            if (latencyEl) latencyEl.innerText = 'Timeout';
-        }
-    })
-    .finally(() => {
-        if (btn) {
-            btn.classList.remove('pinging');
-            btn.innerHTML = '<i class="fas fa-bolt"></i> Ping';
-            btn.disabled = false;
-        }
-    });
+
+            // Mode no-cors will succeed even if server blocks it (since opaque response).
+            // If it throws an actual exception, it means network offline or dns resolution issue.
+            const delay = Date.now() - start;
+            if (delay < 5000) {
+                if (badge) {
+                    badge.className = 'badge-status-green';
+                    badge.innerText = 'Connected';
+                }
+                if (latencyEl) latencyEl.innerText = `${delay} ms`;
+            } else {
+                if (badge) {
+                    badge.className = 'badge-status-red';
+                    badge.innerText = 'Offline/Failed';
+                }
+                if (latencyEl) latencyEl.innerText = 'Timeout';
+            }
+        })
+        .finally(() => {
+            if (btn) {
+                btn.classList.remove('pinging');
+                btn.innerHTML = '<i class="fas fa-bolt"></i> Ping';
+                btn.disabled = false;
+            }
+        });
 };
 
 // 15. Load settings into UI on boot
-window.loadPrivacySettings = function() {
+window.loadPrivacySettings = function () {
     // Restore theme
     const activeTheme = localStorage.getItem('privacy_theme') || 'default';
     document.documentElement.setAttribute('data-theme', activeTheme);
-    
+
     const chips = document.querySelectorAll('.theme-chip');
     chips.forEach(chip => {
         if (chip.getAttribute('data-theme') === activeTheme) {
@@ -6672,17 +6975,17 @@ window.loadPrivacySettings = function() {
             chip.classList.remove('active');
         }
     });
-    
+
     // Restore username and bio
     const savedName = localStorage.getItem('privacy_username') || '';
     const savedBio = localStorage.getItem('privacy_bio') || '';
-    
+
     const uInput = document.getElementById('privacy-username');
     const bInput = document.getElementById('privacy-bio');
-    
+
     if (uInput) uInput.value = savedName;
     if (bInput) bInput.value = savedBio;
-    
+
     if (savedName) {
         const hName = document.querySelector('.hero-name');
         if (hName) hName.innerText = savedName;
@@ -6691,19 +6994,19 @@ window.loadPrivacySettings = function() {
         const bioEl = document.getElementById('bio-text');
         if (bioEl) bioEl.innerText = savedBio;
     }
-    
+
     // Restore switches
     const mouseTrailVal = localStorage.getItem('privacy_mouse_trail') !== 'false';
     const trailSwitch = document.getElementById('privacy-mouse-trail');
     if (trailSwitch) trailSwitch.checked = mouseTrailVal;
-    
+
     const reduceMotionVal = localStorage.getItem('privacy_reduce_motion') === 'true';
     const motionSwitch = document.getElementById('privacy-reduce-motion');
     if (motionSwitch) {
         motionSwitch.checked = reduceMotionVal;
         if (reduceMotionVal) document.body.classList.add('reduce-motion');
     }
-    
+
     const saveHistoryVal = localStorage.getItem('privacy_save_history') !== 'false';
     const historySwitch = document.getElementById('privacy-save-history');
     if (historySwitch) {
@@ -6712,15 +7015,15 @@ window.loadPrivacySettings = function() {
         if (wrapper) wrapper.style.display = saveHistoryVal ? 'block' : 'none';
     }
     updateSearchHistoryUI();
-    
+
     const telemetryVal = localStorage.getItem('privacy_telemetry') === 'true';
     const telemetrySwitch = document.getElementById('privacy-telemetry');
     if (telemetrySwitch) telemetrySwitch.checked = telemetryVal;
-    
+
     const encryptionVal = localStorage.getItem('privacy_encryption') === 'true';
     const encryptionSwitch = document.getElementById('privacy-encryption');
     if (encryptionSwitch) encryptionSwitch.checked = encryptionVal;
-    
+
     // Restore integrations
     const integrations = ['ai', 'tiktok', 'instagram', 'anime', 'games', 'movies'];
     integrations.forEach(provider => {
@@ -6728,17 +7031,17 @@ window.loadPrivacySettings = function() {
         const checkbox = document.getElementById(`privacy-provider-${provider}`);
         if (checkbox) checkbox.checked = val;
     });
-    
+
     // Restore proxy selection
     const proxySelect = localStorage.getItem('privacy_proxy_select') || 'allorigins';
     const selectEl = document.getElementById('privacy-proxy-select');
     if (selectEl) selectEl.value = proxySelect;
-    
+
     const customProxyWrapper = document.getElementById('custom-proxy-input-wrapper');
     if (customProxyWrapper) {
         customProxyWrapper.style.display = (proxySelect === 'custom') ? 'flex' : 'none';
     }
-    
+
     const customProxyVal = localStorage.getItem('privacy_custom_proxy') || '';
     const customProxyInput = document.getElementById('privacy-custom-proxy');
     if (customProxyInput) customProxyInput.value = customProxyVal;
@@ -6755,30 +7058,116 @@ let sportsCategoriesList = [];
 let activeSportId = '';
 let sportsMatchesList = [];
 let currentSportsSearch = '';
+let activeSportsStatusFilter = 'all';
 
 // Pre-fetched fallback categories if API is unavailable
 const fallbackSportsCategories = [
-    {"id":"football","name":"Football"},
-    {"id":"basketball","name":"Basketball"},
-    {"id":"american-football","name":"American Football"},
-    {"id":"hockey","name":"Hockey"},
-    {"id":"baseball","name":"Baseball"},
-    {"id":"motor-sports","name":"Motor Sports"},
-    {"id":"fight","name":"Fight (UFC, Boxing)"},
-    {"id":"tennis","name":"Tennis"},
-    {"id":"rugby","name":"Rugby"},
-    {"id":"golf","name":"Golf"},
-    {"id":"billiards","name":"Billiards"},
-    {"id":"afl","name":"AFL"},
-    {"id":"darts","name":"Darts"},
-    {"id":"cricket","name":"Cricket"},
-    {"id":"other","name":"Other"}
+    { "id": "football", "name": "Football" },
+    { "id": "basketball", "name": "Basketball" },
+    { "id": "american-football", "name": "American Football" },
+    { "id": "hockey", "name": "Hockey" },
+    { "id": "baseball", "name": "Baseball" },
+    { "id": "motor-sports", "name": "Motor Sports" },
+    { "id": "fight", "name": "Fight (UFC, Boxing)" },
+    { "id": "tennis", "name": "Tennis" },
+    { "id": "rugby", "name": "Rugby" },
+    { "id": "golf", "name": "Golf" },
+    { "id": "billiards", "name": "Billiards" },
+    { "id": "afl", "name": "AFL" },
+    { "id": "darts", "name": "Darts" },
+    { "id": "cricket", "name": "Cricket" },
+    { "id": "other", "name": "Other" }
 ];
 
+let sportsClockInterval = null;
+
+function startSportsClock() {
+    if (sportsClockInterval) return;
+
+    const clockSpan = document.getElementById('sports-current-time');
+    if (!clockSpan) return;
+
+    const updateTime = () => {
+        const now = new Date();
+        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        const timeStr = now.toLocaleTimeString([], timeOptions);
+
+        const offsetMin = -now.getTimezoneOffset();
+        const offsetSign = offsetMin >= 0 ? '+' : '-';
+        const offsetHours = Math.floor(Math.abs(offsetMin) / 60);
+        const offsetMins = Math.abs(offsetMin) % 60;
+        const timezoneStr = `GMT${offsetSign}${offsetHours}:${offsetMins.toString().padStart(2, '0')}`;
+
+        clockSpan.innerText = `${timeStr} (${timezoneStr})`;
+    };
+
+    updateTime();
+    sportsClockInterval = setInterval(updateTime, 1000);
+}
+
+function formatMatchTime(match) {
+    const dateVal = match.date || match.time;
+    if (!dateVal) return 'Live Now';
+
+    let d = null;
+    const timestamp = Number(dateVal);
+    if (!isNaN(timestamp)) {
+        d = new Date(timestamp);
+    } else {
+        d = new Date(dateVal);
+    }
+
+    if (d && !isNaN(d.getTime())) {
+        try {
+            const now = new Date();
+            const isToday = d.toDateString() === now.toDateString();
+
+            const tomorrow = new Date(now);
+            tomorrow.setDate(now.getDate() + 1);
+            const isTomorrow = d.toDateString() === tomorrow.toDateString();
+
+            const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+            const timeStr = d.toLocaleTimeString([], timeOptions);
+
+            // Calculate relative countdown if in the future
+            let relativeStr = '';
+            const diffMs = d.getTime() - now.getTime();
+            if (diffMs > 0) {
+                const diffMins = Math.floor(diffMs / (1000 * 60));
+                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                const diffDays = Math.floor(diffHours / 24);
+
+                if (diffMins < 60) {
+                    relativeStr = ` (in ${diffMins}m)`;
+                } else if (diffHours < 24) {
+                    relativeStr = ` (in ${diffHours}h)`;
+                } else {
+                    relativeStr = ` (in ${diffDays}d)`;
+                }
+            }
+
+            if (isToday) {
+                return `Today, ${timeStr}${relativeStr}`;
+            } else if (isTomorrow) {
+                return `Tomorrow, ${timeStr}${relativeStr}`;
+            } else {
+                const dateOptions = { month: 'short', day: 'numeric' };
+                const dateStr = d.toLocaleDateString([], dateOptions);
+                return `${dateStr}, ${timeStr}${relativeStr}`;
+            }
+        } catch (e) {
+            return String(dateVal);
+        }
+    }
+
+    return String(dateVal);
+}
+
 async function loadLiveSportsPortal() {
+    startSportsClock();
     const categoriesContainer = document.getElementById('sports-categories');
     if (!categoriesContainer) return;
-    
+
     // Clear details if open
     const detailsContainer = document.getElementById('sports-details');
     if (detailsContainer) detailsContainer.style.display = 'none';
@@ -6798,13 +7187,13 @@ async function loadLiveSportsPortal() {
     }
 
     renderSportsCategories();
-    
+
     // Auto load matches for the first category if none is active
     if (sportsCategoriesList.length > 0) {
         if (!activeSportId) {
             activeSportId = sportsCategoriesList[0].id;
         }
-        
+
         // Highlight active chip
         const chips = document.querySelectorAll('.sports-chip');
         chips.forEach(chip => {
@@ -6842,7 +7231,7 @@ function renderSportsCategories() {
         else if (name.includes('billiards')) iconClass = 'fa-circle';
         else if (name.includes('darts')) iconClass = 'fa-bullseye';
         else if (name.includes('cricket')) iconClass = 'fa-bat';
-        
+
         html += `
             <div class="sports-chip ${cat.id === activeSportId ? 'active' : ''}" data-id="${cat.id}" onclick="selectSportCategory('${cat.id}')">
                 <i class="fas ${iconClass}"></i>
@@ -6855,7 +7244,7 @@ function renderSportsCategories() {
 
 function selectSportCategory(sportId) {
     activeSportId = sportId;
-    
+
     // Highlight chip
     const chips = document.querySelectorAll('.sports-chip');
     chips.forEach(chip => {
@@ -6871,6 +7260,17 @@ function selectSportCategory(sportId) {
     if (searchInput) searchInput.value = '';
     currentSportsSearch = '';
 
+    // Reset status filter
+    activeSportsStatusFilter = 'all';
+    const filterButtons = document.querySelectorAll('.sports-filter-btn');
+    filterButtons.forEach(btn => {
+        if (btn.getAttribute('data-filter') === 'all') {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
     loadSportsMatches(sportId);
 }
 
@@ -6878,7 +7278,7 @@ async function loadSportsMatches(sportId) {
     showSportsLoader(true, `Loading ${sportId} matches...`);
     const resultsContainer = document.getElementById('sports-results');
     const detailsContainer = document.getElementById('sports-details');
-    
+
     if (resultsContainer) resultsContainer.innerHTML = '';
     if (detailsContainer) detailsContainer.style.display = 'none';
     if (resultsContainer) resultsContainer.style.display = 'grid';
@@ -6887,7 +7287,7 @@ async function loadSportsMatches(sportId) {
         const res = await fetch(`https://streamed.pk/api/matches/${sportId}`);
         if (!res.ok) throw new Error('Failed to fetch matches');
         sportsMatchesList = await res.json();
-        renderSportsMatches(sportsMatchesList);
+        filterAndRenderSportsMatches();
     } catch (err) {
         console.error("Failed to load sports matches:", err);
         showSportsLoader(false);
@@ -6920,7 +7320,7 @@ function renderSportsMatches(matches) {
         let awayName = 'Team B';
         let homeBadge = '';
         let awayBadge = '';
-        
+
         if (match.teams) {
             if (match.teams.home) {
                 homeName = match.teams.home.name || match.teams.home;
@@ -6952,12 +7352,15 @@ function renderSportsMatches(matches) {
 
         // Status
         const isLive = match.live || match.status?.toLowerCase() === 'live' || match.isLive;
-        const statusHtml = isLive 
+        const statusHtml = isLive
             ? '<span class="match-status-badge live"><span class="pulse-dot"></span> LIVE</span>'
             : '<span class="match-status-badge upcoming"><i class="far fa-clock"></i> Upcoming</span>';
 
         // Time
-        const matchTimeStr = match.time || match.date || 'Live Now';
+        const matchTimeStr = formatMatchTime(match);
+        const timeIconHtml = isLive
+            ? '<i class="fas fa-broadcast-tower pulse-icon" style="color: #ef4444;"></i>'
+            : '<i class="fas fa-calendar-alt"></i>';
 
         // Stream Sources count
         const streamCount = match.sources ? match.sources.length : 0;
@@ -6965,14 +7368,30 @@ function renderSportsMatches(matches) {
 
         const matchId = match.id || encodeURIComponent(homeName + '-' + awayName);
 
+        // Dynamic sports icon selection
+        let sportIcon = 'fa-futbol';
+        const sportLower = activeSportId.toLowerCase();
+        if (sportLower.includes('basketball')) sportIcon = 'fa-basketball-ball';
+        else if (sportLower.includes('american')) sportIcon = 'fa-football-ball';
+        else if (sportLower.includes('hockey')) sportIcon = 'fa-hockey-puck';
+        else if (sportLower.includes('baseball')) sportIcon = 'fa-baseball-ball';
+        else if (sportLower.includes('motor')) sportIcon = 'fa-car';
+        else if (sportLower.includes('fight') || sportLower.includes('ufc') || sportLower.includes('boxing')) sportIcon = 'fa-user-ninja';
+        else if (sportLower.includes('tennis')) sportIcon = 'fa-table-tennis';
+        else if (sportLower.includes('rugby')) sportIcon = 'fa-football-ball';
+        else if (sportLower.includes('golf')) sportIcon = 'fa-golf-ball';
+        else if (sportLower.includes('billiards')) sportIcon = 'fa-circle';
+        else if (sportLower.includes('darts')) sportIcon = 'fa-bullseye';
+        else if (sportLower.includes('cricket')) sportIcon = 'fa-bat';
+
         html += `
             <div class="match-card" onclick="viewMatchDetails('${matchId}')">
                 <div class="match-card-overlay">
                     <span class="overlay-btn"><i class="fas fa-play"></i> Watch Stream</span>
                 </div>
                 <div class="match-header">
-                    <span class="match-sport-badge">${activeSportId}</span>
-                    <span class="match-servers-count">${streamsLabel}</span>
+                    <span class="match-sport-badge"><i class="fas ${sportIcon}"></i> ${activeSportId}</span>
+                    <span class="match-servers-count"><i class="fas fa-satellite-dish"></i> ${streamsLabel}</span>
                 </div>
                 <div class="match-scoreboard-main">
                     <div class="scoreboard-team home">
@@ -6989,7 +7408,7 @@ function renderSportsMatches(matches) {
                     </div>
                 </div>
                 <div class="match-footer">
-                    <span class="match-time"><i class="fas fa-calendar-alt"></i> ${matchTimeStr}</span>
+                    <span class="match-time">${timeIconHtml} ${matchTimeStr}</span>
                 </div>
             </div>
         `;
@@ -6998,18 +7417,20 @@ function renderSportsMatches(matches) {
     resultsContainer.innerHTML = html;
 }
 
+function getBadgeId(badge) {
+    if (!badge) return '';
+    if (!badge.startsWith('http') && !badge.startsWith('/') && !badge.includes('.')) {
+        return badge;
+    }
+    const parts = badge.split('/');
+    const lastPart = parts[parts.length - 1];
+    return lastPart.replace('.webp', '');
+}
+
 function getLogoHtml(teamName, badge) {
     if (badge) {
-        let fullPath = badge;
-        // If badge is just an ID (does not start with http or / and has no dot), wrap in Images API path
-        if (!badge.startsWith('http') && !badge.startsWith('/') && !badge.includes('.')) {
-            fullPath = `https://streamed.pk/api/images/badge/${badge}.webp`;
-        } else if (badge.startsWith('/')) {
-            fullPath = `https://streamed.pk${badge}`;
-            if (!fullPath.endsWith('.webp')) {
-                fullPath += '.webp';
-            }
-        }
+        const badgeId = getBadgeId(badge);
+        const fullPath = `https://streamed.pk/api/images/badge/${badgeId}.webp`;
         return `<div class="match-team-logo"><img src="${fullPath}" alt="${teamName}" loading="lazy" onerror="this.outerHTML='${teamName.charAt(0)}'"></div>`;
     }
     const initial = teamName ? teamName.trim().charAt(0).toUpperCase() : 'T';
@@ -7030,23 +7451,47 @@ function showSportsLoader(show, text = 'Loading...') {
 }
 
 function searchSportsMatches() {
+    filterAndRenderSportsMatches();
+}
+
+function setSportsStatusFilter(filterValue) {
+    activeSportsStatusFilter = filterValue;
+
+    // Update active class on buttons
+    const filterButtons = document.querySelectorAll('.sports-filter-btn');
+    filterButtons.forEach(btn => {
+        if (btn.getAttribute('data-filter') === filterValue) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    filterAndRenderSportsMatches();
+}
+
+function filterAndRenderSportsMatches() {
     const searchInput = document.getElementById('sports-search-input');
-    if (!searchInput) return;
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-    const query = searchInput.value.toLowerCase().trim();
-    currentSportsSearch = query;
+    let filtered = sportsMatchesList;
 
-    if (!query) {
-        renderSportsMatches(sportsMatchesList);
-        return;
+    // Filter by search query
+    if (query) {
+        filtered = filtered.filter(match => {
+            const title = (match.title || match.name || '').toLowerCase();
+            const home = (match.homeTeam?.name || match.homeTeam || match.home?.name || match.home || match.teams?.home?.name || '').toLowerCase();
+            const away = (match.awayTeam?.name || match.awayTeam || match.away?.name || match.away || match.teams?.away?.name || '').toLowerCase();
+            return title.includes(query) || home.includes(query) || away.includes(query);
+        });
     }
 
-    const filtered = sportsMatchesList.filter(match => {
-        const title = (match.title || match.name || '').toLowerCase();
-        const home = (match.homeTeam?.name || match.homeTeam || match.home?.name || match.home || match.teams?.home?.name || '').toLowerCase();
-        const away = (match.awayTeam?.name || match.awayTeam || match.away?.name || match.away || match.teams?.away?.name || '').toLowerCase();
-        return title.includes(query) || home.includes(query) || away.includes(query);
-    });
+    // Filter by status (All, Live, Upcoming)
+    if (activeSportsStatusFilter === 'live') {
+        filtered = filtered.filter(match => match.live || match.status?.toLowerCase() === 'live' || match.isLive);
+    } else if (activeSportsStatusFilter === 'upcoming') {
+        filtered = filtered.filter(match => !(match.live || match.status?.toLowerCase() === 'live' || match.isLive));
+    }
 
     renderSportsMatches(filtered);
 }
@@ -7072,13 +7517,13 @@ async function viewMatchDetails(matchId) {
 
     resultsContainer.style.display = 'none';
     detailsContainer.style.display = 'block';
-    
+
     // Parse team details and badges
     let homeName = 'Team A';
     let awayName = 'Team B';
     let homeBadge = '';
     let awayBadge = '';
-    
+
     if (match.teams) {
         if (match.teams.home) {
             homeName = match.teams.home.name || match.teams.home;
@@ -7109,18 +7554,27 @@ async function viewMatchDetails(matchId) {
     const awayLogoHtml = getLogoHtml(awayName, awayBadge).replace('match-team-logo', 'sports-vs-logo');
 
     // Parse match poster banner
-    let posterHtml = '';
-    if (match.poster) {
-        let posterUrl = match.poster;
-        if (match.poster.startsWith('/')) {
-            posterUrl = `https://streamed.pk${match.poster}`;
+    let posterUrl = match.poster;
+    if (!posterUrl && homeBadge && awayBadge) {
+        const homeId = getBadgeId(homeBadge);
+        const awayId = getBadgeId(awayBadge);
+        if (homeId && awayId) {
+            posterUrl = `/api/images/poster/${homeId}/${awayId}.webp`;
         }
-        if (!posterUrl.endsWith('.webp') && !posterUrl.includes('?')) {
-            posterUrl += '.webp';
+    }
+
+    let posterHtml = '';
+    if (posterUrl) {
+        let fullPosterUrl = posterUrl;
+        if (posterUrl.startsWith('/')) {
+            fullPosterUrl = `https://streamed.pk${posterUrl}`;
+        }
+        if (!fullPosterUrl.endsWith('.webp') && !fullPosterUrl.includes('?')) {
+            fullPosterUrl += '.webp';
         }
         posterHtml = `
             <div class="sports-match-poster" style="width: 100%; height: 180px; overflow: hidden; border-radius: 16px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); position: relative;">
-                <img src="${posterUrl}" alt="${match.title || (homeName + ' vs ' + awayName)}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.65);" loading="lazy">
+                <img src="${fullPosterUrl}" alt="${match.title || (homeName + ' vs ' + awayName)}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.65);" loading="lazy" onerror="this.parentElement.style.display='none'">
                 <div style="position: absolute; bottom: 15px; left: 20px; font-size: 1.1rem; font-weight: 700; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${match.title || (homeName + ' vs ' + awayName)}</div>
             </div>
         `;
@@ -7140,7 +7594,12 @@ async function viewMatchDetails(matchId) {
                     ${homeLogoHtml}
                     <span class="sports-vs-name">${homeName}</span>
                 </div>
-                <div class="sports-vs-text">VS</div>
+                <div class="sports-vs-text">
+                    VS
+                    <div class="sports-details-kickoff" style="font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.4); margin-top: 8px;">
+                        ${formatMatchTime(match)}
+                    </div>
+                </div>
                 <div class="sports-vs-team">
                     ${awayLogoHtml}
                     <span class="sports-vs-name">${awayName}</span>
@@ -7188,6 +7647,7 @@ async function viewMatchDetails(matchId) {
                     <div style="display: flex; gap: 8px;">
                         <button class="app-btn" style="padding: 6px 12px; font-size: 0.75rem; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06);" onclick="reloadSportsPlayer()"><i class="fas fa-sync"></i> Refresh</button>
                         <button class="app-btn" style="padding: 6px 12px; font-size: 0.75rem; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06);" onclick="toggleSportsTheaterMode()"><i class="fas fa-expand-alt"></i> Theater</button>
+                        <button class="app-btn" style="padding: 6px 12px; font-size: 0.75rem; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06);" onclick="toggleSportsFullscreen()"><i class="fas fa-expand"></i> Fullscreen</button>
                     </div>
                 </div>
             </div>
@@ -7213,7 +7673,7 @@ async function viewMatchDetails(matchId) {
         `;
     });
     sourcesGrid.innerHTML = sourcesHtml;
-    
+
     // Automatically trigger the first server
     const firstServerBtn = sourcesGrid.querySelector('.ks-server-btn');
     if (firstServerBtn) {
@@ -7245,14 +7705,14 @@ async function fetchSportsStreamLinks(source, id, serverName, btnElement) {
     optionsContainer.innerHTML = '<div style="color: rgba(255,255,255,0.4); padding: 5px;">Fetching broadcast links...</div>';
     if (iframeWrapper) iframeWrapper.style.display = 'none';
     if (iframe) iframe.src = 'about:blank';
-    
+
     activeStreamUrl = '';
 
     try {
         const res = await fetch(`https://streamed.pk/api/stream/${source}/${id}`);
         if (!res.ok) throw new Error('API failed');
         const streams = await res.json();
-        
+
         let streamsArray = [];
         if (Array.isArray(streams)) {
             streamsArray = streams;
@@ -7265,13 +7725,13 @@ async function fetchSportsStreamLinks(source, id, serverName, btnElement) {
         }
 
         optionsContainer.innerHTML = '';
-        
+
         streamsArray.forEach((stream, idx) => {
             const streamNo = stream.streamNo || (idx + 1);
             const language = stream.language || 'English';
             const qualityLabel = stream.hd ? 'HD' : 'SD';
             const embedUrl = stream.embedUrl || stream.url || stream.link || stream;
-            
+
             const btn = document.createElement('button');
             btn.className = 'sports-chip';
             btn.innerHTML = `
@@ -7282,19 +7742,19 @@ async function fetchSportsStreamLinks(source, id, serverName, btnElement) {
                 // Remove active from other chips
                 optionsContainer.querySelectorAll('.sports-chip').forEach(c => c.classList.remove('active'));
                 btn.classList.add('active');
-                
+
                 // Set and load stream
                 activeStreamUrl = embedUrl;
                 playerSection.style.display = 'block';
                 serverLabel.innerText = `${serverName} - Option #${streamNo} (${language})`;
-                
+
                 if (extBtn) {
                     extBtn.setAttribute('onclick', `window.open('${embedUrl}', '_blank'); showToast('Opening stream externally', 'fa-external-link-alt');`);
                 }
-                
+
                 playSportsStreamInApp();
             };
-            
+
             optionsContainer.appendChild(btn);
         });
 
@@ -7321,7 +7781,7 @@ function playSportsStreamInApp() {
 
     iframeWrapper.style.display = 'block';
     iframe.src = activeStreamUrl;
-    
+
     // Smooth scroll player into view
     iframeWrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
@@ -7364,8 +7824,478 @@ function toggleSportsTheaterMode() {
     }
 }
 
+function toggleSportsFullscreen() {
+    const wrapper = document.getElementById('sports-iframe-wrapper');
+    if (!wrapper) return;
+
+    if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
+        if (wrapper.requestFullscreen) {
+            wrapper.requestFullscreen();
+        } else if (wrapper.webkitRequestFullscreen) {
+            wrapper.webkitRequestFullscreen();
+        } else if (wrapper.mozRequestFullScreen) {
+            wrapper.mozRequestFullScreen();
+        } else if (wrapper.msRequestFullscreen) {
+            wrapper.msRequestFullscreen();
+        }
+        showToast('Entering full screen...', 'fa-expand');
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        showToast('Exited full screen', 'fa-compress');
+    }
+}
+
 // Initialize settings on page load
 loadPrivacySettings();
+
+// ==========================================================================
+// TEMP MAIL CLIENT (MAIL.TM API INTEGRATION)
+// ==========================================================================
+let tempMailAccount = null; // { id, address, password, token }
+let tempMailInbox = [];
+let tempMailInterval = null;
+let currentMailMessage = null; // Currently opened message object
+
+// Initialize Temp Mail on page load
+function initTempMail() {
+    const savedAccount = localStorage.getItem('temp_mail_account');
+    if (savedAccount) {
+        try {
+            tempMailAccount = JSON.parse(savedAccount);
+            // Verify and display
+            updateTempMailStatus('listening', 'Mailbox active & listening');
+            document.getElementById('temp-mail-address').innerText = tempMailAccount.address;
+            fetchTempMessages();
+            startInboxPolling();
+        } catch (e) {
+            console.error("Error parsing saved temp mail account, creating new one:", e);
+            generateNewMailAccount();
+        }
+    } else {
+        generateNewMailAccount();
+    }
+}
+
+// Generate new random account details and register it
+async function generateNewMailAccount() {
+    updateTempMailStatus('loading', 'Fetching active domains...');
+    document.getElementById('temp-mail-address').innerText = 'Generating...';
+
+    try {
+        // Step 1: Fetch domains
+        const domainsRes = await fetch('https://api.mail.tm/domains');
+        const domainsData = await domainsRes.json();
+        const activeDomains = domainsData['hydra:member'] || domainsData;
+
+        if (!activeDomains || activeDomains.length === 0) {
+            throw new Error("No active domains returned from Mail.tm");
+        }
+
+        const selectedDomain = activeDomains[0].domain;
+
+        // Step 2: Create random credentials
+        const randomString = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 7);
+        const address = `${randomString}@${selectedDomain}`;
+        const password = Math.random().toString(36).substring(2, 15) + "A1!"; // strong password
+
+        updateTempMailStatus('loading', 'Registering inbox account...');
+
+        // Step 3: Register Account
+        const registerRes = await fetch('https://api.mail.tm/accounts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ address, password })
+        });
+
+        if (!registerRes.ok) {
+            const errDetail = await registerRes.text();
+            throw new Error(`Failed to create account: ${errDetail}`);
+        }
+
+        const registerData = await registerRes.json();
+        const accountId = registerData.id;
+
+        updateTempMailStatus('loading', 'Authenticating session token...');
+
+        // Step 4: Obtain token
+        const tokenRes = await fetch('https://api.mail.tm/token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ address, password })
+        });
+
+        if (!tokenRes.ok) {
+            throw new Error("Authentication failed after account registration");
+        }
+
+        const tokenData = await tokenRes.json();
+        const token = tokenData.token;
+
+        // Step 5: Save locally
+        tempMailAccount = { id: accountId, address, password, token };
+        localStorage.setItem('temp_mail_account', JSON.stringify(tempMailAccount));
+
+        // Step 6: Render in UI
+        document.getElementById('temp-mail-address').innerText = address;
+        updateTempMailStatus('listening', 'Mailbox active & listening');
+        showToast('Temporary Email Created!', 'fa-envelope-open');
+
+        // Step 7: Fetch and poll
+        tempMailInbox = [];
+        renderTempInbox();
+        startInboxPolling();
+
+    } catch (err) {
+        console.error("Temp mail generation failure:", err);
+        updateTempMailStatus('error', 'Mailbox initialization failed');
+        document.getElementById('temp-mail-address').innerText = 'Offline - Tap refresh to retry';
+        showToast('Mailbox generation failed.', 'fa-exclamation-triangle');
+    }
+}
+
+// Update the status dot and description text
+function updateTempMailStatus(state, message) {
+    const pulseDot = document.getElementById('temp-mail-pulse');
+    const statusText = document.getElementById('temp-mail-status-text');
+    if (!pulseDot || !statusText) return;
+
+    statusText.innerText = message;
+
+    if (state === 'listening') {
+        pulseDot.className = 'pulse-glow-green';
+        pulseDot.style.background = '#4ade80';
+        pulseDot.style.boxShadow = '0 0 10px rgba(74, 222, 128, 0.5)';
+    } else if (state === 'loading') {
+        pulseDot.className = 'pulse-glow-green';
+        pulseDot.style.background = '#eab308';
+        pulseDot.style.boxShadow = '0 0 10px rgba(234, 179, 8, 0.5)';
+    } else if (state === 'error') {
+        pulseDot.className = 'pulse-glow-green';
+        pulseDot.style.background = '#ef4444';
+        pulseDot.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.5)';
+    }
+}
+
+// Copy to clipboard with success feedback toast
+function copyTempMailAddress() {
+    if (!tempMailAccount || !tempMailAccount.address) return;
+    navigator.clipboard.writeText(tempMailAccount.address).then(() => {
+        showToast('Address Copied to Clipboard!', 'fa-copy');
+    }).catch(e => {
+        console.error("Clipboard copy failed:", e);
+    });
+}
+
+// Fetch messages list from Mail.tm
+async function fetchTempMessages() {
+    if (!tempMailAccount || !tempMailAccount.token) return;
+
+    try {
+        const res = await fetch('https://api.mail.tm/messages', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${tempMailAccount.token}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!res.ok) {
+            // Handle invalid token / expired account
+            if (res.status === 401) {
+                console.warn("Unauthorized API token, generating new mailbox account...");
+                generateNewMailAccount();
+            }
+            return;
+        }
+
+        const data = await res.json();
+        // Mail.tm returns message resource items in standard JSON
+        tempMailInbox = data['hydra:member'] || data || [];
+        renderTempInbox();
+
+    } catch (err) {
+        console.error("Error checking mailbox updates:", err);
+    }
+}
+
+// Polling interval tracker
+function startInboxPolling() {
+    if (tempMailInterval) clearInterval(tempMailInterval);
+    tempMailInterval = setInterval(fetchTempMessages, 10000); // Check every 10 seconds
+}
+
+// Helper to get initials and random colorful gradient avatar
+function getInitialsAvatar(name) {
+    if (!name) return '<div class="mail-avatar" style="background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);"><i class="fas fa-user"></i></div>';
+
+    // Extract name before brackets or email addresses
+    const cleanName = name.replace(/<.*>/, '').trim();
+    const parts = cleanName.split(' ');
+    let initials = '';
+    if (parts.length > 0 && parts[0]) initials += parts[0].charAt(0).toUpperCase();
+    if (parts.length > 1 && parts[1]) initials += parts[1].charAt(0).toUpperCase();
+    if (!initials) initials = '?';
+
+    // Choose dynamic gradient color pair based on simple string hashing
+    let hash = 0;
+    for (let i = 0; i < cleanName.length; i++) {
+        hash = cleanName.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const colors = [
+        ['#a855f7', '#3b82f6'], // Purple-Blue
+        ['#ec4899', '#8b5cf6'], // Pink-Purple
+        ['#3b82f6', '#10b981'], // Blue-Green
+        ['#f59e0b', '#ef4444'], // Yellow-Red
+        ['#06b6d4', '#3b82f6']  // Cyan-Blue
+    ];
+    const pair = colors[Math.abs(hash) % colors.length];
+
+    return `<div class="mail-avatar" style="background: linear-gradient(135deg, ${pair[0]} 0%, ${pair[1]} 100%);">${initials}</div>`;
+}
+
+// Render message cards
+function renderTempInbox() {
+    const inboxList = document.getElementById('temp-mail-inbox');
+    const countBadge = document.getElementById('temp-mail-count');
+    if (!inboxList || !countBadge) return;
+
+    countBadge.innerText = `${tempMailInbox.length} messages`;
+
+    if (tempMailInbox.length === 0) {
+        inboxList.innerHTML = `
+            <div class="inbox-empty-state">
+                <i class="fas fa-envelope-open"></i>
+                <h4>Your Inbox is Empty</h4>
+                <p>Waiting for incoming emails. This view polls automatically every 10 seconds.</p>
+            </div>`;
+        return;
+    }
+
+    let html = '';
+    tempMailInbox.forEach(msg => {
+        const dateStr = new Date(msg.createdAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const fromAddr = msg.from ? (msg.from.name || msg.from.address) : 'Unknown Sender';
+        const unreadClass = msg.seen ? '' : 'unread';
+        const subject = msg.subject || '(No Subject)';
+        const preview = msg.intro || '';
+        const avatarHtml = getInitialsAvatar(fromAddr);
+
+        html += `
+            <div class="mail-card ${unreadClass}" onclick="openTempMessage('${msg.id}')">
+                <div class="mail-card-layout">
+                    ${avatarHtml}
+                    <div class="mail-card-body">
+                        <div class="mail-card-header">
+                            <span class="mail-card-sender">${fromAddr}</span>
+                            <span class="mail-card-time">${dateStr}</span>
+                        </div>
+                        <div class="mail-card-subject">${subject}</div>
+                        <div class="mail-card-preview">${preview}</div>
+                    </div>
+                </div>
+            </div>`;
+    });
+
+    inboxList.innerHTML = html;
+}
+
+// Open message detail modal
+async function openTempMessage(id) {
+    if (!tempMailAccount || !tempMailAccount.token) return;
+
+    showToast('Opening message details...', 'fa-envelope-open');
+
+    try {
+        const res = await fetch(`https://api.mail.tm/messages/${id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${tempMailAccount.token}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!res.ok) throw new Error("Failed to retrieve email content from server");
+
+        const msg = await res.json();
+        currentMailMessage = msg;
+
+        // Set seen to true locally and update indices
+        const idx = tempMailInbox.findIndex(m => m.id === id);
+        if (idx !== -1) {
+            tempMailInbox[idx].seen = true;
+            renderTempInbox();
+        }
+
+        // Show reading modal
+        document.getElementById('temp-mail-reader-modal').style.display = 'flex';
+
+        // Populate header details
+        const fromAddr = msg.from ? `${msg.from.name || ''} <${msg.from.address}>` : 'Unknown Sender';
+        document.getElementById('mail-reader-from').innerText = fromAddr;
+        document.getElementById('mail-reader-date').innerText = new Date(msg.createdAt).toLocaleString();
+        document.getElementById('mail-reader-subject').innerText = msg.subject || '(No Subject)';
+
+        // Select best rendering mode (HTML or raw text)
+        const iframe = document.getElementById('temp-mail-body-iframe');
+        const textPanel = document.getElementById('temp-mail-body-raw');
+
+        if (msg.html && msg.html.length > 0) {
+            textPanel.style.display = 'none';
+            iframe.style.display = 'block';
+
+            // Set frame srcdoc dynamically to isolate styles securely
+            iframe.srcdoc = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <style>
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                            font-size: 14px;
+                            line-height: 1.5;
+                            color: #333;
+                            margin: 15px;
+                            word-wrap: break-word;
+                            background: #fff;
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${msg.html[0]}
+                </body>
+                </html>
+            `;
+        } else {
+            iframe.style.display = 'none';
+            textPanel.style.display = 'block';
+            textPanel.innerText = msg.text || '';
+        }
+
+        // Populate attachments if any
+        const attachmentsPanel = document.getElementById('mail-reader-attachments');
+        const attachmentsList = document.getElementById('mail-reader-attachments-list');
+
+        if (msg.attachments && msg.attachments.length > 0) {
+            attachmentsPanel.style.display = 'flex';
+            let attachHtml = '';
+            msg.attachments.forEach(att => {
+                // Download URL points directly to the message's attachment endpoint
+                const downloadUrl = `https://api.mail.tm/messages/${id}/attachment/${att.id}`;
+                const sizeStr = (att.size / 1024).toFixed(1) + ' KB';
+                attachHtml += `
+                    <a href="${downloadUrl}" target="_blank" class="mail-attachment-chip" title="Download ${att.filename}">
+                        <i class="fas fa-file"></i> ${att.filename} (${sizeStr})
+                    </a>`;
+            });
+            attachmentsList.innerHTML = attachHtml;
+        } else {
+            attachmentsPanel.style.display = 'none';
+            attachmentsList.innerHTML = '';
+        }
+
+        // Mark message as read on server asynchronously
+        fetch(`https://api.mail.tm/messages/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${tempMailAccount.token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ seen: true })
+        }).catch(e => console.warn("Failed to mark message as read on server:", e));
+
+    } catch (err) {
+        console.error("Open message failure:", err);
+        showToast('Error opening email.', 'fa-exclamation-triangle');
+    }
+}
+
+// Close mail reader modal
+function closeTempMailReader() {
+    document.getElementById('temp-mail-reader-modal').style.display = 'none';
+    currentMailMessage = null;
+
+    // Clear out iframe to avoid leakage
+    const iframe = document.getElementById('temp-mail-body-iframe');
+    if (iframe) iframe.srcdoc = '';
+}
+
+// Delete message from server
+async function deleteCurrentMessage() {
+    if (!currentMailMessage || !tempMailAccount || !tempMailAccount.token) return;
+
+    const id = currentMailMessage.id;
+    showToast('Deleting email message...', 'fa-trash-alt');
+
+    try {
+        const res = await fetch(`https://api.mail.tm/messages/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${tempMailAccount.token}`
+            }
+        });
+
+        if (!res.ok) throw new Error("Delete endpoint failed");
+
+        // Filter out from local arrays
+        tempMailInbox = tempMailInbox.filter(m => m.id !== id);
+        renderTempInbox();
+        closeTempMailReader();
+        showToast('Message Deleted!', 'fa-trash');
+
+    } catch (err) {
+        console.error("Error deleting email:", err);
+        showToast('Failed to delete email.', 'fa-exclamation-triangle');
+    }
+}
+
+// Regenerate Temporary Email
+function regenerateTempMail() {
+    if (confirm("Are you sure you want to regenerate your address? This will delete the current temporary mailbox and all messages permanently.")) {
+        if (tempMailInterval) clearInterval(tempMailInterval);
+        localStorage.removeItem('temp_mail_account');
+        tempMailAccount = null;
+        generateNewMailAccount();
+    }
+}
+
+// Manually trigger check for emails and reset the dynamic loader bar
+async function manualCheckTempMail() {
+    updateTempMailStatus('loading', 'Checking for messages...');
+
+    // Animate/Reset the poll bar fill
+    const pollBarFill = document.querySelector('.temp-mail-poll-bar-fill');
+    if (pollBarFill) {
+        pollBarFill.style.animation = 'none';
+        void pollBarFill.offsetWidth; // force element reflow layout recalculation
+        pollBarFill.style.animation = 'tempMailPollProgress 10s linear infinite';
+    }
+
+    await fetchTempMessages();
+
+    updateTempMailStatus('listening', 'Mailbox active & listening');
+    showToast('Inbox Refreshed Successfully', 'fa-sync');
+}
+
+// Forward the email using pre-populated mailto parameters
+function forwardCurrentMessage() {
+    if (!currentMailMessage) return;
+    const subject = encodeURIComponent(`Fwd: ${currentMailMessage.subject || ''}`);
+    const bodyText = `---------- Forwarded message ---------\nFrom: ${currentMailMessage.from ? (currentMailMessage.from.name || currentMailMessage.from.address) : 'Unknown Sender'}\nDate: ${new Date(currentMailMessage.createdAt).toLocaleString()}\nSubject: ${currentMailMessage.subject || ''}\n\n${currentMailMessage.text || ''}`;
+    const body = encodeURIComponent(bodyText);
+
+    // Open system handler
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    showToast('Launching mail client to forward/resend...', 'fa-share');
+}
 
 
 

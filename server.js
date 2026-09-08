@@ -10,30 +10,50 @@ const DATA_FILE = path.join(__dirname, 'data.json');
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from current directory
-app.use(express.static(__dirname));
+let cachedData = null;
 
 // Utility to read data
 const readData = () => {
+    if (cachedData !== null) {
+        return cachedData;
+    }
     try {
         const data = fs.readFileSync(DATA_FILE, 'utf8');
-        return JSON.parse(data);
+        cachedData = JSON.parse(data);
+        return cachedData;
     } catch (err) {
         console.error('Error reading data.json:', err);
         return [];
     }
 };
 
+// Initialize cache on startup
+readData();
+
 // Utility to write data
 const writeData = (data) => {
+    cachedData = data;
     try {
-        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 4), 'utf8');
+        // Write file asynchronously to avoid blocking the event loop, and minify JSON
+        fs.writeFile(DATA_FILE, JSON.stringify(data), 'utf8', (err) => {
+            if (err) {
+                console.error('Error writing data.json asynchronously:', err);
+            }
+        });
         return true;
     } catch (err) {
         console.error('Error writing data.json:', err);
         return false;
     }
 };
+
+// Serve data.json dynamically from memory cache to bypass disk read I/O
+app.get('/data.json', (req, res) => {
+    res.json(readData());
+});
+
+// Serve static files from current directory
+app.use(express.static(__dirname));
 
 // GET all items
 app.get('/api/data', (req, res) => {

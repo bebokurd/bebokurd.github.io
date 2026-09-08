@@ -4,7 +4,7 @@
         
     <!-- Main Spatial Portal & Developer Image Indexes -->
     <url>
-        <loc>https://bebokurd.github.io/</loc>
+        <loc>https://chya.netlify.app/</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
@@ -17,7 +17,7 @@
     
     <!-- Home Workspace -->
     <url>
-        <loc>https://bebokurd.github.io/#home</loc>
+        <loc>https://chya.netlify.app/#home</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
@@ -25,7 +25,7 @@
     
     <!-- Registry Categories Hub -->
     <url>
-        <loc>https://bebokurd.github.io/#categories-hub</loc>
+        <loc>https://chya.netlify.app/#categories-hub</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.85</priority>
@@ -33,7 +33,7 @@
     
     <!-- Full Packages Registry -->
     <url>
-        <loc>https://bebokurd.github.io/#installed</loc>
+        <loc>https://chya.netlify.app/#installed</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
@@ -41,85 +41,91 @@
     
     <!-- Category Deep Links (Dynamic Spatial Views) -->
     <url>
-        <loc>https://bebokurd.github.io/#installed/social</loc>
+        <loc>https://chya.netlify.app/#installed/social</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.75</priority>
     </url>
     <url>
-        <loc>https://bebokurd.github.io/#installed/ai</loc>
+        <loc>https://chya.netlify.app/#installed/ai</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://bebokurd.github.io/#installed/movies</loc>
+        <loc>https://chya.netlify.app/#installed/movies</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://bebokurd.github.io/#installed/anime</loc>
+        <loc>https://chya.netlify.app/#installed/anime</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://bebokurd.github.io/#installed/cartoon</loc>
+        <loc>https://chya.netlify.app/#installed/cartoon</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://bebokurd.github.io/#installed/kurdish</loc>
+        <loc>https://chya.netlify.app/#installed/kurdish</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://bebokurd.github.io/#installed/sports</loc>
+        <loc>https://chya.netlify.app/#installed/sports</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://bebokurd.github.io/#installed/livetv</loc>
+        <loc>https://chya.netlify.app/#installed/livetv</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://bebokurd.github.io/#installed/games</loc>
+        <loc>https://chya.netlify.app/#installed/games</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://bebokurd.github.io/#installed/mods</loc>
+        <loc>https://chya.netlify.app/#installed/emulators</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://bebokurd.github.io/#installed/tools</loc>
+        <loc>https://chya.netlify.app/#installed/mods</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://bebokurd.github.io/#installed/browser</loc>
+        <loc>https://chya.netlify.app/#installed/tools</loc>
+        <lastmod>2026-05-30</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://chya.netlify.app/#installed/browser</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.75</priority>
     </url>
     <url>
-        <loc>https://bebokurd.github.io/#installed/scripts</loc>
+        <loc>https://chya.netlify.app/#installed/scripts</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://bebokurd.github.io/#installed/ads</loc>
+        <loc>https://chya.netlify.app/#installed/ads</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
@@ -127,7 +133,7 @@
     
     <!-- TikTok Downloader Tool -->
     <url>
-        <loc>https://bebokurd.github.io/#tiktok</loc>
+        <loc>https://chya.netlify.app/#tiktok</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.85</priority>
@@ -135,7 +141,7 @@
     
     <!-- Instagram Lookup Tool -->
     <url>
-        <loc>https://bebokurd.github.io/#instagram</loc>
+        <loc>https://chya.netlify.app/#instagram</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
@@ -143,7 +149,7 @@
     
     <!-- Anime Scene Search Tool -->
     <url>
-        <loc>https://bebokurd.github.io/#anime-search</loc>
+        <loc>https://chya.netlify.app/#anime-search</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.75</priority>
@@ -151,7 +157,7 @@
     
     <!-- KurdStream Movies Database -->
     <url>
-        <loc>https://bebokurd.github.io/#kurdstream</loc>
+        <loc>https://chya.netlify.app/#kurdstream</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.85</priority>
@@ -159,7 +165,7 @@
     
     <!-- KurdDoblazh Dubbing Center -->
     <url>
-        <loc>https://bebokurd.github.io/#kurddoblazh</loc>
+        <loc>https://chya.netlify.app/#kurddoblazh</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.85</priority>
@@ -167,7 +173,7 @@
     
     <!-- Developer API Hub -->
     <url>
-        <loc>https://bebokurd.github.io/#api-hub</loc>
+        <loc>https://chya.netlify.app/#api-hub</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.85</priority>
@@ -175,7 +181,7 @@
     
     <!-- Help / FAQ Center -->
     <url>
-        <loc>https://bebokurd.github.io/#faq</loc>
+        <loc>https://chya.netlify.app/#faq</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
@@ -183,7 +189,7 @@
     
     <!-- About Developer -->
     <url>
-        <loc>https://bebokurd.github.io/#about</loc>
+        <loc>https://chya.netlify.app/#about</loc>
         <lastmod>2026-05-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>

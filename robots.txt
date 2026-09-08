@@ -3,5 +3,5 @@ Allow: /
 Disallow: /admin/
 
 # Host & Sitemap
-Host: https://bebokurd.github.io
-Sitemap: https://bebokurd.github.io/sitemap.xml
+Host: https://chya.netlify.app
+Sitemap: https://chya.netlify.app/sitemap.xml
