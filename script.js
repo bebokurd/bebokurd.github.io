@@ -39,7 +39,6 @@ document.addEventListener('click', () => {
 // Mouse Trail Logic
 let lastParticleTime = 0;
 document.addEventListener('mousemove', e => {
-    if (localStorage.getItem('privacy_mouse_trail') === 'false') return;
     const { clientX: x, clientY: y } = e;
 
     // Spawn particles with a rate limit for a "short" clean trail
@@ -114,84 +113,12 @@ function resumeFakeDebugger() {
 }
 
 
-function indexPackages() {
-    window._pkgCache = {};
-    if (!packageData) return;
-    packageData.forEach(p => {
-        if (!window._pkgCache[p.cat]) {
-            window._pkgCache[p.cat] = [];
-        }
-        window._pkgCache[p.cat].push(p);
-    });
-}
-
 window.onload = async () => {
-    // 1. Try to load cached data for instant initial render (Stale-While-Revalidate)
-    const cachedData = localStorage.getItem('cydia_package_data_cache');
-    let hasRenderedCached = false;
-    if (cachedData) {
-        try {
-            packageData = JSON.parse(cachedData);
-            if (Array.isArray(packageData) && packageData.length > 0) {
-                indexPackages();
-                hasRenderedCached = true;
-            }
-        } catch (e) {
-            console.error("Failed to parse cached packageData", e);
-        }
-    }
-
-    const initUI = () => {
-        renderInstalled();
-        renderCategoriesHub();
-        updateClock();
-        startAnalogClockSmoothLoop();
-        updateStats();
-        loadMarqueeTmdbNews();
-        handleDeepLink();
-        initializeFaqAiFeatures();
-        startHomeActivityMonitor();
-        initializeAiSettingsUI();
-        initTempMail();
-        if (bioText && !bioText.innerText) {
-            typeWriter("Spatial Computing Portfolio & Tweak Registry • Crafted by Chya Luqman", 0);
-        }
-    };
-
-    // Render immediately if we loaded cached data
-    if (hasRenderedCached) {
-        initUI();
-    }
-
-    // 2. Fetch fresh package data in the background
     try {
         const response = await fetch('data.json');
-        const freshData = await response.json();
-        
-        if (freshData && Array.isArray(freshData)) {
-            const freshDataStr = JSON.stringify(freshData);
-            const cachedDataStr = cachedData || '';
-            if (freshDataStr !== cachedDataStr) {
-                packageData = freshData;
-                localStorage.setItem('cydia_package_data_cache', freshDataStr);
-                indexPackages();
-                
-                if (!hasRenderedCached) {
-                    initUI();
-                } else {
-                    renderInstalled();
-                    renderCategoriesHub();
-                    updateStats();
-                }
-            } else if (!hasRenderedCached) {
-                initUI();
-            }
-        }
+        packageData = await response.json();
     } catch (err) {
         console.error("Failed to load packages via API: ", err);
-        if (!hasRenderedCached) {
-            initUI();
-        }
     }
 
     const bootLines = [
@@ -210,15 +137,13 @@ window.onload = async () => {
         logBox.appendChild(d);
         setTimeout(() => d.classList.add('visible'), i * 150);
     });
-
-    // Setup LIVE YTS/TMDB empty query handler
-    const ksSearchInput = document.getElementById('ks-search-input');
-    if (ksSearchInput) {
-        ksSearchInput.addEventListener('input', () => {
-            if (!ksSearchInput.value.trim() && ksCurrentSource === 'videasy') {
-                loadVideasyHome();
-            }
-        });
+    renderInstalled();
+    renderCategoriesHub();
+    updateClock();
+    updateStats();
+    handleDeepLink();
+    if (typeof startHomeActivityMonitor === 'function') {
+        startHomeActivityMonitor();
     }
 };
 
@@ -240,67 +165,6 @@ function showToast(message, icon = 'fa-info-circle') {
     }, 3000);
 }
 
-let homeMonitorInterval = null;
-function startHomeActivityMonitor() {
-    const logBox = document.getElementById('home-console-logs');
-    if (!logBox) return;
-    
-    const sampleLogs = [
-        { tag: 'KERNEL', color: '#60a5fa', msg: 'Spatial microkernel active (Build 12A402)' },
-        { tag: 'REGISTRY', color: '#34d399', msg: 'Indexed tweak catalogs & verified package signatures' },
-        { tag: 'SYNAPSE', color: '#c084fc', msg: 'AI Copilot semantic router ready for user queries' },
-        { tag: 'CACHE', color: '#38bdf8', msg: 'Local storage memory buffer status: 100% healthy' },
-        { tag: 'SPATIAL', color: '#fb7185', msg: 'VisionOS glassmorphism compositor running at 60fps' },
-        { tag: 'NETWORK', color: '#facc15', msg: 'Encrypted socket listening for live streaming feeds' },
-        { tag: 'SECURITY', color: '#4ade80', msg: 'Zero sandbox violations detected in current session' }
-    ];
-
-    function appendLog(item) {
-        const time = new Date().toLocaleTimeString('en-US', { hour12: false });
-        const line = document.createElement('div');
-        line.className = 'console-log-entry';
-        line.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-tag" style="color: ${item.color}; font-weight: 700;">[${item.tag}]</span> <span class="log-msg">${item.msg}</span>`;
-        logBox.appendChild(line);
-        while (logBox.children.length > 5) {
-            logBox.removeChild(logBox.firstChild);
-        }
-        logBox.scrollTop = logBox.scrollHeight;
-    }
-
-    logBox.innerHTML = '';
-    sampleLogs.slice(0, 3).forEach(appendLog);
-
-    if (homeMonitorInterval) clearInterval(homeMonitorInterval);
-    homeMonitorInterval = setInterval(() => {
-        const item = sampleLogs[Math.floor(Math.random() * sampleLogs.length)];
-        appendLog(item);
-    }, 3500);
-}
-
-function triggerHomeAiSearch() {
-    const input = document.getElementById('home-ai-input');
-    const query = input ? input.value.trim() : '';
-    if (!query) {
-        if (input) input.focus();
-        showToast('Please type a search query first', 'fa-sparkles');
-        return;
-    }
-
-    switchTab('search');
-    const pcSearch = document.getElementById('pc-search-input');
-    const mobSearch = document.getElementById('search-input');
-    if (pcSearch) {
-        pcSearch.value = query;
-        pcSearch.dispatchEvent(new Event('input'));
-    }
-    if (mobSearch) {
-        mobSearch.value = query;
-        mobSearch.dispatchEvent(new Event('input'));
-    }
-    showToast(`Searching for "${query}" across Cydia Elite...`, 'fa-magnifying-glass');
-}
-
-
 // Friendly Category Hashes Mapping to Database IDs
 const categoryHashMap = {
     'community': 'social', 'social': 'social',
@@ -309,10 +173,10 @@ const categoryHashMap = {
     'anime': 'anime',
     'cartoons': 'cartoon', 'cartoon': 'cartoon',
     'kurdish': 'kurdish',
-    'live-sports': 'sports', 'sports': 'sports',
+    
     'live-tv': 'livetv', 'livetv': 'livetv',
     'pc-games': 'games', 'games': 'games',
-    'emulators': 'emulators',
+    'emulators': 'emulators', 'emulator': 'emulators',
     'game-mods': 'mods', 'mods': 'mods',
     'pc-tools': 'tools', 'tools': 'tools',
     'web-browsers': 'browser', 'browser': 'browser',
@@ -329,26 +193,21 @@ function handleDeepLink() {
     if (hash.startsWith('url=')) {
         const targetUrl = decodeURIComponent(rawHash.substring(4));
         if (targetUrl) {
-            if (targetUrl.includes('kurdcinama-stream-seeker')) {
-                switchTab('kurdstream');
-                setTimeout(() => renderKSEmbed(targetUrl, 'Deep Linked Media'), 500);
-            } else {
-                switchTab('tiktok');
-                const tiktokInput = document.getElementById('tiktok-url');
-                if (tiktokInput) {
-                    tiktokInput.value = targetUrl;
-                    setTimeout(() => {
-                        const fetchBtn = document.getElementById('tiktok-fetch-btn');
-                        if (fetchBtn && !fetchBtn.disabled) fetchTikTok();
-                    }, 500);
-                }
+            switchTab('tiktok');
+            const tiktokInput = document.getElementById('tiktok-url');
+            if (tiktokInput) {
+                tiktokInput.value = targetUrl;
+                setTimeout(() => {
+                    const fetchBtn = document.getElementById('tiktok-fetch-btn');
+                    if (fetchBtn && !fetchBtn.disabled) fetchTikTok();
+                }, 500);
             }
         }
     } else {
         const validTabs = [
             'home', 'categories-hub', 'installed', 'search', 'tiktok', 'instagram',
-            'google', 'anime-search', 'kurdstream', 'kurddoblazh', 'live-sports', 'api-hub', 'faq', 'about',
-            'privacy', 'my-privacy', 'contact', 'status', 'free-games'
+            'google', 'anime-search', 'api-hub', 'faq', 'about',
+            'privacy', 'contact', 'status'
         ];
 
         // 1. Support `#installed/social` format
@@ -360,7 +219,7 @@ function handleDeepLink() {
         else if (validTabs.includes(hash)) {
             switchTab(hash);
         }
-        // 3. Support direct category names as hashes, e.g. `#community` or `#live-sports`
+        // 3. Support direct category names as hashes, e.g. `#community` or `#tools`
         else if (categoryHashMap[hash]) {
             const catId = categoryHashMap[hash];
             filterCategory(catId);
@@ -378,7 +237,7 @@ window.addEventListener('hashchange', handleDeepLink);
 function updateStats() {
     if (!packageData) return;
     const totalLinks = packageData.length;
-    const uniqueCategories = window._pkgCache ? Object.keys(window._pkgCache).length : new Set(packageData.map(p => p.cat)).size;
+    const uniqueCategories = new Set(packageData.map(p => p.cat)).size;
 
     const linksEl = document.getElementById('stats-total-links');
     const catsEl = document.getElementById('stats-total-categories');
@@ -386,135 +245,21 @@ function updateStats() {
     if (linksEl) linksEl.innerText = totalLinks.toLocaleString();
     if (catsEl) catsEl.innerText = uniqueCategories;
 
-    // Update Marquee statistics
-    document.querySelectorAll('.marquee-total-links').forEach(el => el.innerText = totalLinks.toLocaleString());
-    document.querySelectorAll('.marquee-total-categories').forEach(el => el.innerText = uniqueCategories);
+    // Populate Home Registry Breakdown dynamic counters
+    const countAi = packageData.filter(p => p.cat === 'ai').length;
+    const countTools = packageData.filter(p => p.cat === 'tools').length;
+    const countKurdish = packageData.filter(p => p.cat === 'kurdish').length;
+    const countMovies = packageData.filter(p => p.cat === 'movies').length;
 
-    // Count categories dynamically for Home Dashboard breakdown using cache index
-    const countAi = window._pkgCache && window._pkgCache['ai'] ? window._pkgCache['ai'].length : packageData.filter(p => p.cat === 'ai').length;
-    const countTools = window._pkgCache && window._pkgCache['tools'] ? window._pkgCache['tools'].length : packageData.filter(p => p.cat === 'tools').length;
-    const countKurdish = window._pkgCache && window._pkgCache['kurdish'] ? window._pkgCache['kurdish'].length : packageData.filter(p => p.cat === 'kurdish').length;
-    const countSports = window._pkgCache && window._pkgCache['sports'] ? window._pkgCache['sports'].length : packageData.filter(p => p.cat === 'sports').length;
+    const elAi = document.getElementById('count-ai');
+    const elTools = document.getElementById('count-tools');
+    const elKurdish = document.getElementById('count-kurdish');
+    const elMovies = document.getElementById('count-movies');
 
-    const countAiEl = document.getElementById('count-ai');
-    const countToolsEl = document.getElementById('count-tools');
-    const countKurdishEl = document.getElementById('count-kurdish');
-    const countSportsEl = document.getElementById('count-sports');
-
-    if (countAiEl) countAiEl.innerText = countAi;
-    if (countToolsEl) countToolsEl.innerText = countTools;
-    if (countKurdishEl) countKurdishEl.innerText = countKurdish;
-    if (countSportsEl) countSportsEl.innerText = countSports;
-}
-
-// VIDEASY, TMDB & AniList Marquee News (Movies, TV Shows & Anime)
-async function loadMarqueeTmdbNews() {
-    try {
-        const movieUrl = `https://api.themoviedb.org/3/trending/movie/day?api_key=${TMDB_API_KEY}`;
-        const tvUrl = `https://api.themoviedb.org/3/trending/tv/day?api_key=${TMDB_API_KEY}`;
-
-        // AniList Query for trending releasing anime
-        const animeQuery = `
-        query {
-          Page (page: 1, perPage: 5) {
-            media (sort: TRENDING_DESC, type: ANIME, status: RELEASING) {
-              title {
-                english
-                romaji
-              }
-              seasonYear
-            }
-          }
-        }
-        `;
-
-        // Run all requests in parallel
-        const [movieRes, tvRes, animeRes] = await Promise.all([
-            fetch(movieUrl).then(r => r.json()).catch(() => ({ results: [] })),
-            fetch(tvUrl).then(r => r.json()).catch(() => ({ results: [] })),
-            fetch('https://graphql.anilist.co', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({ query: animeQuery })
-            }).then(r => r.json()).catch(() => ({ data: { Page: { media: [] } } }))
-        ]);
-
-        const newsItems = [];
-
-        // 1. Movies (top 3)
-        const movies = (movieRes.results || []).slice(0, 3);
-        movies.forEach(m => {
-            const title = m.title || m.original_title || "Unknown Movie";
-            const year = m.release_date ? m.release_date.split('-')[0] : '';
-            const rating = m.vote_average ? m.vote_average.toFixed(1) : 'N/A';
-            newsItems.push(`<span class="marquee-item"><i class="fas fa-film" style="color: #60a5fa;"></i> Movie: <strong>${title}</strong> (${year}) • <i class="fas fa-star" style="color: #fbbf24; font-size: 0.65rem;"></i> ${rating}</span>`);
-        });
-
-        // 2. TV Shows (top 3)
-        const tvShows = (tvRes.results || []).slice(0, 3);
-        tvShows.forEach(t => {
-            const name = t.name || t.original_name || "Unknown TV Show";
-            const year = t.first_air_date ? t.first_air_date.split('-')[0] : '';
-            const rating = t.vote_average ? t.vote_average.toFixed(1) : 'N/A';
-            newsItems.push(`<span class="marquee-item"><i class="fas fa-tv" style="color: #10b981;"></i> Show: <strong>${name}</strong> (${year}) • <i class="fas fa-star" style="color: #fbbf24; font-size: 0.65rem;"></i> ${rating}</span>`);
-        });
-
-        // 3. Anime (top 3)
-        const animeList = (animeRes.data?.Page?.media || []).slice(0, 3);
-        animeList.forEach(a => {
-            const title = a.title.english || a.title.romaji || "Unknown Anime";
-            const year = a.seasonYear || '';
-            newsItems.push(`<span class="marquee-item"><i class="fas fa-ghost" style="color: #a855f7;"></i> Anime: <strong>${title}</strong> (${year})</span>`);
-        });
-
-        updateMarqueeContent(newsItems);
-    } catch (e) {
-        console.error("Error loading TMDB/AniList marquee news:", e);
-        updateMarqueeContent([]);
-    }
-}
-
-function updateMarqueeContent(movieItems = []) {
-    const staticAnnouncements = [
-        `<span class="marquee-item"><i class="fas fa-code"></i> Developer: Chya Luqman</span>`,
-        `<span class="marquee-item"><i class="fas fa-cubes"></i> Registry Packages: <strong class="marquee-total-links">...</strong></span>`,
-        `<span class="marquee-item"><i class="fas fa-th-large"></i> Active Categories: <strong class="marquee-total-categories">...</strong></span>`,
-        `<span class="marquee-item"><i class="fas fa-check-circle" style="color: #4ade80;"></i> System Status: <span style="color: #4ade80; font-weight: 700;">Operational</span></span>`,
-        `<span class="marquee-item"><i class="fab fa-discord" style="color: #5865f2;"></i> Join our Discord community for support and tweak suggestions!</span>`
-    ];
-
-    const utilityItems = [
-        `<span class="marquee-item"><i class="fab fa-tiktok"></i> TikTok Downloader: Online</span>`,
-        `<span class="marquee-item"><i class="fab fa-instagram"></i> Instagram Lookup: Active</span>`,
-        `<span class="marquee-item"><i class="fas fa-play-circle"></i> KurdStream: Connected</span>`,
-        `<span class="marquee-item"><i class="fas fa-robot"></i> AI Search Hub: Ready</span>`,
-        `<span class="marquee-item"><i class="fas fa-camera"></i> Anime Search: Online</span>`,
-        `<span class="marquee-item"><i class="fas fa-images"></i> Lens Search: Active</span>`,
-        `<span class="marquee-item"><i class="fas fa-microphone-alt"></i> KurdDoblazh: Connected</span>`,
-        `<span class="marquee-item"><i class="fas fa-futbol"></i> Live Sports: Online</span>`,
-        `<span class="marquee-item"><i class="fas fa-code"></i> API Hub: Active</span>`,
-        `<span class="marquee-item"><i class="fas fa-gamepad"></i> Free Games: Connected</span>`,
-        `<span class="marquee-item"><i class="fas fa-wifi"></i> Latency: Stable 12ms</span>`
-    ];
-
-    const allItems = [
-        ...staticAnnouncements,
-        ...movieItems,
-        ...utilityItems
-    ];
-
-    const htmlContent = allItems.join('<span class="marquee-divider">•</span>') + '<span class="marquee-divider">•</span>';
-
-    document.querySelectorAll('.marquee-content').forEach(el => {
-        el.innerHTML = htmlContent;
-    });
-
-    if (packageData) {
-        const totalLinks = packageData.length;
-        const uniqueCategories = new Set(packageData.map(p => p.cat)).size;
-        document.querySelectorAll('.marquee-total-links').forEach(el => el.innerText = totalLinks.toLocaleString());
-        document.querySelectorAll('.marquee-total-categories').forEach(el => el.innerText = uniqueCategories);
-    }
+    if (elAi) elAi.innerText = countAi;
+    if (elTools) elTools.innerText = countTools;
+    if (elKurdish) elKurdish.innerText = countKurdish;
+    if (elMovies) elMovies.innerText = countMovies;
 }
 
 function createBiometricDots() {
@@ -575,58 +320,43 @@ document.addEventListener('visibilitychange', () => {
 
 function updateClock() {
     const now = new Date();
-    let hours = now.getHours();
-    let minutes = now.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    const strTime = hours + ':' + minutes + ' ' + ampm;
+    const rawHours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+    const ms = now.getMilliseconds();
+
+    const ampm = rawHours >= 12 ? 'PM' : 'AM';
+    const displayHours = rawHours % 12 || 12;
+    const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+    const strTime = displayHours + ':' + displayMinutes + ' ' + ampm;
 
     const timeEl = document.getElementById('iphone-time');
-    if (timeEl) timeEl.innerText = strTime;
+    if (timeEl && timeEl.innerText !== strTime) timeEl.innerText = strTime;
 
     const mainClock = document.getElementById('main-clock-time');
-    if (mainClock) mainClock.innerText = strTime;
+    if (mainClock && mainClock.innerText !== strTime) mainClock.innerText = strTime;
 
     const mainDate = document.getElementById('main-clock-date');
-    if (mainDate) {
+    if (mainDate && !mainDate.dataset.set) {
         const options = { weekday: 'long', month: 'long', day: 'numeric' };
         mainDate.innerText = now.toLocaleDateString(undefined, options);
+        mainDate.dataset.set = "true";
     }
 
-    // Refresh digital clock once a second
-    setTimeout(updateClock, 1000);
-}
+    // High-precision Swiss analog clock movement
+    const hourHand = document.getElementById('hour-hand');
+    const minHand = document.getElementById('minute-hand');
+    const secHand = document.getElementById('second-hand');
 
-function startAnalogClockSmoothLoop() {
-    function updateSmooth() {
-        const now = new Date();
-        const ms = now.getMilliseconds();
-        const seconds = now.getSeconds() + ms / 1000;
-        const minutes = now.getMinutes() + seconds / 60;
-        const hours = (now.getHours() % 12) + minutes / 60;
+    const secDeg = (seconds * 6) + (ms * 0.006);
+    const minDeg = (minutes * 6) + (seconds * 0.1);
+    const hourDeg = ((rawHours % 12) * 30) + (minutes * 0.5);
 
-        const secondHand = document.getElementById('second-hand');
-        const minuteHand = document.getElementById('minute-hand');
-        const hourHand = document.getElementById('hour-hand');
+    if (secHand) secHand.style.transform = `rotate(${secDeg}deg)`;
+    if (minHand) minHand.style.transform = `rotate(${minDeg}deg)`;
+    if (hourHand) hourHand.style.transform = `rotate(${hourDeg}deg)`;
 
-        if (secondHand) {
-            const secDeg = (seconds / 60) * 360;
-            secondHand.style.transform = `rotate(${secDeg}deg)`;
-        }
-        if (minuteHand) {
-            const minDeg = (minutes / 60) * 360;
-            minuteHand.style.transform = `rotate(${minDeg}deg)`;
-        }
-        if (hourHand) {
-            const hourDeg = (hours / 12) * 360;
-            hourHand.style.transform = `rotate(${hourDeg}deg)`;
-        }
-
-        requestAnimationFrame(updateSmooth);
-    }
-    requestAnimationFrame(updateSmooth);
+    requestAnimationFrame(updateClock);
 }
 
 function typeWriter(text, i) {
@@ -639,14 +369,19 @@ function typeWriter(text, i) {
 }
 
 // Songs Player & Playlist Management
-let playlist = [
-    { name: "Lala (Default Background)", url: "lala.mp3", isDefault: true, color: "#a855f7", colorRgb: "168, 85, 247" },
-    { name: "NAVID ZARDI MAMHENA MAMBA", url: "NAVID ZARDI MAMHENA MAMBA.mp3", isDefault: true, color: "#f43f5e", colorRgb: "244, 63, 94" },
-    { name: "12.Ewini be kota instrumental Huner Heme Jezza", url: "12.Ewini be kota instrumental Huner Heme Jezza.mp3", isDefault: true, color: "#06b6d4", colorRgb: "6, 182, 212" },
-    { name: "Karwan Hawramy Chav Rasha Min Official", url: "Karwan Hawramy Chav Rasha Min Official Music Video.mp3", isDefault: true, color: "#f59e0b", colorRgb: "245, 158, 11" }
+const defaultPlaylist = [
+    { name: "12.Ewini be kota instrumental Huner Heme Jezza", title: "Ewini Be Kota (Instrumental)", artist: "Huner Heme Jezza", url: "12.Ewini be kota instrumental Huner Heme Jezza.mp3", isDefault: true, color: "#06b6d4", colorRgb: "6, 182, 212" },
+    { name: "NAVID ZARDI MAMHENA MAMBA", title: "Mamhena Mamba", artist: "Navid Zardi", url: "NAVID ZARDI MAMHENA MAMBA.mp3", isDefault: true, color: "#f43f5e", colorRgb: "244, 63, 94" },
+    { name: "Karwan Hawramy Chav Rasha Min Official", title: "Chav Rasha Min", artist: "Karwan Hawramy", url: "Karwan Hawramy Chav Rasha Min Official Music Video.mp3", isDefault: true, color: "#f59e0b", colorRgb: "245, 158, 11" },
+    { name: "Lala (Default Background)", title: "Lala", artist: "Spatial Ambient Chill", url: "lala.mp3", isDefault: true, color: "#a855f7", colorRgb: "168, 85, 247" }
 ];
+
+let playlist = [...defaultPlaylist];
 let currentSongIndex = 0;
 let preMuteVolume = 0.3;
+let isShuffleEnabled = localStorage.getItem('songs_shuffle') === 'true';
+let repeatMode = localStorage.getItem('songs_repeat') || 'all'; // 'off' | 'all' | 'one'
+let searchFilterQuery = '';
 
 const colorPresets = [
     { color: "#a855f7", rgb: "168, 85, 247" }, // Purple
@@ -663,12 +398,39 @@ function formatTime(secs) {
     return `${m}:${s}`;
 }
 
+function parseSongMetadata(song) {
+    if (!song) return { title: "No Song Selected", artist: "Unknown Artist" };
+    if (song.title && song.artist) return { title: song.title, artist: song.artist };
+    
+    const raw = song.name || "";
+    if (raw.includes("Huner Heme Jezza") || raw.includes("Jezza")) {
+        return { title: "Ewini Be Kota (Instrumental)", artist: "Huner Heme Jezza" };
+    }
+    if (raw.includes("NAVID ZARDI") || raw.includes("Mamhena")) {
+        return { title: "Mamhena Mamba", artist: "Navid Zardi" };
+    }
+    if (raw.includes("Karwan Hawramy") || raw.includes("Chav Rasha")) {
+        return { title: "Chav Rasha Min", artist: "Karwan Hawramy" };
+    }
+    if (raw.toLowerCase().includes("lala")) {
+        return { title: "Lala", artist: "Spatial Ambient Chill" };
+    }
+    if (raw.includes(" - ")) {
+        const parts = raw.split(" - ");
+        return { title: parts[1].trim(), artist: parts[0].trim() };
+    }
+    return { title: raw, artist: "Curated Track" };
+}
+
 // Load playlist from localStorage
 function initSongsPlaylist() {
     const savedPlaylist = localStorage.getItem('songs_playlist');
     if (savedPlaylist) {
         try {
-            playlist = JSON.parse(savedPlaylist);
+            const parsed = JSON.parse(savedPlaylist);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                playlist = parsed;
+            }
         } catch (e) {
             console.error("Failed to parse saved playlist, resetting defaults", e);
         }
@@ -679,21 +441,29 @@ function initSongsPlaylist() {
         if (currentSongIndex >= playlist.length) currentSongIndex = 0;
     }
 
-    // Setup ended event to advance songs automatically
     if (audio) {
-        audio.removeAttribute('loop'); // Disable looping default so it goes to next song
+        audio.removeAttribute('loop');
         audio.addEventListener('ended', () => {
-            nextSong();
+            if (repeatMode === 'one') {
+                audio.currentTime = 0;
+                audio.play().catch(() => {});
+            } else if (repeatMode === 'off' && currentSongIndex === playlist.length - 1 && !isShuffleEnabled) {
+                isPlaying = false;
+                updateSongsPlayerUI();
+                renderPlaylist();
+            } else {
+                nextSong();
+            }
         });
 
-        // Progress scrubber updates
         audio.addEventListener('timeupdate', () => {
             if (!audio.duration) return;
             const progress = (audio.currentTime / audio.duration) * 100;
             const progressInput = document.getElementById('audio-progress-bar');
             if (progressInput) {
                 progressInput.value = progress;
-                progressInput.style.background = `linear-gradient(to right, #a855f7 0%, #a855f7 ${progress}%, rgba(255, 255, 255, 0.1) ${progress}%, rgba(255, 255, 255, 0.1) 100%)`;
+                const activeColor = (playlist[currentSongIndex] && playlist[currentSongIndex].color) || '#a855f7';
+                progressInput.style.background = `linear-gradient(to right, ${activeColor} 0%, ${activeColor} ${progress}%, rgba(255, 255, 255, 0.1) ${progress}%, rgba(255, 255, 255, 0.1) 100%)`;
             }
 
             const currentLabel = document.getElementById('track-time-current');
@@ -706,7 +476,6 @@ function initSongsPlaylist() {
         });
     }
 
-    // Setup scrub and volume event listeners in DOM
     setTimeout(() => {
         const progressInput = document.getElementById('audio-progress-bar');
         if (progressInput) {
@@ -714,7 +483,8 @@ function initSongsPlaylist() {
                 if (!audio || !audio.duration) return;
                 const newTime = (progressInput.value / 100) * audio.duration;
                 audio.currentTime = newTime;
-                progressInput.style.background = `linear-gradient(to right, #a855f7 0%, #a855f7 ${progressInput.value}%, rgba(255, 255, 255, 0.1) ${progressInput.value}%, rgba(255, 255, 255, 0.1) 100%)`;
+                const activeColor = (playlist[currentSongIndex] && playlist[currentSongIndex].color) || '#a855f7';
+                progressInput.style.background = `linear-gradient(to right, ${activeColor} 0%, ${activeColor} ${progressInput.value}%, rgba(255, 255, 255, 0.1) ${progressInput.value}%, rgba(255, 255, 255, 0.1) 100%)`;
             });
         }
 
@@ -723,7 +493,7 @@ function initSongsPlaylist() {
             if (audio) {
                 volumeSlider.value = audio.volume * 100;
             }
-            volumeSlider.style.background = `linear-gradient(to right, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) ${volumeSlider.value}%, rgba(255, 255, 255, 0.1) ${volumeSlider.value}%, rgba(255, 255, 255, 0.1) 100%)`;
+            volumeSlider.style.background = `linear-gradient(to right, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.6) ${volumeSlider.value}%, rgba(255, 255, 255, 0.1) ${volumeSlider.value}%, rgba(255, 255, 255, 0.1) 100%)`;
 
             volumeSlider.addEventListener('input', () => {
                 if (!audio) return;
@@ -731,7 +501,7 @@ function initSongsPlaylist() {
                 audio.volume = vol;
                 audio.muted = false;
 
-                volumeSlider.style.background = `linear-gradient(to right, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) ${volumeSlider.value}%, rgba(255, 255, 255, 0.1) ${volumeSlider.value}%, rgba(255, 255, 255, 0.1) 100%)`;
+                volumeSlider.style.background = `linear-gradient(to right, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.6) ${volumeSlider.value}%, rgba(255, 255, 255, 0.1) ${volumeSlider.value}%, rgba(255, 255, 255, 0.1) 100%)`;
 
                 const volumeIcon = document.getElementById('volume-icon-btn');
                 if (volumeIcon) {
@@ -740,7 +510,7 @@ function initSongsPlaylist() {
                         volumeIcon.style.color = '#ef4444';
                     } else {
                         volumeIcon.className = vol > 0.5 ? 'fas fa-volume-up' : 'fas fa-volume-down';
-                        volumeIcon.style.color = 'rgba(255,255,255,0.4)';
+                        volumeIcon.style.color = 'rgba(255,255,255,0.6)';
                     }
                 }
             });
@@ -748,7 +518,6 @@ function initSongsPlaylist() {
     }, 500);
 }
 
-// Initialize on execution
 setTimeout(initSongsPlaylist, 100);
 
 function openSongsPlayer() {
@@ -771,10 +540,36 @@ function renderPlaylist() {
     const container = document.getElementById('playlist-items-container');
     if (!container) return;
 
+    const countBadge = document.getElementById('songs-count-badge');
+    if (countBadge) {
+        countBadge.innerText = `${playlist.length} ${playlist.length === 1 ? 'Track' : 'Tracks'}`;
+    }
+
+    let itemsToRender = playlist.map((song, index) => ({ song, originalIndex: index }));
+    if (searchFilterQuery.trim()) {
+        const q = searchFilterQuery.toLowerCase();
+        itemsToRender = itemsToRender.filter(item => {
+            const meta = parseSongMetadata(item.song);
+            return meta.title.toLowerCase().includes(q) || meta.artist.toLowerCase().includes(q) || item.song.name.toLowerCase().includes(q);
+        });
+    }
+
+    if (itemsToRender.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 28px 14px; color: rgba(255,255,255,0.4); font-size: 0.85rem;">
+                <i class="fas fa-music" style="font-size: 1.6rem; margin-bottom: 8px; opacity: 0.4;"></i>
+                <div>No tracks match "${searchFilterQuery}"</div>
+            </div>`;
+        return;
+    }
+
     let html = "";
-    playlist.forEach((song, index) => {
-        const isActive = index === currentSongIndex;
+    itemsToRender.forEach((item, pos) => {
+        const { song, originalIndex } = item;
+        const isActive = originalIndex === currentSongIndex;
         const activeClass = isActive ? 'active' : '';
+        const meta = parseSongMetadata(song);
+        const trackNum = (originalIndex + 1).toString().padStart(2, '0');
         
         let iconHtml;
         if (isActive && isPlaying) {
@@ -787,20 +582,29 @@ function renderPlaylist() {
                 </div>`;
         } else {
             const bulletColor = song.color || '#3b82f6';
-            iconHtml = `<span class="playlist-item-icon" style="color: ${isActive ? bulletColor : 'rgba(255,255,255,0.35)'};"><i class="fas fa-music"></i></span>`;
+            iconHtml = `<i class="fas fa-play" style="font-size: 0.72rem; color: ${isActive ? bulletColor : 'rgba(255,255,255,0.4)'};"></i>`;
         }
 
         html += `
-            <div class="playlist-item ${activeClass}" onclick="selectSong(${index})">
-                <div class="playlist-item-name-wrap">
-                    ${iconHtml}
-                    <span class="playlist-item-name" title="${song.name}">${song.name}</span>
+            <div class="playlist-item ${activeClass}" onclick="selectSong(${originalIndex})">
+                <div class="playlist-item-left">
+                    <span class="playlist-track-num">${trackNum}</span>
+                    <div class="playlist-item-icon-wrap">
+                        ${iconHtml}
+                    </div>
+                    <div class="playlist-item-meta">
+                        <span class="playlist-item-title" title="${meta.title}">${meta.title}</span>
+                        <span class="playlist-item-artist">${meta.artist}</span>
+                    </div>
                 </div>
-                ${song.isDefault ? `<span class="playlist-badge">Default</span>` : `
-                    <button class="playlist-item-delete" onclick="deleteSong(${index}, event)" title="Delete song">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                `}
+                <div class="playlist-item-right">
+                    ${song.isDefault ? `<span class="playlist-badge">Default</span>` : `
+                        <span class="playlist-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.3);">Custom</span>
+                        <button class="playlist-item-delete" onclick="deleteSong(${originalIndex}, event)" title="Delete track">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    `}
+                </div>
             </div>
         `;
     });
@@ -809,20 +613,34 @@ function renderPlaylist() {
 
 function updateSongsPlayerUI() {
     const titleEl = document.getElementById('now-playing-title');
+    const artistEl = document.getElementById('now-playing-artist');
     const statusEl = document.getElementById('now-playing-status');
     const containerEl = document.getElementById('now-playing-container');
     const discEl = document.getElementById('now-playing-disc');
     const modalPlayBtn = document.getElementById('modal-play-btn');
     const fabBtn = document.getElementById('audio-fab');
+    const shuffleBtn = document.getElementById('shuffle-btn');
+    const repeatBtn = document.getElementById('repeat-btn');
 
     if (playlist[currentSongIndex]) {
         const song = playlist[currentSongIndex];
-        if (titleEl) titleEl.innerText = song.name;
+        const meta = parseSongMetadata(song);
+
+        if (titleEl) titleEl.innerText = meta.title;
+        if (artistEl) artistEl.innerText = meta.artist;
         if (statusEl) statusEl.innerText = isPlaying ? "Playing" : "Paused";
+        const navMusicTitle = document.getElementById('nav-music-title');
+        const navMusicPill = document.getElementById('nav-music-pill');
+        if (navMusicTitle && meta) {
+            navMusicTitle.innerText = meta.title || "Music Deck";
+        }
+        if (navMusicPill) {
+            navMusicPill.classList.toggle('is-playing', !!isPlaying);
+        }
 
         if (containerEl) {
-            containerEl.style.setProperty('--player-accent', song.color || '#3b82f6');
-            containerEl.style.setProperty('--player-accent-rgb', song.colorRgb || '59, 130, 246');
+            containerEl.style.setProperty('--player-accent', song.color || '#a855f7');
+            containerEl.style.setProperty('--player-accent-rgb', song.colorRgb || '168, 85, 247');
 
             if (isPlaying) {
                 containerEl.classList.add('playing');
@@ -843,12 +661,36 @@ function updateSongsPlayerUI() {
             modalPlayBtn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
         }
 
+        if (shuffleBtn) {
+            if (isShuffleEnabled) {
+                shuffleBtn.classList.add('active');
+            } else {
+                shuffleBtn.classList.remove('active');
+            }
+        }
+
+        if (repeatBtn) {
+            repeatBtn.classList.remove('active');
+            if (repeatMode === 'all') {
+                repeatBtn.classList.add('active');
+                repeatBtn.innerHTML = '<i class="fas fa-redo"></i>';
+                repeatBtn.title = 'Repeat All';
+            } else if (repeatMode === 'one') {
+                repeatBtn.classList.add('active');
+                repeatBtn.innerHTML = '<i class="fas fa-redo-alt"></i>';
+                repeatBtn.title = 'Repeat One';
+            } else {
+                repeatBtn.innerHTML = '<i class="fas fa-redo" style="opacity: 0.4;"></i>';
+                repeatBtn.title = 'Repeat Off';
+            }
+        }
+
         if (fabBtn) {
             fabBtn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-music"></i>';
             if (isPlaying) {
-                fabBtn.classList.add('pulse-glow-green'); // Add visual cue to floating button
+                fabBtn.classList.add('pulse-glow-green');
                 fabBtn.style.animation = "spin 12s linear infinite";
-                fabBtn.style.setProperty('box-shadow', `0 15px 40px rgba(${song.colorRgb || '255,255,255'}, 0.3)`);
+                fabBtn.style.setProperty('box-shadow', `0 15px 40px rgba(${song.colorRgb || '255,255,255'}, 0.35)`);
                 fabBtn.style.setProperty('border-color', song.color || '#fff');
             } else {
                 fabBtn.classList.remove('pulse-glow-green');
@@ -858,7 +700,6 @@ function updateSongsPlayerUI() {
             }
         }
 
-        // Sync scrubber and volume sliders
         if (audio) {
             const currentLabel = document.getElementById('track-time-current');
             if (currentLabel) currentLabel.innerText = formatTime(audio.currentTime);
@@ -870,14 +711,15 @@ function updateSongsPlayerUI() {
             if (progressInput && audio.duration) {
                 const progress = (audio.currentTime / audio.duration) * 100;
                 progressInput.value = progress;
-                progressInput.style.background = `linear-gradient(to right, #a855f7 0%, #a855f7 ${progress}%, rgba(255, 255, 255, 0.1) ${progress}%, rgba(255, 255, 255, 0.1) 100%)`;
+                const activeColor = song.color || '#a855f7';
+                progressInput.style.background = `linear-gradient(to right, ${activeColor} 0%, ${activeColor} ${progress}%, rgba(255, 255, 255, 0.1) ${progress}%, rgba(255, 255, 255, 0.1) 100%)`;
             }
 
             const volumeSlider = document.getElementById('audio-volume-slider');
             if (volumeSlider) {
                 const volVal = audio.volume * 100;
                 volumeSlider.value = volVal;
-                volumeSlider.style.background = `linear-gradient(to right, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) ${volVal}%, rgba(255, 255, 255, 0.1) ${volVal}%, rgba(255, 255, 255, 0.1) 100%)`;
+                volumeSlider.style.background = `linear-gradient(to right, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.6) ${volVal}%, rgba(255, 255, 255, 0.1) ${volVal}%, rgba(255, 255, 255, 0.1) 100%)`;
             }
         }
     }
@@ -912,9 +754,7 @@ function selectSong(index) {
 function toggleSongsPlay() {
     if (!audio) return;
 
-    // Set src if not already matching the current song
     const currentUrl = playlist[currentSongIndex] ? playlist[currentSongIndex].url : '';
-    // Normalize path checks
     const audioSrc = audio.src || '';
     if (currentUrl && !audioSrc.includes(currentUrl)) {
         audio.src = currentUrl;
@@ -940,20 +780,109 @@ function toggleSongsPlay() {
 }
 
 function nextSong() {
-    let nextIndex = currentSongIndex + 1;
-    if (nextIndex >= playlist.length) nextIndex = 0;
+    if (playlist.length === 0) return;
+    let nextIndex;
+    if (isShuffleEnabled && playlist.length > 1) {
+        do {
+            nextIndex = Math.floor(Math.random() * playlist.length);
+        } while (nextIndex === currentSongIndex);
+    } else {
+        nextIndex = (currentSongIndex + 1) % playlist.length;
+    }
     selectSong(nextIndex);
 }
 
-// Deprecated original toggleAudio fallback for backwards compatibility
+function prevSong() {
+    if (playlist.length === 0) return;
+    let prevIndex = currentSongIndex - 1;
+    if (prevIndex < 0) prevIndex = playlist.length - 1;
+    selectSong(prevIndex);
+}
+
 function toggleAudio() {
     toggleSongsPlay();
 }
 
-function prevSong() {
-    let prevIndex = currentSongIndex - 1;
-    if (prevIndex < 0) prevIndex = playlist.length - 1;
-    selectSong(prevIndex);
+function toggleShuffle() {
+    isShuffleEnabled = !isShuffleEnabled;
+    localStorage.setItem('songs_shuffle', isShuffleEnabled);
+    showToast(isShuffleEnabled ? "Shuffle Mode: Enabled" : "Shuffle Mode: Disabled", "fa-random");
+    updateSongsPlayerUI();
+}
+
+function toggleRepeat() {
+    if (repeatMode === 'all') {
+        repeatMode = 'one';
+        showToast("Repeat: Current Track", "fa-redo-alt");
+    } else if (repeatMode === 'one') {
+        repeatMode = 'off';
+        showToast("Repeat: Off", "fa-redo");
+    } else {
+        repeatMode = 'all';
+        showToast("Repeat: All Tracks", "fa-redo");
+    }
+    localStorage.setItem('songs_repeat', repeatMode);
+    updateSongsPlayerUI();
+}
+
+function seekRelative(seconds) {
+    if (!audio) return;
+    const target = Math.max(0, Math.min(audio.duration || 0, audio.currentTime + seconds));
+    audio.currentTime = target;
+    showToast(seconds > 0 ? "+10s Forward" : "-10s Rewind", seconds > 0 ? "fa-redo-alt" : "fa-undo-alt");
+}
+
+function setVolumeMax() {
+    if (!audio) return;
+    audio.volume = 1.0;
+    audio.muted = false;
+    const volumeSlider = document.getElementById('audio-volume-slider');
+    if (volumeSlider) {
+        volumeSlider.value = 100;
+        volumeSlider.style.background = "linear-gradient(to right, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.6) 100%, rgba(255, 255, 255, 0.1) 100%)";
+    }
+    const volumeIcon = document.getElementById('volume-icon-btn');
+    if (volumeIcon) {
+        volumeIcon.className = 'fas fa-volume-up';
+        volumeIcon.style.color = 'rgba(255,255,255,0.6)';
+    }
+    showToast("Volume: 100%", "fa-volume-up");
+}
+
+function filterPlaylistTracks() {
+    const input = document.getElementById('playlist-search-input');
+    const clearBtn = document.getElementById('playlist-search-clear');
+    searchFilterQuery = input ? input.value : '';
+    if (clearBtn) {
+        clearBtn.style.display = searchFilterQuery ? 'block' : 'none';
+    }
+    renderPlaylist();
+}
+
+function clearPlaylistSearch() {
+    const input = document.getElementById('playlist-search-input');
+    const clearBtn = document.getElementById('playlist-search-clear');
+    if (input) input.value = '';
+    searchFilterQuery = '';
+    if (clearBtn) clearBtn.style.display = 'none';
+    renderPlaylist();
+}
+
+function toggleAddSongAccordion() {
+    const section = document.getElementById('add-song-accordion');
+    if (section) {
+        section.classList.toggle('open');
+    }
+}
+
+function resetPlaylistDefaults() {
+    playlist = [...defaultPlaylist];
+    currentSongIndex = 0;
+    localStorage.setItem('songs_playlist', JSON.stringify(playlist));
+    localStorage.setItem('songs_current_index', 0);
+    showToast("Track library restored to defaults!", "fa-history");
+    renderPlaylist();
+    updateSongsPlayerUI();
 }
 
 function addCustomSong() {
@@ -965,7 +894,7 @@ function addCustomSong() {
     const url = urlInput.value.trim();
 
     if (!name || !url) {
-        showToast("Please enter both song name and MP3 link.", "fa-exclamation-triangle");
+        showToast("Please enter both song title and direct audio URL.", "fa-exclamation-triangle");
         return;
     }
 
@@ -974,10 +903,13 @@ function addCustomSong() {
         return;
     }
 
-    // Add song with a random accent color preset
     const randomColor = colorPresets[Math.floor(Math.random() * colorPresets.length)];
+    const meta = parseSongMetadata({ name });
+
     playlist.push({
         name,
+        title: meta.title,
+        artist: meta.artist,
         url,
         isDefault: false,
         color: randomColor.color,
@@ -988,16 +920,18 @@ function addCustomSong() {
     nameInput.value = "";
     urlInput.value = "";
 
-    showToast("Song added to playlist!", "fa-check-circle");
+    const accordion = document.getElementById('add-song-accordion');
+    if (accordion) accordion.classList.remove('open');
+
+    showToast("Song added to library!", "fa-check-circle");
     renderPlaylist();
 }
 
 function deleteSong(index, event) {
-    if (event) event.stopPropagation(); // Avoid triggering play on parent div click
+    if (event) event.stopPropagation();
 
     if (playlist[index].isDefault) return;
 
-    // If playing the song that is being deleted, stop it
     if (index === currentSongIndex) {
         if (audio && isPlaying) {
             audio.pause();
@@ -1013,7 +947,7 @@ function deleteSong(index, event) {
     playlist.splice(index, 1);
     localStorage.setItem('songs_playlist', JSON.stringify(playlist));
 
-    showToast("Song removed from playlist.", "fa-check-circle");
+    showToast("Song removed from library.", "fa-check-circle");
     renderPlaylist();
     updateSongsPlayerUI();
 }
@@ -1029,8 +963,9 @@ function toggleMute() {
         if (volumeSlider) volumeSlider.value = preMuteVolume * 100;
         if (volumeIcon) {
             volumeIcon.className = preMuteVolume > 0.5 ? 'fas fa-volume-up' : 'fas fa-volume-down';
-            volumeIcon.style.color = 'rgba(255,255,255,0.4)';
+            volumeIcon.style.color = 'rgba(255,255,255,0.6)';
         }
+        showToast("Unmuted", "fa-volume-up");
     } else {
         preMuteVolume = audio.volume > 0 ? audio.volume : 0.3;
         audio.muted = true;
@@ -1040,8 +975,43 @@ function toggleMute() {
             volumeIcon.className = 'fas fa-volume-mute';
             volumeIcon.style.color = '#ef4444';
         }
+        showToast("Muted", "fa-volume-mute");
     }
 }
+
+// Global window exposure for robust inline HTML click bindings
+window.openSongsPlayer = openSongsPlayer;
+window.closeSongsPlayer = closeSongsPlayer;
+window.toggleSongsPlay = toggleSongsPlay;
+window.toggleAudio = toggleAudio;
+window.selectSong = selectSong;
+window.nextSong = nextSong;
+window.prevSong = prevSong;
+window.toggleShuffle = toggleShuffle;
+window.toggleRepeat = toggleRepeat;
+window.seekRelative = seekRelative;
+window.setVolumeMax = setVolumeMax;
+window.filterPlaylistTracks = filterPlaylistTracks;
+window.clearPlaylistSearch = clearPlaylistSearch;
+window.toggleAddSongAccordion = toggleAddSongAccordion;
+window.resetPlaylistDefaults = resetPlaylistDefaults;
+window.addCustomSong = addCustomSong;
+window.deleteSong = deleteSong;
+window.toggleMute = toggleMute;
+
+// Global hotkeys (Escape to close, Space to toggle when modal active)
+document.addEventListener('keydown', (e) => {
+    const modal = document.getElementById('songs-player-modal');
+    if (!modal || !modal.classList.contains('active')) return;
+
+    if (e.key === 'Escape') {
+        closeSongsPlayer();
+    } else if (e.code === 'Space' && e.target.tagName !== 'INPUT') {
+        e.preventDefault();
+        toggleSongsPlay();
+    }
+});
+
 
 function switchTab(tabId, el = null) {
     document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
@@ -1062,6 +1032,7 @@ function switchTab(tabId, el = null) {
     }
 
     document.getElementById('main-scroll').scrollTop = 0;
+
     if (window.innerWidth < 1024) toggleMenu(false);
 
     // Update URL hash without triggering handleDeepLink recursively if possible
@@ -1105,17 +1076,10 @@ function switchTab(tabId, el = null) {
             nav: 'Anime Search',
             seo: 'Anime Scene Trace & Camera Search Seeker | Cydia Elite'
         },
-        'kurdstream': {
-            nav: 'KurdStream',
-            seo: 'KurdStream HD Movie Database Search Seeker | Cydia Elite'
-        },
-        'kurddoblazh': {
-            nav: 'KurdDoblazh',
-            seo: 'KurdDoblazh Dubbed Movies & Series Proxy Hub | Cydia Elite'
-        },
-        'live-sports': {
-            nav: 'Live Sports',
-            seo: 'Live Sports Matches & Streams • Streamed.pk | Cydia Elite'
+
+        'free-games': {
+            nav: 'Free Games',
+            seo: 'Free Games Tracker - Claim Steam, Epic Games & GOG Giveaways | Cydia Elite'
         },
         'api-hub': {
             nav: 'API Hub',
@@ -1133,10 +1097,6 @@ function switchTab(tabId, el = null) {
             nav: 'Terms & Privacy',
             seo: 'Terms of Service & Privacy Policy | Cydia Elite'
         },
-        'my-privacy': {
-            nav: 'My Privacy',
-            seo: 'My Privacy Control Panel & Security Settings | Cydia Elite'
-        },
         'contact': {
             nav: 'Contact',
             seo: 'Contact Developer & Customer Support | Cydia Elite'
@@ -1144,10 +1104,6 @@ function switchTab(tabId, el = null) {
         'status': {
             nav: 'System Status',
             seo: 'Server Registry Mirrors & System Status | Cydia Elite'
-        },
-        'free-games': {
-            nav: 'Free Games',
-            seo: 'Free Games Tracker - Claim Steam, Epic Games & GOG Giveaways | Cydia Elite'
         }
     };
 
@@ -1155,31 +1111,34 @@ function switchTab(tabId, el = null) {
 
     // Update both displayed viewport labels and actual browser document title dynamically
     document.getElementById('nav-title-label').innerText = metadata.nav;
+    const tabIcons = {
+        'home': 'fas fa-home',
+        'categories-hub': 'fas fa-th-large',
+        'installed': 'fas fa-download',
+        'search': 'fas fa-search',
+        'tiktok': 'fab fa-tiktok',
+        'instagram': 'fab fa-instagram',
+        'google': 'fas fa-robot',
+        'anime-search': 'fas fa-camera',
+        'lens-search': 'fas fa-images',
+        'free-games': 'fas fa-gamepad',
+        'api-hub': 'fas fa-code',
+        'faq': 'fas fa-question-circle',
+        'about': 'fas fa-user-astronaut',
+        'privacy': 'fas fa-shield-alt',
+        'contact': 'fas fa-envelope',
+        'status': 'fas fa-server'
+    };
+    const pillIcon = document.getElementById('nav-pill-icon');
+    if (pillIcon && tabIcons[tabId]) {
+        pillIcon.className = tabIcons[tabId];
+    }
     document.title = metadata.seo;
 
     // Auto-load latest content for KD and KM if they are empty
-    if (tabId === 'kurddoblazh') {
-        const resultsBox = document.getElementById('kd-results');
-        if (resultsBox && resultsBox.innerHTML === "") {
-            fetchKurdDoblazhLatest();
-            fetchKurdDoblazhLabels();
-        }
-    }
     if (tabId === 'free-games') {
         loadFreeGames();
     }
-    if (tabId === 'live-sports') {
-        loadLiveSportsPortal();
-    }
-}
-
-function getIconHtml(icon) {
-    if (!icon) return '<i class="fas fa-question"></i>';
-    const isUrl = icon.startsWith('http') || icon.startsWith('/') || icon.startsWith('.');
-    if (isUrl) {
-        return `<img src="${icon}" style="width: 28px; height: 28px; object-fit: contain; border-radius: 6px;" />`;
-    }
-    return `<i class="${icon}"></i>`;
 }
 
 function renderInstalled(filterCat = null) {
@@ -1190,8 +1149,8 @@ function renderInstalled(filterCat = null) {
         kurdish: "Kurdish Cinema", anime: "Anime & Manga",
         cartoon: "Cartoons",
         movies: "Movies & Series", tools: "Tools & Software",
-        games: "Game Downloads", emulators: "Emulators", mods: "Game Mods",
-        livetv: "Live TV & IPTV", ads: "Ad Blockers",
+        games: "Game Downloads", emulators: "Console & PC Emulators",
+        mods: "Game Mods", livetv: "Live TV & IPTV", ads: "Ad Blockers",
         browser: "Web Browsers",
         sports: "Live Sports", scripts: "Automation Scripts"
     };
@@ -1216,14 +1175,14 @@ function renderInstalled(filterCat = null) {
                 const safeCmd = pkg.cmd.replace(/'/g, "\\'").replace(/"/g, "&quot;");
                 html += `
                     <a href="#" onclick="navigator.clipboard.writeText('${safeCmd}'); showToast('Command copied to clipboard!', 'fa-check-circle'); event.preventDefault();" class="pkg-list-item">
-                        <div class="pkg-list-icon">${getIconHtml(pkg.icon)}</div>
+                        <div class="pkg-list-icon"><i class="${pkg.icon}"></i></div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc" style="color:#007aff; font-family:monospace; font-size:0.75rem;">[Click to Copy Command]</span></div>
                         <span class="chevron"><i class="fas fa-copy" style="font-size:0.9rem; color:#888;"></i></span>
                     </a>`;
             } else {
                 html += `
                     <a href="${pkg.url}" target="_blank" class="pkg-list-item">
-                        <div class="pkg-list-icon">${getIconHtml(pkg.icon)}</div>
+                        <div class="pkg-list-icon"><i class="${pkg.icon}"></i></div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">${pkg.desc}</span></div>
                         <span class="chevron">›</span>
                     </a>`;
@@ -1287,6 +1246,10 @@ function filterCategory(cat, el = null) {
             nav: 'PC Games',
             seo: 'Download Full PC Games Registry | Cydia Elite'
         },
+        'emulators': {
+            nav: 'Emulators',
+            seo: 'Console & PC Emulators Registry | Cydia Elite'
+        },
         'mods': {
             nav: 'Game Mods',
             seo: 'Download Game Mods & Cheat Packages | Cydia Elite'
@@ -1316,13 +1279,6 @@ function filterCategory(cat, el = null) {
     }
 }
 
-function hexToRgb(hex) {
-    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    const fullHex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(fullHex);
-    return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : null;
-}
-
 function renderCategoriesHub() {
     const container = document.getElementById('categories-grid-container');
     if (!container) return;
@@ -1337,7 +1293,7 @@ function renderCategoriesHub() {
         { id: 'sports', name: 'Live Sports', icon: 'fas fa-futbol', color: '#3b82f6' },
         { id: 'livetv', name: 'Live TV', icon: 'fas fa-satellite-dish', color: '#06b6d4' },
         { id: 'games', name: 'PC Games', icon: 'fas fa-gamepad', color: '#14b8a6' },
-        { id: 'emulators', name: 'Emulators', icon: 'fas fa-microchip', color: '#0ea5e9' },
+        { id: 'emulators', name: 'Emulators', icon: 'fas fa-microchip', color: '#06b6d4' },
         { id: 'mods', name: 'Game Mods', icon: 'fas fa-wrench', color: '#f97316' },
         { id: 'tools', name: 'PC Tools', icon: 'fas fa-toolbox', color: '#3b82f6' },
         { id: 'browser', name: 'Web Browsers', icon: 'fas fa-globe', color: '#10b981' },
@@ -1347,17 +1303,10 @@ function renderCategoriesHub() {
 
     container.innerHTML = '';
     categoriesList.forEach(cat => {
-        const count = window._pkgCache && window._pkgCache[cat.id] ? window._pkgCache[cat.id].length : packageData.filter(p => p.cat === cat.id).length;
+        const count = packageData.filter(p => p.cat === cat.id).length;
 
         const card = document.createElement('div');
         card.className = 'category-card';
-
-        // Expose dynamic color tokens as CSS variables for premium styling
-        card.style.setProperty('--cat-color', cat.color);
-        const rgb = hexToRgb(cat.color);
-        if (rgb) {
-            card.style.setProperty('--cat-color-rgb', rgb);
-        }
 
         // Synchronize dynamic redirection and visual sidebar item triggers
         card.onclick = () => {
@@ -1419,14 +1368,14 @@ function handleSearch(e) {
                 const safeCmd = pkg.cmd.replace(/'/g, "\\'").replace(/"/g, "&quot;");
                 html += `
                     <a href="#" onclick="navigator.clipboard.writeText('${safeCmd}'); showToast('Command copied!', 'fa-check-circle'); event.preventDefault();" class="pkg-list-item">
-                        <div class="pkg-list-icon">${getIconHtml(pkg.icon)}</div>
+                        <div class="pkg-list-icon"><i class="${pkg.icon}"></i></div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">Copy Command</span></div>
                         <span class="chevron"><i class="fas fa-copy"></i></span>
                     </a>`;
             } else {
                 html += `
                     <a href="${pkg.url}" target="_blank" class="pkg-list-item">
-                        <div class="pkg-list-icon">${getIconHtml(pkg.icon)}</div>
+                        <div class="pkg-list-icon"><i class="${pkg.icon}"></i></div>
                         <div class="pkg-list-info"><span class="pkg-list-name">${pkg.name}</span><span class="pkg-list-desc">${pkg.desc}</span></div>
                         <span class="chevron">›</span>
                     </a>`;
@@ -1509,77 +1458,23 @@ async function performGoogleSearch() {
     const resultsList = document.getElementById('google-results-list');
 
     if (!resultsBox || !loader || !resultsList) {
+        // Fallback if DOM elements are missing
         window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
         return;
     }
 
+    // Clear and display results container and crawler loader
     resultsBox.style.display = 'block';
     loader.style.display = 'flex';
     resultsList.innerHTML = '';
 
+    // Scroll results container into view
     const mainScroll = document.getElementById('main-scroll');
     if (mainScroll) mainScroll.scrollTop = mainScroll.scrollHeight;
 
     try {
-        // 1. Attempt real-time DuckDuckGo HTML scraping over proxy
-        const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(searchUrl)}&timestamp=${Date.now()}`;
-
-        console.log("Fetching real web search results via proxy:", proxyUrl);
-        const response = await fetch(proxyUrl);
-        if (!response.ok) throw new Error("CORS Proxy search failed");
-
-        const data = await response.json();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(data.contents, "text/html");
-
-        const resultElements = doc.querySelectorAll(".result");
-        let cards = [];
-
-        resultElements.forEach(el => {
-            if (cards.length >= 6) return;
-            const titleEl = el.querySelector(".result__a");
-            const snippetEl = el.querySelector(".result__snippet");
-            const urlEl = el.querySelector(".result__url");
-
-            if (titleEl && snippetEl) {
-                const title = titleEl.innerText.trim();
-                const snippet = snippetEl.innerText.trim();
-                const rawUrl = titleEl.getAttribute("href");
-
-                let url = rawUrl;
-                if (rawUrl && rawUrl.includes("uddg=")) {
-                    const uddgMatch = rawUrl.match(/uddg=([^&]+)/);
-                    if (uddgMatch) {
-                        url = decodeURIComponent(uddgMatch[1]);
-                    }
-                }
-
-                let displayUrl = urlEl ? urlEl.innerText.trim() : url;
-                if (url.startsWith("//")) {
-                    url = "https:" + url;
-                }
-
-                cards.push({
-                    title,
-                    snippet,
-                    url,
-                    displayUrl
-                });
-            }
-        });
-
-        if (cards.length === 0) {
-            throw new Error("No parsed search elements found");
-        }
-
-        renderSerpCards(cards, query);
-
-    } catch (err) {
-        console.warn("Real-time proxy search failed, querying simulated LLM web crawl fallback...", err);
-        try {
-            const payload = {
-                inputs: `[System Instructions]: You are a high-performance web search crawler and search engine indexing robot.
+        const payload = {
+            inputs: `[System Instructions]: You are a high-performance web search crawler and search engine indexing robot.
 Analyze the search query and output a strict JSON array containing exactly 5 highly realistic, informative, and domain-diverse search result items.
 Do NOT output any markdown blocks, normal conversational text, or wrapper brackets. Output ONLY the raw JSON array string.
 Each object in the array must contain:
@@ -1591,11 +1486,15 @@ Each object in the array must contain:
 [User Search Query]: ${query}
 
 Strict JSON Array Response:`,
-                parameters: { max_new_tokens: 600, temperature: 0.5 }
-            };
+            parameters: { max_new_tokens: 600, temperature: 0.5 }
+        };
 
-            const rawJsonText = await fetchLlmResponse(payload);
-            let cards = [];
+        // Fetch raw response via multi-model fallback retriever
+        const rawJsonText = await fetchLlmResponse(payload);
+
+        let cards = [];
+        try {
+            // Find JSON array bounds in case model leaks conversational preambles
             const startIdx = rawJsonText.indexOf('[');
             const endIdx = rawJsonText.lastIndexOf(']');
             if (startIdx !== -1 && endIdx !== -1) {
@@ -1604,12 +1503,23 @@ Strict JSON Array Response:`,
             } else {
                 throw new Error("No JSON boundaries found");
             }
-            renderSerpCards(cards, query);
-        } catch (llmErr) {
-            console.warn("Simulated LLM crawl failed, triggering offline clientside fallback indices...", llmErr);
-            const cards = generateFallbackSearchCards(query);
-            renderSerpCards(cards, query);
+        } catch (jsonErr) {
+            console.warn("SERP parsing error, falling back to dynamic search indexes:", jsonErr);
+            cards = generateFallbackSearchCards(query);
         }
+
+        // Ensure we got actual valid cards
+        if (!Array.isArray(cards) || cards.length === 0) {
+            cards = generateFallbackSearchCards(query);
+        }
+
+        // Render cards
+        renderSerpCards(cards, query);
+
+    } catch (err) {
+        console.warn("Web indices offline. Triggering high-fidelity dynamic client-side fallback indexer...", err);
+        const cards = generateFallbackSearchCards(query);
+        renderSerpCards(cards, query);
     } finally {
         loader.style.display = 'none';
         if (mainScroll) mainScroll.scrollTop = mainScroll.scrollHeight;
@@ -1674,17 +1584,6 @@ document.addEventListener('mousemove', (e) => {
 
 searchInput.addEventListener('input', handleSearch);
 pcSearchInput.addEventListener('input', handleSearch);
-
-searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        saveSearchQuery(e.target.value);
-    }
-});
-pcSearchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        saveSearchQuery(e.target.value);
-    }
-});
 
 // Anime Search Logic
 const animeDropZone = document.getElementById('anime-drop-zone');
@@ -2270,43 +2169,6 @@ let lastApiTestResponseData = null;
 
 // Centralized Robust API Request Wrapper with 10s Timeout & Auto-CORS Fallback
 async function secureFetch(url, options = {}) {
-    // Third-party API governance blocking check
-    try {
-        const urlObj = new URL(url);
-        const host = urlObj.hostname.toLowerCase();
-        let isBlocked = false;
-        let serviceName = '';
-
-        if (host.includes('tiktok.com') || host.includes('lovetik.com') || host.includes('tikwm.com')) {
-            isBlocked = localStorage.getItem('privacy_provider_tiktok') === 'false';
-            serviceName = 'TikTok Downloader';
-        } else if (host.includes('instagram.com')) {
-            isBlocked = localStorage.getItem('privacy_provider_instagram') === 'false';
-            serviceName = 'Instagram Directory';
-        } else if (host.includes('huggingface.co') || host.includes('api-inference.huggingface.co')) {
-            isBlocked = localStorage.getItem('privacy_provider_ai') === 'false';
-            serviceName = 'AI Copilot';
-        } else if (host.includes('trace.moe')) {
-            isBlocked = localStorage.getItem('privacy_provider_anime') === 'false';
-            serviceName = 'Anime Trace';
-        } else if (host.includes('gamerpower.com') || host.includes('freetogame.com')) {
-            isBlocked = localStorage.getItem('privacy_provider_games') === 'false';
-            serviceName = 'Games Database';
-        } else if (host.includes('kurdstream') || host.includes('kurdcinema') || host.includes('kurddoblazh')) {
-            isBlocked = localStorage.getItem('privacy_provider_movies') === 'false';
-            serviceName = 'Kurdish Cinema Streams';
-        }
-
-        if (isBlocked) {
-            throw new Error(`${serviceName} integration is disabled in your Privacy settings.`);
-        }
-    } catch (e) {
-        if (e.message.includes('Privacy settings')) {
-            throw e;
-        }
-        // ignore other url parsing errors for relative paths if any
-    }
-
     const TIMEOUT_MS = 10000;
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -2330,25 +2192,9 @@ async function secureFetch(url, options = {}) {
 
         // Catch TypeError (usually network offline or CORS block) and fallback automatically
         if (err instanceof TypeError) {
-            const proxySelect = localStorage.getItem('privacy_proxy_select') || 'allorigins';
-            if (proxySelect === 'direct') {
-                throw err;
-            }
+            console.warn(`%c[secureFetch] Direct fetch failed (CORS blocked). Attempting AllOrigins Proxy Fallback for: ${url}`, "color: #fbbf24; font-style: italic;");
 
-            let proxyUrl = '';
-            if (proxySelect === 'allorigins') {
-                proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`;
-            } else if (proxySelect === 'corsanywhere') {
-                proxyUrl = `https://cors-anywhere.herokuapp.com/${url}`;
-            } else if (proxySelect === 'custom') {
-                const customTemplate = localStorage.getItem('privacy_custom_proxy') || '';
-                proxyUrl = customTemplate ? customTemplate.replace('{url}', encodeURIComponent(url)) : url;
-            } else {
-                proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`;
-            }
-
-            console.warn(`%c[secureFetch] Direct fetch failed (CORS blocked). Attempting Fallback Proxy (${proxySelect}) for: ${url}`, "color: #fbbf24; font-style: italic;");
-
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}&timestamp=${Date.now()}`;
             const proxyController = new AbortController();
             const proxyId = setTimeout(() => proxyController.abort(), TIMEOUT_MS);
 
@@ -2619,3003 +2465,316 @@ function escapeHTML(str) {
     );
 }
 
-// ==========================================================================
-// FREE GAMES TRACKER & AGGREGATOR ENGINE
-// ==========================================================================
-let freeGamesCache = null;
-let freeGamesF2PCache = null;
-let currentFreeGamesPlatform = 'all';
-let currentFreeGamesQuery = '';
-let currentFreeGamesSort = 'default';
+// ==========================================
+// FREE GAMES TRACKER ENGINE
+// ==========================================
+let freeGamesData = [];
+let fgActivePlatform = 'all';
+let fgSearchQuery = '';
+let fgSortMode = 'default';
+let fgIsLoading = false;
 
 function getClaimedGames() {
-    return new Set(JSON.parse(localStorage.getItem('fg_claimed_games') || '[]'));
+    try {
+        return JSON.parse(localStorage.getItem('claimed_games') || '[]');
+    } catch (e) {
+        return [];
+    }
 }
 
 function toggleClaimedGame(gameId) {
-    const claimed = getClaimedGames();
-    const idStr = String(gameId);
-    if (claimed.has(idStr)) {
-        claimed.delete(idStr);
+    let claimed = getClaimedGames();
+    const strId = String(gameId);
+    if (claimed.includes(strId)) {
+        claimed = claimed.filter(id => id !== strId);
+        showToast('Game marked as unclaimed.', 'fa-undo');
     } else {
-        claimed.add(idStr);
+        claimed.push(strId);
+        showToast('Game marked as claimed in your library!', 'fa-check-circle');
     }
-    localStorage.setItem('fg_claimed_games', JSON.stringify(Array.from(claimed)));
-    executeFreeGamesRender();
-}
-
-function setupCardGlowInteraction(card) {
-    card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        card.style.setProperty('--mouse-x', `${x}px`);
-        card.style.setProperty('--mouse-y', `${y}px`);
-    });
-}
-
-function showFreeGamesSkeleton() {
-    const container = document.getElementById('free-games-container');
-    if (!container) return;
-    container.innerHTML = Array(6).fill().map(() => `
-        <div class="game-card skeleton-card">
-            <div class="skeleton-image"></div>
-            <div class="game-card-content">
-                <div class="skeleton-meta">
-                    <div class="skeleton-text skeleton-badge"></div>
-                    <div class="skeleton-text skeleton-badge"></div>
-                </div>
-                <div class="skeleton-text skeleton-title"></div>
-                <div class="skeleton-text skeleton-desc"></div>
-                <div class="skeleton-text skeleton-desc" style="width: 80%;"></div>
-                <div class="skeleton-meta" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
-                    <div class="skeleton-text skeleton-footer-item"></div>
-                    <div class="skeleton-text skeleton-footer-item"></div>
-                </div>
-                <div class="skeleton-button"></div>
-            </div>
-        </div>
-    `).join('');
-}
-
-function updateFreeGamesStats(games, isF2P = false) {
-    const countEl = document.getElementById('fg-stat-count');
-    const valueEl = document.getElementById('fg-stat-value');
-    const topEl = document.getElementById('fg-stat-top');
-    if (!countEl || !valueEl || !topEl) return;
-
-    if (!games || games.length === 0) {
-        countEl.textContent = '0';
-        valueEl.textContent = '$0.00';
-        topEl.textContent = 'N/A';
-        return;
-    }
-
-    if (isF2P) {
-        countEl.textContent = Math.min(games.length, 60);
-        valueEl.textContent = 'Permanently Free';
-
-        let platCounts = {};
-        games.slice(0, 60).forEach(g => {
-            let plat = g.platform.toLowerCase().includes('pc') ? 'PC' : 'Web';
-            platCounts[plat] = (platCounts[plat] || 0) + 1;
-        });
-        let topPlat = 'PC (Windows)';
-        if ((platCounts['Web'] || 0) > (platCounts['PC'] || 0)) {
-            topPlat = 'Web Browser';
-        }
-        topEl.textContent = topPlat;
-    } else {
-        countEl.textContent = games.length;
-
-        let totalWorth = 0;
-        let storeCounts = {};
-
-        games.forEach(g => {
-            if (g.worth && g.worth !== 'N/A') {
-                const worthVal = parseFloat(g.worth.replace(/[^0-9.]/g, ''));
-                if (!isNaN(worthVal)) {
-                    totalWorth += worthVal;
-                }
-            }
-
-            let plat = g.platforms.toLowerCase();
-            let store = 'Other';
-            if (plat.includes('epic')) store = 'Epic Games';
-            else if (plat.includes('steam')) store = 'Steam';
-            else if (plat.includes('gog')) store = 'GOG';
-
-            storeCounts[store] = (storeCounts[store] || 0) + 1;
-        });
-
-        valueEl.textContent = `$${totalWorth.toFixed(2)}`;
-
-        let topStore = 'N/A';
-        let maxCount = -1;
-        for (const [store, count] of Object.entries(storeCounts)) {
-            if (count > maxCount) {
-                maxCount = count;
-                topStore = store;
-            }
-        }
-        topEl.textContent = topStore;
-    }
+    localStorage.setItem('claimed_games', JSON.stringify(claimed));
+    renderFreeGames();
 }
 
 async function loadFreeGames() {
-    const container = document.getElementById('free-games-container');
-    if (!container) return;
-
-    if (freeGamesCache) {
-        executeFreeGamesRender();
+    if (freeGamesData.length > 0) {
+        renderFreeGames();
         return;
     }
-
-    showFreeGamesSkeleton();
+    const loader = document.getElementById('fg-loader');
+    const container = document.getElementById('free-games-container');
+    if (loader) loader.style.display = 'block';
+    if (container) container.innerHTML = '';
+    fgIsLoading = true;
 
     try {
-        const response = await secureFetch('https://www.gamerpower.com/api/giveaways');
-        if (!response.ok) throw new Error('Failed to load giveaways');
-        const data = await response.json();
-
-        freeGamesCache = data;
-        executeFreeGamesRender();
+        let res;
+        try {
+            res = await fetch('https://www.gamerpower.com/api/giveaways');
+            if (!res.ok) throw new Error('Direct fetch failed');
+        } catch (e) {
+            // Fallback via allorigins CORS proxy
+            res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.gamerpower.com/api/giveaways'));
+        }
+        const data = await res.json();
+        freeGamesData = Array.isArray(data) ? data : [];
+        updateFreeGamesStats();
+        renderFreeGames();
     } catch (err) {
-        console.error('[Free Games Tracker] Error:', err);
-        container.innerHTML = `
-            <div style="text-align: center; color: #ef4444; padding: 40px 20px; grid-column: 1 / -1;" class="animated-card">
-                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                <p>Failed to scan active giveaways database. Please check your network or proxy connection.</p>
-                <button class="app-btn" onclick="loadFreeGames()" style="margin-top: 15px; margin-left: auto; margin-right: auto; display: inline-flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-sync"></i> Retry Scanner
-                </button>
-            </div>
-        `;
-        updateFreeGamesStats([], false);
+        console.error('Free Games fetch failed:', err);
+        if (container) {
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: rgba(255,255,255,0.4);">
+                    <i class="fas fa-exclamation-circle" style="font-size: 2.5rem; margin-bottom: 12px; color: #ef4444;"></i>
+                    <p>Unable to load giveaways right now. Check internet connection or try again later.</p>
+                    <button class="app-btn" onclick="freeGamesData = []; loadFreeGames();" style="margin-top: 15px;">
+                        <i class="fas fa-redo"></i> Retry
+                    </button>
+                </div>
+            `;
+        }
+    } finally {
+        if (loader) loader.style.display = 'none';
+        fgIsLoading = false;
     }
 }
 
-async function filterFreeGames(platform, btn) {
-    if (!btn) return;
+function updateFreeGamesStats() {
+    const countEl = document.getElementById('fg-stat-count');
+    const valueEl = document.getElementById('fg-stat-value');
+    const topEl = document.getElementById('fg-stat-top');
 
-    btn.parentElement.querySelectorAll('.fg-filter-item').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    if (countEl) countEl.innerText = freeGamesData.length;
 
-    currentFreeGamesPlatform = platform;
-    const container = document.getElementById('free-games-container');
-    if (!container) return;
+    let totalWorth = 0;
+    const storeCounts = {};
+
+    freeGamesData.forEach(g => {
+        if (g.worth && g.worth.startsWith('$')) {
+            const val = parseFloat(g.worth.replace('$', ''));
+            if (!isNaN(val)) totalWorth += val;
+        }
+        const plat = (g.platforms || '').toLowerCase();
+        if (plat.includes('steam')) storeCounts['Steam'] = (storeCounts['Steam'] || 0) + 1;
+        else if (plat.includes('epic')) storeCounts['Epic Games'] = (storeCounts['Epic Games'] || 0) + 1;
+        else if (plat.includes('gog')) storeCounts['GOG'] = (storeCounts['GOG'] || 0) + 1;
+        else storeCounts['PC / Web'] = (storeCounts['PC / Web'] || 0) + 1;
+    });
+
+    if (valueEl) valueEl.innerText = '$' + totalWorth.toFixed(2);
+
+    let topStore = 'Steam';
+    let maxCount = 0;
+    Object.keys(storeCounts).forEach(s => {
+        if (storeCounts[s] > maxCount) {
+            maxCount = storeCounts[s];
+            topStore = s;
+        }
+    });
+    if (topEl) topEl.innerText = topStore;
+}
+
+function filterFreeGames(platform, el) {
+    fgActivePlatform = platform;
+    document.querySelectorAll('.fg-filter-item').forEach(item => item.classList.remove('active'));
+    if (el) el.classList.add('active');
 
     if (platform === 'f2p') {
-        if (freeGamesF2PCache) {
-            executeFreeGamesRender();
-            return;
-        }
-        showFreeGamesSkeleton();
+        loadF2PCatalog();
+        return;
+    }
+    renderFreeGames();
+}
+
+async function loadF2PCatalog() {
+    const loader = document.getElementById('fg-loader');
+    const container = document.getElementById('free-games-container');
+    if (loader) loader.style.display = 'block';
+    if (container) container.innerHTML = '';
+
+    try {
+        let res;
         try {
-            const response = await secureFetch('https://www.freetogame.com/api/games');
-            if (!response.ok) throw new Error('Failed to fetch F2P games catalog');
-            const data = await response.json();
-            freeGamesF2PCache = data;
-            executeFreeGamesRender();
-        } catch (err) {
-            console.error('[F2P Catalog] Error:', err);
-            container.innerHTML = `
-                <div style="text-align: center; color: #ef4444; padding: 40px 20px; grid-column: 1 / -1;" class="animated-card">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                    <p>Failed to retrieve Free-To-Play games catalog. Please try again later.</p>
-                </div>
-            `;
-            updateFreeGamesStats([], true);
+            res = await fetch('https://www.freetogame.com/api/games');
+            if (!res.ok) throw new Error('Direct fetch failed');
+        } catch (e) {
+            res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.freetogame.com/api/games'));
         }
-    } else {
-        if (!freeGamesCache) {
-            await loadFreeGames();
-        } else {
-            executeFreeGamesRender();
+        const data = await res.json();
+        if (Array.isArray(data)) {
+            // Map freetogame schema to giveaways schema
+            freeGamesData = data.slice(0, 40).map(g => ({
+                id: 'f2p_' + g.id,
+                title: g.title,
+                worth: 'F2P Catalog',
+                thumbnail: g.thumbnail,
+                image: g.thumbnail,
+                description: g.short_description,
+                instructions: 'Available permanently as free to play.',
+                open_giveaway_url: g.game_url,
+                giveaway_url: g.game_url,
+                published_date: g.release_date,
+                type: g.genre || 'Free-to-Play',
+                platforms: g.platform
+            }));
+            updateFreeGamesStats();
+            renderFreeGames();
         }
+    } catch (e) {
+        console.error('F2P fetch failed:', e);
+        showToast('Failed to load F2P catalog', 'fa-exclamation-triangle');
+    } finally {
+        if (loader) loader.style.display = 'none';
     }
 }
 
 function handleFreeGamesSearch() {
     const input = document.getElementById('fg-search-input');
     const clearBtn = document.getElementById('fg-search-clear');
-    if (!input) return;
-
-    currentFreeGamesQuery = input.value.trim().toLowerCase();
-    if (clearBtn) {
-        clearBtn.style.display = currentFreeGamesQuery ? 'flex' : 'none';
-    }
-
-    executeFreeGamesRender();
+    fgSearchQuery = input ? input.value.trim().toLowerCase() : '';
+    if (clearBtn) clearBtn.style.display = fgSearchQuery ? 'block' : 'none';
+    renderFreeGames();
 }
 
 function clearFreeGamesSearch() {
     const input = document.getElementById('fg-search-input');
     const clearBtn = document.getElementById('fg-search-clear');
-    if (input) {
-        input.value = '';
-        currentFreeGamesQuery = '';
-    }
-    if (clearBtn) {
-        clearBtn.style.display = 'none';
-    }
-    executeFreeGamesRender();
+    if (input) input.value = '';
+    fgSearchQuery = '';
+    if (clearBtn) clearBtn.style.display = 'none';
+    renderFreeGames();
 }
 
 function handleFreeGamesSort() {
     const select = document.getElementById('fg-sort-select');
-    if (!select) return;
-    currentFreeGamesSort = select.value;
-    executeFreeGamesRender();
+    fgSortMode = select ? select.value : 'default';
+    renderFreeGames();
 }
 
-function executeFreeGamesRender() {
-    if (currentFreeGamesPlatform === 'f2p') {
-        renderF2PGames(freeGamesF2PCache || []);
-    } else {
-        renderFreeGames(freeGamesCache || [], currentFreeGamesPlatform);
-    }
-}
-
-function renderFreeGames(games, platform) {
+function renderFreeGames() {
     const container = document.getElementById('free-games-container');
     if (!container) return;
-
-    let filtered = games;
-
-    if (platform !== 'all') {
-        filtered = games.filter(g => {
-            const platLower = g.platforms.toLowerCase();
-            if (platform === 'epic-games-store') {
-                return platLower.includes('epic') || platLower.includes('egs');
-            }
-            if (platform === 'steam') {
-                return platLower.includes('steam');
-            }
-            if (platform === 'gog') {
-                return platLower.includes('gog');
-            }
-            return platLower.includes(platform);
-        });
-    }
-
-    updateFreeGamesStats(filtered, false);
-
-    if (currentFreeGamesQuery) {
-        filtered = filtered.filter(g => {
-            const title = (g.title || '').toLowerCase();
-            const desc = (g.description || '').toLowerCase();
-            const type = (g.type || '').toLowerCase();
-            const store = (g.platforms || '').toLowerCase();
-            return title.includes(currentFreeGamesQuery) ||
-                desc.includes(currentFreeGamesQuery) ||
-                type.includes(currentFreeGamesQuery) ||
-                store.includes(currentFreeGamesQuery);
-        });
-    }
-
-    if (currentFreeGamesSort !== 'default') {
-        filtered = [...filtered];
-        if (currentFreeGamesSort === 'value-high') {
-            filtered.sort((a, b) => {
-                const valA = a.worth === 'N/A' ? 0 : parseFloat(a.worth.replace(/[^0-9.]/g, '')) || 0;
-                const valB = b.worth === 'N/A' ? 0 : parseFloat(b.worth.replace(/[^0-9.]/g, '')) || 0;
-                return valB - valA;
-            });
-        } else if (currentFreeGamesSort === 'title-asc') {
-            filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
-        } else if (currentFreeGamesSort === 'store') {
-            filtered.sort((a, b) => (a.platforms || '').localeCompare(b.platforms || ''));
-        }
-    }
-
-    container.innerHTML = '';
-    if (filtered.length === 0) {
-        container.innerHTML = `
-            <div style="text-align: center; color: rgba(255,255,255,0.4); padding: 50px 0; grid-column: 1 / -1;" class="animated-card">
-                <i class="fas fa-search" style="font-size: 2.5rem; margin-bottom: 15px; color: rgba(255,255,255,0.2);"></i>
-                <p style="font-size: 1rem; font-weight: 500;">No active giveaways match your filters.</p>
-                <p style="font-size: 0.85rem; color: rgba(255,255,255,0.3); margin-top: 5px;">Try clearing your search query or choosing another platform.</p>
-            </div>
-        `;
-        return;
-    }
 
     const claimed = getClaimedGames();
+    let list = [...freeGamesData];
 
-    filtered.forEach((game, index) => {
-        const card = document.createElement('div');
-        const isClaimed = claimed.has(String(game.id));
-        card.className = `game-card animated-card ${isClaimed ? 'claimed' : ''}`;
-        card.style.animationDelay = `${Math.min(index, 12) * 0.05}s`;
+    // Filter platform
+    if (fgActivePlatform && fgActivePlatform !== 'all' && fgActivePlatform !== 'f2p') {
+        const pKey = fgActivePlatform === 'epic-games-store' ? 'epic' : fgActivePlatform;
+        list = list.filter(g => (g.platforms || '').toLowerCase().includes(pKey));
+    }
 
-        let storeBadge = '';
-        let badgeIcon = 'fas fa-gamepad';
-        let gameColor = '#10b981';
-        let gameColorRgb = '16, 185, 129';
-        const plat = game.platforms.toLowerCase();
+    // Filter search
+    if (fgSearchQuery) {
+        list = list.filter(g =>
+            (g.title || '').toLowerCase().includes(fgSearchQuery) ||
+            (g.description || '').toLowerCase().includes(fgSearchQuery) ||
+            (g.platforms || '').toLowerCase().includes(fgSearchQuery)
+        );
+    }
 
-        if (plat.includes('epic')) {
-            storeBadge = 'Epic Games';
-            badgeIcon = 'fab fa-windows';
-            gameColor = '#0078f2';
-            gameColorRgb = '0, 120, 242';
-        } else if (plat.includes('steam')) {
-            storeBadge = 'Steam';
-            badgeIcon = 'fab fa-steam';
-            gameColor = '#66c0f4';
-            gameColorRgb = '102, 192, 244';
-        } else if (plat.includes('gog')) {
-            storeBadge = 'GOG Store';
-            badgeIcon = 'fas fa-download';
-            gameColor = '#9b51e0';
-            gameColorRgb = '155, 81, 224';
-        } else {
-            storeBadge = game.platforms.split(',')[0];
-        }
-
-        card.style.setProperty('--game-color', gameColor);
-        card.style.setProperty('--game-color-rgb', gameColorRgb);
-
-        const worthStr = game.worth === 'N/A' ? 'Freebie' : `Was ${game.worth}`;
-
-        card.innerHTML = `
-            <div class="game-card-glow"></div>
-            ${isClaimed ? `<div class="game-card-claimed-badge"><i class="fas fa-check-circle"></i> Claimed</div>` : ''}
-            <div class="game-card-image-wrap">
-                <img class="game-card-image" src="${game.image}" alt="${escapeHTML(game.title)}" loading="lazy">
-                <div class="game-card-worth-badge" style="background: ${game.worth === 'N/A' ? '#10b981' : 'rgba(239, 68, 68, 0.85)'};">${worthStr}</div>
-            </div>
-            <div class="game-card-content">
-                <div class="game-card-meta">
-                    <span class="game-card-platform"><i class="${badgeIcon}"></i> ${storeBadge}</span>
-                    <span class="game-card-type">${game.type}</span>
-                </div>
-                <h3 class="game-card-title">${escapeHTML(game.title)}</h3>
-                <p class="game-card-desc">${escapeHTML(game.description)}</p>
-                <div class="game-card-footer-meta">
-                    <span class="worth-saved"><i class="fas fa-tags"></i> 100% Off</span>
-                    <span class="game-status"><span class="status-pulse-dot" style="background: ${isClaimed ? '#9ca3af' : '#4ade80'}; box-shadow: 0 0 8px ${isClaimed ? '#9ca3af' : '#4ade80'};"></span> ${isClaimed ? 'In Library' : 'Active'}</span>
-                </div>
-                <div class="game-card-footer">
-                    <a class="game-card-btn" href="${game.open_giveaway_url}" target="_blank">
-                        ${isClaimed ? 'Launch Store <i class="fas fa-external-link-alt"></i>' : 'Claim Game <i class="fas fa-external-link-alt"></i>'}
-                    </a>
-                    <div class="fg-claim-toggle-wrapper">
-                        <div class="fg-claim-toggle" onclick="event.preventDefault(); toggleClaimedGame('${game.id}')">
-                            <i class="${isClaimed ? 'fas fa-check-square' : 'far fa-square'}"></i>
-                            <span>${isClaimed ? 'Marked as Claimed' : 'Mark as Claimed'}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        setupCardGlowInteraction(card);
-        container.appendChild(card);
-    });
-}
-
-function renderF2PGames(games) {
-    const container = document.getElementById('free-games-container');
-    if (!container) return;
-
-    let filtered = games;
-
-    updateFreeGamesStats(filtered, true);
-
-    if (currentFreeGamesQuery) {
-        filtered = filtered.filter(g => {
-            const title = (g.title || '').toLowerCase();
-            const desc = (g.short_description || '').toLowerCase();
-            const genre = (g.genre || '').toLowerCase();
-            const platform = (g.platform || '').toLowerCase();
-            return title.includes(currentFreeGamesQuery) ||
-                desc.includes(currentFreeGamesQuery) ||
-                genre.includes(currentFreeGamesQuery) ||
-                platform.includes(currentFreeGamesQuery);
+    // Sort
+    if (fgSortMode === 'value-high') {
+        list.sort((a, b) => {
+            const va = parseFloat((a.worth || '$0').replace(/[^0-9.]/g, '')) || 0;
+            const vb = parseFloat((b.worth || '$0').replace(/[^0-9.]/g, '')) || 0;
+            return vb - va;
         });
+    } else if (fgSortMode === 'title-asc') {
+        list.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+    } else if (fgSortMode === 'store') {
+        list.sort((a, b) => (a.platforms || '').localeCompare(b.platforms || ''));
     }
 
-    if (currentFreeGamesSort !== 'default') {
-        filtered = [...filtered];
-        if (currentFreeGamesSort === 'value-high') {
-            filtered.sort((a, b) => (a.genre || '').localeCompare(b.genre || ''));
-        } else if (currentFreeGamesSort === 'title-asc') {
-            filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
-        } else if (currentFreeGamesSort === 'store') {
-            filtered.sort((a, b) => (a.platform || '').localeCompare(b.platform || ''));
-        }
-    }
-
-    const list = filtered.slice(0, 60);
-
-    container.innerHTML = '';
     if (list.length === 0) {
         container.innerHTML = `
-            <div style="text-align: center; color: rgba(255,255,255,0.4); padding: 50px 0; grid-column: 1 / -1;" class="animated-card">
-                <i class="fas fa-search" style="font-size: 2.5rem; margin-bottom: 15px; color: rgba(255,255,255,0.2);"></i>
-                <p style="font-size: 1rem; font-weight: 500;">No F2P database games match your search query.</p>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.4);">
+                <i class="fas fa-ghost" style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.5;"></i>
+                <p>No active giveaways matching your filter.</p>
             </div>
         `;
         return;
     }
 
-    const claimed = getClaimedGames();
+    let html = '';
+    list.forEach(game => {
+        const isClaimed = claimed.includes(String(game.id));
+        const plat = (game.platforms || '').toLowerCase();
+        let platIcon = 'fas fa-desktop';
+        let platLabel = game.platforms || 'PC';
+        let platColor = '#10b981';
+        let platRgb = '16, 185, 129';
 
-    list.forEach((game, index) => {
-        const card = document.createElement('div');
-        const isClaimed = claimed.has(String(game.id));
-        card.className = `game-card animated-card ${isClaimed ? 'claimed' : ''}`;
-        card.style.animationDelay = `${Math.min(index, 12) * 0.05}s`;
-
-        card.style.setProperty('--game-color', '#10b981');
-        card.style.setProperty('--game-color-rgb', '16, 185, 129');
-
-        const platformText = game.platform.toLowerCase().includes('pc') ? 'PC (Windows)' : 'Web Browser';
-        const platformIcon = game.platform.toLowerCase().includes('pc') ? 'fab fa-windows' : 'fas fa-globe';
-
-        card.innerHTML = `
-            <div class="game-card-glow"></div>
-            ${isClaimed ? `<div class="game-card-claimed-badge"><i class="fas fa-check-circle"></i> Claimed</div>` : ''}
-            <div class="game-card-image-wrap">
-                <img class="game-card-image" src="${game.thumbnail}" alt="${escapeHTML(game.title)}" loading="lazy">
-                <div class="game-card-worth-badge" style="background: #10b981;">F2P Catalog</div>
-            </div>
-            <div class="game-card-content">
-                <div class="game-card-meta">
-                    <span class="game-card-platform"><i class="${platformIcon}"></i> ${platformText}</span>
-                    <span class="game-card-type">${game.genre}</span>
-                </div>
-                <h3 class="game-card-title">${escapeHTML(game.title)}</h3>
-                <p class="game-card-desc">${escapeHTML(game.short_description)}</p>
-                <div class="game-card-footer-meta">
-                    <span class="worth-saved"><i class="fas fa-play"></i> Free-to-Play</span>
-                    <span class="game-status"><span class="status-pulse-dot" style="background: ${isClaimed ? '#9ca3af' : '#10b981'}; box-shadow: 0 0 8px ${isClaimed ? '#9ca3af' : '#10b981'};"></span> ${isClaimed ? 'Claimed' : 'Online'}</span>
-                </div>
-                <div class="game-card-footer">
-                    <a class="game-card-btn" href="${game.game_url}" target="_blank">
-                        Play Free <i class="fas fa-play"></i>
-                    </a>
-                    <div class="fg-claim-toggle-wrapper">
-                        <div class="fg-claim-toggle" onclick="event.preventDefault(); toggleClaimedGame('${game.id}')">
-                            <i class="${isClaimed ? 'fas fa-check-square' : 'far fa-square'}"></i>
-                            <span>${isClaimed ? 'Marked as Claimed' : 'Mark as Claimed'}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        setupCardGlowInteraction(card);
-        container.appendChild(card);
-    });
-}
-
-// VIDEASY & TMDB Global State
-const TMDB_API_KEY = '54e00466a09676df57ba51c4ca30b1a6';
-let ksCurrentSource = 'kurdstream'; // 'kurdstream' or 'videasy'
-let videasyActiveTab = 'tmdb'; // 'tmdb' or 'anime'
-let videasyCustomColor = localStorage.getItem('vds_color') || 'f59e0b'; // Amber theme color
-let videasyNextEpisode = localStorage.getItem('vds_next') !== 'false';
-let videasyAutoplay = localStorage.getItem('vds_autoplay') !== 'false';
-let videasySelector = localStorage.getItem('vds_selector') !== 'false';
-let videasyOverlay = localStorage.getItem('vds_overlay') !== 'false';
-let currentMediaMeta = { poster: '', year: '' };
-let ksDefaultServer = localStorage.getItem('vds_server') || 'videasy'; // 'videasy' or 'vidsrc'
-let videasyBackButtonUrl = localStorage.getItem('vds_backbutton') || window.location.origin;
-let videasyLogoUrl = localStorage.getItem('vds_logo') || '';
-let videasyIdleCheck = parseInt(localStorage.getItem('vds_idlecheck') || '0', 10);
-let vidsrcToSubtitleUrl = localStorage.getItem('vds_to_suburl') || '';
-let vidsrcToSubtitleLabel = localStorage.getItem('vds_to_sublabel') || 'English';
-let screenscapeLanguage = localStorage.getItem('vds_ss_lan') || 'eng';
-let peachifyDub = localStorage.getItem('vds_pf_dub') || '';
-let peachifySub = localStorage.getItem('vds_pf_sub') || '';
-let peachifyServer = localStorage.getItem('vds_pf_server') || '';
-let peachifyHideCast = localStorage.getItem('vds_pf_hidecast') === 'true';
-let peachifyHidePip = localStorage.getItem('vds_pf_hidepip') === 'true';
-let peachifyHideServers = localStorage.getItem('vds_pf_hideservers') === 'true';
-let megaplayLanguage = localStorage.getItem('vds_mp_lan') || 'sub';
-
-
-
-
-
-// Switch Source Tab
-function switchKsSource(source, el) {
-    ksCurrentSource = source;
-
-    // Toggle active state
-    document.querySelectorAll('.ks-source-tab').forEach(t => t.classList.remove('active'));
-    if (el) el.classList.add('active');
-
-    // Show/hide subtabs & update search placeholders
-    const subtabs = document.getElementById('ks-videasy-subtabs');
-    const searchInput = document.getElementById('ks-search-input');
-    const resultsBox = document.getElementById('ks-results');
-    const detailsBox = document.getElementById('ks-details');
-
-    // Clear views
-    resultsBox.innerHTML = '';
-    detailsBox.style.display = 'none';
-    resultsBox.style.display = 'block';
-
-    if (source === 'videasy') {
-        if (subtabs) subtabs.style.display = 'flex';
-        updateVideasySearchPlaceholder();
-
-        // Auto-load home if search query is empty
-        if (searchInput && !searchInput.value.trim()) {
-            loadVideasyHome();
+        if (plat.includes('steam')) {
+            platIcon = 'fab fa-steam';
+            platLabel = 'Steam';
+            platColor = '#66c0f4';
+            platRgb = '102, 192, 244';
+        } else if (plat.includes('epic')) {
+            platIcon = 'fab fa-windows';
+            platLabel = 'Epic Games';
+            platColor = '#0078f2';
+            platRgb = '0, 120, 242';
+        } else if (plat.includes('gog')) {
+            platIcon = 'fas fa-download';
+            platLabel = 'GOG';
+            platColor = '#9b51e0';
+            platRgb = '155, 81, 224';
         }
-    } else {
-        if (subtabs) subtabs.style.display = 'none';
-        if (searchInput) {
-            searchInput.placeholder = "Search for movies, series...";
-        }
-    }
-}
 
-// Switch VIDEASY sub-tab (TMDB vs Anime)
-function switchVideasySub(tab, el) {
-    videasyActiveTab = tab;
+        const worthText = game.worth ? (game.worth.toUpperCase() === 'N/A' ? 'FREE' : game.worth) : 'FREE';
+        const worthBg = worthText === 'FREE' || worthText === 'F2P CATALOG'
+            ? 'linear-gradient(135deg, #10b981, #059669)'
+            : 'linear-gradient(135deg, #f59e0b, #d97706)';
 
-    // Toggle active state
-    const subtabs = document.getElementById('ks-videasy-subtabs');
-    if (subtabs) {
-        subtabs.querySelectorAll('.kd-label-chip').forEach(c => c.classList.remove('active'));
-    }
-    if (el) el.classList.add('active');
-
-    // Clear results
-    document.getElementById('ks-results').innerHTML = '';
-    document.getElementById('ks-details').style.display = 'none';
-    document.getElementById('ks-results').style.display = 'block';
-
-    updateVideasySearchPlaceholder();
-
-    // Auto-load home if search query is empty
-    const searchInput = document.getElementById('ks-search-input');
-    if (searchInput && !searchInput.value.trim()) {
-        loadVideasyHome();
-    }
-}
-
-function updateVideasySearchPlaceholder() {
-    const searchInput = document.getElementById('ks-search-input');
-    if (searchInput) {
-        if (videasyActiveTab === 'tmdb') {
-            searchInput.placeholder = "Search Movies & TV on TMDB...";
-        } else {
-            searchInput.placeholder = "Search Anime on AniList...";
-        }
-    }
-}
-
-// Global Search KurdStream Selector
-async function searchKurdStream() {
-    const query = document.getElementById('ks-search-input').value.trim();
-    const resultsBox = document.getElementById('ks-results');
-    const detailsBox = document.getElementById('ks-details');
-    const loader = document.getElementById('ks-loader');
-    const btn = document.getElementById('ks-search-btn');
-
-    if (!query) { showToast('Please enter a search query.', 'fa-search'); return; }
-
-    resultsBox.innerHTML = '';
-    detailsBox.style.display = 'none';
-    resultsBox.style.display = 'block';
-    loader.style.display = 'flex';
-    btn.disabled = true;
-
-    try {
-        if (ksCurrentSource === 'kurdstream') {
-            document.getElementById('ks-loader-text').innerText = 'Fetching from KurdStream...';
-            const response = await fetch(`https://kurdcinama-stream-seeker.lovable.app/api/public/search?q=${encodeURIComponent(query)}`);
-            const data = await response.json();
-            renderKSResults(data.results || []);
-        } else if (videasyActiveTab === 'tmdb') {
-            document.getElementById('ks-loader-text').innerText = 'Searching TMDB...';
-            await searchTMDB(query);
-        } else {
-            document.getElementById('ks-loader-text').innerText = 'Searching AniList...';
-            await searchAniList(query);
-        }
-    } catch (err) {
-        console.error(err);
-        showToast('Search query failed.', 'fa-times-circle');
-    } finally {
-        loader.style.display = 'none';
-        btn.disabled = false;
-    }
-}
-
-// TMDB search functions
-async function searchTMDB(query) {
-    const url = `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`;
-    const response = await fetch(url);
-    const data = await response.json();
-    renderTMDBResults(data.results || []);
-}
-
-function renderTMDBResults(results) {
-    const resultsBox = document.getElementById('ks-results');
-    // Filter results to only movies and tv shows
-    const filtered = results.filter(item => item.media_type === 'movie' || item.media_type === 'tv');
-
-    if (!filtered || filtered.length === 0) {
-        resultsBox.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.4);"><i class="fas fa-film" style="font-size:4rem; margin-bottom:20px; display:block; opacity:0.1;"></i>No matching movies or TV shows found on TMDB.</div>';
-        return;
-    }
-
-    let html = `<div class="ks-grid">`;
-    filtered.forEach(res => {
-        const title = res.title || res.name || 'Untitled';
-        const poster = res.poster_path ? `https://image.tmdb.org/t/p/w500${res.poster_path}` : 'https://placehold.co/500x750/000000/ffffff/png?text=No+Poster';
-        const year = (res.release_date || res.first_air_date || '').split('-')[0] || 'N/A';
-        const typeLabel = res.media_type === 'movie' ? 'Movie' : 'TV Show';
+        const targetUrl = game.open_giveaway_url || game.giveaway_url || '#';
 
         html += `
-            <div class="ks-card" onclick="fetchTMDBDetails(${res.id}, '${res.media_type}')">
-                <div class="ks-card-badge">${typeLabel}</div>
-                <div class="ks-card-img-container">
-                    <img src="${poster}" alt="${title}" loading="lazy">
+            <div class="game-card ${isClaimed ? 'claimed' : ''} animated-card" style="--game-color: ${platColor}; --game-color-rgb: ${platRgb};" data-id="${game.id}">
+                <div class="game-card-glow"></div>
+                ${isClaimed ? '<div class="game-card-claimed-badge"><i class="fas fa-check"></i> Claimed</div>' : ''}
+                <div class="game-card-image-wrap">
+                    <img class="game-card-image" src="${game.image || game.thumbnail || ''}" alt="${escapeHTML(game.title)}" loading="lazy">
+                    <div class="game-card-worth-badge" style="background: ${worthBg};">${worthText}</div>
                 </div>
-                <div class="ks-card-info">
-                    <div class="ks-card-title">${title}</div>
-                    <div class="ks-card-meta">${year} • TMDB</div>
-                </div>
-            </div>
-        `;
-    });
-    html += `</div>`;
-    resultsBox.innerHTML = html;
-}
-
-// AniList search functions
-async function searchAniList(query) {
-    const graphqlQuery = `
-    query ($search: String) {
-      Page (page: 1, perPage: 24) {
-        media (search: $search, type: ANIME) {
-          id
-          title {
-            romaji
-            english
-          }
-          coverImage {
-            large
-          }
-          seasonYear
-          format
-        }
-      }
-    }
-    `;
-
-    const response = await fetch('https://graphql.anilist.co', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-            query: graphqlQuery,
-            variables: { search: query }
-        })
-    });
-
-    const resData = await response.json();
-    const items = resData?.data?.Page?.media || [];
-    renderAniListResults(items);
-}
-
-function renderAniListResults(items) {
-    const resultsBox = document.getElementById('ks-results');
-    if (!items || items.length === 0) {
-        resultsBox.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.4);"><i class="fas fa-ghost" style="font-size:4rem; margin-bottom:20px; display:block; opacity:0.1;"></i>No matching anime found on AniList.</div>';
-        return;
-    }
-
-    let html = `<div class="ks-grid">`;
-    items.forEach(res => {
-        const title = res.title.english || res.title.romaji || 'Untitled Anime';
-        const poster = res.coverImage.large || '';
-        const year = res.seasonYear || 'N/A';
-        const format = res.format || 'Anime';
-
-        html += `
-            <div class="ks-card" onclick="fetchAniListDetails(${res.id})">
-                <div class="ks-card-badge">${format}</div>
-                <div class="ks-card-img-container">
-                    <img src="${poster}" alt="${title}" loading="lazy">
-                </div>
-                <div class="ks-card-info">
-                    <div class="ks-card-title">${title}</div>
-                    <div class="ks-card-meta">${year} • AniList</div>
-                </div>
-            </div>
-        `;
-    });
-    html += `</div>`;
-    resultsBox.innerHTML = html;
-}
-
-// Fetch Details functions
-async function fetchTMDBDetails(id, type) {
-    const detailsBox = document.getElementById('ks-details');
-    const resultsBox = document.getElementById('ks-results');
-    const loader = document.getElementById('ks-loader');
-
-    resultsBox.style.display = 'none';
-    detailsBox.style.display = 'none';
-    loader.style.display = 'flex';
-    document.getElementById('ks-loader-text').innerText = 'Loading details...';
-
-    try {
-        const url = `https://api.themoviedb.org/3/${type}/${id}?api_key=${TMDB_API_KEY}&append_to_response=credits,recommendations,videos`;
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (type === 'movie') {
-            renderTMDBMovieDetail(data);
-        } else {
-            await renderTMDBTvDetail(data);
-        }
-    } catch (err) {
-        console.error(err);
-        showToast('Failed to load TMDB details.', 'fa-times-circle');
-        resultsBox.style.display = 'block';
-    } finally {
-        loader.style.display = 'none';
-    }
-}
-
-function renderTMDBMovieDetail(movie) {
-    const detailsBox = document.getElementById('ks-details');
-    detailsBox.style.display = 'block';
-
-    // Cache media metadata
-    currentMediaMeta = {
-        poster: movie.poster_path ? `https://image.tmdb.org/t/p/w300${movie.poster_path}` : '',
-        year: (movie.release_date || '').split('-')[0] || ''
-    };
-
-    const title = movie.title || movie.original_title || 'Untitled';
-    const backdrop = movie.backdrop_path ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}` : (movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '');
-    const poster = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://placehold.co/500x750/000000/ffffff/png?text=No+Poster';
-    const rating = movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A';
-    const runtime = movie.runtime ? `${movie.runtime} min` : 'N/A';
-    const year = (movie.release_date || '').split('-')[0] || 'N/A';
-    const genres = (movie.genres || []).map(g => `<span class="ks-meta-tag genre">${g.name}</span>`).join('');
-
-    // Cast list
-    let castHtml = '';
-    const cast = (movie.credits?.cast || []).slice(0, 10);
-    if (cast.length > 0) {
-        castHtml += `<div class="section-header">Starring Cast</div><div class="cast-scroller">`;
-        cast.forEach(actor => {
-            const actorPhoto = actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : 'https://placehold.co/100x120/111111/ffffff/png?text=?';
-            castHtml += `
-                <div class="cast-card">
-                    <img class="cast-photo" src="${actorPhoto}" alt="${actor.name}" loading="lazy">
-                    <div class="cast-name">${actor.name}</div>
-                    <div class="cast-character">${actor.character || ''}</div>
-                </div>
-            `;
-        });
-        castHtml += `</div>`;
-    }
-
-    // Progress Resume block
-    const progressBlockHtml = getWatchProgressHtml(movie.id, 'movie', title);
-
-    // Extract trailer key
-    let trailerKey = '';
-    if (movie.videos?.results) {
-        const trailer = movie.videos.results.find(v => v.type === 'Trailer' && v.site === 'YouTube') || movie.videos.results.find(v => v.site === 'YouTube');
-        if (trailer) trailerKey = trailer.key;
-    }
-
-    let trailerBtnHtml = '';
-    let trailerSectionHtml = '';
-    if (trailerKey) {
-        trailerBtnHtml = `
-            <button class="resume-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3); flex: 1; min-width: 200px;" onclick="document.getElementById('ks-trailer-section').scrollIntoView({ behavior: 'smooth' })">
-                <i class="fas fa-film"></i> Watch Trailer
-            </button>
-        `;
-        trailerSectionHtml = `
-            <div class="section-header" id="ks-trailer-section">Official Trailer</div>
-            <div class="ks-trailer-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 15px 40px rgba(0,0,0,0.5); margin-bottom: 25px;">
-                <iframe style="position: absolute; top:0; left:0; width:100%; height:100%; border:none;" src="https://www.youtube.com/embed/${trailerKey}?rel=0&showinfo=0" allowfullscreen></iframe>
-            </div>
-        `;
-    }
-
-    // Settings panel
-    const settingsPanelHtml = getVideasySettingsPanelHtml('movie', movie.id, title);
-
-    detailsBox.innerHTML = `
-        <button class="ks-back-btn" onclick="document.getElementById('ks-details').style.display='none'; document.getElementById('ks-results').style.display='block';">
-            <i class="fas fa-arrow-left"></i> Back to Results
-        </button>
-
-        <div class="ks-hero-container">
-            ${backdrop ? `<img class="ks-hero-bg" src="${backdrop}" alt="${title}">` : '<div class="ks-hero-bg" style="background: #111;"></div>'}
-            <div class="ks-hero-overlay">
-                <div class="ks-hero-title">${title}</div>
-                <div class="ks-hero-meta">
-                    <span class="ks-meta-tag year">${year}</span>
-                    <span class="ks-meta-tag" style="color: #10b981;"><i class="fas fa-star" style="color:#fbbf24;"></i> ${rating}</span>
-                    <span class="ks-meta-tag"><i class="fas fa-clock"></i> ${runtime}</span>
-                    ${genres}
-                </div>
-            </div>
-        </div>
-
-        ${progressBlockHtml}
-
-        <div style="margin-top: 15px; margin-bottom: 25px; display: flex; gap: 12px; flex-wrap: wrap;">
-            <button class="resume-btn" style="background: linear-gradient(135deg, #f59e0b, #ef4444); box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3); flex: 1; min-width: 200px;" onclick="playVideasyMedia('${movie.id}', 'movie', '${title.replace(/'/g, "\\'")}', false)">
-                <i class="fas fa-play"></i> Play Movie
-            </button>
-            ${trailerBtnHtml}
-            <button class="resume-btn" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3); flex: 1; min-width: 200px;" onclick="window.open('https://vidvault.ru/movie/${movie.id}', '_blank')">
-                <i class="fas fa-download"></i> Download / Alt (VidVault)
-            </button>
-        </div>
-
-        <div class="section-header">Storyline</div>
-        <div class="ks-desc-card">
-            ${movie.overview || 'No overview available.'}
-        </div>
-
-        ${trailerSectionHtml}
-
-        ${settingsPanelHtml}
-
-        <div class="section-header">Torrent Downloads (YTS Torrents)</div>
-        <div id="ks-yts-downloads" style="margin-bottom: 30px;">
-            <div class="tt-custom-loader" style="padding: 20px; display: flex;">
-                <div class="tt-pulse-logo" style="background: #10b981; width: 40px; height: 40px; font-size: 1.2rem;"><i class="fas fa-magnet"></i></div>
-                <div class="tt-loading-text" style="font-size: 0.85rem;">Searching YTS Torrents...</div>
-            </div>
-        </div>
-
-        ${castHtml}
-    `;
-
-    // Auto-fetch YTS torrents
-    setTimeout(() => {
-        fetchYtsDownloads(movie.imdb_id, title);
-    }, 100);
-}
-
-async function renderTMDBTvDetail(show) {
-    const detailsBox = document.getElementById('ks-details');
-    detailsBox.style.display = 'block';
-
-    // Cache media metadata
-    currentMediaMeta = {
-        poster: show.poster_path ? `https://image.tmdb.org/t/p/w300${show.poster_path}` : '',
-        year: (show.first_air_date || '').split('-')[0] || ''
-    };
-
-    const title = show.name || show.original_name || 'Untitled';
-    const backdrop = show.backdrop_path ? `https://image.tmdb.org/t/p/w1280${show.backdrop_path}` : (show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : '');
-    const rating = show.vote_average ? show.vote_average.toFixed(1) : 'N/A';
-    const year = (show.first_air_date || '').split('-')[0] || 'N/A';
-    const genres = (show.genres || []).map(g => `<span class="ks-meta-tag genre">${g.name}</span>`).join('');
-
-    // Extract trailer key
-    let trailerKey = '';
-    if (show.videos?.results) {
-        const trailer = show.videos.results.find(v => v.type === 'Trailer' && v.site === 'YouTube') || show.videos.results.find(v => v.site === 'YouTube');
-        if (trailer) trailerKey = trailer.key;
-    }
-
-    let trailerBtnHtml = '';
-    let trailerSectionHtml = '';
-    if (trailerKey) {
-        trailerBtnHtml = `
-            <div style="margin-top: 15px; margin-bottom: 25px; display: flex; gap: 12px; flex-wrap: wrap;">
-                <button class="resume-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3); flex: 1; min-width: 200px;" onclick="document.getElementById('ks-trailer-section').scrollIntoView({ behavior: 'smooth' })">
-                    <i class="fas fa-film"></i> Watch Official Trailer
-                </button>
-            </div>
-        `;
-        trailerSectionHtml = `
-            <div class="section-header" id="ks-trailer-section">Official Trailer</div>
-            <div class="ks-trailer-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 15px 40px rgba(0,0,0,0.5); margin-bottom: 25px;">
-                <iframe style="position: absolute; top:0; left:0; width:100%; height:100%; border:none;" src="https://www.youtube.com/embed/${trailerKey}?rel=0&showinfo=0" allowfullscreen></iframe>
-            </div>
-        `;
-    }
-
-    // Cast list
-    let castHtml = '';
-    const cast = (show.credits?.cast || []).slice(0, 10);
-    if (cast.length > 0) {
-        castHtml += `<div class="section-header">Starring Cast</div><div class="cast-scroller">`;
-        cast.forEach(actor => {
-            const actorPhoto = actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : 'https://placehold.co/100x120/111111/ffffff/png?text=?';
-            castHtml += `
-                <div class="cast-card">
-                    <img class="cast-photo" src="${actorPhoto}" alt="${actor.name}" loading="lazy">
-                    <div class="cast-name">${actor.name}</div>
-                    <div class="cast-character">${actor.character || ''}</div>
-                </div>
-            `;
-        });
-        castHtml += `</div>`;
-    }
-
-    // Filter seasons to only regular seasons (season_number > 0)
-    const seasons = (show.seasons || []).filter(s => s.season_number > 0);
-    if (seasons.length === 0 && (show.seasons || []).length > 0) {
-        seasons.push(show.seasons[0]);
-    }
-
-    let seasonSelectHtml = '';
-    if (seasons.length > 0) {
-        seasonSelectHtml += `
-            <div class="section-header">Select Season</div>
-            <div class="season-select-wrapper">
-        `;
-        seasons.forEach((season, idx) => {
-            const activeClass = idx === 0 ? 'active' : '';
-            seasonSelectHtml += `
-                <button class="season-select-btn ${activeClass}" data-season-num="${season.season_number}" onclick="switchSeason('${show.id}', ${season.season_number}, this, '${title.replace(/'/g, "\\'")}')">
-                    ${season.name || `Season ${season.season_number}`}
-                </button>
-            `;
-        });
-        seasonSelectHtml += `</div>`;
-    }
-
-    // Settings panel
-    const settingsPanelHtml = getVideasySettingsPanelHtml('tv', show.id, title);
-
-    detailsBox.innerHTML = `
-        <button class="ks-back-btn" onclick="document.getElementById('ks-details').style.display='none'; document.getElementById('ks-results').style.display='block';">
-            <i class="fas fa-arrow-left"></i> Back to Results
-        </button>
-
-        <div class="ks-hero-container">
-            ${backdrop ? `<img class="ks-hero-bg" src="${backdrop}" alt="${title}">` : '<div class="ks-hero-bg" style="background: #111;"></div>'}
-            <div class="ks-hero-overlay">
-                <div class="ks-hero-title">${title}</div>
-                <div class="ks-hero-meta">
-                    <span class="ks-meta-tag year">${year}</span>
-                    <span class="ks-meta-tag" style="color: #10b981;"><i class="fas fa-star" style="color:#fbbf24;"></i> ${rating}</span>
-                    <span class="ks-meta-tag"><i class="fas fa-tv"></i> ${show.number_of_seasons} Seasons</span>
-                    ${genres}
-                </div>
-            </div>
-        </div>
-
-        <div class="section-header">Overview</div>
-        <div class="ks-desc-card">
-            ${show.overview || 'No description available.'}
-        </div>
-
-        ${trailerBtnHtml}
-        ${trailerSectionHtml}
-
-        ${settingsPanelHtml}
-
-        ${seasonSelectHtml}
-        
-        <div class="tv-episodes-section">
-            <div id="tv-episodes-loader" class="tt-custom-loader" style="display: none; padding: 20px;">
-                <div class="tt-pulse-logo" style="background: #f59e0b; width: 40px; height: 40px; font-size: 1.2rem;"><i class="fas fa-play"></i></div>
-                <div class="tt-loading-text" style="font-size: 0.85rem;">Loading Episodes...</div>
-            </div>
-            <div id="tv-episodes-list" class="tv-episode-grid-list"></div>
-        </div>
-
-        <div style="margin-top: 35px;"></div>
-        ${castHtml}
-    `;
-
-    // Auto-load Season 1
-    if (seasons.length > 0) {
-        await loadTvSeasonEpisodes(show.id, seasons[0].season_number, title);
-    }
-}
-
-async function switchSeason(showId, seasonNumber, btn, showTitle) {
-    document.querySelectorAll('.season-select-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    await loadTvSeasonEpisodes(showId, seasonNumber, showTitle);
-}
-
-async function loadTvSeasonEpisodes(showId, seasonNumber, showTitle) {
-    const listContainer = document.getElementById('tv-episodes-list');
-    const loader = document.getElementById('tv-episodes-loader');
-
-    if (listContainer) listContainer.innerHTML = '';
-    if (loader) loader.style.display = 'flex';
-
-    try {
-        const url = `https://api.themoviedb.org/3/tv/${showId}/season/${seasonNumber}?api_key=${TMDB_API_KEY}`;
-        const response = await fetch(url);
-        const data = await response.json();
-
-        let html = '';
-        const episodes = data.episodes || [];
-
-        if (episodes.length === 0) {
-            if (listContainer) listContainer.innerHTML = '<div style="grid-column: 1/-1; padding: 20px; text-align: center; color: rgba(255,255,255,0.4);">No episodes found in this season.</div>';
-            return;
-        }
-
-        episodes.forEach(ep => {
-            const epThumb = ep.still_path ? `https://image.tmdb.org/t/p/w300${ep.still_path}` : 'https://placehold.co/300x170/111111/ffffff/png?text=No+Thumbnail';
-            const epTitle = ep.name || `Episode ${ep.episode_number}`;
-            const epDate = ep.air_date || 'Unknown Air Date';
-
-            // Check if there is saved progress for this episode
-            const progressHtml = getWatchProgressHtml(showId, 'tv', `${showTitle} - S${seasonNumber}E${ep.episode_number}`, seasonNumber, ep.episode_number);
-
-            html += `
-                <div class="tv-ep-card" onclick="playVideasyMedia('${showId}', 'tv', '${showTitle.replace(/'/g, "\\'")}', false, ${seasonNumber}, ${ep.episode_number})">
-                    <div class="tv-ep-thumb-wrapper">
-                        <img class="tv-ep-thumb" src="${epThumb}" alt="${epTitle}" loading="lazy">
-                        <div class="tv-ep-play-overlay">
-                            <i class="fas fa-play-circle"></i>
-                        </div>
+                <div class="game-card-content">
+                    <div class="game-card-meta">
+                        <span class="game-card-platform"><i class="${platIcon}"></i> ${platLabel}</span>
+                        <span class="game-card-type">${game.type || 'Game'}</span>
                     </div>
-                    <div class="tv-ep-card-body" style="display: flex; flex-direction: column; height: 100%;">
-                        <div class="tv-ep-card-header">
-                            <span class="tv-ep-number">S${seasonNumber} • EP ${ep.episode_number}</span>
-                            <span class="tv-ep-airdate">${epDate}</span>
-                        </div>
-                        <div class="tv-ep-name">${epTitle}</div>
-                        <p class="tv-ep-overview">${ep.overview || 'No episode description available.'}</p>
-                        ${progressHtml}
-                        
-                        <div style="display: flex; gap: 8px; margin-top: auto; padding-top: 15px;">
-                            <button class="ks-mini-server-btn" style="flex: 1; background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.25); color: #f59e0b; font-weight: 700; margin: 0; padding: 6px 0;" onclick="event.stopPropagation(); playVideasyMedia('${showId}', 'tv', '${showTitle.replace(/'/g, "\\'")}', false, ${seasonNumber}, ${ep.episode_number})">
-                                <i class="fas fa-play"></i> Play
-                            </button>
-                            <button class="ks-mini-server-btn" style="flex: 1; background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.25); color: #60a5fa; font-weight: 700; margin: 0; padding: 6px 0;" onclick="event.stopPropagation(); window.open('https://vidvault.ru/tv/${showId}/${seasonNumber}/${ep.episode_number}', '_blank')">
-                                <i class="fas fa-download"></i> Download
-                            </button>
-                        </div>
+                    <h3 class="game-card-title">${escapeHTML(game.title)}</h3>
+                    <p class="game-card-desc">${escapeHTML(game.short_description || game.description || '')}</p>
+                    <div class="game-card-footer-meta">
+                        <span class="worth-saved"><i class="fas fa-tag"></i> Value: ${game.worth || 'Free'}</span>
+                        <span class="game-status"><span class="status-pulse-dot"></span> Active</span>
                     </div>
-                </div>
-            `;
-        });
-
-        if (listContainer) listContainer.innerHTML = html;
-    } catch (err) {
-        console.error(err);
-        if (listContainer) listContainer.innerHTML = '<div style="grid-column: 1/-1; padding: 20px; text-align: center; color: #ef4444;">Failed to load season episodes.</div>';
-    } finally {
-        if (loader) loader.style.display = 'none';
-    }
-}
-
-async function fetchAniListDetails(id) {
-    const detailsBox = document.getElementById('ks-details');
-    const resultsBox = document.getElementById('ks-results');
-    const loader = document.getElementById('ks-loader');
-
-    resultsBox.style.display = 'none';
-    detailsBox.style.display = 'none';
-    loader.style.display = 'flex';
-    document.getElementById('ks-loader-text').innerText = 'Loading anime details...';
-
-    try {
-        const graphqlQuery = `
-        query ($id: Int) {
-          Media (id: $id, type: ANIME) {
-            id
-            title {
-              romaji
-              english
-              native
-            }
-            coverImage {
-              large
-            }
-            bannerImage
-            description
-            episodes
-            season
-            seasonYear
-            averageScore
-            genres
-            status
-          }
-        }
-        `;
-
-        const response = await fetch('https://graphql.anilist.co', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
-                query: graphqlQuery,
-                variables: { id: id }
-            })
-        });
-
-        const resData = await response.json();
-        const media = resData?.data?.Media;
-        if (media) {
-            renderAniListDetail(media);
-        } else {
-            throw new Error("No media returned from AniList");
-        }
-    } catch (err) {
-        console.error(err);
-        showToast('Failed to load anime details.', 'fa-times-circle');
-        resultsBox.style.display = 'block';
-    } finally {
-        loader.style.display = 'none';
-    }
-}
-
-function renderAniListDetail(anime) {
-    const detailsBox = document.getElementById('ks-details');
-    detailsBox.style.display = 'block';
-
-    // Cache media metadata
-    currentMediaMeta = {
-        poster: anime.coverImage.large || '',
-        year: anime.seasonYear || ''
-    };
-
-    const title = anime.title.english || anime.title.romaji || 'Untitled Anime';
-    const banner = anime.bannerImage || anime.coverImage.large || '';
-    const rating = anime.averageScore ? `${anime.averageScore}%` : 'N/A';
-    const year = anime.seasonYear || 'N/A';
-    const status = anime.status || 'N/A';
-    const genres = (anime.genres || []).map(g => `<span class="ks-meta-tag genre">${g}</span>`).join('');
-
-    // Check if it has multiple episodes (is a show vs movie)
-    const isMovie = anime.episodes === 1;
-
-    let episodeSelectHtml = '';
-    if (!isMovie) {
-        const epCount = anime.episodes || 12; // default if not specified
-        episodeSelectHtml += `
-            <div class="section-header">Select Episode</div>
-            <div class="tv-episode-grid-list">
-        `;
-
-        for (let i = 1; i <= epCount; i++) {
-            const progressHtml = getWatchProgressHtml(anime.id, 'anime', `${title} - Episode ${i}`, null, i);
-            episodeSelectHtml += `
-                <div class="tv-ep-card" style="min-height: 120px;" onclick="playVideasyMedia('${anime.id}', 'anime', '${title.replace(/'/g, "\\'")}', false, null, ${i})">
-                    <div class="tv-ep-card-body" style="justify-content: center;">
-                        <div class="tv-ep-card-header">
-                            <span class="tv-ep-number" style="color: #ef4444;"><i class="fas fa-play"></i> Episode ${i}</span>
-                        </div>
-                        <div class="tv-ep-name">Stream Episode ${i}</div>
-                        ${progressHtml}
-                    </div>
-                </div>
-            `;
-        }
-        episodeSelectHtml += `</div>`;
-    } else {
-        // Is anime movie
-        const progressHtml = getWatchProgressHtml(anime.id, 'anime', title);
-        episodeSelectHtml += `
-            ${progressHtml}
-            <div style="margin-top: 15px; margin-bottom: 25px;">
-                <button class="resume-btn" style="background: linear-gradient(135deg, #f59e0b, #ef4444); box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);" onclick="playVideasyMedia('${anime.id}', 'anime', '${title.replace(/'/g, "\\'")}', false)">
-                    <i class="fas fa-play"></i> Play Anime Movie
-                </button>
-            </div>
-        `;
-    }
-
-    // Settings panel
-    const settingsPanelHtml = getVideasySettingsPanelHtml('anime', anime.id, title);
-
-    detailsBox.innerHTML = `
-        <button class="ks-back-btn" onclick="document.getElementById('ks-details').style.display='none'; document.getElementById('ks-results').style.display='block';">
-            <i class="fas fa-arrow-left"></i> Back to Results
-        </button>
-
-        <div class="ks-hero-container">
-            ${banner ? `<img class="ks-hero-bg" src="${banner}" alt="${title}">` : '<div class="ks-hero-bg" style="background: #111;"></div>'}
-            <div class="ks-hero-overlay">
-                <div class="ks-hero-title">${title}</div>
-                <div class="ks-hero-meta">
-                    <span class="ks-meta-tag year">${year}</span>
-                    <span class="ks-meta-tag" style="color: #ef4444;"><i class="fas fa-heart"></i> ${rating}</span>
-                    <span class="ks-meta-tag">${status}</span>
-                    ${genres}
-                </div>
-            </div>
-        </div>
-
-        <div class="section-header">Synopsis</div>
-        <div class="ks-desc-card">
-            ${anime.description || 'No synopsis available.'}
-        </div>
-
-        ${settingsPanelHtml}
-
-        ${episodeSelectHtml}
-        
-        <div style="margin-top: 35px;"></div>
-    `;
-}
-
-// Fetch YTS Torrents dynamically via IMDb ID
-async function fetchYtsDownloads(imdbId, movieTitle) {
-    const ytsContainer = document.getElementById('ks-yts-downloads');
-    if (!ytsContainer) return;
-
-    if (!imdbId) {
-        ytsContainer.innerHTML = '<div style="color: rgba(255,255,255,0.4); font-size: 0.85rem; padding: 10px;">No IMDb ID found for this title. YTS Torrents are unavailable.</div>';
-        return;
-    }
-
-    try {
-        const response = await fetch(`https://movies-api.accel.li/api/v2/movie_details.json?imdb_id=${imdbId}`);
-        const data = await response.json();
-
-        if (data && data.status === 'ok' && data.data && data.data.movie && data.data.movie.torrents) {
-            const torrents = data.data.movie.torrents;
-            const titleEncoded = encodeURIComponent(movieTitle);
-
-            // Standard high-speed trackers from documentation
-            const trackers = [
-                'udp://tracker.opentrackr.org:1337/announce',
-                'udp://tracker.torrent.eu.org:451/announce',
-                'udp://tracker.dler.org:6969/announce',
-                'udp://open.stealth.si:80/announce',
-                'udp://open.demonii.com:1337/announce',
-                'https://tracker.moeblog.cn:443/announce',
-                'udp://open.dstud.io:6969/announce',
-                'udp://tracker.srv00.com:6969/announce',
-                'https://tracker.zhuqiy.com:443/announce',
-                'https://tracker.pmman.tech:443/announce'
-            ].map(tr => `&tr=${encodeURIComponent(tr)}`).join('');
-
-            let html = `
-                <div class="videasy-settings-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); margin-top: 10px;">
-            `;
-
-            torrents.forEach(tor => {
-                const magnetLink = `magnet:?xt=urn:btih:${tor.hash}&dn=${titleEncoded}${trackers}`;
-                const size = tor.size || 'N/A';
-                const quality = tor.quality || 'N/A';
-                const seeds = tor.seeds || 0;
-                const peers = tor.peers || 0;
-
-                html += `
-                    <div class="videasy-setting-item" style="flex-direction: column; align-items: stretch; gap: 12px; padding: 15px; margin: 0;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            <div style="display: flex; flex-direction: column; gap: 2px;">
-                                <span style="font-weight: 800; color: #fff; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
-                                    <i class="fas fa-compact-disc" style="color: #10b981;"></i> ${quality} (${tor.type.toUpperCase()})
-                                </span>
-                                <span class="videasy-setting-desc" style="font-size: 0.72rem;">Size: ${size}</span>
+                    <div class="game-card-footer">
+                        <div class="fg-claim-toggle-wrapper">
+                            <div class="fg-claim-toggle" onclick="event.preventDefault(); toggleClaimedGame('${game.id}')">
+                                <i class="${isClaimed ? 'fas fa-check-square' : 'far fa-square'}"></i>
+                                <span>${isClaimed ? 'Marked as Claimed' : 'Mark as Claimed'}</span>
                             </div>
-                            <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.25); color: #10b981; padding: 2px 8px; border-radius: 8px; font-size: 0.65rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
-                                <i class="fas fa-arrow-up" style="color:#10b981; font-size:0.6rem;"></i> ${seeds} / <i class="fas fa-arrow-down" style="color:#ef4444; font-size:0.6rem;"></i> ${peers}
-                            </span>
                         </div>
-                        
-                        <div style="display: flex; gap: 8px; margin-top: 5px; width: 100%;">
-                            <a href="${magnetLink}" class="ks-mini-server-btn" style="flex: 1; text-align: center; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.25); color: #10b981; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 0; margin: 0; font-size: 0.8rem;">
-                                <i class="fas fa-magnet" style="color:#10b981;"></i> Magnet
-                            </a>
-                            <a href="${tor.url}" class="ks-mini-server-btn" style="flex: 1; text-align: center; background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.25); color: #f59e0b; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 0; margin: 0; font-size: 0.8rem;">
-                                <i class="fas fa-file-download" style="color:#f59e0b;"></i> Torrent
-                            </a>
-                        </div>
-                    </div>
-                `;
-            });
-
-            html += `</div>`;
-            ytsContainer.innerHTML = html;
-        } else {
-            ytsContainer.innerHTML = '<div style="color: rgba(255,255,255,0.4); font-size: 0.85rem; padding: 10px;">No torrents found on YTS for this movie.</div>';
-        }
-    } catch (err) {
-        console.error(err);
-        ytsContainer.innerHTML = '<div style="color: #ef4444; font-size: 0.85rem; padding: 10px;">Failed to connect to YTS Torrents API.</div>';
-    }
-}
-
-// Settings customization panel HTML builder
-function getVideasySettingsPanelHtml(type, mediaId, title) {
-    const isTv = type === 'tv';
-    return `
-        <div class="section-header">Player Customization Settings</div>
-        <div class="videasy-settings-card">
-            <div class="videasy-settings-grid">
-                <div class="videasy-setting-item">
-                    <div class="videasy-setting-info">
-                        <span class="videasy-setting-title">Next Episode Button</span>
-                        <span class="videasy-setting-desc">Show trigger controls</span>
-                    </div>
-                    <label class="switch-control">
-                        <input type="checkbox" id="vds-next" ${videasyNextEpisode ? 'checked' : ''} onchange="videasyNextEpisode = this.checked; localStorage.setItem('vds_next', this.checked)">
-                        <span class="switch-slider"></span>
-                    </label>
-                </div>
-                
-                <div class="videasy-setting-item">
-                    <div class="videasy-setting-info">
-                        <span class="videasy-setting-title">Autoplay Next</span>
-                        <span class="videasy-setting-desc">Auto-advance content</span>
-                    </div>
-                    <label class="switch-control">
-                        <input type="checkbox" id="vds-autoplay" ${videasyAutoplay ? 'checked' : ''} onchange="videasyAutoplay = this.checked; localStorage.setItem('vds_autoplay', this.checked)">
-                        <span class="switch-slider"></span>
-                    </label>
-                </div>
-                
-                ${isTv ? `
-                <div class="videasy-setting-item">
-                    <div class="videasy-setting-info">
-                        <span class="videasy-setting-title">Episode Selector</span>
-                        <span class="videasy-setting-desc">Built-in menu control</span>
-                    </div>
-                    <label class="switch-control">
-                        <input type="checkbox" id="vds-selector" ${videasySelector ? 'checked' : ''} onchange="videasySelector = this.checked; localStorage.setItem('vds_selector', this.checked)">
-                        <span class="switch-slider"></span>
-                    </label>
-                </div>
-                ` : ''}
-                
-                <div class="videasy-setting-item">
-                    <div class="videasy-setting-info">
-                        <span class="videasy-setting-title">Netflix Overlay</span>
-                        <span class="videasy-setting-desc">Triggers on pause</span>
-                    </div>
-                    <label class="switch-control">
-                        <input type="checkbox" id="vds-overlay" ${videasyOverlay ? 'checked' : ''} onchange="videasyOverlay = this.checked; localStorage.setItem('vds_overlay', this.checked)">
-                        <span class="switch-slider"></span>
-                    </label>
-                </div>
-            </div>
-            
-            <div style="margin-top: 20px; font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px;">
-                <i class="fas fa-server" style="color: #f59e0b;"></i> Select Streaming Server
-            </div>
-            <div class="videasy-color-picker" style="margin-top: 10px; gap: 8px; background: rgba(255,255,255,0.01); border-color: rgba(255,255,255,0.03); flex-wrap: wrap;">
-                <button class="kd-label-chip ${ksDefaultServer === 'videasy' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('videasy', this)">VIDEASY (Multi)</button>
-                <button class="kd-label-chip ${ksDefaultServer === 'vidsrc' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('vidsrc', this)">VidSrc.ru (High Speed)</button>
-                <button class="kd-label-chip ${ksDefaultServer === 'vidsrc_to' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('vidsrc_to', this)">VidSrc.to (Alternative)</button>
-                <button class="kd-label-chip ${ksDefaultServer === 'cinemaos' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('cinemaos', this)">CinemaOS (Premium)</button>
-                <button class="kd-label-chip ${ksDefaultServer === 'vidplay' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('vidplay', this)">VidPlay (Fast)</button>
-                <button class="kd-label-chip ${ksDefaultServer === 'screenscape' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('screenscape', this)">ScreenScape (HD)</button>
-                <button class="kd-label-chip ${ksDefaultServer === 'peachify' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('peachify', this)">Peachify (Ultra)</button>
-                <button class="kd-label-chip ${ksDefaultServer === 'megaplay' ? 'active' : ''}" style="margin: 0; padding: 6px 14px; font-size: 0.8rem;" onclick="setKsStreamingServer('megaplay', this)">MegaPlay (Anikoto)</button>
-            </div>
-            
-            <div style="margin-top: 20px; font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px;">
-                <i class="fas fa-palette" style="color: #f59e0b;"></i> Accent Color Theme
-            </div>
-            <div class="videasy-color-picker">
-                <div class="videasy-color-dot ${videasyCustomColor === 'f59e0b' ? 'active' : ''}" style="background: #f59e0b; --accent-glow: rgba(245,158,11,0.5);" onclick="setVideasyColor('f59e0b', this)"></div>
-                <div class="videasy-color-dot ${videasyCustomColor === '3B82F6' ? 'active' : ''}" style="background: #3B82F6; --accent-glow: rgba(59,130,246,0.5);" onclick="setVideasyColor('3B82F6', this)"></div>
-                <div class="videasy-color-dot ${videasyCustomColor === '8B5CF6' ? 'active' : ''}" style="background: #8B5CF6; --accent-glow: rgba(139,92,246,0.5);" onclick="setVideasyColor('8B5CF6', this)"></div>
-                <div class="videasy-color-dot ${videasyCustomColor === 'ef4444' ? 'active' : ''}" style="background: #ef4444; --accent-glow: rgba(239,68,68,0.5);" onclick="setVideasyColor('ef4444', this)"></div>
-                <div class="videasy-color-dot ${videasyCustomColor === '10B981' ? 'active' : ''}" style="background: #10B981; --accent-glow: rgba(16,185,129,0.5);" onclick="setVideasyColor('10B981', this)"></div>
-                <div class="videasy-color-dot ${videasyCustomColor === 'ec4899' ? 'active' : ''}" style="background: #ec4899; --accent-glow: rgba(236,72,153,0.5);" onclick="setVideasyColor('ec4899', this)"></div>
-            </div>
-
-            <!-- New VidSrc Customization Fields -->
-            <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
-                <div style="font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
-                    <i class="fas fa-sliders-h" style="color: #f59e0b;"></i> VidSrc.ru Custom Parameters
-                </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div>
-                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Back Button URL</label>
-                        <input type="text" id="vds-backbutton-input" class="ks-details-input" 
-                               placeholder="e.g. ${window.location.origin}" 
-                               value="${videasyBackButtonUrl}" 
-                               oninput="videasyBackButtonUrl = this.value; localStorage.setItem('vds_backbutton', this.value)">
-                    </div>
-                    <div>
-                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Logo Overlay URL</label>
-                        <input type="text" id="vds-logo-input" class="ks-details-input" 
-                               placeholder="e.g. https://yourdomain.com/logo.png" 
-                               value="${videasyLogoUrl}" 
-                               oninput="videasyLogoUrl = this.value; localStorage.setItem('vds_logo', this.value)">
-                    </div>
-                </div>
-                
-                <div style="margin-top: 15px;">
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Idle Check Watcher (Minutes)</label>
-                    <select id="vds-idlecheck-select" class="ks-details-input" 
-                            onchange="videasyIdleCheck = parseInt(this.value, 10); localStorage.setItem('vds_idlecheck', this.value)">
-                        <option value="0" ${videasyIdleCheck === 0 ? 'selected' : ''}>Disabled</option>
-                        <option value="5" ${videasyIdleCheck === 5 ? 'selected' : ''}>Every 5 minutes</option>
-                        <option value="10" ${videasyIdleCheck === 10 ? 'selected' : ''}>Every 10 minutes</option>
-                        <option value="15" ${videasyIdleCheck === 15 ? 'selected' : ''}>Every 15 minutes</option>
-                        <option value="30" ${videasyIdleCheck === 30 ? 'selected' : ''}>Every 30 minutes</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- New VidSrc.to Custom Subtitle Fields -->
-            <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
-                <div style="font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
-                    <i class="fas fa-closed-captioning" style="color: #f59e0b;"></i> VidSrc.to Custom Subtitles
-                </div>
-                
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px;">
-                    <div>
-                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Subtitle URL or JSON Array</label>
-                        <input type="text" id="vds-to-suburl-input" class="ks-details-input" 
-                               placeholder="URL to .vtt OR [{file: '...', label: '...'}]" 
-                               value="${vidsrcToSubtitleUrl.replace(/"/g, '&quot;')}" 
-                               oninput="vidsrcToSubtitleUrl = this.value; localStorage.setItem('vds_to_suburl', this.value)">
-                    </div>
-                    <div>
-                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Subtitle Label</label>
-                        <input type="text" id="vds-to-sublabel-input" class="ks-details-input" 
-                               placeholder="e.g. English" 
-                               value="${vidsrcToSubtitleLabel}" 
-                               oninput="vidsrcToSubtitleLabel = this.value; localStorage.setItem('vds_to_sublabel', this.value)">
-                    </div>
-                </div>
-            </div>
-
-            <!-- New ScreenScape Custom Language Fields -->
-            <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
-                <div style="font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
-                    <i class="fas fa-language" style="color: #f59e0b;"></i> ScreenScape Language Settings
-                </div>
-                
-                <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Preferred Audio Language</label>
-                    <select id="vds-ss-lan-select" class="ks-details-input" 
-                            onchange="screenscapeLanguage = this.value; localStorage.setItem('vds_ss_lan', this.value)">
-                        <option value="eng" ${screenscapeLanguage === 'eng' ? 'selected' : ''}>English (eng)</option>
-                        <option value="hindi" ${screenscapeLanguage === 'hindi' ? 'selected' : ''}>Hindi (hindi)</option>
-                        <option value="french" ${screenscapeLanguage === 'french' ? 'selected' : ''}>French (french)</option>
-                        <option value="spanish" ${screenscapeLanguage === 'spanish' ? 'selected' : ''}>Spanish (spanish)</option>
-                        <option value="arabic" ${screenscapeLanguage === 'arabic' ? 'selected' : ''}>Arabic (arabic)</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- New Peachify Customization Fields -->
-            <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
-                <div style="font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
-                    <i class="fas fa-play-circle" style="color: #f59e0b;"></i> Peachify Custom Parameters
-                </div>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
-                    <div>
-                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Force Provider Server</label>
-                        <select id="vds-pf-server-select" class="ks-details-input" 
-                                onchange="peachifyServer = this.value; localStorage.setItem('vds_pf_server', this.value)">
-                            <option value="" ${peachifyServer === '' ? 'selected' : ''}>Default Fallback</option>
-                            <option value="iron" ${peachifyServer === 'iron' ? 'selected' : ''}>iron (Fast)</option>
-                            <option value="spider" ${peachifyServer === 'spider' ? 'selected' : ''}>spider (Fast)</option>
-                            <option value="multi" ${peachifyServer === 'multi' ? 'selected' : ''}>multi</option>
-                            <option value="dark" ${peachifyServer === 'dark' ? 'selected' : ''}>dark</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Preferred Audio Dub</label>
-                        <input type="text" id="vds-pf-dub-input" class="ks-details-input" 
-                               placeholder="e.g. English, French" 
-                               value="${peachifyDub}" 
-                               oninput="peachifyDub = this.value; localStorage.setItem('vds_pf_dub', this.value)">
-                    </div>
-                    <div>
-                        <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Preferred Subtitle</label>
-                        <input type="text" id="vds-pf-sub-input" class="ks-details-input" 
-                               placeholder="e.g. English, Spanish" 
-                               value="${peachifySub}" 
-                               oninput="peachifySub = this.value; localStorage.setItem('vds_pf_sub', this.value)">
-                    </div>
-                </div>
-
-                <div class="videasy-settings-grid" style="margin-top: 20px;">
-                    <div class="videasy-setting-item">
-                        <div class="videasy-setting-info">
-                            <span class="videasy-setting-title">Hide Cast button</span>
-                            <span class="videasy-setting-desc">Remove cast UI</span>
-                        </div>
-                        <label class="switch-control">
-                            <input type="checkbox" id="vds-pf-hidecast" ${peachifyHideCast ? 'checked' : ''} onchange="peachifyHideCast = this.checked; localStorage.setItem('vds_pf_hidecast', this.checked)">
-                            <span class="switch-slider"></span>
-                        </label>
-                    </div>
-                    <div class="videasy-setting-item">
-                        <div class="videasy-setting-info">
-                            <span class="videasy-setting-title">Hide PIP button</span>
-                            <span class="videasy-setting-desc">Remove Picture-in-Picture</span>
-                        </div>
-                        <label class="switch-control">
-                            <input type="checkbox" id="vds-pf-hidepip" ${peachifyHidePip ? 'checked' : ''} onchange="peachifyHidePip = this.checked; localStorage.setItem('vds_pf_hidepip', this.checked)">
-                            <span class="switch-slider"></span>
-                        </label>
-                    </div>
-                    <div class="videasy-setting-item">
-                        <div class="videasy-setting-info">
-                            <span class="videasy-setting-title">Hide Server Menu</span>
-                            <span class="videasy-setting-desc">Disable provider swapping</span>
-                        </div>
-                        <label class="switch-control">
-                            <input type="checkbox" id="vds-pf-hideservers" ${peachifyHideServers ? 'checked' : ''} onchange="peachifyHideServers = this.checked; localStorage.setItem('vds_pf_hideservers', this.checked)">
-                            <span class="switch-slider"></span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- New MegaPlay Customization Fields -->
-            <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
-                <div style="font-weight: 700; font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
-                    <i class="fas fa-closed-captioning" style="color: #f59e0b;"></i> MegaPlay (Anikoto) Settings
-                </div>
-                
-                <div>
-                    <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Preferred Language Track</label>
-                    <select id="vds-mp-lan-select" class="ks-details-input" 
-                            onchange="megaplayLanguage = this.value; localStorage.setItem('vds_mp_lan', this.value)">
-                        <option value="sub" ${megaplayLanguage === 'sub' ? 'selected' : ''}>Subtitled (sub)</option>
-                        <option value="dub" ${megaplayLanguage === 'dub' ? 'selected' : ''}>English Dubbed (dub)</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-function setKsStreamingServer(server, el) {
-    ksDefaultServer = server;
-    localStorage.setItem('vds_server', server);
-    if (el) {
-        const parent = el.parentNode;
-        parent.querySelectorAll('.kd-label-chip').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-    } else {
-        const chips = document.querySelectorAll('.videasy-color-picker .kd-label-chip');
-        chips.forEach(chip => {
-            if (chip.getAttribute('onclick') && chip.getAttribute('onclick').includes(`'${server}'`)) {
-                const parent = chip.parentNode;
-                parent.querySelectorAll('.kd-label-chip').forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-            }
-        });
-    }
-}
-
-function setVideasyColor(color, el) {
-    videasyCustomColor = color;
-    localStorage.setItem('vds_color', color);
-    document.querySelectorAll('.videasy-color-dot').forEach(d => d.classList.remove('active'));
-    if (el) el.classList.add('active');
-}
-
-// Iframe URL Builder & Player Launcher
-let currentTrackingMedia = null;
-
-function playVideasyMedia(mediaId, mediaType, title, resume = false, season = null, episode = null) {
-    let baseUrl = '';
-    const params = new URLSearchParams();
-
-    // Choose active server: for anime, fallback to videasy unless megaplay is chosen
-    const activeServer = (mediaType === 'anime')
-        ? (ksDefaultServer === 'megaplay' ? 'megaplay' : 'videasy')
-        : ksDefaultServer;
-
-    if (activeServer === 'videasy') {
-        // Construct base URL structure
-        if (mediaType === 'movie') {
-            baseUrl = `https://player.videasy.net/movie/${mediaId}`;
-        } else if (mediaType === 'tv') {
-            const s = season || 1;
-            const e = episode || 1;
-            baseUrl = `https://player.videasy.net/tv/${mediaId}/${s}/${e}`;
-        } else if (mediaType === 'anime') {
-            if (episode) {
-                baseUrl = `https://player.videasy.net/anime/${mediaId}/${episode}`;
-            } else {
-                baseUrl = `https://player.videasy.net/anime/${mediaId}`;
-            }
-        }
-
-        // Construct Query Parameters
-        if (videasyCustomColor) params.append('color', videasyCustomColor);
-        if (videasyNextEpisode) params.append('nextEpisode', 'true');
-        if (videasyAutoplay) params.append('autoplayNextEpisode', 'true');
-        if (videasyOverlay) params.append('overlay', 'true');
-        if (mediaType === 'tv' && videasySelector) params.append('episodeSelector', 'true');
-
-    } else if (activeServer === 'vidsrc_to') {
-        // VidSrc.to
-        if (mediaType === 'movie') {
-            baseUrl = `https://vidsrc.to/embed/movie/${mediaId}`;
-        } else if (mediaType === 'tv') {
-            const s = season || 1;
-            if (episode) {
-                baseUrl = `https://vidsrc.to/embed/tv/${mediaId}/${s}/${episode}`;
-            } else {
-                baseUrl = `https://vidsrc.to/embed/tv/${mediaId}/${s}`;
-            }
-        }
-
-        // Construct subtitle parameters if configured
-        if (vidsrcToSubtitleUrl) {
-            // Check if user entered a JSON array for multiple subtitles
-            if (vidsrcToSubtitleUrl.trim().startsWith('[') && vidsrcToSubtitleUrl.trim().endsWith(']')) {
-                try {
-                    // Try parsing and encoding it
-                    const jsonSub = JSON.parse(vidsrcToSubtitleUrl);
-                    params.append('sub.info', JSON.stringify(jsonSub));
-                } catch (e) {
-                    // If parsing fails, treat it as a single subtitle URL
-                    params.append('sub_file', vidsrcToSubtitleUrl);
-                    if (vidsrcToSubtitleLabel) {
-                        params.append('sub_label', vidsrcToSubtitleLabel);
-                    }
-                }
-            } else {
-                params.append('sub_file', vidsrcToSubtitleUrl);
-                if (vidsrcToSubtitleLabel) {
-                    params.append('sub_label', vidsrcToSubtitleLabel);
-                }
-            }
-        }
-    } else if (activeServer === 'cinemaos') {
-        // CinemaOS
-        if (mediaType === 'movie') {
-            baseUrl = `https://cinemaos.tech/player/${mediaId}`;
-        } else if (mediaType === 'tv') {
-            const s = season || 1;
-            const e = episode || 1;
-            baseUrl = `https://cinemaos.tech/player/${mediaId}/${s}/${e}`;
-        }
-
-        // Theme parameter
-        if (videasyCustomColor) {
-            params.append('theme', videasyCustomColor);
-        }
-    } else if (activeServer === 'vidplay') {
-        // VidPlay
-        if (mediaType === 'movie') {
-            baseUrl = `https://vidplay.to/film/${mediaId}/player`;
-        } else if (mediaType === 'tv') {
-            baseUrl = `https://vidplay.to/serial/${mediaId}/player`;
-            if (season) params.append('s', season.toString());
-            if (episode) params.append('e', episode.toString());
-        }
-    } else if (activeServer === 'screenscape') {
-        // ScreenScape
-        baseUrl = 'https://screenscape.me/embed';
-        params.append('tmdb', mediaId);
-        params.append('type', mediaType);
-        if (mediaType === 'tv') {
-            params.append('s', (season || 1).toString());
-            params.append('e', (episode || 1).toString());
-        }
-        if (screenscapeLanguage) {
-            params.append('lan', screenscapeLanguage);
-        }
-    } else if (activeServer === 'megaplay') {
-        // MegaPlay / Anikoto
-        const ep = episode || 1;
-        baseUrl = `https://megaplay.buzz/stream/ani/${mediaId}/${ep}/${megaplayLanguage}`;
-    } else if (activeServer === 'peachify') {
-        // Peachify
-        if (mediaType === 'movie') {
-            baseUrl = `https://peachify.top/embed/movie/${mediaId}`;
-        } else if (mediaType === 'tv') {
-            const s = season || 1;
-            const e = episode || 1;
-            baseUrl = `https://peachify.top/embed/tv/${mediaId}/${s}/${e}`;
-        }
-
-        if (peachifyServer) params.append('server', peachifyServer);
-        if (peachifyDub) params.append('dub', peachifyDub);
-        if (peachifySub) params.append('sub', peachifySub);
-
-        if (!videasyAutoplay) {
-            params.append('autoPlay', 'false');
-        }
-
-        if (mediaType === 'tv') {
-            if (videasyAutoplay) {
-                params.append('autoNext', '30');
-            }
-            if (!videasyNextEpisode) {
-                params.append('showNextBtn', 'false');
-            }
-        }
-
-        if (peachifyHideCast) params.append('cast', 'hide');
-        if (peachifyHidePip) params.append('pip', 'hide');
-        if (peachifyHideServers) params.append('servers', 'hide');
-    } else {
-        // VidSrc.ru
-        if (mediaType === 'movie') {
-            baseUrl = `https://vidsrc.ru/movie/${mediaId}`;
-        } else if (mediaType === 'tv') {
-            const s = season || 1;
-            const e = episode || 1;
-            baseUrl = `https://vidsrc.ru/tv/${mediaId}/${s}/${e}`;
-        }
-
-        // Construct Query Parameters
-        params.append('autoplay', videasyAutoplay ? 'true' : 'false');
-        if (videasyCustomColor) params.append('colour', videasyCustomColor);
-        params.append('autonextepisode', videasyAutoplay ? 'true' : 'false');
-        params.append('pausescreen', videasyOverlay ? 'true' : 'false');
-        if (videasyBackButtonUrl) params.append('backbutton', videasyBackButtonUrl);
-        if (videasyLogoUrl) params.append('logo', videasyLogoUrl);
-        if (videasyIdleCheck > 0) params.append('idlecheck', videasyIdleCheck.toString());
-    }
-
-    // Watch Progress loading
-    const progressKey = getWatchProgressKey(mediaId, mediaType, season, episode);
-    const saved = localStorage.getItem(progressKey);
-
-    if (saved) {
-        try {
-            const progressData = JSON.parse(saved);
-            if (resume && progressData.timestamp) {
-                if (activeServer === 'peachify') {
-                    params.append('startAt', Math.floor(progressData.timestamp));
-                } else {
-                    params.append('progress', Math.floor(progressData.timestamp));
-                }
-                showToast(`Resuming at ${Math.floor(progressData.progress)}%`, 'fa-clock');
-            }
-        } catch (e) { }
-    }
-
-    const finalUrl = `${baseUrl}?${params.toString()}`;
-    console.log("Playing server URL:", finalUrl);
-
-    // Save metadata for continue watching resume cards
-    const metaKey = `videasy_meta_${mediaType}_${mediaId}`;
-    localStorage.setItem(metaKey, JSON.stringify({
-        id: mediaId,
-        type: mediaType,
-        title: title,
-        poster: currentMediaMeta.poster,
-        year: currentMediaMeta.year,
-        season: season,
-        episode: episode,
-        updatedAt: Date.now()
-    }));
-
-    // Construct tmdbServers list to pass to renderKSEmbed
-    const tmdbServers = [
-        { id: 'videasy', name: 'VIDEASY' },
-        { id: 'vidsrc', name: 'VidSrc.ru' },
-        { id: 'vidsrc_to', name: 'VidSrc.to' },
-        { id: 'cinemaos', name: 'CinemaOS' },
-        { id: 'vidplay', name: 'VidPlay' },
-        { id: 'screenscape', name: 'ScreenScape' },
-        { id: 'peachify', name: 'Peachify' },
-        { id: 'megaplay', name: 'MegaPlay' }
-    ];
-
-    // Open player modal/overlay
-    renderKSEmbed(finalUrl, title, tmdbServers, 'tmdb_videasy');
-
-    // Set tracking media
-    currentTrackingMedia = {
-        id: mediaId,
-        type: mediaType,
-        title: title,
-        season: season,
-        episode: episode
-    };
-}
-
-// Watch Progress State Keepers
-function getWatchProgressKey(id, type, season = null, episode = null) {
-    let key = `videasy_progress_${type}_${id}`;
-    if (season) key += `_s${season}`;
-    if (episode) key += `_e${episode}`;
-    return key;
-}
-
-function getWatchProgressHtml(id, type, title, season = null, episode = null) {
-    const key = getWatchProgressKey(id, type, season, episode);
-    const saved = localStorage.getItem(key);
-
-    if (!saved) return '';
-
-    try {
-        const data = JSON.parse(saved);
-        const percent = Math.floor(data.progress || 0);
-        const timestamp = data.timestamp || 0;
-        const duration = data.duration || 0;
-
-        const formatTime = (secs) => {
-            const h = Math.floor(secs / 3600);
-            const m = Math.floor((secs % 3600) / 60);
-            const s = Math.floor(secs % 60);
-            return h > 0
-                ? `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
-                : `${m}:${s.toString().padStart(2, '0')}`;
-        };
-
-        const timeLabel = duration
-            ? `${formatTime(timestamp)} / ${formatTime(duration)}`
-            : `${formatTime(timestamp)}`;
-
-        if (season || episode) {
-            return `
-                <div style="margin-top: 10px;">
-                    <div style="height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow:hidden;">
-                        <div style="height:100%; width: ${percent}%; background: #10b981;"></div>
-                    </div>
-                    <div style="font-size: 0.65rem; color: rgba(255,255,255,0.4); text-align:right; margin-top:2px;">${percent}% watched</div>
-                </div>
-            `;
-        }
-
-        return `
-            <div class="resume-playback-wrapper">
-                <button class="resume-btn" onclick="playVideasyMedia('${id}', '${type}', '${title.replace(/'/g, "\\'")}', true)">
-                    <i class="fas fa-undo"></i> Resume Playback at ${percent}%
-                </button>
-                <div class="resume-progress-container">
-                    <div class="resume-progress-bar" style="width: ${percent}%;"></div>
-                </div>
-                <div class="resume-info-text">
-                    <span>Last watched: ${new Date(data.lastWatched).toLocaleDateString()}</span>
-                    <span>${timeLabel} (${percent}%)</span>
-                </div>
-            </div>
-        `;
-    } catch (e) {
-        return '';
-    }
-}
-
-// Window watch progress postMessage listener
-window.addEventListener("message", function (event) {
-    if (!event.origin.includes("videasy.net") && !event.origin.includes("vidsrc.ru") && !event.origin.includes("vidsrc.to") && !event.origin.includes("cinemaos.tech") && !event.origin.includes("vidplay.to") && !event.origin.includes("screenscape.me") && !event.origin.includes("peachify.top") && !event.origin.includes("megaplay.buzz")) return;
-
-    try {
-        let eventData = event.data;
-
-        if (typeof eventData === "string") {
-            try {
-                eventData = JSON.parse(eventData);
-            } catch (e) { }
-        }
-
-        // 00. Check for Anikoto / MegaPlay message format
-        if (eventData && (eventData.channel === 'megacloud' || eventData.type === 'watching-log' || eventData.event === 'time' || eventData.event === 'complete')) {
-            let watchedTime = 0;
-            let duration = 0;
-            let percent = 0;
-
-            if (eventData.event === 'time') {
-                watchedTime = eventData.time;
-                duration = eventData.duration;
-                percent = eventData.percent;
-            } else if (eventData.type === 'watching-log') {
-                watchedTime = eventData.currentTime;
-                duration = eventData.duration;
-                percent = duration ? (watchedTime / duration) * 100 : 0;
-            } else if (eventData.event === 'complete') {
-                percent = 100;
-                watchedTime = duration;
-            }
-
-            if (watchedTime > 0 || percent > 0) {
-                const id = currentTrackingMedia?.id;
-                const type = currentTrackingMedia?.type;
-                const s = currentTrackingMedia?.season || null;
-                const e = currentTrackingMedia?.episode || null;
-
-                if (id && type) {
-                    const key = getWatchProgressKey(id, type, s, e);
-                    const trackingObj = {
-                        progress: percent,
-                        timestamp: watchedTime,
-                        duration: duration,
-                        season: s,
-                        episode: e,
-                        lastWatched: Date.now()
-                    };
-
-                    localStorage.setItem(key, JSON.stringify(trackingObj));
-                    if (s || e) {
-                        const parentKey = getWatchProgressKey(id, type);
-                        localStorage.setItem(parentKey, JSON.stringify(trackingObj));
-                    }
-
-                    // Sync with official watch_progress storage key
-                    try {
-                        const STORAGE_KEY = 'watch_progress';
-                        let watchProgress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-                        watchProgress[id] = {
-                            ...watchProgress[id],
-                            id: id,
-                            type: type,
-                            title: currentTrackingMedia?.title || '',
-                            progress: {
-                                watched_time: watchedTime,
-                                duration: duration
-                            },
-                            last_updated: Date.now()
-                        };
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(watchProgress));
-                    } catch (err) { }
-                }
-            }
-            return;
-        }
-
-        // 0. Check for Peachify PLAYER_EVENT progress format
-        if (eventData && eventData.type === 'PLAYER_EVENT') {
-            const playerEventData = eventData.data;
-            if (playerEventData && playerEventData.tmdbId) {
-                const id = playerEventData.tmdbId.toString();
-                const type = playerEventData.mediaType;
-                const watchedTime = playerEventData.currentTime;
-                const duration = playerEventData.duration;
-                const progressPercent = duration ? (watchedTime / duration) * 100 : 0;
-                const s = playerEventData.season || null;
-                const e = playerEventData.episode || null;
-
-                const key = getWatchProgressKey(id, type, s, e);
-                const trackingObj = {
-                    progress: progressPercent,
-                    timestamp: watchedTime,
-                    duration: duration,
-                    season: s,
-                    episode: e,
-                    lastWatched: Date.now()
-                };
-
-                localStorage.setItem(key, JSON.stringify(trackingObj));
-
-                if (s || e) {
-                    const parentKey = getWatchProgressKey(id, type);
-                    localStorage.setItem(parentKey, JSON.stringify(trackingObj));
-                }
-
-                // Sync with the official watch_progress storage key mapping
-                try {
-                    const STORAGE_KEY = 'watch_progress';
-                    let watchProgress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-                    watchProgress[id] = {
-                        ...watchProgress[id],
-                        id: id,
-                        type: type,
-                        title: currentTrackingMedia?.title || '',
-                        progress: {
-                            watched_time: watchedTime,
-                            duration: duration
-                        },
-                        last_updated: Date.now()
-                    };
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(watchProgress));
-                } catch (err) { }
-            }
-            return;
-        }
-
-        // 1. Check for MEDIA_DATA progress event format (VidSrc or Peachify)
-        if (eventData && eventData.type === 'MEDIA_DATA') {
-            if (event.origin.includes("peachify.top")) {
-                localStorage.setItem('peachifyProgress', JSON.stringify(eventData.data));
-
-                // Real-time progress mapping sync from Peachify dictionary if available
-                try {
-                    const keys = Object.keys(eventData.data);
-                    if (keys.length > 0) {
-                        const id = keys[0];
-                        const item = eventData.data[id];
-                        if (item && item.progress) {
-                            const type = item.type;
-                            const watchedTime = item.progress.watched;
-                            const duration = item.progress.duration;
-                            const progressPercent = duration ? (watchedTime / duration) * 100 : 0;
-
-                            const s = item.last_season_watched ? parseInt(item.last_season_watched, 10) : null;
-                            const e = item.last_episode_watched ? parseInt(item.last_episode_watched, 10) : null;
-
-                            const key = getWatchProgressKey(id, type, s, e);
-                            const trackingObj = {
-                                progress: progressPercent,
-                                timestamp: watchedTime,
-                                duration: duration,
-                                season: s,
-                                episode: e,
-                                lastWatched: Date.now()
-                            };
-
-                            localStorage.setItem(key, JSON.stringify(trackingObj));
-                            if (s || e) {
-                                const parentKey = getWatchProgressKey(id, type);
-                                localStorage.setItem(parentKey, JSON.stringify(trackingObj));
-                            }
-                        }
-                    }
-                } catch (e) { }
-            } else {
-                // VidSrc MEDIA_DATA
-                const mediaData = eventData.data;
-                if (mediaData && mediaData.id && mediaData.progress) {
-                    const id = mediaData.id;
-                    const type = mediaData.type;
-                    const watchedTime = mediaData.progress.watched_time;
-                    const duration = mediaData.progress.duration;
-                    const progressPercent = (watchedTime / duration) * 100;
-
-                    const s = (currentTrackingMedia?.id === id || currentTrackingMedia?.id === Number(id)) ? currentTrackingMedia.season : null;
-                    const e = (currentTrackingMedia?.id === id || currentTrackingMedia?.id === Number(id)) ? currentTrackingMedia.episode : null;
-
-                    const key = getWatchProgressKey(id, type, s, e);
-                    const trackingObj = {
-                        progress: progressPercent,
-                        timestamp: watchedTime,
-                        duration: duration,
-                        season: s,
-                        episode: e,
-                        lastWatched: Date.now()
-                    };
-
-                    localStorage.setItem(key, JSON.stringify(trackingObj));
-
-                    if (s || e) {
-                        const parentKey = getWatchProgressKey(id, type);
-                        localStorage.setItem(parentKey, JSON.stringify(trackingObj));
-                    }
-
-                    // Sync with the official watch_progress storage key mapping for VidSrc
-                    try {
-                        const STORAGE_KEY = 'watch_progress';
-                        let watchProgress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-                        watchProgress[id] = {
-                            ...watchProgress[id],
-                            ...mediaData,
-                            last_updated: Date.now()
-                        };
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(watchProgress));
-                    } catch (err) { }
-                }
-            }
-            return;
-        }
-
-        // 2. Check for VIDEASY progress event format
-        if (typeof eventData === "string") {
-            eventData = JSON.parse(eventData);
-        }
-
-        console.log("Message received from player:", eventData);
-
-        if (eventData && eventData.id) {
-            const id = eventData.id;
-            const type = eventData.type;
-            const progress = eventData.progress;
-            const timestamp = eventData.timestamp;
-            const duration = eventData.duration;
-            const season = eventData.season;
-            const episode = eventData.episode;
-
-            const key = getWatchProgressKey(id, type, season, episode);
-            const trackingObj = {
-                progress,
-                timestamp,
-                duration,
-                season,
-                episode,
-                lastWatched: Date.now()
-            };
-
-            localStorage.setItem(key, JSON.stringify(trackingObj));
-
-            if (season || episode) {
-                const parentKey = getWatchProgressKey(id, type);
-                localStorage.setItem(parentKey, JSON.stringify(trackingObj));
-            }
-
-            // Sync with the official watch_progress storage key mapping for VIDEASY
-            try {
-                const STORAGE_KEY = 'watch_progress';
-                let watchProgress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-                watchProgress[id] = {
-                    ...watchProgress[id],
-                    id: id,
-                    type: type,
-                    title: currentTrackingMedia?.title || '',
-                    progress: {
-                        watched_time: timestamp,
-                        duration: duration
-                    },
-                    last_updated: Date.now()
-                };
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(watchProgress));
-            } catch (err) { }
-        }
-    } catch (e) {
-        // Safe fail
-    }
-});
-
-function renderKSResults(results) {
-    const resultsBox = document.getElementById('ks-results');
-    if (!results || results.length === 0) {
-        resultsBox.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.4);"><i class="fas fa-film" style="font-size:4rem; margin-bottom:20px; display:block; opacity:0.1;"></i>No movies or series found.</div>';
-        return;
-    }
-
-    let html = `<div class="ks-grid">`;
-    results.forEach(res => {
-        html += `
-            <div class="ks-card" onclick="${res.type === 'movie' ? `fetchKSMovie(${res.id})` : `fetchKSSeries(${res.id})`}">
-                <div class="ks-card-badge">${res.typeLabel}</div>
-                <div class="ks-card-img-container">
-                    <img src="${res.photo}" alt="${res.title}" loading="lazy">
-                </div>
-                <div class="ks-card-info">
-                    <div class="ks-card-title">${res.title}</div>
-                    <div class="ks-card-meta">${res.type === 'movie' ? 'Full Movie' : 'Series'}</div>
-                </div>
-            </div>
-        `;
-    });
-    html += `</div>`;
-    resultsBox.innerHTML = html;
-}
-
-async function fetchKSMovie(id) {
-    const detailsBox = document.getElementById('ks-details');
-    const resultsBox = document.getElementById('ks-results');
-    const loader = document.getElementById('ks-loader');
-
-    resultsBox.style.display = 'none';
-    detailsBox.style.display = 'none';
-    loader.style.display = 'flex';
-
-    try {
-        const response = await fetch(`https://kurdcinama-stream-seeker.lovable.app/api/public/movie/${id}`);
-        const data = await response.json();
-        renderKSMovie(data);
-    } catch (err) {
-        showToast('Failed to load movie details.', 'fa-times-circle');
-        resultsBox.style.display = 'block';
-    } finally {
-        loader.style.display = 'none';
-    }
-}
-
-function renderKSMovie(movie) {
-    const detailsBox = document.getElementById('ks-details');
-    detailsBox.style.display = 'block';
-
-    let serverBtns = '';
-    const baseEmbed = `https://kurdcinama-stream-seeker.lovable.app/api/public/embed?movieId=${movie.id}`;
-    movie.servers.forEach(srv => {
-        serverBtns += `
-            <button class="ks-server-btn" data-server-id="${srv.id}" onclick="selectKSServer('${srv.id}', '${baseEmbed}&server=${srv.id}', this, '${movie.title.replace(/'/g, "\\'")} - ${srv.name}', ${JSON.stringify(movie.servers).replace(/"/g, '&quot;')}, '${baseEmbed}')">
-                <i class="fas fa-server"></i>
-                <div>
-                    <div style="font-size: 0.95rem;">${srv.name}</div>
-                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5); font-weight: 400;">HD Streaming Available</div>
-                </div>
-            </button>`;
-    });
-
-    detailsBox.innerHTML = `
-        <button class="ks-back-btn" onclick="document.getElementById('ks-details').style.display='none'; document.getElementById('ks-results').style.display='block';">
-            <i class="fas fa-arrow-left"></i> Back to Results
-        </button>
-
-        <div class="ks-hero-container">
-            <img class="ks-hero-bg" src="${movie.backdrop || movie.poster}" alt="${movie.title}">
-            <div class="ks-hero-overlay">
-                <div class="ks-hero-title">${movie.title}</div>
-                <div class="ks-hero-meta">
-                    <span class="ks-meta-tag year">${movie.year}</span>
-                    <span class="ks-meta-tag">${movie.typeLabel}</span>
-                    ${movie.genres.map(g => `<span class="ks-meta-tag genre">${g.name}</span>`).join('')}
-                </div>
-            </div>
-        </div>
-
-        <div class="section-header">About this Movie</div>
-        <div class="ks-desc-card">
-            ${movie.description}
-        </div>
-
-        <div class="section-header">Select Streaming Server</div>
-        <div class="ks-server-grid">
-            ${serverBtns}
-            <button class="ks-server-btn" data-server-id="default" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(239, 68, 68, 0.1)); border-color: rgba(245, 158, 11, 0.3);" onclick="selectKSServer('default', '${movie.iframeUrl}', this, '${movie.title.replace(/'/g, "\\'")} - Direct', ${JSON.stringify(movie.servers).replace(/"/g, '&quot;')}, '${baseEmbed}')">
-                <i class="fas fa-play-circle"></i>
-                <div>
-                    <div style="font-size: 0.95rem; color: #f59e0b;">Direct Stream</div>
-                    <div style="font-size: 0.7rem; color: rgba(245, 158, 11, 0.6); font-weight: 400;">Recommended for Desktop</div>
-                </div>
-            </button>
-        </div>
-    `;
-}
-
-async function selectKSServer(id, url, btn, title, servers = [], baseUrl = '') {
-    document.querySelectorAll('.ks-server-btn').forEach(b => b.classList.remove('active-server'));
-    if (btn) btn.classList.add('active-server');
-
-    // If it's a direct stream URL (not our API), load it directly
-    if (!url.includes('kurdcinama-stream-seeker.lovable.app/api/public/embed')) {
-        renderKSEmbed(url, title, servers, baseUrl);
-        return;
-    }
-
-    const loader = document.getElementById('ks-loader');
-    if (loader) loader.style.display = 'flex';
-
-    try {
-        const res = await fetch(url);
-        const data = await res.json();
-        renderKSEmbed(data.iframeUrl, title, servers, baseUrl);
-    } catch (err) {
-        showToast('Failed to load server.', 'fa-times-circle');
-    } finally {
-        if (loader) loader.style.display = 'none';
-    }
-}
-
-async function fetchKSSeries(id) {
-    const detailsBox = document.getElementById('ks-details');
-    const resultsBox = document.getElementById('ks-results');
-    const loader = document.getElementById('ks-loader');
-
-    resultsBox.style.display = 'none';
-    detailsBox.style.display = 'none';
-    loader.style.display = 'flex';
-
-    try {
-        const response = await fetch(`https://kurdcinama-stream-seeker.lovable.app/api/public/series/${id}`);
-        const data = await response.json();
-        renderKSSeries(data);
-    } catch (err) {
-        showToast('Failed to load series details.', 'fa-times-circle');
-        resultsBox.style.display = 'block';
-    } finally {
-        loader.style.display = 'none';
-    }
-}
-
-function renderKSSeries(series) {
-    const detailsBox = document.getElementById('ks-details');
-    detailsBox.style.display = 'block';
-
-    let seasonsHtml = '';
-    series.seasons.forEach((season, idx) => {
-        let episodesHtml = '';
-        season.episodes.forEach(ep => {
-            episodesHtml += `
-                <div class="ks-ep-item" data-ep-id="${series.id}-${season.stype}-${ep.name}" onclick="viewKSEpisode('${series.id}', '${season.stype}', '${ep.name}', this, '${series.title.replace(/'/g, "\\'")} - ${season.label} Ep ${ep.name}')">
-                    <div class="ks-ep-title">Episode ${ep.name}</div>
-                    <i class="fas fa-play-circle ks-ep-icon"></i>
-                </div>
-            `;
-        });
-
-        seasonsHtml += `
-            <div class="section-header">${season.label}</div>
-            <div class="ks-ep-card-grid" style="padding: 0 15px;">
-                ${episodesHtml}
-            </div>
-        `;
-    });
-
-    detailsBox.innerHTML = `
-        <button class="ks-back-btn" onclick="document.getElementById('ks-details').style.display='none'; document.getElementById('ks-results').style.display='block';">
-            <i class="fas fa-arrow-left"></i> Back to Results
-        </button>
-
-        <div class="ks-hero-container">
-            <img class="ks-hero-bg" src="${series.backdrop || series.poster}" alt="${series.title}">
-            <div class="ks-hero-overlay">
-                <div class="ks-hero-title">${series.title}</div>
-                <div class="ks-hero-meta">
-                    <span class="ks-meta-tag year">${series.year}</span>
-                    <span class="ks-meta-tag">${series.typeLabel}</span>
-                    ${series.genres.map(g => `<span class="ks-meta-tag genre">${g.name}</span>`).join('')}
-                </div>
-            </div>
-        </div>
-
-        <div class="section-header">Description</div>
-        <div class="ks-desc-card">
-            ${series.description}
-        </div>
-        ${seasonsHtml}
-    `;
-}
-
-async function viewKSEpisode(type, stype, name, el, title) {
-    const loader = document.getElementById('ks-loader');
-    loader.style.display = 'flex';
-
-    // Highlight active episode
-    document.querySelectorAll('.ks-ep-item').forEach(item => {
-        item.classList.remove('active-episode');
-        const icon = item.querySelector('.ks-ep-icon');
-        if (icon) icon.className = 'fas fa-play-circle ks-ep-icon';
-    });
-    if (el) {
-        el.classList.add('active-episode');
-        const icon = el.querySelector('.ks-ep-icon');
-        if (icon) icon.className = 'fas fa-spinner fa-spin ks-ep-icon';
-    }
-
-    try {
-        const response = await fetch(`https://kurdcinama-stream-seeker.lovable.app/api/public/episode?type=${type}&stype=${stype}&name=${name}`);
-        const data = await response.json();
-        const baseEmbed = `https://kurdcinama-stream-seeker.lovable.app/api/public/embed?type=${type}&stype=${stype}&name=${name}`;
-
-        renderKSEmbed(data.iframeUrl, title, data.servers, baseEmbed);
-        if (el) el.querySelector('.ks-ep-icon').className = 'fas fa-volume-up ks-ep-icon';
-    } catch (err) {
-        showToast('Error loading episode.', 'fa-times-circle');
-        if (el) el.querySelector('.ks-ep-icon').className = 'fas fa-play-circle ks-ep-icon';
-    } finally {
-        loader.style.display = 'none';
-    }
-}
-
-function renderKSEmbed(url, title = 'KurdStream Player', servers = [], baseUrl = '') {
-    let playerOverlay = document.getElementById('ks-player-overlay');
-    if (!playerOverlay) {
-        playerOverlay = document.createElement('div');
-        playerOverlay.id = 'ks-player-overlay';
-        playerOverlay.style.cssText = `
-            position: fixed; inset: 0; background: #000; z-index: 5000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        `;
-        playerOverlay.innerHTML = `
-            <div style="width:100%; padding:15px 25px; display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.4); border-bottom:1px solid rgba(255,255,255,0.05); flex-wrap: wrap; gap: 15px;">
-                <div style="display:flex; align-items:center; gap:20px; flex:1; min-width:200px;">
-                    <span id="ks-player-title" style="font-weight:800; color:#fff; text-shadow: 0 0 10px rgba(0,0,0,0.5);">
-                        <i class="fas fa-play-circle" style="color:#f59e0b; margin-right:8px;"></i> ${title}
-                    </span>
-                    <div id="ks-player-servers" style="display:flex; gap:8px;"></div>
-                </div>
-                <button class="ks-player-close-btn" onclick="document.getElementById('ks-player-overlay').remove()">
-                    <i class="fas fa-times"></i> Close Player
-                </button>
-            </div>
-            <div style="flex:1; width:100%; position:relative; background:#000;">
-                <div id="ks-player-loader" style="position:absolute; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.8); z-index:10; backdrop-filter:blur(10px);">
-                    <div class="tt-pulse-logo" style="background:#f59e0b;"><i class="fas fa-play"></i></div>
-                </div>
-                <iframe id="ks-iframe" src="" style="width:100%; height:100%; border:none;" allowfullscreen></iframe>
-            </div>
-        `;
-        document.body.appendChild(playerOverlay);
-    }
-
-    document.getElementById('ks-player-title').innerHTML = `<i class="fas fa-play-circle" style="color:#f59e0b; margin-right:8px;"></i> ${title}`;
-
-    const serverBox = document.getElementById('ks-player-servers');
-    serverBox.innerHTML = '';
-    if (servers && servers.length > 0) {
-        servers.forEach(srv => {
-            const btn = document.createElement('button');
-            btn.className = 'ks-mini-server-btn';
-            btn.innerText = srv.name;
-
-            // Highlight the active server button
-            if (baseUrl === 'tmdb_videasy') {
-                const activeServer = (currentTrackingMedia?.type === 'anime') ? 'videasy' : ksDefaultServer;
-                if (srv.id === activeServer) {
-                    btn.classList.add('active');
-                }
-            }
-
-            btn.onclick = async () => {
-                document.querySelectorAll('.ks-mini-server-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const loader = document.getElementById('ks-player-loader');
-                loader.style.display = 'flex';
-
-                if (baseUrl === 'tmdb_videasy') {
-                    try {
-                        setKsStreamingServer(srv.id);
-                        if (currentTrackingMedia) {
-                            playVideasyMedia(
-                                currentTrackingMedia.id,
-                                currentTrackingMedia.type,
-                                currentTrackingMedia.title,
-                                true, // resume playback
-                                currentTrackingMedia.season,
-                                currentTrackingMedia.episode
-                            );
-                        }
-                    } catch (e) { }
-                    loader.style.display = 'none';
-                } else {
-                    try {
-                        const fetchUrl = `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}server=${srv.id}`;
-                        const res = await fetch(fetchUrl);
-                        const data = await res.json();
-                        document.getElementById('ks-iframe').src = data.iframeUrl;
-                    } catch (err) {
-                        showToast('Failed to switch server.', 'fa-times-circle');
-                    } finally {
-                        loader.style.display = 'none';
-                    }
-                }
-            };
-            serverBox.appendChild(btn);
-        });
-    }
-
-    document.getElementById('ks-iframe').src = url;
-}
-
-/* KurdDoblazh & KurdMovie Proxy API Functions */
-const KD_PROXY_API = 'https://kurd-doblazh-api.lovable.app/api';
-let kdCurrentStart = 1;
-let kdCurrentMode = 'latest'; // 'latest' or 'search'
-let kdCurrentQuery = '';
-let kdCurrentLabel = '';
-
-// Upgrade Blogger thumbnail URL to high resolution.
-// Handles both URL formats returned by the API:
-//   Old: "...=s72-c"   → "...=s1200"
-//   New: ".../s640/file.jpg" → ".../s1600/file.jpg"
-function upgradeBloggerThumb(url) {
-    if (!url) return url;
-    // Old-style: ends with =sNNN or =sNNN-c
-    if (/=s\d+(-c)?$/.test(url)) return url.replace(/=s\d+(-c)?$/, '=s1200');
-    // New-style: has /sNNN/ in path
-    if (/\/s\d+\//.test(url)) return url.replace(/\/s\d+\//, '/s1200/');
-    return url;
-}
-
-
-async function fetchKurdDoblazhLatest(label = '', start = 1) {
-    const resultsBox = document.getElementById('kd-results');
-    const detailsBox = document.getElementById('kd-details');
-    const loader = document.getElementById('kd-loader');
-    const pagination = document.getElementById('kd-pagination');
-
-    kdCurrentMode = 'latest';
-    kdCurrentLabel = label;
-    kdCurrentStart = start;
-
-    resultsBox.style.display = 'none';
-    detailsBox.style.display = 'none';
-    pagination.style.display = 'none';
-    loader.style.display = 'flex';
-
-    try {
-        let url = `${KD_PROXY_API}/kd/latest?limit=24&start=${start}&include=html`;
-        if (label) url += `&label=${encodeURIComponent(label)}`;
-
-        const response = await fetch(url);
-        const data = await response.json();
-
-        resultsBox.innerHTML = `<div class="section-header" style="grid-column: 1/-1; margin-top: 0;">${label ? `Category: ${label}` : 'Latest Dubbed Posts'} (Page ${Math.floor(start / 24) + 1})</div>`;
-        renderKDResults(data.items || [], true);
-
-        // Show pagination if we have items
-        if (data.items && data.items.length > 0) {
-            pagination.style.display = 'flex';
-            document.getElementById('kd-prev-btn').disabled = start <= 1;
-            document.getElementById('kd-next-btn').disabled = data.items.length < 24;
-        }
-    } catch (err) {
-        console.error(err);
-        showToast('Failed to fetch latest posts.', 'fa-times-circle');
-    } finally {
-        loader.style.display = 'none';
-        resultsBox.style.display = 'grid';
-    }
-}
-
-async function searchKurdDoblazh(query = '', start = 1) {
-    const input = document.getElementById('kd-search-input');
-    const q = query || input.value.trim();
-    if (!q) {
-        fetchKurdDoblazhLatest();
-        return;
-    }
-
-    // Check if input is a URL, path or slug that should be resolved
-    const isUrlOrPath = q.includes('kurddoblazh.com') || q.startsWith('/') || (q.includes('.html') && !q.includes(' '));
-
-    if (isUrlOrPath && start === 1) {
-        showToast('Resolving link...', 'fa-link');
-        try {
-            const res = await fetch(`${KD_PROXY_API}/kd/resolve?input=${encodeURIComponent(q)}`);
-            const resolved = await res.json();
-            if (resolved && resolved.url) {
-                fetchKDPost(resolved.url);
-                return;
-            }
-        } catch (e) {
-            console.warn("Resolution failed, falling back to search.");
-        }
-    }
-
-    kdCurrentMode = 'search';
-    kdCurrentQuery = q;
-    kdCurrentStart = start;
-
-    const resultsBox = document.getElementById('kd-results');
-    const detailsBox = document.getElementById('kd-details');
-    const loader = document.getElementById('kd-loader');
-    const btn = document.getElementById('kd-search-btn');
-    const pagination = document.getElementById('kd-pagination');
-
-    resultsBox.style.display = 'none';
-    detailsBox.style.display = 'none';
-    pagination.style.display = 'none';
-    loader.style.display = 'flex';
-    btn.disabled = true;
-
-    try {
-        const response = await fetch(`${KD_PROXY_API}/kd/search?q=${encodeURIComponent(q)}&limit=24&start=${start}&include=html`);
-        const data = await response.json();
-        resultsBox.innerHTML = `<div class="section-header" style="grid-column: 1/-1; margin-top: 0;">Search Results for "${q}" (Page ${Math.floor(start / 24) + 1})</div>`;
-        renderKDResults(data.items || [], true);
-
-        if (data.items && data.items.length > 0) {
-            pagination.style.display = 'flex';
-            document.getElementById('kd-prev-btn').disabled = start <= 1;
-            document.getElementById('kd-next-btn').disabled = data.items.length < 24;
-        }
-    } catch (err) {
-        console.error(err);
-        showToast('Failed to connect to KD Proxy.', 'fa-times-circle');
-    } finally {
-        loader.style.display = 'none';
-        btn.disabled = false;
-        resultsBox.style.display = 'grid';
-    }
-}
-
-async function fetchKurdDoblazhLabels() {
-    const labelsBox = document.getElementById('kd-labels');
-    try {
-        const response = await fetch(`${KD_PROXY_API}/kd/labels`);
-        const labels = await response.json();
-
-        let html = `<button class="kd-label-chip active" onclick="filterKDByLabel('', this)">All</button>`;
-        labels.forEach(label => {
-            html += `<button class="kd-label-chip" onclick="filterKDByLabel('${label}', this)">${label}</button>`;
-        });
-        labelsBox.innerHTML = html;
-    } catch (err) {
-        console.error("Failed to fetch labels:", err);
-    }
-}
-
-function filterKDByLabel(label, el) {
-    document.querySelectorAll('.kd-label-chip').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    fetchKurdDoblazhLatest(label, 1);
-}
-
-function kdPaginate(direction) {
-    const newStart = Math.max(1, kdCurrentStart + (direction * 24));
-    if (kdCurrentMode === 'latest') {
-        fetchKurdDoblazhLatest(kdCurrentLabel, newStart);
-    } else {
-        searchKurdDoblazh(kdCurrentQuery, newStart);
-    }
-    document.getElementById('main-scroll').scrollTop = 0;
-}
-
-function renderKDResults(items, append = false) {
-    const resultsBox = document.getElementById('kd-results');
-    if (!items || items.length === 0) {
-        if (!append) resultsBox.innerHTML = '<div style="text-align:center; padding:60px; color:rgba(255,255,255,0.4); grid-column: 1/-1;"><i class="fas fa-microphone-slash" style="font-size:4rem; margin-bottom:20px; display:block; opacity:0.1;"></i>No dubbed content found on proxy.</div>';
-        return;
-    }
-
-    let html = append ? resultsBox.innerHTML : '';
-    items.forEach((item) => {
-        // Prefer images[0] (already full-res from API), fallback to upgraded thumbnail
-        let thumb = (item.images && item.images.length > 0)
-            ? item.images[0]
-            : upgradeBloggerThumb(item.thumbnail);
-
-        const cats = (item.categories && item.categories.length > 0)
-            ? item.categories[0] : 'Dubbed';
-
-        html += `
-            <div class="kd-card" onclick="fetchKDPost('${item.url}')">
-                <div class="kd-card-badge">${cats}</div>
-                <div class="kd-card-img-container">
-                    <img src="${thumb}" alt="${item.title}" loading="lazy" onerror="this.src='${item.thumbnail}'">
-                </div>
-                <div class="kd-card-info">
-                    <div class="kd-card-title">${item.title}</div>
-                </div>
-            </div>
-        `;
-    });
-    resultsBox.innerHTML = html;
-}
-
-async function fetchKDPost(input) {
-    const resultsBox = document.getElementById('kd-results');
-    const detailsBox = document.getElementById('kd-details');
-    const loader = document.getElementById('kd-loader');
-    const pagination = document.getElementById('kd-pagination');
-
-    resultsBox.style.display = 'none';
-    pagination.style.display = 'none';
-    loader.style.display = 'flex';
-
-    try {
-        // Use resolve endpoint if input looks like a path/slug, otherwise use post
-        const isUrl = input.startsWith('http');
-        const endpoint = isUrl ? 'post?url=' : 'resolve?input=';
-        const fetchUrl = `${KD_PROXY_API}/kd/${endpoint}${encodeURIComponent(input)}&include=html`;
-
-        console.log("Fetching KD Post:", fetchUrl);
-        const response = await fetch(fetchUrl);
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`API Error ${response.status}: ${errorText}`);
-        }
-
-        const data = await response.json();
-        renderKDDetails(data);
-        loader.style.display = 'none';
-        detailsBox.style.display = 'block';
-        document.getElementById('main-scroll').scrollTop = 0;
-    } catch (err) {
-        console.error("KD Fetch Error:", err);
-        showToast(`Error: ${err.message}`, 'fa-times-circle');
-        resultsBox.style.display = 'grid';
-        pagination.style.display = 'flex';
-        loader.style.display = 'none';
-    }
-}
-
-function renderKDDetails(rawData) {
-    console.log("KurdDoblazh Post Data:", rawData);
-    const detailsBox = document.getElementById('kd-details');
-
-    // Support nested response structures if they exist
-    const data = rawData.post || rawData.item || rawData;
-
-    if (!data || (!data.title && !data.id)) {
-        detailsBox.innerHTML = `
-            <button class="kd-back-btn" onclick="document.getElementById('kd-details').style.display='none'; document.getElementById('kd-results').style.display='grid';">
-                <i class="fas fa-arrow-left"></i> Back to Results
-            </button>
-            <div style="text-align:center; padding:60px; color:rgba(255,255,255,0.4);">
-                <i class="fas fa-exclamation-triangle" style="font-size:3rem; margin-bottom:15px; display:block; color:#ef4444;"></i>
-                Failed to load valid content data.
-            </div>
-        `;
-        return;
-    }
-
-    const streams = data.streams || [];
-    const html = data.content_html || data.content || "";
-
-    // Extract metadata from Blogger script if available
-    const extract = (key) => {
-        const regex = new RegExp(`var ${key} =\\s*"(.*?)"`, 'i');
-        const match = html.match(regex);
-        return match ? match[1] : null;
-    };
-
-    const rating = extract('rating');
-    const timing = extract('timing');
-    const story = extract('story');
-    const genre = extract('zhanarr');
-    const actor = extract('aktar');
-
-    // Group streams by type
-    const watchServers = streams.filter(s => s.type === 'iframe');
-    const downloadServers = streams.filter(s => s.type !== 'iframe');
-
-    const safeTitle = (data.title || 'Untitled Content').replace(/'/g, "\\'");
-
-    const renderServerBtn = (srv) => {
-        const serverName = srv.label || srv.name || srv.host || "Unknown Server";
-        return `
-            <button class="kd-server-btn" onclick="${srv.type === 'iframe' ? `renderKSEmbed('${srv.url}', '${safeTitle} - ${serverName}')` : `window.open('${srv.url}', '_blank')`}">
-                <i class="fas ${srv.type === 'iframe' ? 'fa-play-circle' : 'fa-external-link-alt'}"></i>
-                <div>
-                    <div style="font-size: 0.95rem;">${serverName}</div>
-                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">${srv.type === 'iframe' ? 'Watch Online' : 'Download Host'}</div>
-                </div>
-            </button>
-        `;
-    };
-
-    let watchHtml = watchServers.map(renderServerBtn).join('');
-    let downloadHtml = downloadServers.map(renderServerBtn).join('');
-
-    // Hero: images[0] is already full-res from API; upgrade thumbnail as fallback
-    let heroImage = (data.images && data.images.length > 0)
-        ? upgradeBloggerThumb(data.images[0])
-        : upgradeBloggerThumb(data.thumbnail || '');
-
-    detailsBox.innerHTML = `
-        <button class="kd-back-btn" onclick="document.getElementById('kd-details').style.display='none'; document.getElementById('kd-results').style.display='grid';">
-            <i class="fas fa-arrow-left"></i> Back to Results
-        </button>
-
-        <div class="kd-hero-container">
-            ${heroImage ? `<img class="kd-hero-bg" src="${heroImage}" alt="${data.title || 'Hero'}">` : '<div class="kd-hero-bg" style="background: #111;"></div>'}
-            <div class="kd-hero-overlay">
-                <div class="kd-hero-title">${data.title || 'Untitled Content'}</div>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <span class="kd-meta-tag"><i class="fas fa-microphone-alt"></i> Kurdish Dubbed</span>
-                    ${rating ? `<span class="kd-meta-tag" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);"><i class="fas fa-star"></i> ${rating}</span>` : ''}
-                    ${timing ? `<span class="kd-meta-tag" style="background: rgba(59, 130, 246, 0.2); color: #93c5fd; border-color: rgba(59, 130, 246, 0.3);"><i class="fas fa-clock"></i> ${timing}</span>` : ''}
-                </div>
-            </div>
-        </div>
-
-        <div class="section-header">Information</div>
-        <div class="ks-desc-card" style="font-size: 0.9rem;">
-            ${genre ? `<div style="margin-bottom: 10px;"><strong style="color: #3b82f6;">Genre:</strong> ${genre}</div>` : ''}
-            ${actor && actor !== '-' ? `<div style="margin-bottom: 10px;"><strong style="color: #3b82f6;">Actors:</strong> ${actor}</div>` : ''}
-            <div style="line-height: 1.6; color: rgba(255,255,255,0.8);">${story || data.summary || 'No description available for this title.'}</div>
-        </div>
-
-        ${watchHtml ? `
-            <div class="section-header">Watch Online (Servers)</div>
-            <div class="kd-server-grid" style="margin-bottom: 20px;">
-                ${watchHtml}
-            </div>
-        ` : ''}
-
-        ${downloadHtml ? `
-            <div class="section-header">Download Links</div>
-            <div class="kd-server-grid">
-                ${downloadHtml}
-            </div>
-        ` : ''}
-
-        ${!watchHtml && !downloadHtml ? `<div style="padding:20px; color:rgba(255,255,255,0.4); text-align:center;">No streaming or download links found.</div>` : ''}
-        
-        <div style="margin-top: 30px; text-align: center;">
-            <button class="app-btn" onclick="window.open('${data.url}', '_blank')" style="background: rgba(255, 255, 255, 0.05);">
-                <i class="fas fa-external-link-alt"></i> View on KurdDoblazh.com
-            </button>
-        </div>
-    `;
-}
-
-// VIDEASY Dynamic Home Dashboard (Continue Watching & Trending content)
-async function loadVideasyHome() {
-    const resultsBox = document.getElementById('ks-results');
-    if (!resultsBox) return;
-
-    resultsBox.innerHTML = '';
-
-    // 1. Render Continue Watching
-    const continueHtml = renderContinueWatchingSection();
-    if (continueHtml) {
-        resultsBox.innerHTML += continueHtml;
-    }
-
-    // 2. Render Loader for Trending Section
-    const trendingSectionId = `ks-trending-${Date.now()}`;
-    resultsBox.innerHTML += `
-        <div class="section-header" style="margin-top: 30px;">Trending Today</div>
-        <div id="${trendingSectionId}">
-            <div class="tt-custom-loader" style="padding: 20px; display: flex;">
-                <div class="tt-pulse-logo" style="background: #f59e0b; width: 40px; height: 40px; font-size: 1.2rem;"><i class="fas fa-fire"></i></div>
-                <div class="tt-loading-text" style="font-size: 0.85rem;">Loading Trending Content...</div>
-            </div>
-        </div>
-    `;
-
-    // 3. Fetch and Render Trending
-    try {
-        if (videasyActiveTab === 'tmdb') {
-            const url = `https://api.themoviedb.org/3/trending/all/day?api_key=${TMDB_API_KEY}`;
-            const res = await fetch(url);
-            const data = await res.json();
-            const filtered = (data.results || []).filter(item => item.media_type === 'movie' || item.media_type === 'tv').slice(0, 12);
-            renderTrendingGrid(filtered, trendingSectionId);
-        } else {
-            // Anime
-            const graphqlQuery = `
-            query {
-              Page (page: 1, perPage: 12) {
-                media (sort: TRENDING_DESC, type: ANIME) {
-                  id
-                  title {
-                    romaji
-                    english
-                  }
-                  coverImage {
-                    large
-                  }
-                  seasonYear
-                  format
-                }
-              }
-            }
-            `;
-
-            const response = await fetch('https://graphql.anilist.co', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({ query: graphqlQuery })
-            });
-
-            const resData = await response.json();
-            const items = resData?.data?.Page?.media || [];
-            renderTrendingAnimeGrid(items, trendingSectionId);
-        }
-    } catch (e) {
-        console.error("Failed to load trending:", e);
-        const container = document.getElementById(trendingSectionId);
-        if (container) {
-            container.innerHTML = '<div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.4);">Failed to load trending feeds. Check connection.</div>';
-        }
-    }
-}
-
-function renderContinueWatchingSection() {
-    const progressKeys = [];
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('videasy_progress_')) {
-            progressKeys.push(key);
-        }
-    }
-
-    if (progressKeys.length === 0) return '';
-
-    const items = [];
-    progressKeys.forEach(key => {
-        try {
-            const progressData = JSON.parse(localStorage.getItem(key));
-
-            // Extract media parts
-            const parts = key.split('_');
-            const type = parts[2];
-            const id = parts[3];
-
-            // Look up metadata
-            const metaKey = `videasy_meta_${type}_${id}`;
-            const metaStr = localStorage.getItem(metaKey);
-            if (metaStr) {
-                const meta = JSON.parse(metaStr);
-                items.push({
-                    ...meta,
-                    progress: progressData.progress,
-                    timestamp: progressData.timestamp,
-                    duration: progressData.duration,
-                    updatedAt: progressData.lastWatched || meta.updatedAt || 0
-                });
-            }
-        } catch (e) { }
-    });
-
-    if (items.length === 0) return '';
-
-    // Sort items by last watched date descending
-    items.sort((a, b) => b.updatedAt - a.updatedAt);
-
-    // Slice to top 6 items
-    const topItems = items.slice(0, 6);
-
-    let html = `
-        <div class="section-header" style="margin-top: 10px;">Continue Watching</div>
-        <div style="display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px 20px 5px; margin-bottom: 10px; scrollbar-width: thin;">
-    `;
-
-    topItems.forEach(item => {
-        const percent = Math.floor(item.progress || 0);
-        const poster = item.poster || 'https://placehold.co/150x220/111111/ffffff/png?text=No+Poster';
-        const typeBadge = item.type === 'movie' ? 'Movie' : (item.type === 'tv' ? 'TV' : 'Anime');
-        const detailAction = item.type === 'anime'
-            ? `fetchAniListDetails(${item.id})`
-            : `fetchTMDBDetails(${item.id}, '${item.type}')`;
-
-        const episodeLabel = item.type === 'movie'
-            ? 'Movie'
-            : (item.season ? `S${item.season} E${item.episode}` : `Ep ${item.episode}`);
-
-        html += `
-            <div class="ks-card" style="flex: 0 0 140px; cursor: pointer; height: auto; position: relative;" onclick="${detailAction}">
-                <div class="ks-card-badge" style="background: #10b981; font-size: 0.6rem; padding: 2px 6px; border-radius: 6px;">${typeBadge}</div>
-                <div class="ks-card-img-container" style="padding-top: 140%;">
-                    <img src="${poster}" alt="${item.title}" loading="lazy">
-                </div>
-                <div class="ks-card-info" style="position: relative; padding: 10px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); border-bottom-left-radius: 18px; border-bottom-right-radius: 18px;">
-                    <div class="ks-card-title" style="font-size: 0.8rem; margin-bottom: 2px; font-weight:700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</div>
-                    <div class="ks-card-meta" style="font-size: 0.65rem; color: #10b981; font-weight:600;">${episodeLabel}</div>
-                    <div style="height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; margin-top: 8px;">
-                        <div style="height: 100%; width: ${percent}%; background: #10b981; border-radius: 2px; box-shadow: 0 0 5px #10b981;"></div>
+                        <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" class="game-card-btn">
+                            <i class="fas fa-external-link-alt"></i> ${isClaimed ? 'View Claimed Deal' : 'Claim Giveaway'}
+                        </a>
                     </div>
                 </div>
             </div>
         `;
     });
 
-    html += `</div>`;
-    return html;
-}
-
-
-function renderTrendingGrid(results, targetId) {
-    const container = document.getElementById(targetId);
-    if (!container) return;
-
-    let html = `<div class="ks-grid" style="padding: 10px 0;">`;
-    results.forEach(res => {
-        const title = res.title || res.name || 'Untitled';
-        const poster = res.poster_path ? `https://image.tmdb.org/t/p/w500${res.poster_path}` : 'https://placehold.co/500x750/000000/ffffff/png?text=No+Poster';
-        const year = (res.release_date || res.first_air_date || '').split('-')[0] || 'N/A';
-        const typeLabel = res.media_type === 'movie' ? 'Movie' : 'TV Show';
-
-        html += `
-            <div class="ks-card" onclick="fetchTMDBDetails(${res.id}, '${res.media_type}')">
-                <div class="ks-card-badge">${typeLabel}</div>
-                <div class="ks-card-img-container">
-                    <img src="${poster}" alt="${title}" loading="lazy">
-                </div>
-                <div class="ks-card-info">
-                    <div class="ks-card-title">${title}</div>
-                    <div class="ks-card-meta">${year} • Trending</div>
-                </div>
-            </div>
-        `;
-    });
-    html += `</div>`;
     container.innerHTML = html;
-}
 
-function renderTrendingAnimeGrid(items, targetId) {
-    const container = document.getElementById(targetId);
-    if (!container) return;
-
-    let html = `<div class="ks-grid" style="padding: 10px 0;">`;
-    items.forEach(res => {
-        const title = res.title.english || res.title.romaji || 'Untitled Anime';
-        const poster = res.coverImage.large || '';
-        const year = res.seasonYear || 'N/A';
-        const format = res.format || 'Anime';
-
-        html += `
-            <div class="ks-card" onclick="fetchAniListDetails(${res.id})">
-                <div class="ks-card-badge">${format}</div>
-                <div class="ks-card-img-container">
-                    <img src="${poster}" alt="${title}" loading="lazy">
-                </div>
-                <div class="ks-card-info">
-                    <div class="ks-card-title">${title}</div>
-                    <div class="ks-card-meta">${year} • Trending</div>
-                </div>
-            </div>
-        `;
+    container.querySelectorAll('.game-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
     });
-    html += `</div>`;
-    container.innerHTML = html;
 }
 
 // FAQ Center Interactive Filtering
@@ -5877,15 +3036,15 @@ function scoreQueryAgainstPackages(query) {
     const kurdishLexicon = {
         'یاری': ['game', 'mod', 'pc games', 'pc game', 'mods'],
         'یارییەکان': ['game', 'mod', 'pc games', 'mods'],
-        'فیلم': ['movie', 'kurdstream', 'film', 'cinema', 'show'],
-        'فیلمەکان': ['movie', 'kurdstream', 'film', 'cinema'],
-        'فلیم': ['movie', 'kurdstream', 'film', 'cinema'],
-        'فلیمەکان': ['movie', 'kurdstream', 'film', 'cinema'],
-        'دراما': ['series', 'kurdstream', 'kurddoblazh', 'movies', 'show'],
-        'دراماکان': ['series', 'kurdstream', 'kurddoblazh', 'movies'],
-        'سینەما': ['movie', 'kurdstream', 'cinema', 'kurd Cinema'],
-        'کورد': ['kurdish', 'kurdstream', 'kurddoblazh', 'beenar'],
-        'کوردی': ['kurdish', 'kurdstream', 'kurddoblazh', 'beenar'],
+        'فیلم': ['movie', 'film', 'cinema', 'show'],
+        'فیلمەکان': ['movie', 'film', 'cinema'],
+        'فلیم': ['movie', 'film', 'cinema'],
+        'فلیمەکان': ['movie', 'film', 'cinema'],
+        'دراما': ['series', 'movies', 'show'],
+        'دراماکان': ['series', 'movies'],
+        'سینەما': ['movie', 'cinema'],
+        'کورد': ['kurdish', 'beenar'],
+        'کوردی': ['kurdish', 'beenar'],
         'داگرتن': ['download', 'downloader', 'tiktok', 'tools'],
         'دابەزاندن': ['download', 'downloader', 'tiktok', 'tools'],
         'تیکتۆک': ['tiktok', 'downloader'],
@@ -5982,13 +3141,10 @@ function synthesizeLocalAiResponse(query, packages) {
     }
 
     // 3. Kurdish databases & streaming matches
-    if (q.includes('kurdstream') || q.includes('kurd stream') || q.includes('cinema') || q.includes('movie') || q.includes('doblazh') || q.includes('dubbed') || q.includes('kurdish')) {
-        let response = `Cydia Elite features two high-fidelity Kurdish entertainment platforms fully optimized for spatial and standard browsers:\n\n*   **KurdStream Search**: Powered by a robust public cinema search seeker API. It lets you query HD movies and series, browse categories, and play streams dynamically. It features a dual-source engine: the **KurdStream DB** and a **TMDB & Videasy** resolver integration (with support for AniList anime tracing).\n*   **KurdDoblazh Hub**: A proxy gateway that indexes dubbed movies and series directly from KurdDoblazh.com, bypassing mobile blocks and delivering high-quality streaming interfaces.\n\nYou can access **KurdStream Search** [1] directly or browse **Kurdish Dubbed Content** [2] from the sidebar.`;
-
-        const ksPkg = { name: "KurdStream Search", desc: "Search movies and series from KurdStream & TMDB database.", cat: "kurdish", url: "#kurdstream", icon: "fas fa-play-circle", id: "kurdstream-citation" };
-        const kdPkg = { name: "KurdDoblazh Hub", desc: "Kurdish dubbed series and movies proxy scraper portal.", cat: "kurdish", url: "#kurddoblazh", icon: "fas fa-microphone-alt", id: "kurddoblazh-citation" };
-        activeAiResponseCitations = [ksPkg, kdPkg];
-        return response;
+    if (q.includes('cinema') || q.includes('movie') || q.includes('film')) {
+        const moviePkg = packageData.find(p => p.cat === 'movies') || packages[0];
+        if (moviePkg) activeAiResponseCitations = [moviePkg];
+        return "Cydia Elite features curated developer utilities and tools. Explore the package catalog or API hub for integrated software.";
     }
 
     // 4. Packages search matches
@@ -6417,7 +3573,7 @@ async function performAiSearch() {
         query.toLowerCase().includes('cydia') ||
         query.toLowerCase().includes('download') ||
         query.toLowerCase().includes('tiktok') ||
-        query.toLowerCase().includes('kurdstream');
+        query.toLowerCase().includes('tools');
 
     if (isLocalSpecific) {
         setTimeout(() => {
@@ -7049,1253 +4205,3 @@ window.loadPrivacySettings = function () {
 
 // Initialize settings on page load
 loadPrivacySettings();
-
-/* ==========================================================================
-   LIVE SPORTS STREAMED.PK API PORTAL
-   ========================================================================== */
-
-let sportsCategoriesList = [];
-let activeSportId = '';
-let sportsMatchesList = [];
-let currentSportsSearch = '';
-let activeSportsStatusFilter = 'all';
-
-// Pre-fetched fallback categories if API is unavailable
-const fallbackSportsCategories = [
-    { "id": "football", "name": "Football" },
-    { "id": "basketball", "name": "Basketball" },
-    { "id": "american-football", "name": "American Football" },
-    { "id": "hockey", "name": "Hockey" },
-    { "id": "baseball", "name": "Baseball" },
-    { "id": "motor-sports", "name": "Motor Sports" },
-    { "id": "fight", "name": "Fight (UFC, Boxing)" },
-    { "id": "tennis", "name": "Tennis" },
-    { "id": "rugby", "name": "Rugby" },
-    { "id": "golf", "name": "Golf" },
-    { "id": "billiards", "name": "Billiards" },
-    { "id": "afl", "name": "AFL" },
-    { "id": "darts", "name": "Darts" },
-    { "id": "cricket", "name": "Cricket" },
-    { "id": "other", "name": "Other" }
-];
-
-let sportsClockInterval = null;
-
-function startSportsClock() {
-    if (sportsClockInterval) return;
-
-    const clockSpan = document.getElementById('sports-current-time');
-    if (!clockSpan) return;
-
-    const updateTime = () => {
-        const now = new Date();
-        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-        const timeStr = now.toLocaleTimeString([], timeOptions);
-
-        const offsetMin = -now.getTimezoneOffset();
-        const offsetSign = offsetMin >= 0 ? '+' : '-';
-        const offsetHours = Math.floor(Math.abs(offsetMin) / 60);
-        const offsetMins = Math.abs(offsetMin) % 60;
-        const timezoneStr = `GMT${offsetSign}${offsetHours}:${offsetMins.toString().padStart(2, '0')}`;
-
-        clockSpan.innerText = `${timeStr} (${timezoneStr})`;
-    };
-
-    updateTime();
-    sportsClockInterval = setInterval(updateTime, 1000);
-}
-
-function formatMatchTime(match) {
-    const dateVal = match.date || match.time;
-    if (!dateVal) return 'Live Now';
-
-    let d = null;
-    const timestamp = Number(dateVal);
-    if (!isNaN(timestamp)) {
-        d = new Date(timestamp);
-    } else {
-        d = new Date(dateVal);
-    }
-
-    if (d && !isNaN(d.getTime())) {
-        try {
-            const now = new Date();
-            const isToday = d.toDateString() === now.toDateString();
-
-            const tomorrow = new Date(now);
-            tomorrow.setDate(now.getDate() + 1);
-            const isTomorrow = d.toDateString() === tomorrow.toDateString();
-
-            const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
-            const timeStr = d.toLocaleTimeString([], timeOptions);
-
-            // Calculate relative countdown if in the future
-            let relativeStr = '';
-            const diffMs = d.getTime() - now.getTime();
-            if (diffMs > 0) {
-                const diffMins = Math.floor(diffMs / (1000 * 60));
-                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-                const diffDays = Math.floor(diffHours / 24);
-
-                if (diffMins < 60) {
-                    relativeStr = ` (in ${diffMins}m)`;
-                } else if (diffHours < 24) {
-                    relativeStr = ` (in ${diffHours}h)`;
-                } else {
-                    relativeStr = ` (in ${diffDays}d)`;
-                }
-            }
-
-            if (isToday) {
-                return `Today, ${timeStr}${relativeStr}`;
-            } else if (isTomorrow) {
-                return `Tomorrow, ${timeStr}${relativeStr}`;
-            } else {
-                const dateOptions = { month: 'short', day: 'numeric' };
-                const dateStr = d.toLocaleDateString([], dateOptions);
-                return `${dateStr}, ${timeStr}${relativeStr}`;
-            }
-        } catch (e) {
-            return String(dateVal);
-        }
-    }
-
-    return String(dateVal);
-}
-
-async function loadLiveSportsPortal() {
-    startSportsClock();
-    const categoriesContainer = document.getElementById('sports-categories');
-    if (!categoriesContainer) return;
-
-    // Clear details if open
-    const detailsContainer = document.getElementById('sports-details');
-    if (detailsContainer) detailsContainer.style.display = 'none';
-    const resultsContainer = document.getElementById('sports-results');
-    if (resultsContainer) resultsContainer.style.display = 'grid';
-
-    // Show loading
-    showSportsLoader(true, 'Loading categories...');
-
-    try {
-        const res = await fetch('https://streamed.pk/api/sports');
-        if (!res.ok) throw new Error('API failed');
-        sportsCategoriesList = await res.json();
-    } catch (err) {
-        console.warn("Using fallback sports categories:", err);
-        sportsCategoriesList = fallbackSportsCategories;
-    }
-
-    renderSportsCategories();
-
-    // Auto load matches for the first category if none is active
-    if (sportsCategoriesList.length > 0) {
-        if (!activeSportId) {
-            activeSportId = sportsCategoriesList[0].id;
-        }
-
-        // Highlight active chip
-        const chips = document.querySelectorAll('.sports-chip');
-        chips.forEach(chip => {
-            if (chip.getAttribute('data-id') === activeSportId) {
-                chip.classList.add('active');
-            } else {
-                chip.classList.remove('active');
-            }
-        });
-
-        loadSportsMatches(activeSportId);
-    } else {
-        showSportsLoader(false);
-        resultsContainer.innerHTML = '<div style="color: rgba(255,255,255,0.4); text-align: center; grid-column: 1/-1; padding: 40px;">No categories found</div>';
-    }
-}
-
-function renderSportsCategories() {
-    const container = document.getElementById('sports-categories');
-    if (!container) return;
-
-    let html = '';
-    sportsCategoriesList.forEach((cat, index) => {
-        let iconClass = 'fa-futbol';
-        const name = cat.name.toLowerCase();
-        if (name.includes('basketball')) iconClass = 'fa-basketball-ball';
-        else if (name.includes('american')) iconClass = 'fa-football-ball';
-        else if (name.includes('hockey')) iconClass = 'fa-hockey-puck';
-        else if (name.includes('baseball')) iconClass = 'fa-baseball-ball';
-        else if (name.includes('motor')) iconClass = 'fa-car';
-        else if (name.includes('fight') || name.includes('ufc') || name.includes('boxing')) iconClass = 'fa-user-ninja';
-        else if (name.includes('tennis')) iconClass = 'fa-table-tennis';
-        else if (name.includes('rugby')) iconClass = 'fa-football-ball';
-        else if (name.includes('golf')) iconClass = 'fa-golf-ball';
-        else if (name.includes('billiards')) iconClass = 'fa-circle';
-        else if (name.includes('darts')) iconClass = 'fa-bullseye';
-        else if (name.includes('cricket')) iconClass = 'fa-bat';
-
-        html += `
-            <div class="sports-chip ${cat.id === activeSportId ? 'active' : ''}" data-id="${cat.id}" onclick="selectSportCategory('${cat.id}')">
-                <i class="fas ${iconClass}"></i>
-                <span>${cat.name}</span>
-            </div>
-        `;
-    });
-    container.innerHTML = html;
-}
-
-function selectSportCategory(sportId) {
-    activeSportId = sportId;
-
-    // Highlight chip
-    const chips = document.querySelectorAll('.sports-chip');
-    chips.forEach(chip => {
-        if (chip.getAttribute('data-id') === sportId) {
-            chip.classList.add('active');
-        } else {
-            chip.classList.remove('active');
-        }
-    });
-
-    // Reset search filter
-    const searchInput = document.getElementById('sports-search-input');
-    if (searchInput) searchInput.value = '';
-    currentSportsSearch = '';
-
-    // Reset status filter
-    activeSportsStatusFilter = 'all';
-    const filterButtons = document.querySelectorAll('.sports-filter-btn');
-    filterButtons.forEach(btn => {
-        if (btn.getAttribute('data-filter') === 'all') {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
-    });
-
-    loadSportsMatches(sportId);
-}
-
-async function loadSportsMatches(sportId) {
-    showSportsLoader(true, `Loading ${sportId} matches...`);
-    const resultsContainer = document.getElementById('sports-results');
-    const detailsContainer = document.getElementById('sports-details');
-
-    if (resultsContainer) resultsContainer.innerHTML = '';
-    if (detailsContainer) detailsContainer.style.display = 'none';
-    if (resultsContainer) resultsContainer.style.display = 'grid';
-
-    try {
-        const res = await fetch(`https://streamed.pk/api/matches/${sportId}`);
-        if (!res.ok) throw new Error('Failed to fetch matches');
-        sportsMatchesList = await res.json();
-        filterAndRenderSportsMatches();
-    } catch (err) {
-        console.error("Failed to load sports matches:", err);
-        showSportsLoader(false);
-        if (resultsContainer) {
-            resultsContainer.innerHTML = `
-                <div style="color: rgba(255,255,255,0.4); text-align: center; grid-column: 1/-1; padding: 40px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 18px;">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #ef4444; margin-bottom: 12px;"></i>
-                    <p>Failed to load matches. The Streamed.pk API might be offline.</p>
-                    <button class="app-btn" onclick="loadSportsMatches('${sportId}')" style="margin-top: 15px; display: inline-flex;"><i class="fas fa-sync"></i> Retry</button>
-                </div>
-            `;
-        }
-    }
-}
-
-function renderSportsMatches(matches) {
-    showSportsLoader(false);
-    const resultsContainer = document.getElementById('sports-results');
-    if (!resultsContainer) return;
-
-    if (matches.length === 0) {
-        resultsContainer.innerHTML = '<div style="color: rgba(255,255,255,0.4); text-align: center; grid-column: 1/-1; padding: 40px;">No matches currently available in this category.</div>';
-        return;
-    }
-
-    let html = '';
-    matches.forEach(match => {
-        // Parse names and badges
-        let homeName = 'Team A';
-        let awayName = 'Team B';
-        let homeBadge = '';
-        let awayBadge = '';
-
-        if (match.teams) {
-            if (match.teams.home) {
-                homeName = match.teams.home.name || match.teams.home;
-                homeBadge = match.teams.home.badge;
-            }
-            if (match.teams.away) {
-                awayName = match.teams.away.name || match.teams.away;
-                awayBadge = match.teams.away.badge;
-            }
-        } else if (match.homeTeam && match.awayTeam) {
-            homeName = match.homeTeam.name || match.homeTeam;
-            homeBadge = match.homeTeam.logo || match.homeTeam.badge;
-            awayName = match.awayTeam.name || match.awayTeam;
-            awayBadge = match.awayTeam.logo || match.awayTeam.badge;
-        } else if (match.home && match.away) {
-            homeName = match.home.name || match.home;
-            homeBadge = match.home.logo || match.home.badge;
-            awayName = match.away.name || match.away;
-            awayBadge = match.away.logo || match.away.badge;
-        } else if (match.title || match.name) {
-            const title = match.title || match.name;
-            const parts = title.split(/\s+vs\s+|\s+-\s+/i);
-            homeName = parts[0] || title;
-            awayName = parts[1] || 'TBD';
-        }
-
-        const homeLogoHtml = getLogoHtml(homeName, homeBadge);
-        const awayLogoHtml = getLogoHtml(awayName, awayBadge);
-
-        // Status
-        const isLive = match.live || match.status?.toLowerCase() === 'live' || match.isLive;
-        const statusHtml = isLive
-            ? '<span class="match-status-badge live"><span class="pulse-dot"></span> LIVE</span>'
-            : '<span class="match-status-badge upcoming"><i class="far fa-clock"></i> Upcoming</span>';
-
-        // Time
-        const matchTimeStr = formatMatchTime(match);
-        const timeIconHtml = isLive
-            ? '<i class="fas fa-broadcast-tower pulse-icon" style="color: #ef4444;"></i>'
-            : '<i class="fas fa-calendar-alt"></i>';
-
-        // Stream Sources count
-        const streamCount = match.sources ? match.sources.length : 0;
-        const streamsLabel = streamCount === 1 ? '1 Stream' : `${streamCount} Streams`;
-
-        const matchId = match.id || encodeURIComponent(homeName + '-' + awayName);
-
-        // Dynamic sports icon selection
-        let sportIcon = 'fa-futbol';
-        const sportLower = activeSportId.toLowerCase();
-        if (sportLower.includes('basketball')) sportIcon = 'fa-basketball-ball';
-        else if (sportLower.includes('american')) sportIcon = 'fa-football-ball';
-        else if (sportLower.includes('hockey')) sportIcon = 'fa-hockey-puck';
-        else if (sportLower.includes('baseball')) sportIcon = 'fa-baseball-ball';
-        else if (sportLower.includes('motor')) sportIcon = 'fa-car';
-        else if (sportLower.includes('fight') || sportLower.includes('ufc') || sportLower.includes('boxing')) sportIcon = 'fa-user-ninja';
-        else if (sportLower.includes('tennis')) sportIcon = 'fa-table-tennis';
-        else if (sportLower.includes('rugby')) sportIcon = 'fa-football-ball';
-        else if (sportLower.includes('golf')) sportIcon = 'fa-golf-ball';
-        else if (sportLower.includes('billiards')) sportIcon = 'fa-circle';
-        else if (sportLower.includes('darts')) sportIcon = 'fa-bullseye';
-        else if (sportLower.includes('cricket')) sportIcon = 'fa-bat';
-
-        html += `
-            <div class="match-card" onclick="viewMatchDetails('${matchId}')">
-                <div class="match-card-overlay">
-                    <span class="overlay-btn"><i class="fas fa-play"></i> Watch Stream</span>
-                </div>
-                <div class="match-header">
-                    <span class="match-sport-badge"><i class="fas ${sportIcon}"></i> ${activeSportId}</span>
-                    <span class="match-servers-count"><i class="fas fa-satellite-dish"></i> ${streamsLabel}</span>
-                </div>
-                <div class="match-scoreboard-main">
-                    <div class="scoreboard-team home">
-                        ${homeLogoHtml}
-                        <span class="scoreboard-team-name">${homeName}</span>
-                    </div>
-                    <div class="scoreboard-vs">
-                        <span class="vs-badge">VS</span>
-                        ${statusHtml}
-                    </div>
-                    <div class="scoreboard-team away">
-                        ${awayLogoHtml}
-                        <span class="scoreboard-team-name">${awayName}</span>
-                    </div>
-                </div>
-                <div class="match-footer">
-                    <span class="match-time">${timeIconHtml} ${matchTimeStr}</span>
-                </div>
-            </div>
-        `;
-    });
-
-    resultsContainer.innerHTML = html;
-}
-
-function getBadgeId(badge) {
-    if (!badge) return '';
-    if (!badge.startsWith('http') && !badge.startsWith('/') && !badge.includes('.')) {
-        return badge;
-    }
-    const parts = badge.split('/');
-    const lastPart = parts[parts.length - 1];
-    return lastPart.replace('.webp', '');
-}
-
-function getLogoHtml(teamName, badge) {
-    if (badge) {
-        const badgeId = getBadgeId(badge);
-        const fullPath = `https://streamed.pk/api/images/badge/${badgeId}.webp`;
-        return `<div class="match-team-logo"><img src="${fullPath}" alt="${teamName}" loading="lazy" onerror="this.outerHTML='${teamName.charAt(0)}'"></div>`;
-    }
-    const initial = teamName ? teamName.trim().charAt(0).toUpperCase() : 'T';
-    return `<div class="match-team-logo">${initial}</div>`;
-}
-
-function showSportsLoader(show, text = 'Loading...') {
-    const loader = document.getElementById('sports-loader');
-    const loaderText = document.getElementById('sports-loader-text');
-    if (!loader) return;
-
-    if (show) {
-        if (loaderText) loaderText.innerText = text;
-        loader.style.display = 'flex';
-    } else {
-        loader.style.display = 'none';
-    }
-}
-
-function searchSportsMatches() {
-    filterAndRenderSportsMatches();
-}
-
-function setSportsStatusFilter(filterValue) {
-    activeSportsStatusFilter = filterValue;
-
-    // Update active class on buttons
-    const filterButtons = document.querySelectorAll('.sports-filter-btn');
-    filterButtons.forEach(btn => {
-        if (btn.getAttribute('data-filter') === filterValue) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
-    });
-
-    filterAndRenderSportsMatches();
-}
-
-function filterAndRenderSportsMatches() {
-    const searchInput = document.getElementById('sports-search-input');
-    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
-
-    let filtered = sportsMatchesList;
-
-    // Filter by search query
-    if (query) {
-        filtered = filtered.filter(match => {
-            const title = (match.title || match.name || '').toLowerCase();
-            const home = (match.homeTeam?.name || match.homeTeam || match.home?.name || match.home || match.teams?.home?.name || '').toLowerCase();
-            const away = (match.awayTeam?.name || match.awayTeam || match.away?.name || match.away || match.teams?.away?.name || '').toLowerCase();
-            return title.includes(query) || home.includes(query) || away.includes(query);
-        });
-    }
-
-    // Filter by status (All, Live, Upcoming)
-    if (activeSportsStatusFilter === 'live') {
-        filtered = filtered.filter(match => match.live || match.status?.toLowerCase() === 'live' || match.isLive);
-    } else if (activeSportsStatusFilter === 'upcoming') {
-        filtered = filtered.filter(match => !(match.live || match.status?.toLowerCase() === 'live' || match.isLive));
-    }
-
-    renderSportsMatches(filtered);
-}
-
-async function viewMatchDetails(matchId) {
-    const resultsContainer = document.getElementById('sports-results');
-    const detailsContainer = document.getElementById('sports-details');
-    if (!resultsContainer || !detailsContainer) return;
-
-    // Find the match
-    let match = sportsMatchesList.find(m => m.id === matchId);
-    if (!match) {
-        // Fallback for custom URI matchIds
-        match = sportsMatchesList.find(m => {
-            const home = m.teams?.home?.name || m.homeTeam?.name || m.homeTeam || m.home?.name || m.home || '';
-            const away = m.teams?.away?.name || m.awayTeam?.name || m.awayTeam || m.away?.name || m.away || '';
-            const testId = encodeURIComponent(home + '-' + away);
-            return testId === matchId;
-        });
-    }
-
-    if (!match) return;
-
-    resultsContainer.style.display = 'none';
-    detailsContainer.style.display = 'block';
-
-    // Parse team details and badges
-    let homeName = 'Team A';
-    let awayName = 'Team B';
-    let homeBadge = '';
-    let awayBadge = '';
-
-    if (match.teams) {
-        if (match.teams.home) {
-            homeName = match.teams.home.name || match.teams.home;
-            homeBadge = match.teams.home.badge;
-        }
-        if (match.teams.away) {
-            awayName = match.teams.away.name || match.teams.away;
-            awayBadge = match.teams.away.badge;
-        }
-    } else if (match.homeTeam && match.awayTeam) {
-        homeName = match.homeTeam.name || match.homeTeam;
-        homeBadge = match.homeTeam.logo || match.homeTeam.badge;
-        awayName = match.awayTeam.name || match.awayTeam;
-        awayBadge = match.awayTeam.logo || match.awayTeam.badge;
-    } else if (match.home && match.away) {
-        homeName = match.home.name || match.home;
-        homeBadge = match.home.logo || match.home.badge;
-        awayName = match.away.name || match.away;
-        awayBadge = match.away.logo || match.away.badge;
-    } else if (match.title || match.name) {
-        const title = match.title || match.name;
-        const parts = title.split(/\s+vs\s+|\s+-\s+/i);
-        homeName = parts[0] || title;
-        awayName = parts[1] || 'TBD';
-    }
-
-    const homeLogoHtml = getLogoHtml(homeName, homeBadge).replace('match-team-logo', 'sports-vs-logo');
-    const awayLogoHtml = getLogoHtml(awayName, awayBadge).replace('match-team-logo', 'sports-vs-logo');
-
-    // Parse match poster banner
-    let posterUrl = match.poster;
-    if (!posterUrl && homeBadge && awayBadge) {
-        const homeId = getBadgeId(homeBadge);
-        const awayId = getBadgeId(awayBadge);
-        if (homeId && awayId) {
-            posterUrl = `/api/images/poster/${homeId}/${awayId}.webp`;
-        }
-    }
-
-    let posterHtml = '';
-    if (posterUrl) {
-        let fullPosterUrl = posterUrl;
-        if (posterUrl.startsWith('/')) {
-            fullPosterUrl = `https://streamed.pk${posterUrl}`;
-        }
-        if (!fullPosterUrl.endsWith('.webp') && !fullPosterUrl.includes('?')) {
-            fullPosterUrl += '.webp';
-        }
-        posterHtml = `
-            <div class="sports-match-poster" style="width: 100%; height: 180px; overflow: hidden; border-radius: 16px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); position: relative;">
-                <img src="${fullPosterUrl}" alt="${match.title || (homeName + ' vs ' + awayName)}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.65);" loading="lazy" onerror="this.parentElement.style.display='none'">
-                <div style="position: absolute; bottom: 15px; left: 20px; font-size: 1.1rem; font-weight: 700; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${match.title || (homeName + ' vs ' + awayName)}</div>
-            </div>
-        `;
-    }
-
-    // Build base HTML
-    detailsContainer.innerHTML = `
-        <button class="ks-back-btn" onclick="backToMatchesList()">
-            <i class="fas fa-chevron-left"></i> Back to Matches
-        </button>
-
-        <div class="sports-details-card">
-            ${posterHtml}
-            
-            <div class="sports-match-versus-header">
-                <div class="sports-vs-team">
-                    ${homeLogoHtml}
-                    <span class="sports-vs-name">${homeName}</span>
-                </div>
-                <div class="sports-vs-text">
-                    VS
-                    <div class="sports-details-kickoff" style="font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.4); margin-top: 8px;">
-                        ${formatMatchTime(match)}
-                    </div>
-                </div>
-                <div class="sports-vs-team">
-                    ${awayLogoHtml}
-                    <span class="sports-vs-name">${awayName}</span>
-                </div>
-            </div>
-
-            <div style="font-weight: 700; color: #fff; margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
-                <i class="fas fa-tv" style="color: #10b981;"></i> Select Broadcast Server
-            </div>
-            <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px; font-size: 0.9rem;">
-                Select one of the stream sources below to load the available broadcast options.
-            </p>
-
-            <div id="sports-sources-grid" class="ks-server-grid"></div>
-
-            <div id="sports-stream-options-wrapper" style="display: none; margin-top: 30px;">
-                <div style="font-weight: 700; color: #fff; margin-bottom: 12px; font-size: 1.0rem; display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-list-ul" style="color: #10b981;"></i> Select Stream Quality / Language
-                </div>
-                <p style="color: rgba(255,255,255,0.6); margin-bottom: 15px; font-size: 0.85rem;">
-                    Multiple qualities or commentators may be available. Select one:
-                </p>
-                <div id="sports-stream-options" class="kd-labels-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;"></div>
-            </div>
-
-            <div id="sports-player-section" style="display: none; margin-top: 30px;">
-                <div class="ks-hero-meta" style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                    <strong style="color: #fff;" id="active-sports-server-name">Loading Server...</strong>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="app-btn" id="sports-btn-app" onclick="playSportsStreamInApp()"><i class="fas fa-play"></i> Watch in App</button>
-                        <button class="app-btn" id="sports-btn-external" target="_blank"><i class="fas fa-external-link-alt"></i> External Player</button>
-                    </div>
-                </div>
-
-                <div id="sports-iframe-wrapper" style="position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden; display: none;">
-                    <iframe id="sports-stream-iframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-                </div>
-
-                <div class="sports-player-controls-dashboard" style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; padding: 12px 20px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px;">
-                    <div style="display: flex; gap: 15px; align-items: center; font-size: 0.8rem; color: rgba(255,255,255,0.5);">
-                        <span><i class="fas fa-circle" style="color: #10b981; font-size: 8px; margin-right: 6px;"></i> Signal: Stable</span>
-                        <span><i class="fas fa-bolt" style="color: #f59e0b; margin-right: 4px;"></i> Latency: 0.8s</span>
-                        <span><i class="fas fa-expand" style="color: #3b82f6; margin-right: 4px;"></i> Stream format: WebP/Adaptive</span>
-                    </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="app-btn" style="padding: 6px 12px; font-size: 0.75rem; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06);" onclick="reloadSportsPlayer()"><i class="fas fa-sync"></i> Refresh</button>
-                        <button class="app-btn" style="padding: 6px 12px; font-size: 0.75rem; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06);" onclick="toggleSportsTheaterMode()"><i class="fas fa-expand-alt"></i> Theater</button>
-                        <button class="app-btn" style="padding: 6px 12px; font-size: 0.75rem; background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06);" onclick="toggleSportsFullscreen()"><i class="fas fa-expand"></i> Fullscreen</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-
-    // Load available sources
-    const sourcesGrid = document.getElementById('sports-sources-grid');
-    if (!sourcesGrid) return;
-
-    if (!match.sources || match.sources.length === 0) {
-        sourcesGrid.innerHTML = '<div style="color: rgba(255,255,255,0.4); padding: 10px;">No broadcast sources available for this event yet.</div>';
-        return;
-    }
-
-    let sourcesHtml = '';
-    match.sources.forEach((src, idx) => {
-        const sourceName = src.source ? src.source.toUpperCase() : `Server ${idx + 1}`;
-        sourcesHtml += `
-            <button class="ks-server-btn" onclick="fetchSportsStreamLinks('${src.source}', '${src.id}', '${sourceName}', this)">
-                <i class="fas fa-play"></i> ${sourceName}
-            </button>
-        `;
-    });
-    sourcesGrid.innerHTML = sourcesHtml;
-
-    // Automatically trigger the first server
-    const firstServerBtn = sourcesGrid.querySelector('.ks-server-btn');
-    if (firstServerBtn) {
-        firstServerBtn.click();
-    }
-}
-
-let activeStreamUrl = '';
-
-async function fetchSportsStreamLinks(source, id, serverName, btnElement) {
-    // Toggle active server button highlights
-    const buttons = document.querySelectorAll('.ks-server-btn');
-    buttons.forEach(btn => btn.classList.remove('active-server'));
-    if (btnElement) btnElement.classList.add('active-server');
-
-    const playerSection = document.getElementById('sports-player-section');
-    const serverLabel = document.getElementById('active-sports-server-name');
-    const iframeWrapper = document.getElementById('sports-iframe-wrapper');
-    const iframe = document.getElementById('sports-stream-iframe');
-    const extBtn = document.getElementById('sports-btn-external');
-    const optionsWrapper = document.getElementById('sports-stream-options-wrapper');
-    const optionsContainer = document.getElementById('sports-stream-options');
-
-    if (!playerSection || !serverLabel || !optionsWrapper || !optionsContainer) return;
-
-    // Reset views
-    playerSection.style.display = 'none';
-    optionsWrapper.style.display = 'block';
-    optionsContainer.innerHTML = '<div style="color: rgba(255,255,255,0.4); padding: 5px;">Fetching broadcast links...</div>';
-    if (iframeWrapper) iframeWrapper.style.display = 'none';
-    if (iframe) iframe.src = 'about:blank';
-
-    activeStreamUrl = '';
-
-    try {
-        const res = await fetch(`https://streamed.pk/api/stream/${source}/${id}`);
-        if (!res.ok) throw new Error('API failed');
-        const streams = await res.json();
-
-        let streamsArray = [];
-        if (Array.isArray(streams)) {
-            streamsArray = streams;
-        } else if (streams && typeof streams === 'object') {
-            streamsArray = [streams];
-        }
-
-        if (streamsArray.length === 0) {
-            throw new Error('No streams resolved');
-        }
-
-        optionsContainer.innerHTML = '';
-
-        streamsArray.forEach((stream, idx) => {
-            const streamNo = stream.streamNo || (idx + 1);
-            const language = stream.language || 'English';
-            const qualityLabel = stream.hd ? 'HD' : 'SD';
-            const embedUrl = stream.embedUrl || stream.url || stream.link || stream;
-
-            const btn = document.createElement('button');
-            btn.className = 'sports-chip';
-            btn.innerHTML = `
-                <i class="fas fa-desktop"></i>
-                <span>Stream #${streamNo} - ${language} (${qualityLabel})</span>
-            `;
-            btn.onclick = () => {
-                // Remove active from other chips
-                optionsContainer.querySelectorAll('.sports-chip').forEach(c => c.classList.remove('active'));
-                btn.classList.add('active');
-
-                // Set and load stream
-                activeStreamUrl = embedUrl;
-                playerSection.style.display = 'block';
-                serverLabel.innerText = `${serverName} - Option #${streamNo} (${language})`;
-
-                if (extBtn) {
-                    extBtn.setAttribute('onclick', `window.open('${embedUrl}', '_blank'); showToast('Opening stream externally', 'fa-external-link-alt');`);
-                }
-
-                playSportsStreamInApp();
-            };
-
-            optionsContainer.appendChild(btn);
-        });
-
-        // Automatically trigger the first option
-        const firstOption = optionsContainer.querySelector('.sports-chip');
-        if (firstOption) {
-            firstOption.click();
-        }
-    } catch (err) {
-        console.error("Error loading stream:", err);
-        optionsContainer.innerHTML = `
-            <div style="color: #f87171; padding: 5px; font-size: 0.9rem;">
-                <i class="fas fa-exclamation-circle"></i> Failed to retrieve streams for this source.
-            </div>
-        `;
-        showToast('Stream link resolution failed', 'fa-exclamation-circle');
-    }
-}
-
-function playSportsStreamInApp() {
-    const iframeWrapper = document.getElementById('sports-iframe-wrapper');
-    const iframe = document.getElementById('sports-stream-iframe');
-    if (!iframeWrapper || !iframe || !activeStreamUrl) return;
-
-    iframeWrapper.style.display = 'block';
-    iframe.src = activeStreamUrl;
-
-    // Smooth scroll player into view
-    iframeWrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-function backToMatchesList() {
-    const resultsContainer = document.getElementById('sports-results');
-    const detailsContainer = document.getElementById('sports-details');
-    const iframe = document.getElementById('sports-stream-iframe');
-
-    if (iframe) iframe.src = 'about:blank';
-    if (detailsContainer) detailsContainer.style.display = 'none';
-    if (resultsContainer) resultsContainer.style.display = 'grid';
-}
-
-function reloadSportsPlayer() {
-    const iframe = document.getElementById('sports-stream-iframe');
-    if (iframe && iframe.src !== 'about:blank') {
-        const currentSrc = iframe.src;
-        iframe.src = 'about:blank';
-        setTimeout(() => {
-            iframe.src = currentSrc;
-            showToast('Broadcast stream refreshed!', 'fa-sync');
-        }, 100);
-    }
-}
-
-function toggleSportsTheaterMode() {
-    const wrapper = document.getElementById('sports-iframe-wrapper');
-    if (wrapper) {
-        wrapper.classList.toggle('theater-mode');
-        if (wrapper.classList.contains('theater-mode')) {
-            wrapper.style.borderColor = '#10b981';
-            wrapper.style.boxShadow = '0 30px 80px rgba(0, 0, 0, 0.8), 0 0 50px rgba(16, 185, 129, 0.35)';
-            showToast('Theater mode enabled', 'fa-expand-alt');
-        } else {
-            wrapper.style.borderColor = 'rgba(255,255,255,0.08)';
-            wrapper.style.boxShadow = '0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(16, 185, 129, 0.15)';
-            showToast('Theater mode disabled', 'fa-compress-alt');
-        }
-    }
-}
-
-function toggleSportsFullscreen() {
-    const wrapper = document.getElementById('sports-iframe-wrapper');
-    if (!wrapper) return;
-
-    if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) {
-        if (wrapper.requestFullscreen) {
-            wrapper.requestFullscreen();
-        } else if (wrapper.webkitRequestFullscreen) {
-            wrapper.webkitRequestFullscreen();
-        } else if (wrapper.mozRequestFullScreen) {
-            wrapper.mozRequestFullScreen();
-        } else if (wrapper.msRequestFullscreen) {
-            wrapper.msRequestFullscreen();
-        }
-        showToast('Entering full screen...', 'fa-expand');
-    } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        }
-        showToast('Exited full screen', 'fa-compress');
-    }
-}
-
-// Initialize settings on page load
-loadPrivacySettings();
-
-// ==========================================================================
-// TEMP MAIL CLIENT (MAIL.TM API INTEGRATION)
-// ==========================================================================
-let tempMailAccount = null; // { id, address, password, token }
-let tempMailInbox = [];
-let tempMailInterval = null;
-let currentMailMessage = null; // Currently opened message object
-
-// Initialize Temp Mail on page load
-function initTempMail() {
-    const savedAccount = localStorage.getItem('temp_mail_account');
-    if (savedAccount) {
-        try {
-            tempMailAccount = JSON.parse(savedAccount);
-            // Verify and display
-            updateTempMailStatus('listening', 'Mailbox active & listening');
-            document.getElementById('temp-mail-address').innerText = tempMailAccount.address;
-            fetchTempMessages();
-            startInboxPolling();
-        } catch (e) {
-            console.error("Error parsing saved temp mail account, creating new one:", e);
-            generateNewMailAccount();
-        }
-    } else {
-        generateNewMailAccount();
-    }
-}
-
-// Generate new random account details and register it
-async function generateNewMailAccount() {
-    updateTempMailStatus('loading', 'Fetching active domains...');
-    document.getElementById('temp-mail-address').innerText = 'Generating...';
-
-    try {
-        // Step 1: Fetch domains
-        const domainsRes = await fetch('https://api.mail.tm/domains');
-        const domainsData = await domainsRes.json();
-        const activeDomains = domainsData['hydra:member'] || domainsData;
-
-        if (!activeDomains || activeDomains.length === 0) {
-            throw new Error("No active domains returned from Mail.tm");
-        }
-
-        const selectedDomain = activeDomains[0].domain;
-
-        // Step 2: Create random credentials
-        const randomString = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 7);
-        const address = `${randomString}@${selectedDomain}`;
-        const password = Math.random().toString(36).substring(2, 15) + "A1!"; // strong password
-
-        updateTempMailStatus('loading', 'Registering inbox account...');
-
-        // Step 3: Register Account
-        const registerRes = await fetch('https://api.mail.tm/accounts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ address, password })
-        });
-
-        if (!registerRes.ok) {
-            const errDetail = await registerRes.text();
-            throw new Error(`Failed to create account: ${errDetail}`);
-        }
-
-        const registerData = await registerRes.json();
-        const accountId = registerData.id;
-
-        updateTempMailStatus('loading', 'Authenticating session token...');
-
-        // Step 4: Obtain token
-        const tokenRes = await fetch('https://api.mail.tm/token', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ address, password })
-        });
-
-        if (!tokenRes.ok) {
-            throw new Error("Authentication failed after account registration");
-        }
-
-        const tokenData = await tokenRes.json();
-        const token = tokenData.token;
-
-        // Step 5: Save locally
-        tempMailAccount = { id: accountId, address, password, token };
-        localStorage.setItem('temp_mail_account', JSON.stringify(tempMailAccount));
-
-        // Step 6: Render in UI
-        document.getElementById('temp-mail-address').innerText = address;
-        updateTempMailStatus('listening', 'Mailbox active & listening');
-        showToast('Temporary Email Created!', 'fa-envelope-open');
-
-        // Step 7: Fetch and poll
-        tempMailInbox = [];
-        renderTempInbox();
-        startInboxPolling();
-
-    } catch (err) {
-        console.error("Temp mail generation failure:", err);
-        updateTempMailStatus('error', 'Mailbox initialization failed');
-        document.getElementById('temp-mail-address').innerText = 'Offline - Tap refresh to retry';
-        showToast('Mailbox generation failed.', 'fa-exclamation-triangle');
-    }
-}
-
-// Update the status dot and description text
-function updateTempMailStatus(state, message) {
-    const pulseDot = document.getElementById('temp-mail-pulse');
-    const statusText = document.getElementById('temp-mail-status-text');
-    if (!pulseDot || !statusText) return;
-
-    statusText.innerText = message;
-
-    if (state === 'listening') {
-        pulseDot.className = 'pulse-glow-green';
-        pulseDot.style.background = '#4ade80';
-        pulseDot.style.boxShadow = '0 0 10px rgba(74, 222, 128, 0.5)';
-    } else if (state === 'loading') {
-        pulseDot.className = 'pulse-glow-green';
-        pulseDot.style.background = '#eab308';
-        pulseDot.style.boxShadow = '0 0 10px rgba(234, 179, 8, 0.5)';
-    } else if (state === 'error') {
-        pulseDot.className = 'pulse-glow-green';
-        pulseDot.style.background = '#ef4444';
-        pulseDot.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.5)';
-    }
-}
-
-// Copy to clipboard with success feedback toast
-function copyTempMailAddress() {
-    if (!tempMailAccount || !tempMailAccount.address) return;
-    navigator.clipboard.writeText(tempMailAccount.address).then(() => {
-        showToast('Address Copied to Clipboard!', 'fa-copy');
-    }).catch(e => {
-        console.error("Clipboard copy failed:", e);
-    });
-}
-
-// Fetch messages list from Mail.tm
-async function fetchTempMessages() {
-    if (!tempMailAccount || !tempMailAccount.token) return;
-
-    try {
-        const res = await fetch('https://api.mail.tm/messages', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${tempMailAccount.token}`,
-                'Accept': 'application/json'
-            }
-        });
-
-        if (!res.ok) {
-            // Handle invalid token / expired account
-            if (res.status === 401) {
-                console.warn("Unauthorized API token, generating new mailbox account...");
-                generateNewMailAccount();
-            }
-            return;
-        }
-
-        const data = await res.json();
-        // Mail.tm returns message resource items in standard JSON
-        tempMailInbox = data['hydra:member'] || data || [];
-        renderTempInbox();
-
-    } catch (err) {
-        console.error("Error checking mailbox updates:", err);
-    }
-}
-
-// Polling interval tracker
-function startInboxPolling() {
-    if (tempMailInterval) clearInterval(tempMailInterval);
-    tempMailInterval = setInterval(fetchTempMessages, 10000); // Check every 10 seconds
-}
-
-// Helper to get initials and random colorful gradient avatar
-function getInitialsAvatar(name) {
-    if (!name) return '<div class="mail-avatar" style="background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);"><i class="fas fa-user"></i></div>';
-
-    // Extract name before brackets or email addresses
-    const cleanName = name.replace(/<.*>/, '').trim();
-    const parts = cleanName.split(' ');
-    let initials = '';
-    if (parts.length > 0 && parts[0]) initials += parts[0].charAt(0).toUpperCase();
-    if (parts.length > 1 && parts[1]) initials += parts[1].charAt(0).toUpperCase();
-    if (!initials) initials = '?';
-
-    // Choose dynamic gradient color pair based on simple string hashing
-    let hash = 0;
-    for (let i = 0; i < cleanName.length; i++) {
-        hash = cleanName.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const colors = [
-        ['#a855f7', '#3b82f6'], // Purple-Blue
-        ['#ec4899', '#8b5cf6'], // Pink-Purple
-        ['#3b82f6', '#10b981'], // Blue-Green
-        ['#f59e0b', '#ef4444'], // Yellow-Red
-        ['#06b6d4', '#3b82f6']  // Cyan-Blue
-    ];
-    const pair = colors[Math.abs(hash) % colors.length];
-
-    return `<div class="mail-avatar" style="background: linear-gradient(135deg, ${pair[0]} 0%, ${pair[1]} 100%);">${initials}</div>`;
-}
-
-// Render message cards
-function renderTempInbox() {
-    const inboxList = document.getElementById('temp-mail-inbox');
-    const countBadge = document.getElementById('temp-mail-count');
-    if (!inboxList || !countBadge) return;
-
-    countBadge.innerText = `${tempMailInbox.length} messages`;
-
-    if (tempMailInbox.length === 0) {
-        inboxList.innerHTML = `
-            <div class="inbox-empty-state">
-                <i class="fas fa-envelope-open"></i>
-                <h4>Your Inbox is Empty</h4>
-                <p>Waiting for incoming emails. This view polls automatically every 10 seconds.</p>
-            </div>`;
-        return;
-    }
-
-    let html = '';
-    tempMailInbox.forEach(msg => {
-        const dateStr = new Date(msg.createdAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const fromAddr = msg.from ? (msg.from.name || msg.from.address) : 'Unknown Sender';
-        const unreadClass = msg.seen ? '' : 'unread';
-        const subject = msg.subject || '(No Subject)';
-        const preview = msg.intro || '';
-        const avatarHtml = getInitialsAvatar(fromAddr);
-
-        html += `
-            <div class="mail-card ${unreadClass}" onclick="openTempMessage('${msg.id}')">
-                <div class="mail-card-layout">
-                    ${avatarHtml}
-                    <div class="mail-card-body">
-                        <div class="mail-card-header">
-                            <span class="mail-card-sender">${fromAddr}</span>
-                            <span class="mail-card-time">${dateStr}</span>
-                        </div>
-                        <div class="mail-card-subject">${subject}</div>
-                        <div class="mail-card-preview">${preview}</div>
-                    </div>
-                </div>
-            </div>`;
-    });
-
-    inboxList.innerHTML = html;
-}
-
-// Open message detail modal
-async function openTempMessage(id) {
-    if (!tempMailAccount || !tempMailAccount.token) return;
-
-    showToast('Opening message details...', 'fa-envelope-open');
-
-    try {
-        const res = await fetch(`https://api.mail.tm/messages/${id}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${tempMailAccount.token}`,
-                'Accept': 'application/json'
-            }
-        });
-
-        if (!res.ok) throw new Error("Failed to retrieve email content from server");
-
-        const msg = await res.json();
-        currentMailMessage = msg;
-
-        // Set seen to true locally and update indices
-        const idx = tempMailInbox.findIndex(m => m.id === id);
-        if (idx !== -1) {
-            tempMailInbox[idx].seen = true;
-            renderTempInbox();
-        }
-
-        // Show reading modal
-        document.getElementById('temp-mail-reader-modal').style.display = 'flex';
-
-        // Populate header details
-        const fromAddr = msg.from ? `${msg.from.name || ''} <${msg.from.address}>` : 'Unknown Sender';
-        document.getElementById('mail-reader-from').innerText = fromAddr;
-        document.getElementById('mail-reader-date').innerText = new Date(msg.createdAt).toLocaleString();
-        document.getElementById('mail-reader-subject').innerText = msg.subject || '(No Subject)';
-
-        // Select best rendering mode (HTML or raw text)
-        const iframe = document.getElementById('temp-mail-body-iframe');
-        const textPanel = document.getElementById('temp-mail-body-raw');
-
-        if (msg.html && msg.html.length > 0) {
-            textPanel.style.display = 'none';
-            iframe.style.display = 'block';
-
-            // Set frame srcdoc dynamically to isolate styles securely
-            iframe.srcdoc = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="utf-8">
-                    <style>
-                        body {
-                            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-                            font-size: 14px;
-                            line-height: 1.5;
-                            color: #333;
-                            margin: 15px;
-                            word-wrap: break-word;
-                            background: #fff;
-                        }
-                    </style>
-                </head>
-                <body>
-                    ${msg.html[0]}
-                </body>
-                </html>
-            `;
-        } else {
-            iframe.style.display = 'none';
-            textPanel.style.display = 'block';
-            textPanel.innerText = msg.text || '';
-        }
-
-        // Populate attachments if any
-        const attachmentsPanel = document.getElementById('mail-reader-attachments');
-        const attachmentsList = document.getElementById('mail-reader-attachments-list');
-
-        if (msg.attachments && msg.attachments.length > 0) {
-            attachmentsPanel.style.display = 'flex';
-            let attachHtml = '';
-            msg.attachments.forEach(att => {
-                // Download URL points directly to the message's attachment endpoint
-                const downloadUrl = `https://api.mail.tm/messages/${id}/attachment/${att.id}`;
-                const sizeStr = (att.size / 1024).toFixed(1) + ' KB';
-                attachHtml += `
-                    <a href="${downloadUrl}" target="_blank" class="mail-attachment-chip" title="Download ${att.filename}">
-                        <i class="fas fa-file"></i> ${att.filename} (${sizeStr})
-                    </a>`;
-            });
-            attachmentsList.innerHTML = attachHtml;
-        } else {
-            attachmentsPanel.style.display = 'none';
-            attachmentsList.innerHTML = '';
-        }
-
-        // Mark message as read on server asynchronously
-        fetch(`https://api.mail.tm/messages/${id}`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${tempMailAccount.token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ seen: true })
-        }).catch(e => console.warn("Failed to mark message as read on server:", e));
-
-    } catch (err) {
-        console.error("Open message failure:", err);
-        showToast('Error opening email.', 'fa-exclamation-triangle');
-    }
-}
-
-// Close mail reader modal
-function closeTempMailReader() {
-    document.getElementById('temp-mail-reader-modal').style.display = 'none';
-    currentMailMessage = null;
-
-    // Clear out iframe to avoid leakage
-    const iframe = document.getElementById('temp-mail-body-iframe');
-    if (iframe) iframe.srcdoc = '';
-}
-
-// Delete message from server
-async function deleteCurrentMessage() {
-    if (!currentMailMessage || !tempMailAccount || !tempMailAccount.token) return;
-
-    const id = currentMailMessage.id;
-    showToast('Deleting email message...', 'fa-trash-alt');
-
-    try {
-        const res = await fetch(`https://api.mail.tm/messages/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${tempMailAccount.token}`
-            }
-        });
-
-        if (!res.ok) throw new Error("Delete endpoint failed");
-
-        // Filter out from local arrays
-        tempMailInbox = tempMailInbox.filter(m => m.id !== id);
-        renderTempInbox();
-        closeTempMailReader();
-        showToast('Message Deleted!', 'fa-trash');
-
-    } catch (err) {
-        console.error("Error deleting email:", err);
-        showToast('Failed to delete email.', 'fa-exclamation-triangle');
-    }
-}
-
-// Regenerate Temporary Email
-function regenerateTempMail() {
-    if (confirm("Are you sure you want to regenerate your address? This will delete the current temporary mailbox and all messages permanently.")) {
-        if (tempMailInterval) clearInterval(tempMailInterval);
-        localStorage.removeItem('temp_mail_account');
-        tempMailAccount = null;
-        generateNewMailAccount();
-    }
-}
-
-// Manually trigger check for emails and reset the dynamic loader bar
-async function manualCheckTempMail() {
-    updateTempMailStatus('loading', 'Checking for messages...');
-
-    // Animate/Reset the poll bar fill
-    const pollBarFill = document.querySelector('.temp-mail-poll-bar-fill');
-    if (pollBarFill) {
-        pollBarFill.style.animation = 'none';
-        void pollBarFill.offsetWidth; // force element reflow layout recalculation
-        pollBarFill.style.animation = 'tempMailPollProgress 10s linear infinite';
-    }
-
-    await fetchTempMessages();
-
-    updateTempMailStatus('listening', 'Mailbox active & listening');
-    showToast('Inbox Refreshed Successfully', 'fa-sync');
-}
-
-// Forward the email using pre-populated mailto parameters
-function forwardCurrentMessage() {
-    if (!currentMailMessage) return;
-    const subject = encodeURIComponent(`Fwd: ${currentMailMessage.subject || ''}`);
-    const bodyText = `---------- Forwarded message ---------\nFrom: ${currentMailMessage.from ? (currentMailMessage.from.name || currentMailMessage.from.address) : 'Unknown Sender'}\nDate: ${new Date(currentMailMessage.createdAt).toLocaleString()}\nSubject: ${currentMailMessage.subject || ''}\n\n${currentMailMessage.text || ''}`;
-    const body = encodeURIComponent(bodyText);
-
-    // Open system handler
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    showToast('Launching mail client to forward/resend...', 'fa-share');
-}
-
-
-

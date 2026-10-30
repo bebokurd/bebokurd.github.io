@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description"
         content="Explore CHYA LUQMAN's Cydia Elite - A state-of-the-art spatial developer portfolio, featuring interactive tools, curated package tweaks, TikTok/Instagram downloaders, Kurdish streaming portals, and public developer APIs." />
@@ -16,7 +17,7 @@
     <!-- Open Graph Protocol (OGP) for Social Media & AI Embeds -->
     <meta property="og:title" content="CHYA | Cydia Elite" />
     <meta property="og:description"
-        content="Explore Chya Luqman's premium spatial portfolio & tweak registry - featuring custom software packages, TikTok downloaders, KurdStream integrations, and developer APIs." />
+        content="Explore Chya Luqman's premium spatial portfolio & tweak registry - featuring custom software packages, TikTok downloaders, and developer APIs." />
     <meta property="og:image" content="https://i.pinimg.com/1200x/eb/48/73/eb487359acc13ab1ad5e1918e14cd49e.jpg" />
     <meta property="og:url" content="https://chya.netlify.app" />
     <meta property="og:type" content="website" />
@@ -27,7 +28,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="CHYA | Cydia Elite" />
     <meta name="twitter:description"
-        content="Explore Chya Luqman's premium spatial portfolio & tweak registry - featuring custom software packages, TikTok downloaders, KurdStream integrations, and developer APIs." />
+        content="Explore Chya Luqman's premium spatial portfolio & tweak registry - featuring custom software packages, TikTok downloaders, and developer APIs." />
     <meta name="twitter:image" content="https://i.pinimg.com/1200x/eb/48/73/eb487359acc13ab1ad5e1918e14cd49e.jpg" />
 
     <!-- JSON-LD Schema.org Structured Data for Classic & AI Search Engines -->
@@ -180,8 +181,7 @@
             </div>
             <div class="sidebar-item" onclick="switchTab('instagram', this)"><i class="fab fa-instagram"></i> Insta
                 LookUp</div>
-            <div class="sidebar-item" onclick="switchTab('temp-mail', this)"><i class="fas fa-envelope-open-text"></i>
-                Temp Mail</div>
+            
             <div class="sidebar-item" onclick="switchTab('google', this)"><i class="fas fa-robot"></i> AI Search
             </div>
             <div class="sidebar-item" onclick="switchTab('anime-search', this)"><i class="fas fa-camera"></i> Anime
@@ -189,14 +189,9 @@
             </div>
             <div class="sidebar-item" onclick="switchTab('lens-search', this)"><i class="fas fa-images"></i> Lens Search
             </div>
-            <div class="sidebar-item" onclick="switchTab('kurdstream', this)"><i class="fas fa-play-circle"></i>
-                KurdStream
-            </div>
-            <div class="sidebar-item" onclick="switchTab('kurddoblazh', this)"><i class="fas fa-microphone-alt"></i>
-                KurdDoblazh
-            </div>
-            <div class="sidebar-item" onclick="switchTab('live-sports', this)"><i class="fas fa-futbol"></i> Live Sports
-            </div>
+            
+            
+            
             <div class="sidebar-item" onclick="switchTab('api-hub', this)"><i class="fas fa-code"></i> API Hub
             </div>
             <div class="sidebar-item" onclick="switchTab('free-games', this)"><i class="fas fa-gamepad"></i> Free Games
@@ -244,25 +239,57 @@
             <div class="sidebar-item" onclick="switchTab('contact', this)"><i class="fas fa-envelope"></i> Contact</div>
             <div class="sidebar-item" onclick="switchTab('status', this)"><i class="fas fa-server"></i> System Status
             </div>
-            <a href="/admin/" class="sidebar-item" style="text-decoration: none;"><i class="fas fa-screwdriver-wrench"></i> Admin Console</a>
+            <a href="/admin/" class="sidebar-item" style="text-decoration: none;"><i
+                    class="fas fa-screwdriver-wrench"></i> Admin Console</a>
         </aside>
 
 
         <section class="main-pane">
 
             <div class="iphone-status">
-                <span>No Service &nbsp; <i class="fas fa-wifi"></i></span>
-                <span id="iphone-time">9:41 AM</span>
-                <span><i class="fas fa-lock" style="font-size:10px; margin-right:5px;"></i> 100% <i
-                        class="fas fa-battery-full"></i></span>
+                <div class="status-left">
+                    <span class="status-carrier"><i class="fas fa-signal"></i> 5G ULTRA</span>
+                    <span class="status-wifi"><i class="fas fa-wifi"></i></span>
+                </div>
+                <div class="status-center" id="iphone-time">9:41 AM</div>
+                <div class="status-right">
+                    <span class="status-badge"><i class="fas fa-shield-alt"></i> ENCRYPTED</span>
+                    <span class="status-battery">100% <i class="fas fa-battery-full"></i></span>
+                </div>
             </div>
 
-
             <div class="card-nav">
-                <button class="hamburger" id="hamburger-menu" onclick="toggleMenu()"><i class="fas fa-bars"></i>
-                    Menu</button>
-                <div class="nav-label" id="nav-title-label">Home</div>
-                <button class="modify-btn" onclick="location.reload()">Respring</button>
+                <div class="nav-left-group">
+                    <button class="hamburger" id="hamburger-menu" onclick="toggleMenu()" title="Toggle Navigation">
+                        <i class="fas fa-bars"></i> <span>Menu</span>
+                    </button>
+                    <div class="nav-brand-pill">
+                        <span class="nav-pulse-dot"></span>
+                        <span class="nav-brand-text">Cydia Elite</span>
+                    </div>
+                </div>
+
+                <div class="nav-center-group">
+                    <div class="nav-active-view-pill">
+                        <i class="fas fa-home" id="nav-pill-icon"></i>
+                        <span class="nav-label" id="nav-title-label">Home</span>
+                    </div>
+                </div>
+
+                <div class="nav-right-group">
+                    <button class="nav-pill-btn nav-music-trigger" id="nav-music-pill" onclick="openSongsPlayer()" title="Open Songs Player Deck">
+                        <div class="mini-equalizer">
+                            <span class="eq-bar eq-b1"></span>
+                            <span class="eq-bar eq-b2"></span>
+                            <span class="eq-bar eq-b3"></span>
+                        </div>
+                        <span class="music-label" id="nav-music-title">Music Deck</span>
+                    </button>
+                    <button class="nav-pill-btn nav-respring-btn modify-btn" onclick="location.reload()" title="Respring / Reload">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Respring</span>
+                    </button>
+                </div>
             </div>
 
             <div class="scroll-area" id="main-scroll">
@@ -394,9 +421,9 @@
                                     <div class="mini-val" id="count-kurdish" style="color: #4ade80;">--</div>
                                     <div class="mini-lbl">Kurdish DB</div>
                                 </div>
-                                <div class="stat-box-mini" onclick="filterCategory('sports')">
-                                    <div class="mini-val" id="count-sports" style="color: #f43f5e;">--</div>
-                                    <div class="mini-lbl">Live Feeds</div>
+                                <div class="stat-box-mini" onclick="filterCategory('movies')">
+                                    <div class="mini-val" id="count-movies" style="color: #f43f5e;">--</div>
+                                    <div class="mini-lbl">Movies & Cinema</div>
                                 </div>
                             </div>
                         </div>
@@ -590,65 +617,6 @@
                         </div>
 
                         <div id="insta-results" style="margin-top:20px;"></div>
-                    </div>
-                </div>
-
-                <div id="view-temp-mail" class="view-content">
-                    <div class="tool-container">
-                        <div class="tool-hero" style="margin-bottom: 25px;">
-                            <i class="fas fa-envelope-open-text"
-                                style="color: #a855f7; filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.4));"></i>
-                            <h2>Temp Mail client</h2>
-                            <p>Generate disposable email addresses and receive messages in real time</p>
-                        </div>
-
-                        <!-- Temp Mail Dashboard Card -->
-                        <div class="spatial-card temp-mail-dashboard" style="position: relative; overflow: hidden;">
-                            <div class="temp-mail-header">
-                                <div class="temp-mail-status">
-                                    <span class="pulse-glow-green" id="temp-mail-pulse"
-                                        style="background: #eab308; box-shadow: 0 0 10px rgba(234, 179, 8, 0.5);"></span>
-                                    <span id="temp-mail-status-text">Initializing Mailbox...</span>
-                                </div>
-                                <div class="temp-mail-actions" style="display: flex; gap: 8px;">
-                                    <button class="action-icon-btn" onclick="manualCheckTempMail()"
-                                        title="Check For Emails Now" style="color: #60a5fa;">
-                                        <i class="fas fa-redo-alt"></i> Check Mail
-                                    </button>
-                                    <button class="action-icon-btn" onclick="regenerateTempMail()"
-                                        title="Generate New Email">
-                                        <i class="fas fa-sync-alt"></i> New Email
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="temp-mail-display-wrap">
-                                <div class="temp-mail-address-box" id="temp-mail-address">Generating...</div>
-                                <button class="app-btn temp-mail-copy-btn" onclick="copyTempMailAddress()">
-                                    <i class="fas fa-copy"></i> Copy
-                                </button>
-                            </div>
-
-                            <!-- Dynamic looping polling progress tracker line -->
-                            <div class="temp-mail-poll-bar">
-                                <div class="temp-mail-poll-bar-fill"></div>
-                            </div>
-                        </div>
-
-                        <!-- Inbox Section -->
-                        <div class="inbox-section-title">
-                            <h3><i class="fas fa-inbox"></i> Incoming Messages</h3>
-                            <span class="inbox-count-badge" id="temp-mail-count">0 messages</span>
-                        </div>
-
-                        <!-- Inbox Container -->
-                        <div class="inbox-messages-list" id="temp-mail-inbox">
-                            <div class="inbox-empty-state">
-                                <i class="fas fa-envelope-open"></i>
-                                <h4>Your Inbox is Empty</h4>
-                                <p>Waiting for incoming emails. This view polls automatically every 10 seconds.</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -937,163 +905,6 @@
                     </div>
                 </div>
 
-                <div id="view-kurdstream" class="view-content">
-                    <div class="tool-container">
-                        <div class="tool-hero">
-                            <i class="fas fa-play-circle"
-                                style="background: linear-gradient(45deg, #f59e0b, #ef4444); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
-                            <h2>KurdStream Search</h2>
-                            <p>Search Movies & Series • Stream in HD</p>
-                        </div>
-
-                        <!-- Source Switcher Tabs -->
-                        <div class="ks-source-tabs">
-                            <div class="ks-source-tab active" onclick="switchKsSource('kurdstream', this)">
-                                <i class="fas fa-database"></i> KurdStream DB
-                            </div>
-                            <div class="ks-source-tab" onclick="switchKsSource('videasy', this)">
-                                <i class="fas fa-globe"></i> TMDB & VIDEASY
-                            </div>
-                        </div>
-
-                        <!-- VIDEASY Sub-tabs -->
-                        <div id="ks-videasy-subtabs"
-                            style="display: none; justify-content: center; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;">
-                            <button class="kd-label-chip active" onclick="switchVideasySub('tmdb', this)"><i
-                                    class="fas fa-film"></i> Movies & TV</button>
-                            <button class="kd-label-chip" onclick="switchVideasySub('anime', this)"><i
-                                    class="fas fa-ghost"></i> Anime (AniList)</button>
-                        </div>
-
-                        <div class="tool-input-wrap">
-                            <input type="text" id="ks-search-input" class="tool-input"
-                                placeholder="Search for movies, series..." autocomplete="off"
-                                onkeydown="if(event.key === 'Enter') searchKurdStream()">
-                            <button id="ks-search-btn" class="tool-btn" onclick="searchKurdStream()">Search</button>
-                        </div>
-
-                        <div id="ks-loader" class="tt-custom-loader" style="display: none;">
-                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #f59e0b, #ef4444);"><i
-                                    class="fas fa-play"></i></div>
-                            <div class="tt-loading-text" id="ks-loader-text">Fetching from KurdStream...</div>
-                        </div>
-
-                        <div id="ks-results" class="detail-group-transparent" style="margin-top: 20px;"></div>
-                        <div id="ks-details" class="ks-details-view" style="display: none;"></div>
-                    </div>
-                </div>
-
-                <div id="view-kurddoblazh" class="view-content">
-                    <div class="tool-container">
-                        <div class="tool-hero">
-                            <i class="fas fa-microphone-alt"
-                                style="background: linear-gradient(45deg, #1862de, #0f3e8a); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
-                            <h2>KurdDoblazh Hub</h2>
-                            <p>Dubbed Movies & Series • New Proxy Engine</p>
-                        </div>
-
-                        <div class="tool-input-wrap">
-                            <input type="text" id="kd-search-input" class="tool-input"
-                                placeholder="Search dubbed content..." autocomplete="off"
-                                onkeydown="if(event.key === 'Enter') searchKurdDoblazh()">
-                            <button id="kd-search-btn" class="tool-btn"
-                                style="background: linear-gradient(45deg, #1862de, #0f3e8a); border: none;"
-                                onclick="searchKurdDoblazh()">Search</button>
-                        </div>
-
-                        <div id="kd-labels" class="kd-labels-container"
-                            style="margin-bottom: 20px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px;">
-                        </div>
-
-                        <div id="kd-loader" class="tt-custom-loader" style="display: none;">
-                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #1862de, #0f3e8a);"><i
-                                    class="fas fa-microphone-alt"></i></div>
-                            <div class="tt-loading-text">Connecting to KD Proxy...</div>
-                        </div>
-
-                        <div id="kd-results" class="kd-grid" style="margin-top: 20px;"></div>
-
-                        <div id="kd-pagination"
-                            style="display: none; justify-content: center; gap: 15px; margin-top: 30px;">
-                            <button class="app-btn" id="kd-prev-btn" onclick="kdPaginate(-1)"><i
-                                    class="fas fa-chevron-left"></i> Previous</button>
-                            <button class="app-btn" id="kd-next-btn" onclick="kdPaginate(1)">Next <i
-                                    class="fas fa-chevron-right"></i></button>
-                        </div>
-
-                        <div id="kd-details" class="kd-details-view" style="display: none;"></div>
-                    </div>
-                </div>
-
-                <div id="view-live-sports" class="view-content">
-                    <div class="tool-container">
-                        <div class="tool-hero">
-                            <i class="fas fa-futbol"
-                                style="background: linear-gradient(45deg, #10b981, #059669); -webkit-background-clip: text; background-clip: text; color: transparent;"></i>
-                            <h2>Live Sports</h2>
-                            <p>Live matches, sports streams, and scores • Streamed.pk API</p>
-                            <div class="sports-clock-wrapper"
-                                style="margin-top: 15px; display: inline-flex; justify-content: center;">
-                                <div id="sports-clock" class="sports-clock-container">
-                                    <i class="far fa-clock"></i>
-                                    <span id="sports-current-time">00:00:00 AM</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Categories Container -->
-                        <div id="sports-categories" class="kd-labels-container"
-                            style="margin-bottom: 20px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px;">
-                        </div>
-
-                        <div class="sports-search-container"
-                            style="display: flex; gap: 15px; margin-bottom: 25px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-                            <div class="tool-input-wrap"
-                                style="flex: 1; min-width: 250px; margin: 0; position: relative;">
-                                <i class="fas fa-search"
-                                    style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4); font-size: 0.9rem;"></i>
-                                <input type="text" id="sports-search-input" class="tool-input"
-                                    placeholder="Search live matches, teams..." autocomplete="off"
-                                    style="padding-left: 45px; width: 100%;"
-                                    onkeydown="if(event.key === 'Enter') searchSportsMatches()">
-                            </div>
-                            <div>
-                                <button id="sports-search-btn" class="tool-btn"
-                                    style="background: linear-gradient(135deg, #10b981, #059669); border: none; box-shadow: 0 4px 12px rgba(16,185,129,0.25); display: flex; align-items: center; gap: 8px; margin: 0;"
-                                    onclick="searchSportsMatches()"><i class="fas fa-search"></i> Search</button>
-                            </div>
-                        </div>
-
-                        <!-- Match Status Filter Tabs -->
-                        <div class="sports-filter-container">
-                            <button class="sports-filter-btn active" data-filter="all"
-                                onclick="setSportsStatusFilter('all')">
-                                <i class="fas fa-list"></i> All Matches
-                            </button>
-                            <button class="sports-filter-btn" data-filter="live"
-                                onclick="setSportsStatusFilter('live')">
-                                <i class="fas fa-circle"
-                                    style="color: #ef4444; font-size: 8px; margin-bottom: 0 !important; filter: none !important;"></i>
-                                Live Now
-                            </button>
-                            <button class="sports-filter-btn" data-filter="upcoming"
-                                onclick="setSportsStatusFilter('upcoming')">
-                                <i class="far fa-clock"></i> Upcoming
-                            </button>
-                        </div>
-
-                        <div id="sports-loader" class="tt-custom-loader" style="display: none;">
-                            <div class="tt-pulse-logo" style="background: linear-gradient(45deg, #10b981, #059669);"><i
-                                    class="fas fa-futbol"></i></div>
-                            <div class="tt-loading-text" id="sports-loader-text">Fetching sports events...</div>
-                        </div>
-
-                        <div id="sports-results" class="sports-grid" style="margin-top: 20px;"></div>
-
-                        <div id="sports-details" class="ks-details-view" style="display: none;"></div>
-                    </div>
-                </div>
-
                 <div id="view-free-games" class="view-content">
                     <div class="tool-container">
                         <div class="tool-hero">
@@ -1250,247 +1061,6 @@
                                 onclick="navigator.clipboard.writeText(window.location.origin + window.location.pathname + '#url='); showToast('Deep link prefix copied!', 'fa-check-circle');">
                                 <i class="fas fa-copy"></i> Copy Current Domain Prefix
                             </button>
-
-                            <div class="section-header" style="margin-top: 30px;">KurdStream Public API</div>
-                            <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Direct access to Kurdish
-                                movies, series, and streaming embeds via a public seeker API.</p>
-
-                            <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Base Endpoint</div>
-                            <div class="code-block">https://kurdcinama-stream-seeker.lovable.app/api/public</div>
-
-                            <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Available
-                                Routes</div>
-                            <div class="detail-group"
-                                style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
-                                <div class="detail-row">
-                                    <span class="label">Search</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/search?q={query}</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://kurdcinama-stream-seeker.lovable.app/api/public/search?q=hero')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="label">Movie Details</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/movie/{id}</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://kurdcinama-stream-seeker.lovable.app/api/public/movie/1400')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="label">Series Details</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/series/{id}</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://kurdcinama-stream-seeker.lovable.app/api/public/series/100')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="label">Embed Stream</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/embed?movieId={id}</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://kurdcinama-stream-seeker.lovable.app/api/public/embed?movieId=1400')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <button class="app-btn"
-                                onclick="window.open('https://kurdcinama-stream-seeker.lovable.app/api/public/docs', '_blank')">
-                                <i class="fas fa-external-link-alt"></i> View Full API Docs
-                            </button>
-
-                            <div class="section-header" style="margin-top: 30px;">KurdDoblazh Proxy API</div>
-                            <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">A high-performance proxy for
-                                KurdDoblazh.com content, optimized for mobile and spatial browsers.</p>
-
-                            <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Base Endpoint</div>
-                            <div class="code-block">https://kurd-doblazh-api.lovable.app/api</div>
-
-                            <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Available
-                                Routes</div>
-                            <div class="detail-group"
-                                style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
-                                <div class="detail-row">
-                                    <span class="label">Search</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/kd/search?q={q}</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://kurd-doblazh-api.lovable.app/api/kd/search?q=batman')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="label">Latest Dubs</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/kd/latest?limit={n}</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://kurd-doblazh-api.lovable.app/api/kd/latest?limit=10')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="label">Labels/Categories</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/kd/labels</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://kurd-doblazh-api.lovable.app/api/kd/labels')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="label">Resolve Post</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/kd/resolve?input={url}</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://kurd-doblazh-api.lovable.app/api/kd/resolve?input=https://www.kurddoblazh.com/2023/12/aquaman-and-lost-kingdom.html')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="section-header" style="margin-top: 30px;">Streamed REST API</div>
-                            <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Access sports categories,
-                                matches, and live streams dynamically from Streamed.pk database.</p>
-
-                            <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Base Endpoint</div>
-                            <div class="code-block">https://streamed.pk/api</div>
-
-                            <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Available
-                                Routes</div>
-                            <div class="detail-group"
-                                style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
-                                <div class="detail-row">
-                                    <span class="label">Sports Categories</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/sports</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/sports')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="label">Matches By Sport</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/matches/{sport_id}</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/matches/football')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="label">Live Matches</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/matches/live</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/matches/live')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="label">Stream Sources</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/stream/{source}/{id}</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/stream/alpha/match123')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Stream
-                                Object Structure</div>
-                            <div class="code-block"
-                                style="font-family: monospace; font-size: 0.85rem; line-height: 1.4;">interface Stream {
-                                id: string; // Unique identifier for the stream
-                                streamNo: number; // Stream number/index
-                                language: string; // Stream language (e.g., "English")
-                                hd: boolean; // Whether the stream is HD quality
-                                embedUrl: string; // URL that can be used to embed in iframe
-                                source: string; // Source identifier (e.g., "alpha")
-                                }</div>
-
-                            <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Supported
-                                Stream Sources</div>
-                            <div class="detail-group"
-                                style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02); max-height: 200px; overflow-y: auto;">
-                                <div class="detail-row"><span class="label">Alpha</span><span
-                                        class="val">/api/stream/alpha/[id]</span></div>
-                                <div class="detail-row"><span class="label">Bravo</span><span
-                                        class="val">/api/stream/bravo/[id]</span></div>
-                                <div class="detail-row"><span class="label">Charlie</span><span
-                                        class="val">/api/stream/charlie/[id]</span></div>
-                                <div class="detail-row"><span class="label">Delta</span><span
-                                        class="val">/api/stream/delta/[id]</span></div>
-                                <div class="detail-row"><span class="label">Echo</span><span
-                                        class="val">/api/stream/echo/[id]</span></div>
-                                <div class="detail-row"><span class="label">Foxtrot</span><span
-                                        class="val">/api/stream/foxtrot/[id]</span></div>
-                                <div class="detail-row"><span class="label">Golf</span><span
-                                        class="val">/api/stream/golf/[id]</span></div>
-                                <div class="detail-row"><span class="label">Hotel</span><span
-                                        class="val">/api/stream/hotel/[id]</span></div>
-                            </div>
-
-                            <div class="section-header" style="margin-top: 30px;">Streamed Images API</div>
-                            <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Access optimized WebP assets
-                                for matches, teams, and events.</p>
-
-                            <div style="font-weight: 700; color: #fff; margin-bottom: 10px;">Base URL</div>
-                            <div class="code-block">https://streamed.pk/api/images</div>
-
-                            <div style="font-weight: 700; color: #fff; margin-top: 20px; margin-bottom: 10px;">Available
-                                Routes</div>
-                            <div class="detail-group"
-                                style="margin: 0 0 20px 0; border-color: rgba(255,255,255,0.05); background: rgba(255,255,255,0.02);">
-                                <div class="detail-row">
-                                    <span class="label">Team Badge</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/badge/{id}.webp</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/images/badge/man-utd-badge.webp')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="label">Match Poster</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/poster/{home_badge_id}/{away_badge_id}.webp</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/images/poster/man-utd-badge/liverpool-badge.webp')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                                <div class="detail-row">
-                                    <span class="label">Proxied Image</span>
-                                    <span class="val"
-                                        style="display: flex; align-items: center; justify-content: space-between; flex: 1;">
-                                        <span>/proxy/{poster_id}.webp</span>
-                                        <span class="api-preset-badge"
-                                            onclick="loadApiPreset('GET', 'https://streamed.pk/api/images/proxy/custom-event-poster.webp')"><i
-                                                class="fas fa-play"></i> Try</span>
-                                    </span>
-                                </div>
-                            </div>
 
                             <div class="section-header" style="margin-top: 30px;">GamerPower Free Games API</div>
                             <p style="color: rgba(255,255,255,0.6); margin-bottom: 20px;">Track active 100% off game
@@ -1810,7 +1380,7 @@
                                 <div class="faq-answer">
                                     <p>URL hash routing preserves filter states. Clicking category links creates paths
                                         like #installed/social. You can also visit clean, bookmarked aliases directly
-                                        (e.g. #community, #live-sports, or #ad-blockers) and the portal router will
+                                        (e.g. #community, or #ad-blockers) and the portal router will
                                         immediately parse, filter, and synchronize visual sidebar highlights
                                         automatically.</p>
                                 </div>
@@ -2347,7 +1917,7 @@
                                 v4.0 is now live with spatial computing UI!</span>
                             <span class="marquee-divider">•</span>
                             <span class="marquee-item"><i class="fas fa-plus-circle" style="color: #10b981;"></i> New:
-                                Anime Scene Search, Lens Search, and KurdStream integration are fully active!</span>
+                                Anime Scene Search and Lens Search are fully active!</span>
                             <span class="marquee-divider">•</span>
                             <span class="marquee-item"><i class="fab fa-discord" style="color: #5865f2;"></i> Join our
                                 official Discord community for support and tweak suggestions!</span>
@@ -2371,11 +1941,8 @@
                             <span class="marquee-divider">•</span>
                             <span class="marquee-item"><i class="fas fa-images"></i> Lens Search: Active</span>
                             <span class="marquee-divider">•</span>
-                            <span class="marquee-item"><i class="fas fa-microphone-alt"></i> KurdDoblazh:
-                                Connected</span>
-                            <span class="marquee-divider">•</span>
-                            <span class="marquee-item"><i class="fas fa-futbol"></i> Live Sports: Online</span>
-                            <span class="marquee-divider">•</span>
+                            
+                            
                             <span class="marquee-item"><i class="fas fa-code"></i> API Hub: Active</span>
                             <span class="marquee-divider">•</span>
                             <span class="marquee-item"><i class="fas fa-gamepad"></i> Free Games: Connected</span>
@@ -2388,7 +1955,7 @@
                                 v4.0 is now live with spatial computing UI!</span>
                             <span class="marquee-divider">•</span>
                             <span class="marquee-item"><i class="fas fa-plus-circle" style="color: #10b981;"></i> New:
-                                Anime Scene Search, Lens Search, and KurdStream integration are fully active!</span>
+                                Anime Scene Search and Lens Search are fully active!</span>
                             <span class="marquee-divider">•</span>
                             <span class="marquee-item"><i class="fab fa-discord" style="color: #5865f2;"></i> Join our
                                 official Discord community for support and tweak suggestions!</span>
@@ -2412,11 +1979,8 @@
                             <span class="marquee-divider">•</span>
                             <span class="marquee-item"><i class="fas fa-images"></i> Lens Search: Active</span>
                             <span class="marquee-divider">•</span>
-                            <span class="marquee-item"><i class="fas fa-microphone-alt"></i> KurdDoblazh:
-                                Connected</span>
-                            <span class="marquee-divider">•</span>
-                            <span class="marquee-item"><i class="fas fa-futbol"></i> Live Sports: Online</span>
-                            <span class="marquee-divider">•</span>
+                            
+                            
                             <span class="marquee-item"><i class="fas fa-code"></i> API Hub: Active</span>
                             <span class="marquee-divider">•</span>
                             <span class="marquee-item"><i class="fas fa-gamepad"></i> Free Games: Connected</span>
@@ -2507,156 +2071,171 @@
     </div>
 
     <!-- Songs Player Modal -->
-    <div id="songs-player-modal" class="songs-modal">
+    <div id="songs-player-modal" class="songs-modal" onclick="if(event.target === this) closeSongsPlayer()">
         <div class="songs-modal-content">
             <div class="songs-modal-header">
-                <h3><i class="fas fa-music" style="color: #60a5fa; margin-right: 6px;"></i> Songs Player & Playlist</h3>
-                <div class="songs-modal-close" onclick="closeSongsPlayer()"><i class="fas fa-times"></i></div>
-            </div>
-
-            <!-- Now Playing Area -->
-            <div class="now-playing-container" id="now-playing-container">
-                <div class="now-playing-disc-container">
-                    <div class="turntable-pivot"></div>
-                    <div class="turntable-needle" id="turntable-needle"></div>
-                    <div class="now-playing-disc" id="now-playing-disc">
-                        <div class="vinyl-grooves"></div>
-                        <div class="vinyl-label" id="vinyl-label-glow">
-                            <div class="vinyl-center-dot"></div>
-                        </div>
+                <div class="songs-modal-brand">
+                    <div class="songs-modal-icon-badge">
+                        <i class="fas fa-compact-disc"></i>
                     </div>
-                    <div class="vinyl-reflection"></div>
-                </div>
-                <div class="now-playing-info">
-                    <div class="now-playing-title" id="now-playing-title">No Song Selected</div>
-                    <div class="now-playing-status-row"
-                        style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
-                        <span class="now-playing-status" id="now-playing-status">Paused</span>
-                        <div class="audio-spectrum" id="audio-spectrum">
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                        </div>
+                    <div class="songs-modal-title-wrap">
+                        <h3>JJ Songs Player & Playlist</h3>
+                        <div class="songs-modal-subtitle">Spatial Turntable & High-Fidelity Audio Deck</div>
                     </div>
                 </div>
-
-                <!-- Seek Bar -->
-                <div class="audio-scrubber-container">
-                    <span class="time-label" id="track-time-current">0:00</span>
-                    <input type="range" class="audio-progress-bar" id="audio-progress-bar" min="0" max="100" value="0"
-                        step="0.1">
-                    <span class="time-label" id="track-time-duration">0:00</span>
-                </div>
-
-                <div class="player-controls">
-                    <button class="player-ctrl-btn" onclick="prevSong()" title="Previous Song"><i
-                            class="fas fa-backward"></i></button>
-                    <button class="player-ctrl-btn play-pause-btn" id="modal-play-btn" onclick="toggleSongsPlay()"
-                        title="Play/Pause"><i class="fas fa-play"></i></button>
-                    <button class="player-ctrl-btn" onclick="nextSong()" title="Next Song"><i
-                            class="fas fa-forward"></i></button>
-                </div>
-
-                <!-- Volume Control -->
-                <div class="audio-volume-container">
-                    <i class="fas fa-volume-down" id="volume-icon-btn" onclick="toggleMute()"
-                        style="cursor:pointer; font-size: 0.8rem; color: rgba(255,255,255,0.4); width: 14px;"></i>
-                    <input type="range" class="audio-volume-slider" id="audio-volume-slider" min="0" max="100"
-                        value="30" step="1">
-                    <i class="fas fa-volume-up" style="font-size: 0.8rem; color: rgba(255,255,255,0.4);"></i>
-                </div>
-            </div>
-
-            <!-- Playlist Area -->
-            <div class="playlist-section">
-                <h4><i class="fas fa-list-ul" style="margin-right: 6px; color: #a855f7;"></i> Playlist</h4>
-                <div class="playlist-items-container" id="playlist-items-container">
-                    <!-- Dynamic songs will render here -->
-                </div>
-            </div>
-
-            <!-- Add Custom Song Area -->
-            <div class="add-song-section">
-                <h4><i class="fas fa-plus-circle" style="margin-right: 6px; color: #10b981;"></i> Add Custom Song</h4>
-                <div class="add-song-form">
-                    <input type="text" id="add-song-name" class="add-song-input" placeholder="Song Name"
-                        autocomplete="off">
-                    <input type="url" id="add-song-url" class="add-song-input" placeholder="MP3 URL (direct link)"
-                        autocomplete="off">
-                    <button class="app-btn add-song-btn" onclick="addCustomSong()"><i class="fas fa-plus"></i> Add to
-                        Playlist</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Temp Mail Reader Modal -->
-    <div id="temp-mail-reader-modal" class="songs-modal" style="display: none; z-index: 12000;">
-        <div class="songs-modal-content"
-            style="max-width: 700px; width: 90%; height: 85vh; display: flex; flex-direction: column;">
-            <div class="songs-modal-header">
-                <h3><i class="fas fa-envelope-open" style="color: #a855f7; margin-right: 6px;"></i> Message Reader</h3>
-                <div class="songs-modal-close" onclick="closeTempMailReader()"><i class="fas fa-times"></i></div>
-            </div>
-
-            <div class="temp-mail-reader-body"
-                style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; text-align: left;">
-                <div class="mail-reader-meta"
-                    style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
-                    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.4);">
-                        From: <span id="mail-reader-from" style="color: #fff; font-weight: 600;">Sender Address</span>
-                    </div>
-                    <div style="font-size: 0.8rem; color: rgba(255,255,255,0.4);">
-                        Date: <span id="mail-reader-date" style="color: #fff; font-weight: 500;">Received Date</span>
-                    </div>
-                    <div style="font-size: 1.1rem; font-weight: 800; color: #fff; margin-top: 5px;"
-                        id="mail-reader-subject">
-                        Subject Line
-                    </div>
-                </div>
-
-                <div class="mail-reader-content"
-                    style="flex: 1; min-height: 350px; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
-                    <!-- Sandbox iframe for isolated secure mail body display -->
-                    <iframe id="temp-mail-body-iframe" sandbox="allow-popups allow-popups-to-escape-sandbox"
-                        style="width: 100%; flex: 1; border: none; background: #fff; border-radius: 0 0 12px 12px; display: none;"></iframe>
-                    <!-- Fallback or raw text panel -->
-                    <div id="temp-mail-body-raw"
-                        style="width: 100%; flex: 1; padding: 15px; overflow-y: auto; font-family: monospace; font-size: 0.8rem; color: rgba(255,255,255,0.85); white-space: pre-wrap; display: none;">
-                    </div>
-                </div>
-
-                <div id="mail-reader-attachments"
-                    style="display: none; flex-direction: column; gap: 8px; margin-top: 10px;">
-                    <h5 style="margin: 0; font-size: 0.82rem; color: rgba(255,255,255,0.6);"><i
-                            class="fas fa-paperclip"></i> Attachments:</h5>
-                    <div id="mail-reader-attachments-list" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
-                </div>
-            </div>
-
-            <div
-                style="padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.15); border-radius: 0 0 20px 20px;">
-                <div style="display: flex; gap: 10px;">
-                    <button class="app-btn" onclick="deleteCurrentMessage()"
-                        style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; padding: 8px 16px;">
-                        <i class="fas fa-trash-alt"></i> Delete Email
-                    </button>
-                    <button class="app-btn" onclick="forwardCurrentMessage()"
-                        style="background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; padding: 8px 16px;">
-                        <i class="fas fa-share"></i> Forward / Resend
+                <div class="songs-modal-header-actions">
+                    <span class="songs-count-pill" id="songs-count-badge">4 Tracks</span>
+                    <button class="songs-modal-close" onclick="closeSongsPlayer()" title="Close Player">
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <button class="app-btn" onclick="closeTempMailReader()"
-                    style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #ccc; padding: 8px 16px;">
-                    Close
-                </button>
+            </div>
+
+            <!-- Studio Dual Deck Grid -->
+            <div class="songs-studio-deck">
+                <!-- Left Pane: Turntable & Master Controls -->
+                <div class="now-playing-container" id="now-playing-container">
+                    <div class="turntable-ambient-halo"></div>
+                    
+                    <!-- Turntable Platter Deck -->
+                    <div class="now-playing-disc-container">
+                        <div class="turntable-pivot"></div>
+                        <div class="turntable-needle" id="turntable-needle"></div>
+                        <div class="now-playing-disc" id="now-playing-disc">
+                            <div class="vinyl-grooves"></div>
+                            <div class="vinyl-label" id="vinyl-label-glow">
+                                <div class="vinyl-center-dot"></div>
+                                <div class="vinyl-pulse-ring"></div>
+                            </div>
+                        </div>
+                        <div class="vinyl-reflection"></div>
+                        <div class="turntable-speed-badge" id="turntable-speed-badge">33 ⅓ RPM</div>
+                    </div>
+
+                    <!-- Song Info Header -->
+                    <div class="now-playing-info">
+                        <div class="now-playing-title" id="now-playing-title">No Song Selected</div>
+                        <div class="now-playing-artist" id="now-playing-artist">Spatial Studio Audio</div>
+                        <div class="now-playing-status-row">
+                            <span class="now-playing-status" id="now-playing-status">Paused</span>
+                            <div class="audio-spectrum" id="audio-spectrum">
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Audio Scrubber -->
+                    <div class="audio-scrubber-container">
+                        <span class="time-label" id="track-time-current">0:00</span>
+                        <div class="audio-scrubber-track-wrap">
+                            <input type="range" class="audio-progress-bar" id="audio-progress-bar" min="0" max="100" value="0" step="0.1">
+                        </div>
+                        <span class="time-label" id="track-time-duration">0:00</span>
+                    </div>
+
+                    <!-- Primary & Secondary Controls -->
+                    <div class="player-controls-master">
+                        <button class="player-ctrl-btn sub-ctrl" id="shuffle-btn" onclick="toggleShuffle()" title="Shuffle Mode">
+                            <i class="fas fa-random"></i>
+                        </button>
+                        <button class="player-ctrl-btn skip-ctrl" onclick="seekRelative(-10)" title="Rewind 10s">
+                            <i class="fas fa-undo-alt"></i>
+                        </button>
+                        <button class="player-ctrl-btn" onclick="prevSong()" title="Previous Song">
+                            <i class="fas fa-backward"></i>
+                        </button>
+                        <button class="player-ctrl-btn play-pause-btn" id="modal-play-btn" onclick="toggleSongsPlay()" title="Play/Pause">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="player-ctrl-btn" onclick="nextSong()" title="Next Song">
+                            <i class="fas fa-forward"></i>
+                        </button>
+                        <button class="player-ctrl-btn skip-ctrl" onclick="seekRelative(10)" title="Forward 10s">
+                            <i class="fas fa-redo-alt"></i>
+                        </button>
+                        <button class="player-ctrl-btn sub-ctrl" id="repeat-btn" onclick="toggleRepeat()" title="Repeat Mode">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+
+                    <!-- Volume Bar Deck -->
+                    <div class="audio-volume-container">
+                        <i class="fas fa-volume-down" id="volume-icon-btn" onclick="toggleMute()" title="Mute / Unmute"></i>
+                        <input type="range" class="audio-volume-slider" id="audio-volume-slider" min="0" max="100" value="30" step="1">
+                        <i class="fas fa-volume-up" onclick="setVolumeMax()" title="Full Volume"></i>
+                    </div>
+                </div>
+
+                <!-- Right Pane: Playlist Library & Add Track -->
+                <div class="songs-library-pane">
+                    <!-- Playlist Section -->
+                    <div class="playlist-section">
+                        <div class="playlist-header-row">
+                            <div class="playlist-heading">
+                                <i class="fas fa-list-ul"></i>
+                                <span>Track Library</span>
+                            </div>
+                            <div class="playlist-header-actions">
+                                <button class="playlist-action-btn" onclick="resetPlaylistDefaults()" title="Restore Default Tracks">
+                                    <i class="fas fa-history"></i> Reset Defaults
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Playlist Search Bar -->
+                        <div class="playlist-search-wrap">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="playlist-search-input" class="playlist-search-input" placeholder="Search playlist tracks..." oninput="filterPlaylistTracks()">
+                            <button id="playlist-search-clear" class="playlist-search-clear" onclick="clearPlaylistSearch()" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <!-- Track list items -->
+                        <div class="playlist-items-container" id="playlist-items-container">
+                            <!-- Dynamic songs render here -->
+                        </div>
+                    </div>
+
+                    <!-- Add Custom Song Section -->
+                    <div class="add-song-section" id="add-song-accordion">
+                        <div class="add-song-header" onclick="toggleAddSongAccordion()">
+                            <div class="add-song-title">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Add Custom Track</span>
+                            </div>
+                            <i class="fas fa-chevron-down add-song-chevron" id="add-song-chevron"></i>
+                        </div>
+                        <div class="add-song-body" id="add-song-body">
+                            <div class="add-song-form">
+                                <div class="add-song-input-group">
+                                    <i class="fas fa-music"></i>
+                                    <input type="text" id="add-song-name" class="add-song-input" placeholder="Song title or Artist - Title" autocomplete="off">
+                                </div>
+                                <div class="add-song-input-group">
+                                    <i class="fas fa-link"></i>
+                                    <input type="url" id="add-song-url" class="add-song-input" placeholder="Direct MP3 / Audio stream URL" autocomplete="off">
+                                </div>
+                                <button class="app-btn add-song-btn" onclick="addCustomSong()">
+                                    <i class="fas fa-plus"></i> Add to Playlist
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

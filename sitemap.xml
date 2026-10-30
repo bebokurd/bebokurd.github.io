@@ -155,22 +155,6 @@
         <priority>0.75</priority>
     </url>
     
-    <!-- KurdStream Movies Database -->
-    <url>
-        <loc>https://chya.netlify.app/#kurdstream</loc>
-        <lastmod>2026-05-30</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.85</priority>
-    </url>
-    
-    <!-- KurdDoblazh Dubbing Center -->
-    <url>
-        <loc>https://chya.netlify.app/#kurddoblazh</loc>
-        <lastmod>2026-05-30</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.85</priority>
-    </url>
-    
     <!-- Developer API Hub -->
     <url>
         <loc>https://chya.netlify.app/#api-hub</loc>

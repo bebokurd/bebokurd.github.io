@@ -10,44 +10,40 @@ const DATA_FILE = path.join(__dirname, 'data.json');
 app.use(cors());
 app.use(express.json());
 
+// In-memory data cache
 let cachedData = null;
+let lastMtime = 0;
 
-// Utility to read data
-const readData = () => {
-    if (cachedData !== null) {
-        return cachedData;
-    }
+function readData() {
     try {
-        const data = fs.readFileSync(DATA_FILE, 'utf8');
-        cachedData = JSON.parse(data);
+        const stats = fs.statSync(DATA_FILE);
+        if (cachedData && stats.mtimeMs === lastMtime) {
+            return cachedData;
+        }
+        const raw = fs.readFileSync(DATA_FILE, 'utf8');
+        cachedData = JSON.parse(raw);
+        lastMtime = stats.mtimeMs;
         return cachedData;
     } catch (err) {
-        console.error('Error reading data.json:', err);
+        console.error('Error reading data file:', err);
         return [];
     }
-};
+}
 
-// Initialize cache on startup
-readData();
-
-// Utility to write data
-const writeData = (data) => {
-    cachedData = data;
+function writeData(data) {
     try {
-        // Write file asynchronously to avoid blocking the event loop, and minify JSON
-        fs.writeFile(DATA_FILE, JSON.stringify(data), 'utf8', (err) => {
-            if (err) {
-                console.error('Error writing data.json asynchronously:', err);
-            }
-        });
+        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
+        const stats = fs.statSync(DATA_FILE);
+        cachedData = data;
+        lastMtime = stats.mtimeMs;
         return true;
     } catch (err) {
-        console.error('Error writing data.json:', err);
+        console.error('Error writing data file:', err);
         return false;
     }
-};
+}
 
-// Serve data.json dynamically from memory cache to bypass disk read I/O
+// Serve data.json dynamically
 app.get('/data.json', (req, res) => {
     res.json(readData());
 });
@@ -66,7 +62,6 @@ app.post('/api/data', (req, res) => {
     const data = readData();
     const newItem = req.body;
     
-    // Generate a unique ID if not provided
     if (!newItem.id) {
         const baseId = newItem.name ? newItem.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'item';
         newItem.id = `${baseId}-${Date.now()}`;
@@ -87,7 +82,6 @@ app.put('/api/data/:id', (req, res) => {
     const index = data.findIndex(item => item.id === id);
     
     if (index !== -1) {
-        // Keep the same ID
         data[index] = { ...req.body, id };
         if (writeData(data)) {
             res.json(data[index]);
@@ -118,7 +112,22 @@ app.delete('/api/data/:id', (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
     console.log(`Admin dashboard: http://localhost:${PORT}/admin/`);
+});
+
+server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.warn(`\n[Notice] Port ${PORT} is already in use by an existing instance.`);
+        console.log(`Tip: To stop the other instance on port ${PORT}, run: taskkill /F /IM node.exe`);
+        const fallbackPort = Number(PORT) + 1;
+        console.log(`Starting server on fallback port http://localhost:${fallbackPort} ...\n`);
+        app.listen(fallbackPort, () => {
+            console.log(`Server is running on http://localhost:${fallbackPort}`);
+            console.log(`Admin dashboard: http://localhost:${fallbackPort}/admin/`);
+        });
+    } else {
+        console.error('Server error:', err);
+    }
 });

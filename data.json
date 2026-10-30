@@ -1,1 +1,2410 @@
-[{"name":"JSONPlaceholder","desc":"Free fake REST API for prototyping, mock data, and testing network requests.","cat":"tools","url":"https://jsonplaceholder.typicode.com/","icon":"fas fa-database","id":"jsonplaceholder-dev-api"},{"name":"HTTPBin Echo REST","desc":"A robust request and response service, ideal for debugging HTTP headers and payloads.","cat":"tools","url":"https://httpbin.org/","icon":"fas fa-exchange-alt","id":"httpbin-dev-api"},{"name":"ReqRes Mock Platform","desc":"A hosted REST API ready for testing mock user profiles, authentication tokens, and CRUD operations.","cat":"tools","url":"https://reqres.in/","icon":"fas fa-users-cog","id":"reqres-dev-api"},{"name":"Supabase Web Indexer","desc":"A high-performance web indexing engine that analyzes and serves structured web data with TF-IDF magic and Supabase as the brain.","cat":"tools","url":"https://supabase.com/","icon":"fas fa-brain-circuit","id":"supabase-tfidf-indexer"},{"name":"IPify Address API","desc":"A simple public IPv4 address query resolver responding in raw text or formatted JSON.","cat":"tools","url":"https://api.ipify.org?format=json","icon":"fas fa-network-wired","id":"ipify-dev-api"},{"name":"CoinGecko Market Data","desc":"Access historical coin pricing, exchange volumes, and token index feeds.","cat":"tools","url":"https://api.coingecko.com/api/v3/ping","icon":"fas fa-coins","id":"coingecko-dev-api"},{"name":"CHYA Official Discord","desc":"Join our community hub for updates and chat.","cat":"social","url":"https://discord.gg/QzhU56MDkH","icon":"fab fa-discord","id":"chya-official-discord-0"},{"name":"Claude AI","desc":"Advanced AI for writing and coding.","cat":"ai","url":"https://claude.ai/","icon":"fas fa-brain","id":"claude-ai-1"},{"name":"Gemini","desc":"Google's most capable AI model.","cat":"ai","url":"https://gemini.google.com/","icon":"fas fa-wand-magic-sparkles","id":"gemini-2"},{"name":"v0.dev","desc":"Generate UI components using AI.","cat":"ai","url":"https://v0.dev/","icon":"fas fa-code","id":"v0dev-3"},{"name":"Lovable","desc":"Build full apps with AI.","cat":"ai","url":"https://lovable.dev/","icon":"fas fa-heart","id":"lovable-4"},{"name":"Luma Dream Machine","desc":"AI Video generation.","cat":"ai","url":"https://lumalabs.ai/dream-machine","icon":"fas fa-meteor","id":"luma-dream-machine-5"},{"name":"Opus Clip","desc":"AI powered video repurposing.","cat":"ai","url":"https://www.opus.pro/","icon":"fas fa-scissors","id":"opus-clip-6"},{"name":"ElevenLabs","desc":"Best AI Text-to-Speech.","cat":"ai","url":"https://elevenlabs.io/","icon":"fas fa-microphone","id":"elevenlabs-7"},{"name":"Websim","desc":"Browser-based web simulation AI.","cat":"ai","url":"https://websim.ai/","icon":"fas fa-globe","id":"websim-8"},{"name":"ChatGPT","desc":"OpenAI's conversational AI and world-leading LLM.","cat":"ai","url":"https://chatgpt.com/","icon":"fas fa-comment-dots","id":"chatgpt-9"},{"name":"Perplexity AI","desc":"AI-powered search engine for accurate answers.","cat":"ai","url":"https://www.perplexity.ai/","icon":"fas fa-magnifying-glass","id":"perplexity-ai-10"},{"name":"DeepSeek-R1","desc":"Powerful open-weights LLM for coding and reasoning.","cat":"ai","url":"https://www.deepseek.com/","icon":"fas fa-brain","id":"deepseek-r1-11"},{"name":"Phind","desc":"Intelligent search engine and assistant for programmers.","cat":"ai","url":"https://www.phind.com/","icon":"fas fa-terminal","id":"phind-12"},{"name":"Ollama","desc":"Run large language models locally on your machine.","cat":"ai","url":"https://ollama.com/","icon":"fas fa-microchip","id":"ollama-13"},{"name":"Midjourney","desc":"High-end generative AI for stunning visual art.","cat":"ai","url":"https://www.midjourney.com/","icon":"fas fa-palette","id":"midjourney-14"},{"name":"Stable Diffusion","desc":"Open-source text-to-image generation.","cat":"ai","url":"https://stablediffusionweb.com/","icon":"fas fa-images","id":"stable-diffusion-15"},{"name":"Jasper","desc":"AI writing assistant for marketing and content.","cat":"ai","url":"https://www.jasper.ai/","icon":"fas fa-pen-nib","id":"jasper-16"},{"name":"QuillBot","desc":"AI-powered paraphrasing and writing tool.","cat":"ai","url":"https://quillbot.com/","icon":"fas fa-file-signature","id":"quillbot-17"},{"name":"Taskade","desc":"AI-powered task management and productivity.","cat":"ai","url":"https://www.taskade.com/","icon":"fas fa-list-check","id":"taskade-18"},{"name":"RunwayML","desc":"Next-generation AI video creation suite.","cat":"ai","url":"https://runwayml.com/","icon":"fas fa-video","id":"runwayml-19"},{"name":"Mubert","desc":"Generative AI music for content creators.","cat":"ai","url":"https://mubert.com/","icon":"fas fa-music","id":"mubert-20"},{"name":"You.com","desc":"Private and customizable AI search experience.","cat":"ai","url":"https://you.com/","icon":"fas fa-user-secret","id":"youcom-21"},{"name":"Komo AI","desc":"Fast and accurate AI search engine.","cat":"ai","url":"https://komo.ai/","icon":"fas fa-bolt","id":"komo-ai-22"},{"name":"Lex","desc":"AI-powered word processor for faster writing.","cat":"ai","url":"https://lex.page/","icon":"fas fa-keyboard","id":"lex-23"},{"name":"Gist AI","desc":"Summarize websites, YouTube, and PDFs instantly.","cat":"ai","url":"https://www.gistai.tech/","icon":"fas fa-compress","id":"gist-ai-24"},{"name":"MeetGeek","desc":"AI meeting assistant for summaries and transcribing.","cat":"ai","url":"https://meetgeek.ai/","icon":"fas fa-headset","id":"meetgeek-25"},{"name":"SaneBox","desc":"AI-powered email management and prioritization.","cat":"ai","url":"https://www.sanebox.com/","icon":"fas fa-envelope-open-text","id":"sanebox-26"},{"name":"Krisp","desc":"AI noise cancellation for meetings and calls.","cat":"ai","url":"https://krisp.ai/","icon":"fas fa-volume-mute","id":"krisp-27"},{"name":"Adobe Podcast","desc":"AI-powered audio recording and enhancement.","cat":"ai","url":"https://podcast.adobe.com/","icon":"fas fa-microphone-lines","id":"adobe-podcast-28"},{"name":"Voicemod","desc":"Real-time AI voice changer and soundboard.","cat":"ai","url":"https://www.voicemod.net/","icon":"fas fa-masks-theater","id":"voicemod-29"},{"name":"Lensa","desc":"AI magic avatars and advanced photo editing.","cat":"ai","url":"https://prisma-ai.com/lensa","icon":"fas fa-user-astronaut","id":"lensa-30"},{"name":"Character AI","desc":"Intelligent chatbots with distinct personalities.","cat":"ai","url":"https://beta.character.ai/","icon":"fas fa-users-viewfinder","id":"character-ai-31"},{"name":"Replit Ghostwriter","desc":"AI-powered pair programmer in your browser.","cat":"ai","url":"https://replit.com/","icon":"fas fa-laptop-code","id":"replit-ghostwriter-32"},{"name":"Codeium","desc":"Free lightning-fast AI coding extension.","cat":"ai","url":"https://codeium.com/","icon":"fas fa-code-branch","id":"codeium-33"},{"name":"Writesonic","desc":"AI writer for blogs, ads, and product descriptions.","cat":"ai","url":"https://writesonic.com/","icon":"fas fa-feather-pointed","id":"writesonic-34"},{"name":"Microsoft Designer","desc":"AI-driven graphic design and social media posts.","cat":"ai","url":"https://designer.microsoft.com/","icon":"fas fa-wand-magic","id":"microsoft-designer-35"},{"name":"Clipdrop","desc":"Create professional visuals without a studio.","cat":"ai","url":"https://clipdrop.co/","icon":"fas fa-scissors","id":"clipdrop-36"},{"name":"Uizard","desc":"AI design tool for apps and websites.","cat":"ai","url":"https://uizard.io/","icon":"fas fa-mobile-screen-button","id":"uizard-37"},{"name":"ELI5","desc":"AI that explains complex topics simply.","cat":"ai","url":"https://eli5.ai/","icon":"fas fa-baby","id":"eli5-38"},{"name":"Remove.bg","desc":"Automatic background removal for images.","cat":"ai","url":"https://www.remove.bg/","icon":"fas fa-eraser","id":"removebg-39"},{"name":"Speechify","desc":"Read-aloud AI text-to-speech assistant.","cat":"ai","url":"https://speechify.com/","icon":"fas fa-ear-listen","id":"speechify-40"},{"name":"Summarize Tech","desc":"AI-powered YouTube video summarizer.","cat":"ai","url":"https://summarize.tech/","icon":"fas fa-compress-arrows-alt","id":"summarize-tech-41"},{"name":"TLDR this","desc":"Summarize any article or webpage with AI.","cat":"ai","url":"https://www.tldrthis.com/","icon":"fas fa-align-left","id":"tldr-this-42"},{"name":"DoNotPay","desc":"The world's first AI robot lawyer.","cat":"ai","url":"https://donotpay.com/","icon":"fas fa-gavel","id":"donotpay-43"},{"name":"VidIQ","desc":"AI-powered SEO and analytics for YouTube.","cat":"ai","url":"https://vidiq.com/","icon":"fas fa-chart-line","id":"vidiq-44"},{"name":"Adcreative.ai","desc":"Generate high-converting ad creatives with AI.","cat":"ai","url":"https://www.adcreative.ai/","icon":"fas fa-rectangle-ad","id":"adcreativeai-45"},{"name":"Ocoya","desc":"AI social media marketing and scheduling.","cat":"ai","url":"https://www.ocoya.com/","icon":"fas fa-share-nodes","id":"ocoya-46"},{"name":"Beatoven.ai","desc":"Create custom royalty-free music with AI.","cat":"ai","url":"https://www.beatoven.ai/","icon":"fas fa-headphones","id":"beatovenai-47"},{"name":"Reface AI","desc":"AI face swap and viral video creation tool.","cat":"ai","url":"https://hey.reface.ai/","icon":"fas fa-face-grin-stars","id":"reface-ai-48"},{"name":"GitHub Copilot","desc":"The world's most widely used AI developer tool.","cat":"ai","url":"https://github.com/features/copilot","icon":"fab fa-github","id":"github-copilot-49"},{"name":"Tabnine","desc":"AI assistant for software developers.","cat":"ai","url":"https://www.tabnine.com/","icon":"fas fa-code","id":"tabnine-50"},{"name":"BlackBox AI","desc":"Lightning-fast AI code generation and search.","cat":"ai","url":"https://www.useblackbox.io/","icon":"fas fa-square-terminal","id":"blackbox-ai-51"},{"name":"Writesonic","desc":"Create SEO-optimized content for blogs and ads.","cat":"ai","url":"https://writesonic.com/","icon":"fas fa-pencil","id":"writesonic-52"},{"name":"Anyword","desc":"AI writing platform built for marketing results.","cat":"ai","url":"https://anyword.com/","icon":"fas fa-bullhorn","id":"anyword-53"},{"name":"Tiledesk","desc":"Open-source chatbot development framework.","cat":"ai","url":"https://tiledesk.com/","icon":"fas fa-comments","id":"tiledesk-54"},{"name":"Harvey AI","desc":"AI-powered customer support and automation.","cat":"ai","url":"https://hiverhq.com/harvey-ai-customer-support","icon":"fas fa-robot","id":"harvey-ai-55"},{"name":"Designs AI","desc":"Create logos, videos, and banners in minutes.","cat":"ai","url":"https://designs.ai/","icon":"fas fa-object-group","id":"designs-ai-56"},{"name":"Teachable Machine","desc":"Train your own machine learning models quickly.","cat":"ai","url":"https://teachablemachine.withgoogle.com/","icon":"fas fa-graduation-cap","id":"teachable-machine-57"},{"name":"PromptLayer","desc":"Platform for prompt engineering and observability.","cat":"ai","url":"https://promptlayer.com/","icon":"fas fa-layer-group","id":"promptlayer-58"},{"name":"Caktus AI","desc":"The first ever AI built for students.","cat":"ai","url":"https://www.caktus.ai/","icon":"fas fa-school","id":"caktus-ai-59"},{"name":"TutorAI","desc":"Personalized AI learning platform for any topic.","cat":"ai","url":"https://www.tutorai.me/","icon":"fas fa-chalkboard-user","id":"tutorai-60"},{"name":"Leonardo.Ai","desc":"Generative AI for creative projects and game assets.","cat":"ai","url":"https://leonardo.ai/","icon":"fas fa-dice-d20","id":"leonardoai-61"},{"name":"Scenario","desc":"AI-generated gaming assets and environments.","cat":"ai","url":"https://www.scenario.gg/","icon":"fas fa-gamepad","id":"scenario-62"},{"name":"Legal Robot","desc":"AI-powered legal analysis and document drafting.","cat":"ai","url":"https://legalrobot.com/","icon":"fas fa-scale-balanced","id":"legal-robot-63"},{"name":"Boomy","desc":"Make instant AI-generated songs and monetize them.","cat":"ai","url":"https://boomy.com/","icon":"fas fa-compact-disc","id":"boomy-64"},{"name":"Soundful","desc":"Create unique, royalty-free tracks with AI.","cat":"ai","url":"https://soundful.com/","icon":"fas fa-sliders","id":"soundful-65"},{"name":"Otter AI","desc":"AI-powered meeting notes and transcription.","cat":"ai","url":"https://otter.ai/","icon":"fas fa-file-audio","id":"otter-ai-66"},{"name":"InteriorAI","desc":"AI-powered interior design and room staging.","cat":"ai","url":"https://interiorai.com/","icon":"fas fa-house-chimney-window","id":"interiorai-67"},{"name":"GetFloorPlan","desc":"Convert sketches to 3D floor plans with AI.","cat":"ai","url":"https://getfloorplan.com/","icon":"fas fa-map","id":"getfloorplan-68"},{"name":"Synthesia","desc":"Create AI videos with talking avatars from text.","cat":"ai","url":"https://www.synthesia.io/","icon":"fas fa-person-chalkboard","id":"synthesia-69"},{"name":"Wonder Dynamics","desc":"AI tool that automatically animates CG characters.","cat":"ai","url":"https://www.wonderdynamics.com/","icon":"fas fa-clapperboard","id":"wonder-dynamics-70"},{"name":"Kaedim","desc":"Turn 2D images into 3D models with AI.","cat":"ai","url":"https://www.kaedim3d.com/","icon":"fas fa-cube","id":"kaedim-71"},{"name":"Civitai","desc":"The largest community-driven AI model repository.","cat":"ai","url":"https://civitai.com/","icon":"fas fa-cubes","id":"civitai-72"},{"name":"NightCafe Studio","desc":"Create AI art through community and challenges.","cat":"ai","url":"https://creator.nightcafe.studio/","icon":"fas fa-brush","id":"nightcafe-studio-73"},{"name":"Kurd Cinema","desc":"Professional Kurdish movie subtitles/dubs.","cat":"kurdish","url":"https://kurdcinema.com/","icon":"fas fa-language","id":"kurd-cinema-74"},{"name":"KurdFilm","desc":"Kurdish movie database and streaming.","cat":"kurdish","url":"https://kurdfilm.com/","icon":"fas fa-compact-disc","id":"kurdfilm-75"},{"name":"Kurd Doblazh","desc":"Kurdish dubbed series and movies.","cat":"kurdish","url":"https://kurddoblaj.net/","icon":"fas fa-microphone","id":"kurd-doblazh-76"},{"name":"Beenar","desc":"Kurdish media platform.","cat":"kurdish","url":"https://beenar.net/","icon":"fas fa-eye","id":"beenar-77"},{"name":"Kurd Movies","desc":"Kurdish dubbed film library.","cat":"kurdish","url":"https://kurdmovies.net/","icon":"fas fa-clapperboard","id":"kurd-movies-78"},{"name":"Kurd TVs","desc":"Live Kurdish television channels.","cat":"kurdish","url":"https://kurdtvs.net/","icon":"fas fa-tv","id":"kurd-tvs-79"},{"name":"Kurdi TV","desc":"Live Kurdish television channels.","cat":"kurdish","url":"https://kurditv.com/","icon":"fas fa-satellite-dish","id":"kurdi-tv-80"},{"name":"AniMixPlay","desc":"Watch HD Anime ad-free.","cat":"anime","url":"https://animixplay.to/","icon":"fas fa-tv","id":"animixplay-81"},{"name":"MangaReader","desc":"Read and download manga online.","cat":"anime","url":"https://mangareader.to/","icon":"fas fa-book-open","id":"mangareader-82"},{"name":"Crunchyroll","desc":"Official source for anime.","cat":"anime","url":"https://www.crunchyroll.com/","icon":"fas fa-play","id":"crunchyroll-83"},{"name":"WCOForever","desc":"Watch cartoons and anime online.","cat":"anime","url":"https://www.wcoforever.net/","icon":"fas fa-hat-wizard","id":"wcoforever-84"},{"name":"KimCartoon","desc":"Free high quality cartoons.","cat":"anime","url":"https://kimcartoon.li/","icon":"fas fa-palette","id":"kimcartoon-85"},{"name":"Space Power Fan","desc":"Kurdish/Arabic anime archive.","cat":"anime","url":"https://spacepowerfan.com/","icon":"fas fa-star","id":"space-power-fan-86"},{"name":"Anime Nexus","desc":"Watch HD Anime online.","cat":"anime","url":"https://anime.nexus","icon":"fas fa-tv","id":"anime-nexus-87"},{"name":"AnimeKai","desc":"Watch HD Anime online.","cat":"anime","url":"https://animekai.to","icon":"fas fa-play","id":"animekai-88"},{"name":"9AnimeTV","desc":"Watch HD Anime online.","cat":"anime","url":"https://9animetv.to","icon":"fas fa-hat-wizard","id":"9animetv-89"},{"name":"Miruro","desc":"Watch HD Anime online.","cat":"anime","url":"https://miruro.to","icon":"fas fa-tv","id":"miruro-90"},{"name":"Anitaku","desc":"Watch HD Anime online.","cat":"anime","url":"https://anitaku.io","icon":"fas fa-play","id":"anitaku-91"},{"name":"Anikai","desc":"Watch HD Anime online.","cat":"anime","url":"https://anikai.to","icon":"fas fa-hat-wizard","id":"anikai-92"},{"name":"GogoAnime","desc":"Watch HD Anime online.","cat":"anime","url":"https://gogoanime.org.vc","icon":"fas fa-tv","id":"gogoanime-93"},{"name":"Anigo","desc":"Watch HD Anime online.","cat":"anime","url":"https://anigo.to","icon":"fas fa-play","id":"anigo-94"},{"name":"Kickass Anime","desc":"Watch HD Anime online.","cat":"anime","url":"https://kickass-anime.ro","icon":"fas fa-hat-wizard","id":"kickass-anime-95"},{"name":"AniWatchTV","desc":"Watch HD Anime online.","cat":"anime","url":"https://aniwatchtv.to","icon":"fas fa-tv","id":"aniwatchtv-96"},{"name":"AnimeGG","desc":"Watch HD Anime online.","cat":"anime","url":"https://animegg.org","icon":"fas fa-play","id":"animegg-97"},{"name":"AnimeStream","desc":"Watch HD Anime online.","cat":"anime","url":"https://animestream.net","icon":"fas fa-hat-wizard","id":"animestream-98"},{"name":"KissAnime","desc":"Watch HD Anime online.","cat":"anime","url":"https://kissanime.com.ru","icon":"fas fa-tv","id":"kissanime-99"},{"name":"AllManga","desc":"Read manga online.","cat":"anime","url":"https://allmanga.to","icon":"fas fa-book-open","id":"allmanga-100"},{"name":"AniWorld","desc":"Watch HD Anime online.","cat":"anime","url":"https://aniworld.to","icon":"fas fa-play","id":"aniworld-101"},{"name":"WCOstream","desc":"Watch cartoons and anime online.","cat":"anime","url":"https://wcostream.tv","icon":"fas fa-hat-wizard","id":"wcostream-102"},{"name":"JustAnime","desc":"Watch HD Anime online.","cat":"anime","url":"https://justanime.to","icon":"fas fa-tv","id":"justanime-103"},{"name":"123Animes","desc":"Watch HD Anime online.","cat":"anime","url":"https://123animes.ru","icon":"fas fa-play","id":"123animes-104"},{"name":"CimaNow","desc":"Streaming movies and series (Arabic/Eng).","cat":"movies","url":"https://cimanow.cam/","icon":"fas fa-video","id":"cimanow-105"},{"name":"EgyBest","desc":"The original EgyBest media platform.","cat":"movies","url":"https://egybest.biz/","icon":"fas fa-clapperboard","id":"egybest-106"},{"name":"MyCima","desc":"Egyptian and foreign movie portal.","cat":"movies","url":"https://mycima.ink/","icon":"fas fa-clapperboard","id":"mycima-107"},{"name":"YTS","desc":"High quality YIFY movie torrents.","cat":"movies","url":"https://yts.bz/","icon":"fas fa-magnet","id":"yts-108"},{"name":"FMovies","desc":"Free HD movies online streaming.","cat":"movies","url":"https://fmovies.to/","icon":"fas fa-play-circle","id":"fmovies-109"},{"name":"PirateMedia","desc":"Watch movies, TV shows & live sports.","cat":"movies","url":"https://piratemedia.xyz/","icon":"fas fa-skull-crossbones","id":"piratemedia-110"},{"name":"Soap2Night","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://soap2night.cc","icon":"fas fa-clapperboard","id":"soap2night-111"},{"name":"Ramoflix","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://ramoflix.net","icon":"fas fa-video","id":"ramoflix-112"},{"name":"Dorawatch","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://dorawatch.one","icon":"fas fa-play","id":"dorawatch-113"},{"name":"Wmovies","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://wmovies.one","icon":"fas fa-tv","id":"wmovies-114"},{"name":"HydraHD","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://hydrahd.ru","icon":"fas fa-clapperboard","id":"hydrahd-115"},{"name":"Cineby","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://cineby.sc","icon":"fas fa-video","id":"cineby-116"},{"name":"Flickystream","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://flickystream.ru","icon":"fas fa-play","id":"flickystream-117"},{"name":"Yflix","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://yflix.to","icon":"fas fa-tv","id":"yflix-118"},{"name":"Cinema BZ","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://cinema.bz","icon":"fas fa-clapperboard","id":"cinema-bz-119"},{"name":"Flixer","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://flixer.su","icon":"fas fa-video","id":"flixer-120"},{"name":"Goojara","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://goojara.to","icon":"fas fa-play","id":"goojara-121"},{"name":"67movies","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://67movies.net","icon":"fas fa-tv","id":"67movies-122"},{"name":"ShuttleTV","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://shuttletv.su","icon":"fas fa-clapperboard","id":"shuttletv-123"},{"name":"PopcornMovies","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://popcornmovies.org","icon":"fas fa-video","id":"popcornmovies-124"},{"name":"Rivestream","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://rivestream.org","icon":"fas fa-play","id":"rivestream-125"},{"name":"TheFlixerTV","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://theflixertv.click","icon":"fas fa-tv","id":"theflixertv-126"},{"name":"Onionplay","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://onionplay.io","icon":"fas fa-clapperboard","id":"onionplay-127"},{"name":"Lookmovie2","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://lookmovie2.to","icon":"fas fa-video","id":"lookmovie2-128"},{"name":"Pressplayz","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://pressplayz.to","icon":"fas fa-play","id":"pressplayz-129"},{"name":"Nepu","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://nepu.to","icon":"fas fa-tv","id":"nepu-130"},{"name":"FMovies","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://fmovies.co","icon":"fas fa-clapperboard","id":"fmovies-131"},{"name":"Soap2day HDz","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://soap2dayhdz.com","icon":"fas fa-video","id":"soap2day-hdz-132"},{"name":"Project Free TV","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://projectfreetv.sx","icon":"fas fa-play","id":"project-free-tv-133"},{"name":"Mappl TV","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://mappl.tv","icon":"fas fa-tv","id":"mappl-tv-134"},{"name":"Streamex","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://streamex.sh","icon":"fas fa-clapperboard","id":"streamex-135"},{"name":"Pstream","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://pstream.net","icon":"fas fa-video","id":"pstream-136"},{"name":"Movish","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://movish.net","icon":"fas fa-play","id":"movish-137"},{"name":"TheMovieBox","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://themoviebox.org","icon":"fas fa-tv","id":"themoviebox-138"},{"name":"HDToday","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://hdtoday.tr","icon":"fas fa-clapperboard","id":"hdtoday-139"},{"name":"CinebyTV","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://cinebytv.com","icon":"fas fa-video","id":"cinebytv-140"},{"name":"RidoMovies","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://ridomovies.tv","icon":"fas fa-play","id":"ridomovies-141"},{"name":"123MoviesFree","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://123moviesfree.net","icon":"fas fa-tv","id":"123moviesfree-142"},{"name":"Willow Arlen","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://willow.arlen.icu","icon":"fas fa-clapperboard","id":"willow-arlen-143"},{"name":"Vidplay","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://vidplay.top","icon":"fas fa-video","id":"vidplay-144"},{"name":"CinemaOS","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://cinemaos.live","icon":"fas fa-play","id":"cinemaos-145"},{"name":"YesMovies","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://yesmovies.ag","icon":"fas fa-tv","id":"yesmovies-146"},{"name":"AnixTV","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://anixtv.us.cc","icon":"fas fa-clapperboard","id":"anixtv-147"},{"name":"PrimeWire","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://primewire.mov","icon":"fas fa-video","id":"primewire-148"},{"name":"MoviePire","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://moviepire.org","icon":"fas fa-play","id":"moviepire-149"},{"name":"Flickr Mini","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://flickr-mini.pages.dev","icon":"fas fa-tv","id":"flickr-mini-150"},{"name":"StreamM4u","desc":"Movies and TV Shows streaming.","cat":"movies","url":"https://streamm4u.com.co","icon":"fas fa-clapperboard","id":"streamm4u-151"},{"name":"FileCR","desc":"Massive software library for PC/Mac.","cat":"tools","url":"https://filecr.com/","icon":"fas fa-folder-open","id":"filecr-152"},{"name":"Get Into PC","desc":"Software downloads for PC.","cat":"tools","url":"https://getintopc.com/","icon":"fas fa-laptop-code","id":"get-into-pc-153"},{"name":"Hydra Launcher","desc":"Next-gen game launcher.","cat":"tools","url":"https://hydralauncher.gg/","icon":"fas fa-dragon","id":"hydra-launcher-154"},{"name":"Activated.win","desc":"Windows & Office activation toolkit.","cat":"tools","cmd":"irm https://get.activated.win | iex","icon":"fas fa-key","id":"activatedwin-155"},{"name":"WinUtil (C. Titus)","desc":"Essential Windows tweaks tool.","cat":"tools","cmd":"irm \"https://christitus.com/win\" | iex","icon":"fas fa-terminal","id":"winutil-c-titus-156"},{"name":"Winhance","desc":"Boost PC performance & clean OS.","cat":"tools","url":"https://winhance.net/","icon":"fas fa-rocket","id":"winhance-157"},{"name":"Photopea","desc":"Online Photoshop alternative.","cat":"tools","url":"https://www.photopea.com/","icon":"fas fa-image","id":"photopea-158"},{"name":"Spicetify CLI","desc":"Powerful CLI tool to customize Spotify client.","cat":"tools","cmd":"iwr -useb https://raw.githubusercontent.com/spicetify/cli/main/install.ps1 | iex","icon":"fas fa-music","id":"spicetify-cli-227"},{"name":"uBlock Origin","desc":"Highly efficient ad blocker.","cat":"ads","url":"https://ublockorigin.com/","icon":"fas fa-shield-alt","id":"ublock-origin-159"},{"name":"AdBlock Plus","desc":"Free ad blocker extension.","cat":"ads","url":"https://adblockplus.org/","icon":"fas fa-ban","id":"adblock-plus-160"},{"name":"AdGuard","desc":"Advanced adblock plugin.","cat":"ads","url":"https://adguard.com/","icon":"fas fa-user-shield","id":"adguard-161"},{"name":"AdBlock","desc":"Popular ad blocking extension.","cat":"ads","url":"https://getadblock.com/","icon":"fas fa-stop-circle","id":"adblock-162"},{"name":"Poper Blocker","desc":"Block annoying popups.","cat":"ads","url":"https://poperblocker.com/","icon":"fas fa-times-circle","id":"poper-blocker-163"},{"name":"LiveTV.sx","desc":"Live sports streams.","cat":"sports","url":"https://livetv.sx","icon":"fas fa-futbol","id":"livetvsx-164"},{"name":"TotalSportek","desc":"Live sports streams.","cat":"sports","url":"https://totalsportek.events","icon":"fas fa-volleyball-ball","id":"totalsportek-165"},{"name":"Streamed.pk","desc":"Live sports streams.","cat":"sports","url":"https://streamed.pk","icon":"fas fa-basketball-ball","id":"streamedpk-166"},{"name":"NTV.cx","desc":"Live sports streams.","cat":"sports","url":"https://ntv.cx","icon":"fas fa-football-ball","id":"ntvcx-167"},{"name":"StreamEast","desc":"Live sports streams.","cat":"sports","url":"https://streameast.ga","icon":"fas fa-table-tennis","id":"streameast-168"},{"name":"FCTV33","desc":"Live sports streams.","cat":"sports","url":"https://fctv33.hair","icon":"fas fa-baseball-ball","id":"fctv33-169"},{"name":"MethStreams","desc":"Live sports streams.","cat":"sports","url":"https://methstreams.ms","icon":"fas fa-golf-ball","id":"methstreams-170"},{"name":"SportsBite","desc":"Live sports streams.","cat":"sports","url":"https://sportsbite.sbs","icon":"fas fa-futbol","id":"sportsbite-171"},{"name":"Sport71","desc":"Live sports streams.","cat":"sports","url":"https://sport71.pro","icon":"fas fa-volleyball-ball","id":"sport71-172"},{"name":"SportyHunter","desc":"Live sports streams.","cat":"sports","url":"https://sportyhunter.com","icon":"fas fa-basketball-ball","id":"sportyhunter-173"},{"name":"WatchSports","desc":"Live sports streams.","cat":"sports","url":"https://watchsports.to","icon":"fas fa-football-ball","id":"watchsports-174"},{"name":"OnHockey.tv","desc":"Live sports streams.","cat":"sports","url":"https://onhockey.tv","icon":"fas fa-hockey-puck","id":"onhockeytv-175"},{"name":"CrackStreams","desc":"Live sports streams.","cat":"sports","url":"https://crackstreams.io","icon":"fas fa-futbol","id":"crackstreams-176"},{"name":"SportPlus.live","desc":"Live sports streams.","cat":"sports","url":"https://sportplus.live","icon":"fas fa-volleyball-ball","id":"sportpluslive-177"},{"name":"LiveTV861","desc":"Live sports streams.","cat":"sports","url":"https://livetv861.me","icon":"fas fa-basketball-ball","id":"livetv861-178"},{"name":"StrikeOut","desc":"Live sports streams.","cat":"sports","url":"https://strikeout.im","icon":"fas fa-baseball-ball","id":"strikeout-179"},{"name":"WatchFooty","desc":"Live sports streams.","cat":"sports","url":"https://watchfooty.st","icon":"fas fa-futbol","id":"watchfooty-180"},{"name":"Sportsurge","desc":"Live sports streams.","cat":"sports","url":"https://sportsurge.net","icon":"fas fa-football-ball","id":"sportsurge-181"},{"name":"Yari Live","desc":"Live sports and events streaming.","cat":"sports","url":"http://wvvw.yari.live/","icon":"fas fa-video","id":"yari-live-182"},{"name":"Famelack","desc":"Live TV streams (Blocked in some regions).","cat":"livetv","url":"https://famelack.com","icon":"fas fa-tv","id":"famelack-183"},{"name":"The TV App","desc":"Live TV streams.","cat":"livetv","url":"https://the-tv.app","icon":"fas fa-satellite-dish","id":"the-tv-app-184"},{"name":"GlobeTV","desc":"Live TV streams.","cat":"livetv","url":"https://globetv.app","icon":"fas fa-globe","id":"globetv-185"},{"name":"DaddyLive","desc":"Live TV streams.","cat":"livetv","url":"https://daddylive.mp","icon":"fas fa-tv","id":"daddylive-186"},{"name":"TV247US","desc":"Live US TV streams.","cat":"livetv","url":"https://tv247us.live","icon":"fas fa-flag-usa","id":"tv247us-187"},{"name":"NTVStream","desc":"Live TV streams.","cat":"livetv","url":"https://ntvstream.cx","icon":"fas fa-satellite-dish","id":"ntvstream-188"},{"name":"IPTV Web","desc":"Live TV streams.","cat":"livetv","url":"https://iptv-web.app","icon":"fas fa-tv","id":"iptv-web-189"},{"name":"Public IPTV","desc":"Live TV streams.","cat":"livetv","url":"https://publiciptv.com","icon":"fas fa-tower-broadcast","id":"public-iptv-190"},{"name":"MyTV Plus","desc":"Live TV & Apps.","cat":"livetv","url":"https://www.mytvplus.net/","icon":"fas fa-mobile-alt","id":"mytv-plus-191"},{"name":"FitGirl Repacks","desc":"Highly compressed PC games.","cat":"games","url":"https://fitgirl-repacks.site/","icon":"fas fa-gamepad","id":"fitgirl-repacks-192"},{"name":"DODI Repacks","desc":"Fast install game repacks.","cat":"games","url":"https://dodi-repacks.site/","icon":"fas fa-compact-disc","id":"dodi-repacks-193"},{"name":"AnkerGames","desc":"Game downloads and repacks.","cat":"games","url":"https://ankergames.net","icon":"fas fa-gamepad","id":"ankergames-194"},{"name":"G4U","desc":"Game downloads and repacks.","cat":"games","url":"https://g4u.to","icon":"fas fa-compact-disc","id":"g4u-195"},{"name":"SteamRIP","desc":"Game downloads and repacks.","cat":"games","url":"https://steamrip.com","icon":"fas fa-gamepad","id":"steamrip-196"},{"name":"SteamGG","desc":"Game downloads and repacks.","cat":"games","url":"https://steamgg.net","icon":"fas fa-compact-disc","id":"steamgg-197"},{"name":"M4CKD0GE","desc":"Game downloads and repacks.","cat":"games","url":"https://m4ckd0ge-repacks.site","icon":"fas fa-gamepad","id":"m4ckd0ge-198"},{"name":"Gload","desc":"Game downloads and repacks.","cat":"games","url":"https://gload.to","icon":"fas fa-compact-disc","id":"gload-199"},{"name":"WeMod","desc":"PC game trainers and mods.","cat":"mods","url":"https://wemod.com","icon":"fas fa-wrench","id":"wemod-200"},{"name":"Kurdcinama Trivia Master Solver","desc":"Premium autonomous solver for all Kurdcinama trivia modes.","cat":"scripts","url":"https://greasyfork.org/en/scripts/574862-kurdcinama-trivia-master-solver","icon":"fas fa-brain","id":"kurdcinama-trivia-master-solver-201"},{"name":"TikTok Video Downloader","desc":"Download TikTok videos without watermark via browser button.","cat":"scripts","url":"https://greasyfork.org/en/scripts/560130-tiktok-video-downloader","icon":"fas fa-download","id":"tiktok-video-downloader-202"},{"name":"Umingle Uhmegle AutoSkip v3","desc":"Auto-skip chats and avoid disconnects on Umingle/Uhmegle.","cat":"scripts","url":"https://greasyfork.org/en/scripts/548587-umingle-of-uhmegle-autoskip-v3","icon":"fas fa-forward","id":"umingle-uhmegle-autoskip-v3-203"},{"name":"Neal.fun Robot Game Solver","desc":"Instantly beat 'I'm Not a Robot' game with level selector.","cat":"scripts","url":"https://greasyfork.org/en/scripts/558771-instantly-beat-i-m-not-a-robot-game-neal-fun-enhanced","icon":"fas fa-robot","id":"nealfun-robot-game-solver-204"},{"name":"Telegram Media Downloader","desc":"Download restricted content from Telegram private channels.","cat":"scripts","url":"https://greasyfork.org/en/scripts/446342-telegram-media-downloader","icon":"fab fa-telegram","id":"telegram-media-downloader-205"},{"name":"Bypass All Shortlinks","desc":"Auto-skip link shorteners, ads, and annoying popups.","cat":"scripts","url":"https://greasyfork.org/en/scripts/431691-bypass-all-shortlinks","icon":"fas fa-link-slash","id":"bypass-all-shortlinks-206"},{"name":"AutoPager (Infinite Scroll)","desc":"Seamlessly append the next page content to the bottom.","cat":"scripts","url":"https://greasyfork.org/en/scripts/419215-autopager","icon":"fas fa-arrows-up-down","id":"autopager-infinite-scroll-207"},{"name":"IG Helper","desc":"Download Instagram photos, videos, stories, and reels.","cat":"scripts","url":"https://greasyfork.org/en/scripts/404535-ig-helper","icon":"fas fa-camera","id":"ig-helper-208"},{"name":"KissCartoon","desc":"Watch high quality cartoons online.","cat":"cartoon","url":"https://kisscartoon.sh/","icon":"fas fa-palette","id":"kisscartoon-209"},{"name":"Arabic Toons","desc":"Arabic dubbed cartoons and anime.","cat":"cartoon","url":"https://www.arabic-toons.com/","icon":"fas fa-hat-wizard","id":"arabic-toons-210"},{"name":"Carateen TV","desc":"Arabic dubbed animations.","cat":"cartoon","url":"https://carateen.tv/","icon":"fas fa-tv","id":"carateen-tv-211"},{"name":"Stardima","desc":"Arabic dubbed series and movies.","cat":"cartoon","url":"https://watch.stardima.com/watch/#gsc.tab=0","icon":"fas fa-star","id":"stardima-212"},{"name":"Kartoni Kurde","desc":"Kurdish dubbed cartoons.","cat":"cartoon","url":"https://kartonikurde.com/","icon":"fas fa-language","id":"kartoni-kurde-213"},{"name":"Anime Kurdish","desc":"Kurdish dubbed anime and cartoons.","cat":"cartoon","url":"https://animekurdish2019.blogspot.com/","icon":"fas fa-mask","id":"anime-kurdish-214"},{"name":"Kurd Doblazh (Cartoons)","desc":"Kurdish dubbed animation section.","cat":"cartoon","url":"https://www.kurddoblazh.com/search/label/%D8%A6%D9%87%E2%80%8C%D9%86%DB%8C%D9%85%D9%87%E2%80%8C%DB%8C%D8%B4%D9%86?max-results=64","icon":"fas fa-microphone","id":"kurd-doblazh-cartoons-215"},{"name":"Anime Kurd (Telegram)","desc":"Kurdish anime community on Telegram.","cat":"cartoon","url":"https://t.me/anime_kurd","icon":"fab fa-telegram","id":"anime-kurd-telegram-216"},{"name":"Kartoni Kurdi (Telegram)","desc":"Kurdish cartoons on Telegram.","cat":"cartoon","url":"https://t.me/kartoni_kurdi","icon":"fab fa-telegram","id":"kartoni-kurdi-telegram-217"},{"name":"Kurdish Anime Plus (Telegram)","desc":"Kurdish dubbed anime channel.","cat":"cartoon","url":"https://t.me/+G81-F97Y7v9jMjQy","icon":"fab fa-telegram","id":"kurdish-anime-plus-telegram-218"},{"name":"SeeMovies (Telegram)","desc":"Kurdish movies and cartoons.","cat":"cartoon","url":"https://t.me/seemovies09","icon":"fab fa-telegram","id":"seemovies-telegram-219"},{"name":"Tampermonkey","desc":"The world's most popular userscript manager, available for all major browsers.","cat":"tools","url":"https://www.tampermonkey.net/","icon":"fas fa-plug","id":"tampermonkey-220"},{"name":"Kurdish Serie","desc":"Kurdish dubbed and subtitled series.","cat":"kurdish","url":"https://kurdishserie.com/","icon":"fas fa-clapperboard","id":"kurdish-serie-221"},{"name":"Qallam Film","desc":"Kurdish movie database and streaming.","cat":"kurdish","url":"https://qallam.net/film/movies","icon":"fas fa-film","id":"qallam-film-222"},{"name":"Kurdbin","desc":"Kurdsat's official Kurdish media and drama portal.","cat":"kurdish","url":"https://kurdbin.kurdsat.tv/","icon":"fas fa-tv","id":"kurdbin-223"},{"name":"Y-Drama","desc":"Kurdish dubbed dramas and series.","cat":"kurdish","url":"https://www.y-drama.net/","icon":"fas fa-play-circle","id":"y-drama-224"},{"name":"Sha Film","desc":"Professional Kurdish movie streaming.","cat":"kurdish","url":"https://shafilm.vip/","icon":"fas fa-video","id":"shafilm-225"},{"name":"Kurd Movie","desc":"High quality Kurdish dubbed and subtitled movies.","cat":"kurdish","url":"https://www.kurd-movie.com/","icon":"fas fa-film","id":"kurd-movie-226"},{"name":"awenafilm","desc":"awenafilm no ads","cat":"kurdish","url":"https://awenafilm.com/","icon":"fas fa-film","id":"awenafilm-1777406006289"},{"name":"StripView 透视镜","desc":"A draggable reveal lens for videos on any webpage (完美无损移植版)","cat":"scripts","url":"https://greasyfork.org/en/scripts/575364-stripview-%E9%80%8F%E8%A7%86%E9%95%9C","icon":"fas fa-heart","id":"stripview--1777406459831"},{"name":"animekai","desc":"Watch Free Anime Online, Stream Subbed & Dubbed Anime in HD.","cat":"anime","url":"https://animekai.to/home","icon":"fas fa-play","id":"animekai-1777461641653"},{"name":"mangadex","desc":"MangaDex is a non-profit, ad-free online manga reader and content aggregator that hosts a massive library of manga, manhwa (Korean comics), and manhua (Chinese comics). Launched in 2018 as a successor to the defunct Batoto, it has grown into one of the largest fan-run platforms for \"scanlations\"—unofficial translations created by fan groups.","cat":"anime","url":"https://mangadex.org/","icon":"fas fa-book-open","id":"mangadex-1777461788252"},{"name":"Brave Browser","desc":"Privacy-focused browser with built-in ad blocking and rewards.","cat":"browser","url":"https://brave.com/","icon":"fab fa-brave","id":"brave-browser-1777461800000"},{"name":"Opera Browser","desc":"Fast, secure browser with built-in VPN and integrated messaging.","cat":"browser","url":"https://www.opera.com/","icon":"fab fa-opera","id":"opera-browser-1777461800001"},{"name":"Waterfox","desc":"Privacy-conscious and highly customizable Firefox-based browser.","cat":"browser","url":"https://www.waterfox.com/","icon":"fas fa-water","id":"waterfox-1777461800002"},{"name":"Arc Browser","desc":"The browser that helps you browse less, focusing on productivity and space.","cat":"browser","url":"https://arc.net/","icon":"fas fa-compass","id":"arc-browser-1777461800003"},{"name":"Firefox Browser","desc":"The independent, privacy-first browser by Mozilla, built for everyone.","cat":"browser","url":"https://www.firefox.com/en-US/","icon":"fab fa-firefox-browser","id":"firefox-browser-1777461800004"},{"name":"Opera GX","desc":"The first browser built specifically for gamers with RAM and CPU limiters.","cat":"browser","url":"https://www.opera.com/gx","icon":"fab fa-opera","id":"opera-gx-1777461800005"},{"name":"Browser Use","desc":"An open-source AI agent that can use your browser to perform any task on the web.","cat":"ai","url":"https://browser-use.com/","icon":"fas fa-robot","id":"browser-use-1777461800006"},{"name":"Samsung Internet","desc":"A fast, reliable, and secure web browser optimized for mobile and privacy.","cat":"browser","url":"https://browser.samsung.com/","icon":"fas fa-mobile-screen","id":"samsung-internet-1777461800007"},{"name":"Via Browser","desc":"Extremely lightweight and fast minimalist browser for Android.","cat":"browser","url":"https://viayoo.com/en/","icon":"fas fa-leaf","id":"via-browser-1777461800008"},{"name":"Google Chrome","desc":"The fast, secure, and free web browser built for the modern web by Google.","cat":"browser","url":"https://www.google.com/chrome/","icon":"fab fa-chrome","id":"google-chrome-1777461800009"},{"name":"Microsoft Edge","desc":"The fast and secure web browser with built-in AI features from Microsoft.","cat":"browser","url":"https://www.microsoft.com/edge","icon":"fab fa-edge","id":"microsoft-edge-1777461800010"},{"name":"Windowstan","desc":"Download Windows operating system ISOs (Windows 95 to Windows 11), MS Office, software, and tools.","cat":"tools","url":"https://windowstan.com/","icon":"fab fa-windows","id":"windowstan-1777461800011"},{"name":"Arena AI","desc":"Autonomous AI systems and multimodal foundation models designed to optimize enterprise business operations.","cat":"ai","url":"https://arena.ai/","icon":"fas fa-robot","id":"arena-ai-1777461800012"},{"name":"RetroArch","desc":"Versatile frontend for emulators, game engines, and media players with a unified interface.","cat":"emulators","url":"https://www.retroarch.com/","icon":"https://m.media-amazon.com/images/I/31fvrQVPcfL.png","id":"retroarch-emu"},{"name":"PCSX2","desc":"Highly compatible and open-source PlayStation 2 (PS2) emulator for Windows, Linux, and macOS.","cat":"emulators","url":"https://pcsx2.net/","icon":"https://www.google.com/s2/favicons?domain=pcsx2.net&sz=64","id":"pcsx2-emu"},{"name":"Dolphin","desc":"Powerful emulator for Nintendo GameCube and Wii consoles, supporting HD resolutions and enhancements.","cat":"emulators","url":"https://dolphin-emu.org/","icon":"https://www.google.com/s2/favicons?domain=dolphin-emu.org&sz=64","id":"dolphin-emu"},{"name":"DuckStation","desc":"Sony PlayStation 1 (PSX) emulator focusing on playability, high performance, and visual improvements.","cat":"emulators","url":"https://github.com/stenzek/duckstation","icon":"https://www.google.com/s2/favicons?domain=github.com&sz=64","id":"duckstation-emu"},{"name":"PPSSPP","desc":"Fast, portable, and open-source PlayStation Portable (PSP) emulator for multiple desktop and mobile OSs.","cat":"emulators","url":"https://www.ppsspp.org/","icon":"https://www.google.com/s2/favicons?domain=ppsspp.org&sz=64","id":"ppsspp-emu"},{"name":"RPCS3","desc":"An open-source Sony PlayStation 3 (PS3) emulator and debugger built in C++.","cat":"emulators","url":"https://rpcs3.net/","icon":"https://www.google.com/s2/favicons?domain=rpcs3.net&sz=64","id":"rpcs3-emu"},{"name":"Ryujinx","desc":"Open-source Nintendo Switch emulator offering high compatibility, precision, and performance.","cat":"emulators","url":"https://github.com/Ryujinx/Ryujinx","icon":"https://www.google.com/s2/favicons?domain=github.com&sz=64","id":"ryujinx-emu"},{"name":"Cemu","desc":"Highly optimized Wii U emulator capable of running major titles in high resolutions with custom mods.","cat":"emulators","url":"https://cemu.info/","icon":"https://www.google.com/s2/favicons?domain=cemu.info&sz=64","id":"cemu-emu"},{"name":"Xenia","desc":"An experimental, open-source emulator for the Xbox 360 console.","cat":"emulators","url":"https://xenia.jp/","icon":"https://www.google.com/s2/favicons?domain=xenia.jp&sz=64","id":"xenia-emu"},{"name":"Xemu","desc":"A free, open-source, and cross-platform original Xbox emulator built on top of QEMU.","cat":"emulators","url":"https://xemu.app/","icon":"https://www.google.com/s2/favicons?domain=xemu.app&sz=64","id":"xemu-emu"},{"name":"MelonDS","desc":"A clean and fast Nintendo DS and DSi emulator focusing on performance and accurate emulation.","cat":"emulators","url":"https://melonds.kuribo64.net/","icon":"https://www.google.com/s2/favicons?domain=melonds.kuribo64.net&sz=64","id":"melonds-emu"},{"name":"Mesen","desc":"High-accuracy multi-system emulator for NES, SNES, Game Boy, PC Engine, and more.","cat":"emulators","url":"https://www.mesen.ca/","icon":"https://www.google.com/s2/favicons?domain=mesen.ca&sz=64","id":"mesen-emu"},{"name":"Azahar","desc":"Modern, open-source Nintendo 3DS emulator succeeding Citra and Lime3DS with enhanced features.","cat":"emulators","url":"https://github.com/azahar-emu/azahar","icon":"https://www.google.com/s2/favicons?domain=github.com&sz=64","id":"azahar-emu"},{"name":"Snes9x","desc":"Portable, freeware Super Nintendo Entertainment System (SNES) emulator with high game compatibility.","cat":"emulators","url":"https://www.snes9x.com/","icon":"https://www.google.com/s2/favicons?domain=snes9x.com&sz=64","id":"snes9x-emu"},{"name":"Nestopia","desc":"A high-accuracy Nintendo Entertainment System (NES) emulator with extensive mapper support.","cat":"emulators","url":"https://github.com/rdanbrook/nestopia","icon":"https://www.google.com/s2/favicons?domain=github.com&sz=64","id":"nestopia-emu"},{"name":"Mupen64Plus Next","desc":"Next-generation Nintendo 64 (N64) emulator core designed specifically for RetroArch.","cat":"emulators","url":"https://github.com/libretro/mupen64plus-libretro-nx","icon":"https://www.google.com/s2/favicons?domain=github.com&sz=64","id":"mupen64plus-next-emu"},{"name":"Project64","desc":"A classic and easy-to-use Nintendo 64 (N64) emulator for Windows PCs.","cat":"emulators","url":"https://www.pj64-emu.com/","icon":"https://www.google.com/s2/favicons?domain=pj64-emu.com&sz=64","id":"project64-emu"},{"name":"Final Burn Neo","desc":"Multi-system arcade emulator supporting Neo-Geo, Capcom CPS1/2/3, Sega, and more.","cat":"emulators","url":"https://github.com/finalburnneo/FBNeo","icon":"https://www.google.com/s2/favicons?domain=github.com&sz=64","id":"final-burn-neo-emu"},{"name":"VBA Next","desc":"Optimized Game Boy Advance (GBA) emulator core based on VisualBoyAdvance-M.","cat":"emulators","url":"https://github.com/libretro/vba-next","icon":"https://www.google.com/s2/favicons?domain=github.com&sz=64","id":"vba-next-emu"},{"name":"Genesis Plus GX","desc":"An open-source Sega Genesis, Mega Drive, Sega CD, and Master System emulator core.","cat":"emulators","url":"https://github.com/ekeeke/Genesis-Plus-GX","icon":"https://www.google.com/s2/favicons?domain=github.com&sz=64","id":"genesis-plus-gx-emu"},{"name":"PicoDrive","desc":"Fast Sega 16-bit, 32X, and Sega CD emulator optimized for mobile and low-spec platforms.","cat":"emulators","url":"https://github.com/notaz/picodrive","icon":"https://www.google.com/s2/favicons?domain=github.com&sz=64","id":"picodrive-emu"},{"name":"Beetle Saturn","desc":"High-accuracy Sega Saturn emulator core for RetroArch based on Mednafen.","cat":"emulators","url":"https://github.com/libretro/beetle-saturn-libretro","icon":"https://www.google.com/s2/favicons?domain=github.com&sz=64","id":"beetle-saturn-emu"},{"name":"Flycast","desc":"A multi-platform Sega Dreamcast, Naomi, and Atomiswave emulator for desktop and mobile.","cat":"emulators","url":"https://github.com/flyinghead/flycast","icon":"https://www.google.com/s2/favicons?domain=github.com&sz=64","id":"flycast-emu"},{"name":"Beetle PCE","desc":"Fast and accurate PC Engine (TurboGrafx-16) emulator core for RetroArch.","cat":"emulators","url":"https://github.com/libretro/beetle-pce-fast-libretro","icon":"https://www.google.com/s2/favicons?domain=github.com&sz=64","id":"beetle-pce-emu"},{"name":"AetherSX2","desc":"PlayStation 2 (PS2) emulator for Android devices, providing high performance on ARM64.","cat":"emulators","url":"https://www.aethersx2.com/","icon":"https://www.google.com/s2/favicons?domain=aethersx2.com&sz=64","id":"aethersx2-emu"},{"name":"Redream","desc":"High-definition Sega Dreamcast emulator available for Windows, macOS, Linux, and Android.","cat":"emulators","url":"https://redream.io/","icon":"https://www.google.com/s2/favicons?domain=redream.io&sz=64","id":"redream-emu"},{"name":"DeSmuME","desc":"Nintendo DS (NDS) emulator designed for PC, supporting dual-screen layouts and scaling filters.","cat":"emulators","url":"http://desmume.org/","icon":"https://www.google.com/s2/favicons?domain=desmume.org&sz=64","id":"desmume-emu"},{"name":"Citra","desc":"The legendary, open-source Nintendo 3DS emulator that pioneered high-fidelity 3DS emulation.","cat":"emulators","url":"https://github.com/citra-emu/citra","icon":"https://www.google.com/s2/favicons?domain=github.com&sz=64","id":"citra-emu"},{"name":"MAME","desc":"Multiple Arcade Machine Emulator dedicated to preserving thousands of classic arcade games.","cat":"emulators","url":"https://www.mamedev.org/","icon":"https://www.google.com/s2/favicons?domain=mamedev.org&sz=64","id":"mame-emu"},{"name":"DOSBox","desc":"An emulator that recreates an MS-DOS environment to run classic DOS games and applications.","cat":"emulators","url":"https://www.dosbox.com/","icon":"https://www.google.com/s2/favicons?domain=dosbox.com&sz=64","id":"dosbox-emu"},{"name":"BlueStacks","desc":"Extremely popular Android gaming platform for PC and Mac with keyboard/mouse controls.","cat":"emulators","url":"https://www.bluestacks.com/","icon":"https://www.google.com/s2/favicons?domain=bluestacks.com&sz=64","id":"bluestacks-emu"},{"name":"LDPlayer 9","desc":"High-performance Android emulator designed to run mobile games smoothly on Windows PCs.","cat":"emulators","url":"https://www.ldplayer.net/","icon":"https://www.google.com/s2/favicons?domain=ldplayer.net&sz=64","id":"ldplayer9-emu"},{"name":"LDPlayer 14","desc":"Latest iteration of LDPlayer Android emulator with improved engine capability and lower resource usage.","cat":"emulators","url":"https://www.ldplayer.net/","icon":"https://www.google.com/s2/favicons?domain=ldplayer.net&sz=64","id":"ldplayer14-emu"},{"name":"MuMu Player","desc":"Android emulator developed by NetEase, optimized for premium graphic quality and high FPS.","cat":"emulators","url":"https://www.mumuplayer.com/","icon":"https://www.google.com/s2/favicons?domain=mumuplayer.com&sz=64","id":"mumuplayer-emu"},{"name":"NoxPlayer","desc":"Feature-rich Android emulator with advanced mapping, multi-instance, and macro recording tools.","cat":"emulators","url":"https://www.bignox.com/","icon":"https://www.google.com/s2/favicons?domain=bignox.com&sz=64","id":"noxplayer-emu"},{"name":"MEmu Play","desc":"Fast Android emulator with excellent compatibility for running multiple mobile games simultaneously on PC.","cat":"emulators","url":"https://www.memuplay.com/","icon":"https://www.google.com/s2/favicons?domain=memuplay.com&sz=64","id":"memuplay-emu"},{"name":"GameLoop","desc":"Tencent's official PC Android emulator, tailored specifically for competitive mobile shooters.","cat":"emulators","url":"https://www.gameloop.com/","icon":"https://www.google.com/s2/favicons?domain=gameloop.com&sz=64","id":"gameloop-emu"},{"name":"Android Studio Emulator","desc":"Google's official Android Virtual Device (AVD) emulator, ideal for app development and testing.","cat":"emulators","url":"https://developer.android.com/studio/run/emulator","icon":"https://www.google.com/s2/favicons?domain=developer.android.com&sz=64","id":"android-studio-emulator"},{"name":"Genymotion","desc":"Professional Android emulator in the cloud and desktop, optimized for developers and QA automation.","cat":"emulators","url":"https://www.genymotion.com/","icon":"https://www.google.com/s2/favicons?domain=genymotion.com&sz=64","id":"genymotion-emu"},{"name":"Bliss OS","desc":"Open-source operating system based on Android, designed to run natively on PC hardware.","cat":"emulators","url":"https://blissos.org/","icon":"https://www.google.com/s2/favicons?domain=blissos.org&sz=64","id":"blissos-emu"}]
+[
+  {
+    "name": "JSONPlaceholder",
+    "desc": "Free fake REST API for prototyping, mock data, and testing network requests.",
+    "cat": "tools",
+    "url": "https://jsonplaceholder.typicode.com/",
+    "icon": "fas fa-database",
+    "id": "jsonplaceholder-dev-api"
+  },
+  {
+    "name": "HTTPBin Echo REST",
+    "desc": "A robust request and response service, ideal for debugging HTTP headers and payloads.",
+    "cat": "tools",
+    "url": "https://httpbin.org/",
+    "icon": "fas fa-exchange-alt",
+    "id": "httpbin-dev-api"
+  },
+  {
+    "name": "ReqRes Mock Platform",
+    "desc": "A hosted REST API ready for testing mock user profiles, authentication tokens, and CRUD operations.",
+    "cat": "tools",
+    "url": "https://reqres.in/",
+    "icon": "fas fa-users-cog",
+    "id": "reqres-dev-api"
+  },
+  {
+    "name": "Supabase Web Indexer",
+    "desc": "A high-performance web indexing engine that analyzes and serves structured web data with TF-IDF magic and Supabase as the brain.",
+    "cat": "tools",
+    "url": "https://supabase.com/",
+    "icon": "fas fa-brain-circuit",
+    "id": "supabase-tfidf-indexer"
+  },
+  {
+    "name": "IPify Address API",
+    "desc": "A simple public IPv4 address query resolver responding in raw text or formatted JSON.",
+    "cat": "tools",
+    "url": "https://api.ipify.org?format=json",
+    "icon": "fas fa-network-wired",
+    "id": "ipify-dev-api"
+  },
+  {
+    "name": "CoinGecko Market Data",
+    "desc": "Access historical coin pricing, exchange volumes, and token index feeds.",
+    "cat": "tools",
+    "url": "https://api.coingecko.com/api/v3/ping",
+    "icon": "fas fa-coins",
+    "id": "coingecko-dev-api"
+  },
+  {
+    "name": "CHYA Official Discord",
+    "desc": "Join our community hub for updates and chat.",
+    "cat": "social",
+    "url": "https://discord.gg/QzhU56MDkH",
+    "icon": "fab fa-discord",
+    "id": "chya-official-discord-0"
+  },
+  {
+    "name": "Claude AI",
+    "desc": "Advanced AI for writing and coding.",
+    "cat": "ai",
+    "url": "https://claude.ai/",
+    "icon": "fas fa-brain",
+    "id": "claude-ai-1"
+  },
+  {
+    "name": "Gemini",
+    "desc": "Google's most capable AI model.",
+    "cat": "ai",
+    "url": "https://gemini.google.com/",
+    "icon": "fas fa-wand-magic-sparkles",
+    "id": "gemini-2"
+  },
+  {
+    "name": "v0.dev",
+    "desc": "Generate UI components using AI.",
+    "cat": "ai",
+    "url": "https://v0.dev/",
+    "icon": "fas fa-code",
+    "id": "v0dev-3"
+  },
+  {
+    "name": "Lovable",
+    "desc": "Build full apps with AI.",
+    "cat": "ai",
+    "url": "https://lovable.dev/",
+    "icon": "fas fa-heart",
+    "id": "lovable-4"
+  },
+  {
+    "name": "Luma Dream Machine",
+    "desc": "AI Video generation.",
+    "cat": "ai",
+    "url": "https://lumalabs.ai/dream-machine",
+    "icon": "fas fa-meteor",
+    "id": "luma-dream-machine-5"
+  },
+  {
+    "name": "Opus Clip",
+    "desc": "AI powered video repurposing.",
+    "cat": "ai",
+    "url": "https://www.opus.pro/",
+    "icon": "fas fa-scissors",
+    "id": "opus-clip-6"
+  },
+  {
+    "name": "ElevenLabs",
+    "desc": "Best AI Text-to-Speech.",
+    "cat": "ai",
+    "url": "https://elevenlabs.io/",
+    "icon": "fas fa-microphone",
+    "id": "elevenlabs-7"
+  },
+  {
+    "name": "Websim",
+    "desc": "Browser-based web simulation AI.",
+    "cat": "ai",
+    "url": "https://websim.ai/",
+    "icon": "fas fa-globe",
+    "id": "websim-8"
+  },
+  {
+    "name": "ChatGPT",
+    "desc": "OpenAI's conversational AI and world-leading LLM.",
+    "cat": "ai",
+    "url": "https://chatgpt.com/",
+    "icon": "fas fa-comment-dots",
+    "id": "chatgpt-9"
+  },
+  {
+    "name": "Perplexity AI",
+    "desc": "AI-powered search engine for accurate answers.",
+    "cat": "ai",
+    "url": "https://www.perplexity.ai/",
+    "icon": "fas fa-magnifying-glass",
+    "id": "perplexity-ai-10"
+  },
+  {
+    "name": "DeepSeek-R1",
+    "desc": "Powerful open-weights LLM for coding and reasoning.",
+    "cat": "ai",
+    "url": "https://www.deepseek.com/",
+    "icon": "fas fa-brain",
+    "id": "deepseek-r1-11"
+  },
+  {
+    "name": "Phind",
+    "desc": "Intelligent search engine and assistant for programmers.",
+    "cat": "ai",
+    "url": "https://www.phind.com/",
+    "icon": "fas fa-terminal",
+    "id": "phind-12"
+  },
+  {
+    "name": "Ollama",
+    "desc": "Run large language models locally on your machine.",
+    "cat": "ai",
+    "url": "https://ollama.com/",
+    "icon": "fas fa-microchip",
+    "id": "ollama-13"
+  },
+  {
+    "name": "Midjourney",
+    "desc": "High-end generative AI for stunning visual art.",
+    "cat": "ai",
+    "url": "https://www.midjourney.com/",
+    "icon": "fas fa-palette",
+    "id": "midjourney-14"
+  },
+  {
+    "name": "Stable Diffusion",
+    "desc": "Open-source text-to-image generation.",
+    "cat": "ai",
+    "url": "https://stablediffusionweb.com/",
+    "icon": "fas fa-images",
+    "id": "stable-diffusion-15"
+  },
+  {
+    "name": "Jasper",
+    "desc": "AI writing assistant for marketing and content.",
+    "cat": "ai",
+    "url": "https://www.jasper.ai/",
+    "icon": "fas fa-pen-nib",
+    "id": "jasper-16"
+  },
+  {
+    "name": "QuillBot",
+    "desc": "AI-powered paraphrasing and writing tool.",
+    "cat": "ai",
+    "url": "https://quillbot.com/",
+    "icon": "fas fa-file-signature",
+    "id": "quillbot-17"
+  },
+  {
+    "name": "Taskade",
+    "desc": "AI-powered task management and productivity.",
+    "cat": "ai",
+    "url": "https://www.taskade.com/",
+    "icon": "fas fa-list-check",
+    "id": "taskade-18"
+  },
+  {
+    "name": "RunwayML",
+    "desc": "Next-generation AI video creation suite.",
+    "cat": "ai",
+    "url": "https://runwayml.com/",
+    "icon": "fas fa-video",
+    "id": "runwayml-19"
+  },
+  {
+    "name": "Mubert",
+    "desc": "Generative AI music for content creators.",
+    "cat": "ai",
+    "url": "https://mubert.com/",
+    "icon": "fas fa-music",
+    "id": "mubert-20"
+  },
+  {
+    "name": "You.com",
+    "desc": "Private and customizable AI search experience.",
+    "cat": "ai",
+    "url": "https://you.com/",
+    "icon": "fas fa-user-secret",
+    "id": "youcom-21"
+  },
+  {
+    "name": "Komo AI",
+    "desc": "Fast and accurate AI search engine.",
+    "cat": "ai",
+    "url": "https://komo.ai/",
+    "icon": "fas fa-bolt",
+    "id": "komo-ai-22"
+  },
+  {
+    "name": "Lex",
+    "desc": "AI-powered word processor for faster writing.",
+    "cat": "ai",
+    "url": "https://lex.page/",
+    "icon": "fas fa-keyboard",
+    "id": "lex-23"
+  },
+  {
+    "name": "Gist AI",
+    "desc": "Summarize websites, YouTube, and PDFs instantly.",
+    "cat": "ai",
+    "url": "https://www.gistai.tech/",
+    "icon": "fas fa-compress",
+    "id": "gist-ai-24"
+  },
+  {
+    "name": "MeetGeek",
+    "desc": "AI meeting assistant for summaries and transcribing.",
+    "cat": "ai",
+    "url": "https://meetgeek.ai/",
+    "icon": "fas fa-headset",
+    "id": "meetgeek-25"
+  },
+  {
+    "name": "SaneBox",
+    "desc": "AI-powered email management and prioritization.",
+    "cat": "ai",
+    "url": "https://www.sanebox.com/",
+    "icon": "fas fa-envelope-open-text",
+    "id": "sanebox-26"
+  },
+  {
+    "name": "Krisp",
+    "desc": "AI noise cancellation for meetings and calls.",
+    "cat": "ai",
+    "url": "https://krisp.ai/",
+    "icon": "fas fa-volume-mute",
+    "id": "krisp-27"
+  },
+  {
+    "name": "Adobe Podcast",
+    "desc": "AI-powered audio recording and enhancement.",
+    "cat": "ai",
+    "url": "https://podcast.adobe.com/",
+    "icon": "fas fa-microphone-lines",
+    "id": "adobe-podcast-28"
+  },
+  {
+    "name": "Voicemod",
+    "desc": "Real-time AI voice changer and soundboard.",
+    "cat": "ai",
+    "url": "https://www.voicemod.net/",
+    "icon": "fas fa-masks-theater",
+    "id": "voicemod-29"
+  },
+  {
+    "name": "Lensa",
+    "desc": "AI magic avatars and advanced photo editing.",
+    "cat": "ai",
+    "url": "https://prisma-ai.com/lensa",
+    "icon": "fas fa-user-astronaut",
+    "id": "lensa-30"
+  },
+  {
+    "name": "Character AI",
+    "desc": "Intelligent chatbots with distinct personalities.",
+    "cat": "ai",
+    "url": "https://beta.character.ai/",
+    "icon": "fas fa-users-viewfinder",
+    "id": "character-ai-31"
+  },
+  {
+    "name": "Replit Ghostwriter",
+    "desc": "AI-powered pair programmer in your browser.",
+    "cat": "ai",
+    "url": "https://replit.com/",
+    "icon": "fas fa-laptop-code",
+    "id": "replit-ghostwriter-32"
+  },
+  {
+    "name": "Codeium",
+    "desc": "Free lightning-fast AI coding extension.",
+    "cat": "ai",
+    "url": "https://codeium.com/",
+    "icon": "fas fa-code-branch",
+    "id": "codeium-33"
+  },
+  {
+    "name": "Writesonic",
+    "desc": "AI writer for blogs, ads, and product descriptions.",
+    "cat": "ai",
+    "url": "https://writesonic.com/",
+    "icon": "fas fa-feather-pointed",
+    "id": "writesonic-34"
+  },
+  {
+    "name": "Microsoft Designer",
+    "desc": "AI-driven graphic design and social media posts.",
+    "cat": "ai",
+    "url": "https://designer.microsoft.com/",
+    "icon": "fas fa-wand-magic",
+    "id": "microsoft-designer-35"
+  },
+  {
+    "name": "Clipdrop",
+    "desc": "Create professional visuals without a studio.",
+    "cat": "ai",
+    "url": "https://clipdrop.co/",
+    "icon": "fas fa-scissors",
+    "id": "clipdrop-36"
+  },
+  {
+    "name": "Uizard",
+    "desc": "AI design tool for apps and websites.",
+    "cat": "ai",
+    "url": "https://uizard.io/",
+    "icon": "fas fa-mobile-screen-button",
+    "id": "uizard-37"
+  },
+  {
+    "name": "ELI5",
+    "desc": "AI that explains complex topics simply.",
+    "cat": "ai",
+    "url": "https://eli5.ai/",
+    "icon": "fas fa-baby",
+    "id": "eli5-38"
+  },
+  {
+    "name": "Remove.bg",
+    "desc": "Automatic background removal for images.",
+    "cat": "ai",
+    "url": "https://www.remove.bg/",
+    "icon": "fas fa-eraser",
+    "id": "removebg-39"
+  },
+  {
+    "name": "Speechify",
+    "desc": "Read-aloud AI text-to-speech assistant.",
+    "cat": "ai",
+    "url": "https://speechify.com/",
+    "icon": "fas fa-ear-listen",
+    "id": "speechify-40"
+  },
+  {
+    "name": "Summarize Tech",
+    "desc": "AI-powered YouTube video summarizer.",
+    "cat": "ai",
+    "url": "https://summarize.tech/",
+    "icon": "fas fa-compress-arrows-alt",
+    "id": "summarize-tech-41"
+  },
+  {
+    "name": "TLDR this",
+    "desc": "Summarize any article or webpage with AI.",
+    "cat": "ai",
+    "url": "https://www.tldrthis.com/",
+    "icon": "fas fa-align-left",
+    "id": "tldr-this-42"
+  },
+  {
+    "name": "DoNotPay",
+    "desc": "The world's first AI robot lawyer.",
+    "cat": "ai",
+    "url": "https://donotpay.com/",
+    "icon": "fas fa-gavel",
+    "id": "donotpay-43"
+  },
+  {
+    "name": "VidIQ",
+    "desc": "AI-powered SEO and analytics for YouTube.",
+    "cat": "ai",
+    "url": "https://vidiq.com/",
+    "icon": "fas fa-chart-line",
+    "id": "vidiq-44"
+  },
+  {
+    "name": "Adcreative.ai",
+    "desc": "Generate high-converting ad creatives with AI.",
+    "cat": "ai",
+    "url": "https://www.adcreative.ai/",
+    "icon": "fas fa-rectangle-ad",
+    "id": "adcreativeai-45"
+  },
+  {
+    "name": "Ocoya",
+    "desc": "AI social media marketing and scheduling.",
+    "cat": "ai",
+    "url": "https://www.ocoya.com/",
+    "icon": "fas fa-share-nodes",
+    "id": "ocoya-46"
+  },
+  {
+    "name": "Beatoven.ai",
+    "desc": "Create custom royalty-free music with AI.",
+    "cat": "ai",
+    "url": "https://www.beatoven.ai/",
+    "icon": "fas fa-headphones",
+    "id": "beatovenai-47"
+  },
+  {
+    "name": "Reface AI",
+    "desc": "AI face swap and viral video creation tool.",
+    "cat": "ai",
+    "url": "https://hey.reface.ai/",
+    "icon": "fas fa-face-grin-stars",
+    "id": "reface-ai-48"
+  },
+  {
+    "name": "GitHub Copilot",
+    "desc": "The world's most widely used AI developer tool.",
+    "cat": "ai",
+    "url": "https://github.com/features/copilot",
+    "icon": "fab fa-github",
+    "id": "github-copilot-49"
+  },
+  {
+    "name": "Tabnine",
+    "desc": "AI assistant for software developers.",
+    "cat": "ai",
+    "url": "https://www.tabnine.com/",
+    "icon": "fas fa-code",
+    "id": "tabnine-50"
+  },
+  {
+    "name": "BlackBox AI",
+    "desc": "Lightning-fast AI code generation and search.",
+    "cat": "ai",
+    "url": "https://www.useblackbox.io/",
+    "icon": "fas fa-square-terminal",
+    "id": "blackbox-ai-51"
+  },
+  {
+    "name": "Writesonic",
+    "desc": "Create SEO-optimized content for blogs and ads.",
+    "cat": "ai",
+    "url": "https://writesonic.com/",
+    "icon": "fas fa-pencil",
+    "id": "writesonic-52"
+  },
+  {
+    "name": "Anyword",
+    "desc": "AI writing platform built for marketing results.",
+    "cat": "ai",
+    "url": "https://anyword.com/",
+    "icon": "fas fa-bullhorn",
+    "id": "anyword-53"
+  },
+  {
+    "name": "Tiledesk",
+    "desc": "Open-source chatbot development framework.",
+    "cat": "ai",
+    "url": "https://tiledesk.com/",
+    "icon": "fas fa-comments",
+    "id": "tiledesk-54"
+  },
+  {
+    "name": "Harvey AI",
+    "desc": "AI-powered customer support and automation.",
+    "cat": "ai",
+    "url": "https://hiverhq.com/harvey-ai-customer-support",
+    "icon": "fas fa-robot",
+    "id": "harvey-ai-55"
+  },
+  {
+    "name": "Designs AI",
+    "desc": "Create logos, videos, and banners in minutes.",
+    "cat": "ai",
+    "url": "https://designs.ai/",
+    "icon": "fas fa-object-group",
+    "id": "designs-ai-56"
+  },
+  {
+    "name": "Teachable Machine",
+    "desc": "Train your own machine learning models quickly.",
+    "cat": "ai",
+    "url": "https://teachablemachine.withgoogle.com/",
+    "icon": "fas fa-graduation-cap",
+    "id": "teachable-machine-57"
+  },
+  {
+    "name": "PromptLayer",
+    "desc": "Platform for prompt engineering and observability.",
+    "cat": "ai",
+    "url": "https://promptlayer.com/",
+    "icon": "fas fa-layer-group",
+    "id": "promptlayer-58"
+  },
+  {
+    "name": "Caktus AI",
+    "desc": "The first ever AI built for students.",
+    "cat": "ai",
+    "url": "https://www.caktus.ai/",
+    "icon": "fas fa-school",
+    "id": "caktus-ai-59"
+  },
+  {
+    "name": "TutorAI",
+    "desc": "Personalized AI learning platform for any topic.",
+    "cat": "ai",
+    "url": "https://www.tutorai.me/",
+    "icon": "fas fa-chalkboard-user",
+    "id": "tutorai-60"
+  },
+  {
+    "name": "Leonardo.Ai",
+    "desc": "Generative AI for creative projects and game assets.",
+    "cat": "ai",
+    "url": "https://leonardo.ai/",
+    "icon": "fas fa-dice-d20",
+    "id": "leonardoai-61"
+  },
+  {
+    "name": "Scenario",
+    "desc": "AI-generated gaming assets and environments.",
+    "cat": "ai",
+    "url": "https://www.scenario.gg/",
+    "icon": "fas fa-gamepad",
+    "id": "scenario-62"
+  },
+  {
+    "name": "Legal Robot",
+    "desc": "AI-powered legal analysis and document drafting.",
+    "cat": "ai",
+    "url": "https://legalrobot.com/",
+    "icon": "fas fa-scale-balanced",
+    "id": "legal-robot-63"
+  },
+  {
+    "name": "Boomy",
+    "desc": "Make instant AI-generated songs and monetize them.",
+    "cat": "ai",
+    "url": "https://boomy.com/",
+    "icon": "fas fa-compact-disc",
+    "id": "boomy-64"
+  },
+  {
+    "name": "Soundful",
+    "desc": "Create unique, royalty-free tracks with AI.",
+    "cat": "ai",
+    "url": "https://soundful.com/",
+    "icon": "fas fa-sliders",
+    "id": "soundful-65"
+  },
+  {
+    "name": "Otter AI",
+    "desc": "AI-powered meeting notes and transcription.",
+    "cat": "ai",
+    "url": "https://otter.ai/",
+    "icon": "fas fa-file-audio",
+    "id": "otter-ai-66"
+  },
+  {
+    "name": "InteriorAI",
+    "desc": "AI-powered interior design and room staging.",
+    "cat": "ai",
+    "url": "https://interiorai.com/",
+    "icon": "fas fa-house-chimney-window",
+    "id": "interiorai-67"
+  },
+  {
+    "name": "GetFloorPlan",
+    "desc": "Convert sketches to 3D floor plans with AI.",
+    "cat": "ai",
+    "url": "https://getfloorplan.com/",
+    "icon": "fas fa-map",
+    "id": "getfloorplan-68"
+  },
+  {
+    "name": "Synthesia",
+    "desc": "Create AI videos with talking avatars from text.",
+    "cat": "ai",
+    "url": "https://www.synthesia.io/",
+    "icon": "fas fa-person-chalkboard",
+    "id": "synthesia-69"
+  },
+  {
+    "name": "Wonder Dynamics",
+    "desc": "AI tool that automatically animates CG characters.",
+    "cat": "ai",
+    "url": "https://www.wonderdynamics.com/",
+    "icon": "fas fa-clapperboard",
+    "id": "wonder-dynamics-70"
+  },
+  {
+    "name": "Kaedim",
+    "desc": "Turn 2D images into 3D models with AI.",
+    "cat": "ai",
+    "url": "https://www.kaedim3d.com/",
+    "icon": "fas fa-cube",
+    "id": "kaedim-71"
+  },
+  {
+    "name": "Civitai",
+    "desc": "The largest community-driven AI model repository.",
+    "cat": "ai",
+    "url": "https://civitai.com/",
+    "icon": "fas fa-cubes",
+    "id": "civitai-72"
+  },
+  {
+    "name": "NightCafe Studio",
+    "desc": "Create AI art through community and challenges.",
+    "cat": "ai",
+    "url": "https://creator.nightcafe.studio/",
+    "icon": "fas fa-brush",
+    "id": "nightcafe-studio-73"
+  },
+  {
+    "name": "Kurd Cinema",
+    "desc": "Professional Kurdish movie subtitles/dubs.",
+    "cat": "kurdish",
+    "url": "https://kurdcinema.com/",
+    "icon": "fas fa-language",
+    "id": "kurd-cinema-74"
+  },
+  {
+    "name": "KurdFilm",
+    "desc": "Kurdish movie database and streaming.",
+    "cat": "kurdish",
+    "url": "https://kurdfilm.com/",
+    "icon": "fas fa-compact-disc",
+    "id": "kurdfilm-75"
+  },
+  {
+    "name": "Kurd Doblazh",
+    "desc": "Kurdish dubbed series and movies.",
+    "cat": "kurdish",
+    "url": "https://kurddoblaj.net/",
+    "icon": "fas fa-microphone",
+    "id": "kurd-doblazh-76"
+  },
+  {
+    "name": "Beenar",
+    "desc": "Kurdish media platform.",
+    "cat": "kurdish",
+    "url": "https://beenar.net/",
+    "icon": "fas fa-eye",
+    "id": "beenar-77"
+  },
+  {
+    "name": "Kurd Movies",
+    "desc": "Kurdish dubbed film library.",
+    "cat": "kurdish",
+    "url": "https://kurdmovies.net/",
+    "icon": "fas fa-clapperboard",
+    "id": "kurd-movies-78"
+  },
+  {
+    "name": "Kurd TVs",
+    "desc": "Live Kurdish television channels.",
+    "cat": "kurdish",
+    "url": "https://kurdtvs.net/",
+    "icon": "fas fa-tv",
+    "id": "kurd-tvs-79"
+  },
+  {
+    "name": "Kurdi TV",
+    "desc": "Live Kurdish television channels.",
+    "cat": "kurdish",
+    "url": "https://kurditv.com/",
+    "icon": "fas fa-satellite-dish",
+    "id": "kurdi-tv-80"
+  },
+  {
+    "name": "AniMixPlay",
+    "desc": "Watch HD Anime ad-free.",
+    "cat": "anime",
+    "url": "https://animixplay.to/",
+    "icon": "fas fa-tv",
+    "id": "animixplay-81"
+  },
+  {
+    "name": "MangaReader",
+    "desc": "Read and download manga online.",
+    "cat": "anime",
+    "url": "https://mangareader.to/",
+    "icon": "fas fa-book-open",
+    "id": "mangareader-82"
+  },
+  {
+    "name": "Crunchyroll",
+    "desc": "Official source for anime.",
+    "cat": "anime",
+    "url": "https://www.crunchyroll.com/",
+    "icon": "fas fa-play",
+    "id": "crunchyroll-83"
+  },
+  {
+    "name": "WCOForever",
+    "desc": "Watch cartoons and anime online.",
+    "cat": "anime",
+    "url": "https://www.wcoforever.net/",
+    "icon": "fas fa-hat-wizard",
+    "id": "wcoforever-84"
+  },
+  {
+    "name": "KimCartoon",
+    "desc": "Free high quality cartoons.",
+    "cat": "anime",
+    "url": "https://kimcartoon.li/",
+    "icon": "fas fa-palette",
+    "id": "kimcartoon-85"
+  },
+  {
+    "name": "Space Power Fan",
+    "desc": "Kurdish/Arabic anime archive.",
+    "cat": "anime",
+    "url": "https://spacepowerfan.com/",
+    "icon": "fas fa-star",
+    "id": "space-power-fan-86"
+  },
+  {
+    "name": "Anime Nexus",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://anime.nexus",
+    "icon": "fas fa-tv",
+    "id": "anime-nexus-87"
+  },
+  {
+    "name": "AnimeKai",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://animekai.to",
+    "icon": "fas fa-play",
+    "id": "animekai-88"
+  },
+  {
+    "name": "9AnimeTV",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://9animetv.to",
+    "icon": "fas fa-hat-wizard",
+    "id": "9animetv-89"
+  },
+  {
+    "name": "Miruro",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://miruro.to",
+    "icon": "fas fa-tv",
+    "id": "miruro-90"
+  },
+  {
+    "name": "Anitaku",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://anitaku.io",
+    "icon": "fas fa-play",
+    "id": "anitaku-91"
+  },
+  {
+    "name": "Anikai",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://anikai.to",
+    "icon": "fas fa-hat-wizard",
+    "id": "anikai-92"
+  },
+  {
+    "name": "GogoAnime",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://gogoanime.org.vc",
+    "icon": "fas fa-tv",
+    "id": "gogoanime-93"
+  },
+  {
+    "name": "Anigo",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://anigo.to",
+    "icon": "fas fa-play",
+    "id": "anigo-94"
+  },
+  {
+    "name": "Kickass Anime",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://kickass-anime.ro",
+    "icon": "fas fa-hat-wizard",
+    "id": "kickass-anime-95"
+  },
+  {
+    "name": "AniWatchTV",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://aniwatchtv.to",
+    "icon": "fas fa-tv",
+    "id": "aniwatchtv-96"
+  },
+  {
+    "name": "AnimeGG",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://animegg.org",
+    "icon": "fas fa-play",
+    "id": "animegg-97"
+  },
+  {
+    "name": "AnimeStream",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://animestream.net",
+    "icon": "fas fa-hat-wizard",
+    "id": "animestream-98"
+  },
+  {
+    "name": "KissAnime",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://kissanime.com.ru",
+    "icon": "fas fa-tv",
+    "id": "kissanime-99"
+  },
+  {
+    "name": "AllManga",
+    "desc": "Read manga online.",
+    "cat": "anime",
+    "url": "https://allmanga.to",
+    "icon": "fas fa-book-open",
+    "id": "allmanga-100"
+  },
+  {
+    "name": "AniWorld",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://aniworld.to",
+    "icon": "fas fa-play",
+    "id": "aniworld-101"
+  },
+  {
+    "name": "WCOstream",
+    "desc": "Watch cartoons and anime online.",
+    "cat": "anime",
+    "url": "https://wcostream.tv",
+    "icon": "fas fa-hat-wizard",
+    "id": "wcostream-102"
+  },
+  {
+    "name": "JustAnime",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://justanime.to",
+    "icon": "fas fa-tv",
+    "id": "justanime-103"
+  },
+  {
+    "name": "123Animes",
+    "desc": "Watch HD Anime online.",
+    "cat": "anime",
+    "url": "https://123animes.ru",
+    "icon": "fas fa-play",
+    "id": "123animes-104"
+  },
+  {
+    "name": "CimaNow",
+    "desc": "Streaming movies and series (Arabic/Eng).",
+    "cat": "movies",
+    "url": "https://cimanow.cam/",
+    "icon": "fas fa-video",
+    "id": "cimanow-105"
+  },
+  {
+    "name": "EgyBest",
+    "desc": "The original EgyBest media platform.",
+    "cat": "movies",
+    "url": "https://egybest.biz/",
+    "icon": "fas fa-clapperboard",
+    "id": "egybest-106"
+  },
+  {
+    "name": "MyCima",
+    "desc": "Egyptian and foreign movie portal.",
+    "cat": "movies",
+    "url": "https://mycima.ink/",
+    "icon": "fas fa-clapperboard",
+    "id": "mycima-107"
+  },
+  {
+    "name": "YTS",
+    "desc": "High quality YIFY movie torrents.",
+    "cat": "movies",
+    "url": "https://yts.bz/",
+    "icon": "fas fa-magnet",
+    "id": "yts-108"
+  },
+  {
+    "name": "FMovies",
+    "desc": "Free HD movies online streaming.",
+    "cat": "movies",
+    "url": "https://fmovies.to/",
+    "icon": "fas fa-play-circle",
+    "id": "fmovies-109"
+  },
+  {
+    "name": "PirateMedia",
+    "desc": "Watch movies, TV shows & live sports.",
+    "cat": "movies",
+    "url": "https://piratemedia.xyz/",
+    "icon": "fas fa-skull-crossbones",
+    "id": "piratemedia-110"
+  },
+  {
+    "name": "Soap2Night",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://soap2night.cc",
+    "icon": "fas fa-clapperboard",
+    "id": "soap2night-111"
+  },
+  {
+    "name": "Ramoflix",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://ramoflix.net",
+    "icon": "fas fa-video",
+    "id": "ramoflix-112"
+  },
+  {
+    "name": "Dorawatch",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://dorawatch.one",
+    "icon": "fas fa-play",
+    "id": "dorawatch-113"
+  },
+  {
+    "name": "Wmovies",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://wmovies.one",
+    "icon": "fas fa-tv",
+    "id": "wmovies-114"
+  },
+  {
+    "name": "HydraHD",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://hydrahd.ru",
+    "icon": "fas fa-clapperboard",
+    "id": "hydrahd-115"
+  },
+  {
+    "name": "Cineby",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://cineby.sc",
+    "icon": "fas fa-video",
+    "id": "cineby-116"
+  },
+  {
+    "name": "Flickystream",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://flickystream.ru",
+    "icon": "fas fa-play",
+    "id": "flickystream-117"
+  },
+  {
+    "name": "Yflix",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://yflix.to",
+    "icon": "fas fa-tv",
+    "id": "yflix-118"
+  },
+  {
+    "name": "Cinema BZ",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://cinema.bz",
+    "icon": "fas fa-clapperboard",
+    "id": "cinema-bz-119"
+  },
+  {
+    "name": "Flixer",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://flixer.su",
+    "icon": "fas fa-video",
+    "id": "flixer-120"
+  },
+  {
+    "name": "Goojara",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://goojara.to",
+    "icon": "fas fa-play",
+    "id": "goojara-121"
+  },
+  {
+    "name": "67movies",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://67movies.net",
+    "icon": "fas fa-tv",
+    "id": "67movies-122"
+  },
+  {
+    "name": "ShuttleTV",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://shuttletv.su",
+    "icon": "fas fa-clapperboard",
+    "id": "shuttletv-123"
+  },
+  {
+    "name": "PopcornMovies",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://popcornmovies.org",
+    "icon": "fas fa-video",
+    "id": "popcornmovies-124"
+  },
+  {
+    "name": "Rivestream",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://rivestream.org",
+    "icon": "fas fa-play",
+    "id": "rivestream-125"
+  },
+  {
+    "name": "TheFlixerTV",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://theflixertv.click",
+    "icon": "fas fa-tv",
+    "id": "theflixertv-126"
+  },
+  {
+    "name": "Onionplay",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://onionplay.io",
+    "icon": "fas fa-clapperboard",
+    "id": "onionplay-127"
+  },
+  {
+    "name": "Lookmovie2",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://lookmovie2.to",
+    "icon": "fas fa-video",
+    "id": "lookmovie2-128"
+  },
+  {
+    "name": "Pressplayz",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://pressplayz.to",
+    "icon": "fas fa-play",
+    "id": "pressplayz-129"
+  },
+  {
+    "name": "Nepu",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://nepu.to",
+    "icon": "fas fa-tv",
+    "id": "nepu-130"
+  },
+  {
+    "name": "FMovies",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://fmovies.co",
+    "icon": "fas fa-clapperboard",
+    "id": "fmovies-131"
+  },
+  {
+    "name": "Soap2day HDz",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://soap2dayhdz.com",
+    "icon": "fas fa-video",
+    "id": "soap2day-hdz-132"
+  },
+  {
+    "name": "Project Free TV",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://projectfreetv.sx",
+    "icon": "fas fa-play",
+    "id": "project-free-tv-133"
+  },
+  {
+    "name": "Mappl TV",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://mappl.tv",
+    "icon": "fas fa-tv",
+    "id": "mappl-tv-134"
+  },
+  {
+    "name": "Streamex",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://streamex.sh",
+    "icon": "fas fa-clapperboard",
+    "id": "streamex-135"
+  },
+  {
+    "name": "Pstream",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://pstream.net",
+    "icon": "fas fa-video",
+    "id": "pstream-136"
+  },
+  {
+    "name": "Movish",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://movish.net",
+    "icon": "fas fa-play",
+    "id": "movish-137"
+  },
+  {
+    "name": "TheMovieBox",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://themoviebox.org",
+    "icon": "fas fa-tv",
+    "id": "themoviebox-138"
+  },
+  {
+    "name": "HDToday",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://hdtoday.tr",
+    "icon": "fas fa-clapperboard",
+    "id": "hdtoday-139"
+  },
+  {
+    "name": "CinebyTV",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://cinebytv.com",
+    "icon": "fas fa-video",
+    "id": "cinebytv-140"
+  },
+  {
+    "name": "RidoMovies",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://ridomovies.tv",
+    "icon": "fas fa-play",
+    "id": "ridomovies-141"
+  },
+  {
+    "name": "123MoviesFree",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://123moviesfree.net",
+    "icon": "fas fa-tv",
+    "id": "123moviesfree-142"
+  },
+  {
+    "name": "Willow Arlen",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://willow.arlen.icu",
+    "icon": "fas fa-clapperboard",
+    "id": "willow-arlen-143"
+  },
+  {
+    "name": "Vidplay",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://vidplay.top",
+    "icon": "fas fa-video",
+    "id": "vidplay-144"
+  },
+  {
+    "name": "CinemaOS",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://cinemaos.live",
+    "icon": "fas fa-play",
+    "id": "cinemaos-145"
+  },
+  {
+    "name": "YesMovies",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://yesmovies.ag",
+    "icon": "fas fa-tv",
+    "id": "yesmovies-146"
+  },
+  {
+    "name": "AnixTV",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://anixtv.us.cc",
+    "icon": "fas fa-clapperboard",
+    "id": "anixtv-147"
+  },
+  {
+    "name": "PrimeWire",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://primewire.mov",
+    "icon": "fas fa-video",
+    "id": "primewire-148"
+  },
+  {
+    "name": "MoviePire",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://moviepire.org",
+    "icon": "fas fa-play",
+    "id": "moviepire-149"
+  },
+  {
+    "name": "Flickr Mini",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://flickr-mini.pages.dev",
+    "icon": "fas fa-tv",
+    "id": "flickr-mini-150"
+  },
+  {
+    "name": "StreamM4u",
+    "desc": "Movies and TV Shows streaming.",
+    "cat": "movies",
+    "url": "https://streamm4u.com.co",
+    "icon": "fas fa-clapperboard",
+    "id": "streamm4u-151"
+  },
+  {
+    "name": "FileCR",
+    "desc": "Massive software library for PC/Mac.",
+    "cat": "tools",
+    "url": "https://filecr.com/",
+    "icon": "fas fa-folder-open",
+    "id": "filecr-152"
+  },
+  {
+    "name": "Get Into PC",
+    "desc": "Software downloads for PC.",
+    "cat": "tools",
+    "url": "https://getintopc.com/",
+    "icon": "fas fa-laptop-code",
+    "id": "get-into-pc-153"
+  },
+  {
+    "name": "Hydra Launcher",
+    "desc": "Next-gen game launcher.",
+    "cat": "tools",
+    "url": "https://hydralauncher.gg/",
+    "icon": "fas fa-dragon",
+    "id": "hydra-launcher-154"
+  },
+  {
+    "name": "Activated.win",
+    "desc": "Windows & Office activation toolkit.",
+    "cat": "tools",
+    "cmd": "irm https://get.activated.win | iex",
+    "icon": "fas fa-key",
+    "id": "activatedwin-155"
+  },
+  {
+    "name": "WinUtil (C. Titus)",
+    "desc": "Essential Windows tweaks tool.",
+    "cat": "tools",
+    "cmd": "irm \"https://christitus.com/win\" | iex",
+    "icon": "fas fa-terminal",
+    "id": "winutil-c-titus-156"
+  },
+  {
+    "name": "Winhance",
+    "desc": "Boost PC performance & clean OS.",
+    "cat": "tools",
+    "url": "https://winhance.net/",
+    "icon": "fas fa-rocket",
+    "id": "winhance-157"
+  },
+  {
+    "name": "Photopea",
+    "desc": "Online Photoshop alternative.",
+    "cat": "tools",
+    "url": "https://www.photopea.com/",
+    "icon": "fas fa-image",
+    "id": "photopea-158"
+  },
+  {
+    "name": "Spicetify CLI",
+    "desc": "Powerful CLI tool to customize Spotify client.",
+    "cat": "tools",
+    "cmd": "iwr -useb https://raw.githubusercontent.com/spicetify/cli/main/install.ps1 | iex",
+    "icon": "fas fa-music",
+    "id": "spicetify-cli-227"
+  },
+  {
+    "name": "uBlock Origin",
+    "desc": "Highly efficient ad blocker.",
+    "cat": "ads",
+    "url": "https://ublockorigin.com/",
+    "icon": "fas fa-shield-alt",
+    "id": "ublock-origin-159"
+  },
+  {
+    "name": "AdBlock Plus",
+    "desc": "Free ad blocker extension.",
+    "cat": "ads",
+    "url": "https://adblockplus.org/",
+    "icon": "fas fa-ban",
+    "id": "adblock-plus-160"
+  },
+  {
+    "name": "AdGuard",
+    "desc": "Advanced adblock plugin.",
+    "cat": "ads",
+    "url": "https://adguard.com/",
+    "icon": "fas fa-user-shield",
+    "id": "adguard-161"
+  },
+  {
+    "name": "AdBlock",
+    "desc": "Popular ad blocking extension.",
+    "cat": "ads",
+    "url": "https://getadblock.com/",
+    "icon": "fas fa-stop-circle",
+    "id": "adblock-162"
+  },
+  {
+    "name": "Poper Blocker",
+    "desc": "Block annoying popups.",
+    "cat": "ads",
+    "url": "https://poperblocker.com/",
+    "icon": "fas fa-times-circle",
+    "id": "poper-blocker-163"
+  },
+  {
+    "name": "LiveTV.sx",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://livetv.sx",
+    "icon": "fas fa-futbol",
+    "id": "livetvsx-164"
+  },
+  {
+    "name": "TotalSportek",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://totalsportek.events",
+    "icon": "fas fa-volleyball-ball",
+    "id": "totalsportek-165"
+  },
+  {
+    "name": "Streamed.pk",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://streamed.pk",
+    "icon": "fas fa-basketball-ball",
+    "id": "streamedpk-166"
+  },
+  {
+    "name": "NTV.cx",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://ntv.cx",
+    "icon": "fas fa-football-ball",
+    "id": "ntvcx-167"
+  },
+  {
+    "name": "StreamEast",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://streameast.ga",
+    "icon": "fas fa-table-tennis",
+    "id": "streameast-168"
+  },
+  {
+    "name": "FCTV33",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://fctv33.hair",
+    "icon": "fas fa-baseball-ball",
+    "id": "fctv33-169"
+  },
+  {
+    "name": "MethStreams",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://methstreams.ms",
+    "icon": "fas fa-golf-ball",
+    "id": "methstreams-170"
+  },
+  {
+    "name": "SportsBite",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://sportsbite.sbs",
+    "icon": "fas fa-futbol",
+    "id": "sportsbite-171"
+  },
+  {
+    "name": "Sport71",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://sport71.pro",
+    "icon": "fas fa-volleyball-ball",
+    "id": "sport71-172"
+  },
+  {
+    "name": "SportyHunter",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://sportyhunter.com",
+    "icon": "fas fa-basketball-ball",
+    "id": "sportyhunter-173"
+  },
+  {
+    "name": "WatchSports",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://watchsports.to",
+    "icon": "fas fa-football-ball",
+    "id": "watchsports-174"
+  },
+  {
+    "name": "OnHockey.tv",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://onhockey.tv",
+    "icon": "fas fa-hockey-puck",
+    "id": "onhockeytv-175"
+  },
+  {
+    "name": "CrackStreams",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://crackstreams.io",
+    "icon": "fas fa-futbol",
+    "id": "crackstreams-176"
+  },
+  {
+    "name": "SportPlus.live",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://sportplus.live",
+    "icon": "fas fa-volleyball-ball",
+    "id": "sportpluslive-177"
+  },
+  {
+    "name": "LiveTV861",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://livetv861.me",
+    "icon": "fas fa-basketball-ball",
+    "id": "livetv861-178"
+  },
+  {
+    "name": "StrikeOut",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://strikeout.im",
+    "icon": "fas fa-baseball-ball",
+    "id": "strikeout-179"
+  },
+  {
+    "name": "WatchFooty",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://watchfooty.st",
+    "icon": "fas fa-futbol",
+    "id": "watchfooty-180"
+  },
+  {
+    "name": "Sportsurge",
+    "desc": "Live sports streams.",
+    "cat": "sports",
+    "url": "https://sportsurge.net",
+    "icon": "fas fa-football-ball",
+    "id": "sportsurge-181"
+  },
+  {
+    "name": "Yari Live",
+    "desc": "Live sports and events streaming.",
+    "cat": "sports",
+    "url": "http://wvvw.yari.live/",
+    "icon": "fas fa-video",
+    "id": "yari-live-182"
+  },
+  {
+    "name": "Famelack",
+    "desc": "Live TV streams (Blocked in some regions).",
+    "cat": "livetv",
+    "url": "https://famelack.com",
+    "icon": "fas fa-tv",
+    "id": "famelack-183"
+  },
+  {
+    "name": "The TV App",
+    "desc": "Live TV streams.",
+    "cat": "livetv",
+    "url": "https://the-tv.app",
+    "icon": "fas fa-satellite-dish",
+    "id": "the-tv-app-184"
+  },
+  {
+    "name": "GlobeTV",
+    "desc": "Live TV streams.",
+    "cat": "livetv",
+    "url": "https://globetv.app",
+    "icon": "fas fa-globe",
+    "id": "globetv-185"
+  },
+  {
+    "name": "DaddyLive",
+    "desc": "Live TV streams.",
+    "cat": "livetv",
+    "url": "https://daddylive.mp",
+    "icon": "fas fa-tv",
+    "id": "daddylive-186"
+  },
+  {
+    "name": "TV247US",
+    "desc": "Live US TV streams.",
+    "cat": "livetv",
+    "url": "https://tv247us.live",
+    "icon": "fas fa-flag-usa",
+    "id": "tv247us-187"
+  },
+  {
+    "name": "NTVStream",
+    "desc": "Live TV streams.",
+    "cat": "livetv",
+    "url": "https://ntvstream.cx",
+    "icon": "fas fa-satellite-dish",
+    "id": "ntvstream-188"
+  },
+  {
+    "name": "IPTV Web",
+    "desc": "Live TV streams.",
+    "cat": "livetv",
+    "url": "https://iptv-web.app",
+    "icon": "fas fa-tv",
+    "id": "iptv-web-189"
+  },
+  {
+    "name": "Public IPTV",
+    "desc": "Live TV streams.",
+    "cat": "livetv",
+    "url": "https://publiciptv.com",
+    "icon": "fas fa-tower-broadcast",
+    "id": "public-iptv-190"
+  },
+  {
+    "name": "MyTV Plus",
+    "desc": "Live TV & Apps.",
+    "cat": "livetv",
+    "url": "https://www.mytvplus.net/",
+    "icon": "fas fa-mobile-alt",
+    "id": "mytv-plus-191"
+  },
+  {
+    "name": "FitGirl Repacks",
+    "desc": "Highly compressed PC games.",
+    "cat": "games",
+    "url": "https://fitgirl-repacks.site/",
+    "icon": "fas fa-gamepad",
+    "id": "fitgirl-repacks-192"
+  },
+  {
+    "name": "DODI Repacks",
+    "desc": "Fast install game repacks.",
+    "cat": "games",
+    "url": "https://dodi-repacks.site/",
+    "icon": "fas fa-compact-disc",
+    "id": "dodi-repacks-193"
+  },
+  {
+    "name": "AnkerGames",
+    "desc": "Game downloads and repacks.",
+    "cat": "games",
+    "url": "https://ankergames.net",
+    "icon": "fas fa-gamepad",
+    "id": "ankergames-194"
+  },
+  {
+    "name": "G4U",
+    "desc": "Game downloads and repacks.",
+    "cat": "games",
+    "url": "https://g4u.to",
+    "icon": "fas fa-compact-disc",
+    "id": "g4u-195"
+  },
+  {
+    "name": "SteamRIP",
+    "desc": "Game downloads and repacks.",
+    "cat": "games",
+    "url": "https://steamrip.com",
+    "icon": "fas fa-gamepad",
+    "id": "steamrip-196"
+  },
+  {
+    "name": "SteamGG",
+    "desc": "Game downloads and repacks.",
+    "cat": "games",
+    "url": "https://steamgg.net",
+    "icon": "fas fa-compact-disc",
+    "id": "steamgg-197"
+  },
+  {
+    "name": "M4CKD0GE",
+    "desc": "Game downloads and repacks.",
+    "cat": "games",
+    "url": "https://m4ckd0ge-repacks.site",
+    "icon": "fas fa-gamepad",
+    "id": "m4ckd0ge-198"
+  },
+  {
+    "name": "Gload",
+    "desc": "Game downloads and repacks.",
+    "cat": "games",
+    "url": "https://gload.to",
+    "icon": "fas fa-compact-disc",
+    "id": "gload-199"
+  },
+  {
+    "name": "WeMod",
+    "desc": "PC game trainers and mods.",
+    "cat": "mods",
+    "url": "https://wemod.com",
+    "icon": "fas fa-wrench",
+    "id": "wemod-200"
+  },
+  {
+    "name": "Kurdcinama Trivia Master Solver",
+    "desc": "Premium autonomous solver for all Kurdcinama trivia modes.",
+    "cat": "scripts",
+    "url": "https://greasyfork.org/en/scripts/574862-kurdcinama-trivia-master-solver",
+    "icon": "fas fa-brain",
+    "id": "kurdcinama-trivia-master-solver-201"
+  },
+  {
+    "name": "TikTok Video Downloader",
+    "desc": "Download TikTok videos without watermark via browser button.",
+    "cat": "scripts",
+    "url": "https://greasyfork.org/en/scripts/560130-tiktok-video-downloader",
+    "icon": "fas fa-download",
+    "id": "tiktok-video-downloader-202"
+  },
+  {
+    "name": "Umingle Uhmegle AutoSkip v3",
+    "desc": "Auto-skip chats and avoid disconnects on Umingle/Uhmegle.",
+    "cat": "scripts",
+    "url": "https://greasyfork.org/en/scripts/548587-umingle-of-uhmegle-autoskip-v3",
+    "icon": "fas fa-forward",
+    "id": "umingle-uhmegle-autoskip-v3-203"
+  },
+  {
+    "name": "Neal.fun Robot Game Solver",
+    "desc": "Instantly beat 'I'm Not a Robot' game with level selector.",
+    "cat": "scripts",
+    "url": "https://greasyfork.org/en/scripts/558771-instantly-beat-i-m-not-a-robot-game-neal-fun-enhanced",
+    "icon": "fas fa-robot",
+    "id": "nealfun-robot-game-solver-204"
+  },
+  {
+    "name": "Telegram Media Downloader",
+    "desc": "Download restricted content from Telegram private channels.",
+    "cat": "scripts",
+    "url": "https://greasyfork.org/en/scripts/446342-telegram-media-downloader",
+    "icon": "fab fa-telegram",
+    "id": "telegram-media-downloader-205"
+  },
+  {
+    "name": "Bypass All Shortlinks",
+    "desc": "Auto-skip link shorteners, ads, and annoying popups.",
+    "cat": "scripts",
+    "url": "https://greasyfork.org/en/scripts/431691-bypass-all-shortlinks",
+    "icon": "fas fa-link-slash",
+    "id": "bypass-all-shortlinks-206"
+  },
+  {
+    "name": "AutoPager (Infinite Scroll)",
+    "desc": "Seamlessly append the next page content to the bottom.",
+    "cat": "scripts",
+    "url": "https://greasyfork.org/en/scripts/419215-autopager",
+    "icon": "fas fa-arrows-up-down",
+    "id": "autopager-infinite-scroll-207"
+  },
+  {
+    "name": "IG Helper",
+    "desc": "Download Instagram photos, videos, stories, and reels.",
+    "cat": "scripts",
+    "url": "https://greasyfork.org/en/scripts/404535-ig-helper",
+    "icon": "fas fa-camera",
+    "id": "ig-helper-208"
+  },
+  {
+    "name": "KissCartoon",
+    "desc": "Watch high quality cartoons online.",
+    "cat": "cartoon",
+    "url": "https://kisscartoon.sh/",
+    "icon": "fas fa-palette",
+    "id": "kisscartoon-209"
+  },
+  {
+    "name": "Arabic Toons",
+    "desc": "Arabic dubbed cartoons and anime.",
+    "cat": "cartoon",
+    "url": "https://www.arabic-toons.com/",
+    "icon": "fas fa-hat-wizard",
+    "id": "arabic-toons-210"
+  },
+  {
+    "name": "Carateen TV",
+    "desc": "Arabic dubbed animations.",
+    "cat": "cartoon",
+    "url": "https://carateen.tv/",
+    "icon": "fas fa-tv",
+    "id": "carateen-tv-211"
+  },
+  {
+    "name": "Stardima",
+    "desc": "Arabic dubbed series and movies.",
+    "cat": "cartoon",
+    "url": "https://watch.stardima.com/watch/#gsc.tab=0",
+    "icon": "fas fa-star",
+    "id": "stardima-212"
+  },
+  {
+    "name": "Kartoni Kurde",
+    "desc": "Kurdish dubbed cartoons.",
+    "cat": "cartoon",
+    "url": "https://kartonikurde.com/",
+    "icon": "fas fa-language",
+    "id": "kartoni-kurde-213"
+  },
+  {
+    "name": "Anime Kurdish",
+    "desc": "Kurdish dubbed anime and cartoons.",
+    "cat": "cartoon",
+    "url": "https://animekurdish2019.blogspot.com/",
+    "icon": "fas fa-mask",
+    "id": "anime-kurdish-214"
+  },
+  {
+    "name": "Kurd Doblazh (Cartoons)",
+    "desc": "Kurdish dubbed animation section.",
+    "cat": "cartoon",
+    "url": "https://www.kurddoblazh.com/search/label/%D8%A6%D9%87%E2%80%8C%D9%86%DB%8C%D9%85%D9%87%E2%80%8C%DB%8C%D8%B4%D9%86?max-results=64",
+    "icon": "fas fa-microphone",
+    "id": "kurd-doblazh-cartoons-215"
+  },
+  {
+    "name": "Anime Kurd (Telegram)",
+    "desc": "Kurdish anime community on Telegram.",
+    "cat": "cartoon",
+    "url": "https://t.me/anime_kurd",
+    "icon": "fab fa-telegram",
+    "id": "anime-kurd-telegram-216"
+  },
+  {
+    "name": "Kartoni Kurdi (Telegram)",
+    "desc": "Kurdish cartoons on Telegram.",
+    "cat": "cartoon",
+    "url": "https://t.me/kartoni_kurdi",
+    "icon": "fab fa-telegram",
+    "id": "kartoni-kurdi-telegram-217"
+  },
+  {
+    "name": "Kurdish Anime Plus (Telegram)",
+    "desc": "Kurdish dubbed anime channel.",
+    "cat": "cartoon",
+    "url": "https://t.me/+G81-F97Y7v9jMjQy",
+    "icon": "fab fa-telegram",
+    "id": "kurdish-anime-plus-telegram-218"
+  },
+  {
+    "name": "SeeMovies (Telegram)",
+    "desc": "Kurdish movies and cartoons.",
+    "cat": "cartoon",
+    "url": "https://t.me/seemovies09",
+    "icon": "fab fa-telegram",
+    "id": "seemovies-telegram-219"
+  },
+  {
+    "name": "Tampermonkey",
+    "desc": "The world's most popular userscript manager, available for all major browsers.",
+    "cat": "tools",
+    "url": "https://www.tampermonkey.net/",
+    "icon": "fas fa-plug",
+    "id": "tampermonkey-220"
+  },
+  {
+    "name": "Kurdish Serie",
+    "desc": "Kurdish dubbed and subtitled series.",
+    "cat": "kurdish",
+    "url": "https://kurdishserie.com/",
+    "icon": "fas fa-clapperboard",
+    "id": "kurdish-serie-221"
+  },
+  {
+    "name": "Qallam Film",
+    "desc": "Kurdish movie database and streaming.",
+    "cat": "kurdish",
+    "url": "https://qallam.net/film/movies",
+    "icon": "fas fa-film",
+    "id": "qallam-film-222"
+  },
+  {
+    "name": "Kurdbin",
+    "desc": "Kurdsat's official Kurdish media and drama portal.",
+    "cat": "kurdish",
+    "url": "https://kurdbin.kurdsat.tv/",
+    "icon": "fas fa-tv",
+    "id": "kurdbin-223"
+  },
+  {
+    "name": "Y-Drama",
+    "desc": "Kurdish dubbed dramas and series.",
+    "cat": "kurdish",
+    "url": "https://www.y-drama.net/",
+    "icon": "fas fa-play-circle",
+    "id": "y-drama-224"
+  },
+  {
+    "name": "Sha Film",
+    "desc": "Professional Kurdish movie streaming.",
+    "cat": "kurdish",
+    "url": "https://shafilm.vip/",
+    "icon": "fas fa-video",
+    "id": "shafilm-225"
+  },
+  {
+    "name": "Kurd Movie",
+    "desc": "High quality Kurdish dubbed and subtitled movies.",
+    "cat": "kurdish",
+    "url": "https://www.kurd-movie.com/",
+    "icon": "fas fa-film",
+    "id": "kurd-movie-226"
+  },
+  {
+    "name": "awenafilm",
+    "desc": "awenafilm no ads",
+    "cat": "kurdish",
+    "url": "https://awenafilm.com/",
+    "icon": "fas fa-film",
+    "id": "awenafilm-1777406006289"
+  },
+  {
+    "name": "StripView 透视镜",
+    "desc": "A draggable reveal lens for videos on any webpage (完美无损移植版)",
+    "cat": "scripts",
+    "url": "https://greasyfork.org/en/scripts/575364-stripview-%E9%80%8F%E8%A7%86%E9%95%9C",
+    "icon": "fas fa-heart",
+    "id": "stripview--1777406459831"
+  },
+  {
+    "name": "animekai",
+    "desc": "Watch Free Anime Online, Stream Subbed & Dubbed Anime in HD.",
+    "cat": "anime",
+    "url": "https://animekai.to/home",
+    "icon": "fas fa-play",
+    "id": "animekai-1777461641653"
+  },
+  {
+    "name": "mangadex",
+    "desc": "MangaDex is a non-profit, ad-free online manga reader and content aggregator that hosts a massive library of manga, manhwa (Korean comics), and manhua (Chinese comics). Launched in 2018 as a successor to the defunct Batoto, it has grown into one of the largest fan-run platforms for \"scanlations\"—unofficial translations created by fan groups.",
+    "cat": "anime",
+    "url": "https://mangadex.org/",
+    "icon": "fas fa-book-open",
+    "id": "mangadex-1777461788252"
+  },
+  {
+    "name": "Brave Browser",
+    "desc": "Privacy-focused browser with built-in ad blocking and rewards.",
+    "cat": "browser",
+    "url": "https://brave.com/",
+    "icon": "fab fa-brave",
+    "id": "brave-browser-1777461800000"
+  },
+  {
+    "name": "Opera Browser",
+    "desc": "Fast, secure browser with built-in VPN and integrated messaging.",
+    "cat": "browser",
+    "url": "https://www.opera.com/",
+    "icon": "fab fa-opera",
+    "id": "opera-browser-1777461800001"
+  },
+  {
+    "name": "Waterfox",
+    "desc": "Privacy-conscious and highly customizable Firefox-based browser.",
+    "cat": "browser",
+    "url": "https://www.waterfox.com/",
+    "icon": "fas fa-water",
+    "id": "waterfox-1777461800002"
+  },
+  {
+    "name": "Arc Browser",
+    "desc": "The browser that helps you browse less, focusing on productivity and space.",
+    "cat": "browser",
+    "url": "https://arc.net/",
+    "icon": "fas fa-compass",
+    "id": "arc-browser-1777461800003"
+  },
+  {
+    "name": "Firefox Browser",
+    "desc": "The independent, privacy-first browser by Mozilla, built for everyone.",
+    "cat": "browser",
+    "url": "https://www.firefox.com/en-US/",
+    "icon": "fab fa-firefox-browser",
+    "id": "firefox-browser-1777461800004"
+  },
+  {
+    "name": "Opera GX",
+    "desc": "The first browser built specifically for gamers with RAM and CPU limiters.",
+    "cat": "browser",
+    "url": "https://www.opera.com/gx",
+    "icon": "fab fa-opera",
+    "id": "opera-gx-1777461800005"
+  },
+  {
+    "name": "Browser Use",
+    "desc": "An open-source AI agent that can use your browser to perform any task on the web.",
+    "cat": "ai",
+    "url": "https://browser-use.com/",
+    "icon": "fas fa-robot",
+    "id": "browser-use-1777461800006"
+  },
+  {
+    "name": "Samsung Internet",
+    "desc": "A fast, reliable, and secure web browser optimized for mobile and privacy.",
+    "cat": "browser",
+    "url": "https://browser.samsung.com/",
+    "icon": "fas fa-mobile-screen",
+    "id": "samsung-internet-1777461800007"
+  },
+  {
+    "name": "Via Browser",
+    "desc": "Extremely lightweight and fast minimalist browser for Android.",
+    "cat": "browser",
+    "url": "https://viayoo.com/en/",
+    "icon": "fas fa-leaf",
+    "id": "via-browser-1777461800008"
+  },
+  {
+    "name": "Google Chrome",
+    "desc": "The fast, secure, and free web browser built for the modern web by Google.",
+    "cat": "browser",
+    "url": "https://www.google.com/chrome/",
+    "icon": "fab fa-chrome",
+    "id": "google-chrome-1777461800009"
+  },
+  {
+    "name": "Microsoft Edge",
+    "desc": "The fast and secure web browser with built-in AI features from Microsoft.",
+    "cat": "browser",
+    "url": "https://www.microsoft.com/edge",
+    "icon": "fab fa-edge",
+    "id": "microsoft-edge-1777461800010"
+  },
+  {
+    "name": "Windowstan",
+    "desc": "Download Windows operating system ISOs (Windows 95 to Windows 11), MS Office, software, and tools.",
+    "cat": "tools",
+    "url": "https://windowstan.com/",
+    "icon": "fab fa-windows",
+    "id": "windowstan-1777461800011"
+  },
+  {
+    "name": "Arena AI",
+    "desc": "Autonomous AI systems and multimodal foundation models designed to optimize enterprise business operations.",
+    "cat": "ai",
+    "url": "https://arena.ai/",
+    "icon": "fas fa-robot",
+    "id": "arena-ai-1777461800012"
+  },
+  {
+    "name": "RetroArch",
+    "desc": "Versatile frontend for emulators, game engines, and media players with a unified interface.",
+    "cat": "emulators",
+    "url": "https://www.retroarch.com/",
+    "icon": "https://m.media-amazon.com/images/I/31fvrQVPcfL.png",
+    "id": "retroarch-emu"
+  },
+  {
+    "name": "PCSX2",
+    "desc": "Highly compatible and open-source PlayStation 2 (PS2) emulator for Windows, Linux, and macOS.",
+    "cat": "emulators",
+    "url": "https://pcsx2.net/",
+    "icon": "https://www.google.com/s2/favicons?domain=pcsx2.net&sz=64",
+    "id": "pcsx2-emu"
+  },
+  {
+    "name": "Dolphin",
+    "desc": "Powerful emulator for Nintendo GameCube and Wii consoles, supporting HD resolutions and enhancements.",
+    "cat": "emulators",
+    "url": "https://dolphin-emu.org/",
+    "icon": "https://www.google.com/s2/favicons?domain=dolphin-emu.org&sz=64",
+    "id": "dolphin-emu"
+  },
+  {
+    "name": "DuckStation",
+    "desc": "Sony PlayStation 1 (PSX) emulator focusing on playability, high performance, and visual improvements.",
+    "cat": "emulators",
+    "url": "https://github.com/stenzek/duckstation",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "duckstation-emu"
+  },
+  {
+    "name": "PPSSPP",
+    "desc": "Fast, portable, and open-source PlayStation Portable (PSP) emulator for multiple desktop and mobile OSs.",
+    "cat": "emulators",
+    "url": "https://www.ppsspp.org/",
+    "icon": "https://www.google.com/s2/favicons?domain=ppsspp.org&sz=64",
+    "id": "ppsspp-emu"
+  },
+  {
+    "name": "RPCS3",
+    "desc": "An open-source Sony PlayStation 3 (PS3) emulator and debugger built in C++.",
+    "cat": "emulators",
+    "url": "https://rpcs3.net/",
+    "icon": "https://www.google.com/s2/favicons?domain=rpcs3.net&sz=64",
+    "id": "rpcs3-emu"
+  },
+  {
+    "name": "Ryujinx",
+    "desc": "Open-source Nintendo Switch emulator offering high compatibility, precision, and performance.",
+    "cat": "emulators",
+    "url": "https://github.com/Ryujinx/Ryujinx",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "ryujinx-emu"
+  },
+  {
+    "name": "Cemu",
+    "desc": "Highly optimized Wii U emulator capable of running major titles in high resolutions with custom mods.",
+    "cat": "emulators",
+    "url": "https://cemu.info/",
+    "icon": "https://www.google.com/s2/favicons?domain=cemu.info&sz=64",
+    "id": "cemu-emu"
+  },
+  {
+    "name": "Xenia",
+    "desc": "An experimental, open-source emulator for the Xbox 360 console.",
+    "cat": "emulators",
+    "url": "https://xenia.jp/",
+    "icon": "https://www.google.com/s2/favicons?domain=xenia.jp&sz=64",
+    "id": "xenia-emu"
+  },
+  {
+    "name": "Xemu",
+    "desc": "A free, open-source, and cross-platform original Xbox emulator built on top of QEMU.",
+    "cat": "emulators",
+    "url": "https://xemu.app/",
+    "icon": "https://www.google.com/s2/favicons?domain=xemu.app&sz=64",
+    "id": "xemu-emu"
+  },
+  {
+    "name": "MelonDS",
+    "desc": "A clean and fast Nintendo DS and DSi emulator focusing on performance and accurate emulation.",
+    "cat": "emulators",
+    "url": "https://melonds.kuribo64.net/",
+    "icon": "https://www.google.com/s2/favicons?domain=melonds.kuribo64.net&sz=64",
+    "id": "melonds-emu"
+  },
+  {
+    "name": "Mesen",
+    "desc": "High-accuracy multi-system emulator for NES, SNES, Game Boy, PC Engine, and more.",
+    "cat": "emulators",
+    "url": "https://www.mesen.ca/",
+    "icon": "https://www.google.com/s2/favicons?domain=mesen.ca&sz=64",
+    "id": "mesen-emu"
+  },
+  {
+    "name": "Azahar",
+    "desc": "Modern, open-source Nintendo 3DS emulator succeeding Citra and Lime3DS with enhanced features.",
+    "cat": "emulators",
+    "url": "https://github.com/azahar-emu/azahar",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "azahar-emu"
+  },
+  {
+    "name": "Snes9x",
+    "desc": "Portable, freeware Super Nintendo Entertainment System (SNES) emulator with high game compatibility.",
+    "cat": "emulators",
+    "url": "https://www.snes9x.com/",
+    "icon": "https://www.google.com/s2/favicons?domain=snes9x.com&sz=64",
+    "id": "snes9x-emu"
+  },
+  {
+    "name": "Nestopia",
+    "desc": "A high-accuracy Nintendo Entertainment System (NES) emulator with extensive mapper support.",
+    "cat": "emulators",
+    "url": "https://github.com/rdanbrook/nestopia",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "nestopia-emu"
+  },
+  {
+    "name": "Mupen64Plus Next",
+    "desc": "Next-generation Nintendo 64 (N64) emulator core designed specifically for RetroArch.",
+    "cat": "emulators",
+    "url": "https://github.com/libretro/mupen64plus-libretro-nx",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "mupen64plus-next-emu"
+  },
+  {
+    "name": "Project64",
+    "desc": "A classic and easy-to-use Nintendo 64 (N64) emulator for Windows PCs.",
+    "cat": "emulators",
+    "url": "https://www.pj64-emu.com/",
+    "icon": "https://www.google.com/s2/favicons?domain=pj64-emu.com&sz=64",
+    "id": "project64-emu"
+  },
+  {
+    "name": "Final Burn Neo",
+    "desc": "Multi-system arcade emulator supporting Neo-Geo, Capcom CPS1/2/3, Sega, and more.",
+    "cat": "emulators",
+    "url": "https://github.com/finalburnneo/FBNeo",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "final-burn-neo-emu"
+  },
+  {
+    "name": "VBA Next",
+    "desc": "Optimized Game Boy Advance (GBA) emulator core based on VisualBoyAdvance-M.",
+    "cat": "emulators",
+    "url": "https://github.com/libretro/vba-next",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "vba-next-emu"
+  },
+  {
+    "name": "Genesis Plus GX",
+    "desc": "An open-source Sega Genesis, Mega Drive, Sega CD, and Master System emulator core.",
+    "cat": "emulators",
+    "url": "https://github.com/ekeeke/Genesis-Plus-GX",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "genesis-plus-gx-emu"
+  },
+  {
+    "name": "PicoDrive",
+    "desc": "Fast Sega 16-bit, 32X, and Sega CD emulator optimized for mobile and low-spec platforms.",
+    "cat": "emulators",
+    "url": "https://github.com/notaz/picodrive",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "picodrive-emu"
+  },
+  {
+    "name": "Beetle Saturn",
+    "desc": "High-accuracy Sega Saturn emulator core for RetroArch based on Mednafen.",
+    "cat": "emulators",
+    "url": "https://github.com/libretro/beetle-saturn-libretro",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "beetle-saturn-emu"
+  },
+  {
+    "name": "Flycast",
+    "desc": "A multi-platform Sega Dreamcast, Naomi, and Atomiswave emulator for desktop and mobile.",
+    "cat": "emulators",
+    "url": "https://github.com/flyinghead/flycast",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "flycast-emu"
+  },
+  {
+    "name": "Beetle PCE",
+    "desc": "Fast and accurate PC Engine (TurboGrafx-16) emulator core for RetroArch.",
+    "cat": "emulators",
+    "url": "https://github.com/libretro/beetle-pce-fast-libretro",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "beetle-pce-emu"
+  },
+  {
+    "name": "AetherSX2",
+    "desc": "PlayStation 2 (PS2) emulator for Android devices, providing high performance on ARM64.",
+    "cat": "emulators",
+    "url": "https://www.aethersx2.com/",
+    "icon": "https://www.google.com/s2/favicons?domain=aethersx2.com&sz=64",
+    "id": "aethersx2-emu"
+  },
+  {
+    "name": "Redream",
+    "desc": "High-definition Sega Dreamcast emulator available for Windows, macOS, Linux, and Android.",
+    "cat": "emulators",
+    "url": "https://redream.io/",
+    "icon": "https://www.google.com/s2/favicons?domain=redream.io&sz=64",
+    "id": "redream-emu"
+  },
+  {
+    "name": "DeSmuME",
+    "desc": "Nintendo DS (NDS) emulator designed for PC, supporting dual-screen layouts and scaling filters.",
+    "cat": "emulators",
+    "url": "http://desmume.org/",
+    "icon": "https://www.google.com/s2/favicons?domain=desmume.org&sz=64",
+    "id": "desmume-emu"
+  },
+  {
+    "name": "Citra",
+    "desc": "The legendary, open-source Nintendo 3DS emulator that pioneered high-fidelity 3DS emulation.",
+    "cat": "emulators",
+    "url": "https://github.com/citra-emu/citra",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "citra-emu"
+  },
+  {
+    "name": "MAME",
+    "desc": "Multiple Arcade Machine Emulator dedicated to preserving thousands of classic arcade games.",
+    "cat": "emulators",
+    "url": "https://www.mamedev.org/",
+    "icon": "https://www.google.com/s2/favicons?domain=mamedev.org&sz=64",
+    "id": "mame-emu"
+  },
+  {
+    "name": "DOSBox",
+    "desc": "An emulator that recreates an MS-DOS environment to run classic DOS games and applications.",
+    "cat": "emulators",
+    "url": "https://www.dosbox.com/",
+    "icon": "https://www.google.com/s2/favicons?domain=dosbox.com&sz=64",
+    "id": "dosbox-emu"
+  },
+  {
+    "name": "BlueStacks",
+    "desc": "Extremely popular Android gaming platform for PC and Mac with keyboard/mouse controls.",
+    "cat": "emulators",
+    "url": "https://www.bluestacks.com/",
+    "icon": "https://www.google.com/s2/favicons?domain=bluestacks.com&sz=64",
+    "id": "bluestacks-emu"
+  },
+  {
+    "name": "LDPlayer 9",
+    "desc": "High-performance Android emulator designed to run mobile games smoothly on Windows PCs.",
+    "cat": "emulators",
+    "url": "https://www.ldplayer.net/",
+    "icon": "https://www.google.com/s2/favicons?domain=ldplayer.net&sz=64",
+    "id": "ldplayer9-emu"
+  },
+  {
+    "name": "LDPlayer 14",
+    "desc": "Latest iteration of LDPlayer Android emulator with improved engine capability and lower resource usage.",
+    "cat": "emulators",
+    "url": "https://www.ldplayer.net/",
+    "icon": "https://www.google.com/s2/favicons?domain=ldplayer.net&sz=64",
+    "id": "ldplayer14-emu"
+  },
+  {
+    "name": "MuMu Player",
+    "desc": "Android emulator developed by NetEase, optimized for premium graphic quality and high FPS.",
+    "cat": "emulators",
+    "url": "https://www.mumuplayer.com/",
+    "icon": "https://www.google.com/s2/favicons?domain=mumuplayer.com&sz=64",
+    "id": "mumuplayer-emu"
+  },
+  {
+    "name": "NoxPlayer",
+    "desc": "Feature-rich Android emulator with advanced mapping, multi-instance, and macro recording tools.",
+    "cat": "emulators",
+    "url": "https://www.bignox.com/",
+    "icon": "https://www.google.com/s2/favicons?domain=bignox.com&sz=64",
+    "id": "noxplayer-emu"
+  },
+  {
+    "name": "MEmu Play",
+    "desc": "Fast Android emulator with excellent compatibility for running multiple mobile games simultaneously on PC.",
+    "cat": "emulators",
+    "url": "https://www.memuplay.com/",
+    "icon": "https://www.google.com/s2/favicons?domain=memuplay.com&sz=64",
+    "id": "memuplay-emu"
+  },
+  {
+    "name": "GameLoop",
+    "desc": "Tencent's official PC Android emulator, tailored specifically for competitive mobile shooters.",
+    "cat": "emulators",
+    "url": "https://www.gameloop.com/",
+    "icon": "https://www.google.com/s2/favicons?domain=gameloop.com&sz=64",
+    "id": "gameloop-emu"
+  },
+  {
+    "name": "Android Studio Emulator",
+    "desc": "Google's official Android Virtual Device (AVD) emulator, ideal for app development and testing.",
+    "cat": "emulators",
+    "url": "https://developer.android.com/studio/run/emulator",
+    "icon": "https://www.google.com/s2/favicons?domain=developer.android.com&sz=64",
+    "id": "android-studio-emulator"
+  },
+  {
+    "name": "Genymotion",
+    "desc": "Professional Android emulator in the cloud and desktop, optimized for developers and QA automation.",
+    "cat": "emulators",
+    "url": "https://www.genymotion.com/",
+    "icon": "https://www.google.com/s2/favicons?domain=genymotion.com&sz=64",
+    "id": "genymotion-emu"
+  },
+  {
+    "name": "Bliss OS",
+    "desc": "Open-source operating system based on Android, designed to run natively on PC hardware.",
+    "cat": "emulators",
+    "url": "https://blissos.org/",
+    "icon": "https://www.google.com/s2/favicons?domain=blissos.org&sz=64",
+    "id": "blissos-emu"
+  },
+  {
+    "name": "ShadPS4",
+    "desc": "Modern, open-source PlayStation 4 (PS4) emulator for Windows and Linux capable of booting commercial 3D titles.",
+    "cat": "emulators",
+    "url": "https://shadps4.net/",
+    "icon": "https://www.google.com/s2/favicons?domain=shadps4.net&sz=64",
+    "id": "shadps4-ps4-emu"
+  },
+  {
+    "name": "Vita3K",
+    "desc": "The world's first functional, open-source PlayStation Vita emulator for Windows, Linux, macOS, and Android.",
+    "cat": "emulators",
+    "url": "https://vita3k.org/",
+    "icon": "https://www.google.com/s2/favicons?domain=vita3k.org&sz=64",
+    "id": "vita3k-psvita-emu"
+  },
+  {
+    "name": "Lime3DS",
+    "desc": "Leading open-source Nintendo 3DS emulator with continuous improvements, multi-platform support, and high compatibility.",
+    "cat": "emulators",
+    "url": "https://lime3ds.github.io/",
+    "icon": "https://www.google.com/s2/favicons?domain=lime3ds.github.io&sz=64",
+    "id": "lime3ds-3ds-emu"
+  },
+  {
+    "name": "ScummVM",
+    "desc": "Allows running classic point-and-click graphical adventure and RPG games across modern PCs and operating systems.",
+    "cat": "emulators",
+    "url": "https://www.scummvm.org/",
+    "icon": "https://www.google.com/s2/favicons?domain=scummvm.org&sz=64",
+    "id": "scummvm-retro-engine"
+  },
+  {
+    "name": "BizHawk",
+    "desc": "Multi-system emulator designed primarily for Tool-Assisted Speedruns (TAS) with frame-by-frame recording and debugging.",
+    "cat": "emulators",
+    "url": "https://tasvideos.org/BizHawk",
+    "icon": "https://www.google.com/s2/favicons?domain=tasvideos.org&sz=64",
+    "id": "bizhawk-tas-emu"
+  },
+  {
+    "name": "Mednafen",
+    "desc": "Portable multi-system emulator with extreme cycle-accuracy for PSX, Saturn, GBA, PC Engine, and Neo Geo Pocket.",
+    "cat": "emulators",
+    "url": "https://mednafen.github.io/",
+    "icon": "https://www.google.com/s2/favicons?domain=mednafen.github.io&sz=64",
+    "id": "mednafen-multi-emu"
+  },
+  {
+    "name": "ares",
+    "desc": "Next-generation, multi-system emulator focused on preservation and extreme cycle accuracy across 30+ game systems.",
+    "cat": "emulators",
+    "url": "https://ares-emu.net/",
+    "icon": "https://www.google.com/s2/favicons?domain=ares-emu.net&sz=64",
+    "id": "ares-multi-emu"
+  },
+  {
+    "name": "simple64",
+    "desc": "Accurate Nintendo 64 emulator with ParaLLEl RDP/RSP Vulkan video plugin for authentic N64 graphics without glitches.",
+    "cat": "emulators",
+    "url": "https://simple64.github.io/",
+    "icon": "https://www.google.com/s2/favicons?domain=simple64.github.io&sz=64",
+    "id": "simple64-n64-emu"
+  },
+  {
+    "name": "Kronos",
+    "desc": "High-performance Sega Saturn, ST-V, and arcade emulator with OpenGL and Vulkan hardware acceleration.",
+    "cat": "emulators",
+    "url": "https://github.com/FCare/Kronos",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "kronos-saturn-emu"
+  },
+  {
+    "name": "Torzu",
+    "desc": "Community fork of modern Nintendo Switch emulation with upstream fixes and stability patches.",
+    "cat": "emulators",
+    "url": "https://github.com/torzu-emu/torzu",
+    "icon": "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    "id": "torzu-switch-emu"
+  }
+]
