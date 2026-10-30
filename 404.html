@@ -5,485 +5,774 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, follow" />
     <title>404 - Spatial Link Lost | Cydia Elite</title>
-    <meta name="description" content="The spatial coordinate you're looking for doesn't exist in the Cydia Elite registry." />
+    <meta name="description" content="The spatial coordinate you are attempting to reach does not exist in the Cydia Elite registry." />
     
-    <!-- Open Graph for Shared Broken Links -->
+    <!-- Open Graph for Shared Links -->
     <meta property="og:title" content="404 - Spatial Link Lost | Cydia Elite" />
-    <meta property="og:description" content="The coordinate you are attempting to reach does not exist in the spatial registry." />
+    <meta property="og:description" content="Spatial coordinate desynchronized. Package or endpoint not found." />
     <meta property="og:image" content="https://i.pinimg.com/1200x/eb/48/73/eb487359acc13ab1ad5e1918e14cd49e.jpg" />
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.04);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.4);
+            --brand-violet: #a855f7;
+            --brand-blue: #3b82f6;
+            --brand-cyan: #06b6d4;
+            --brand-crimson: #ff3366;
+            --brand-amber: #f59e0b;
+            --brand-emerald: #10b981;
+            --glass-bg: rgba(13, 17, 34, 0.76);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-highlight: rgba(255, 255, 255, 0.18);
+            --shadow-spatial: 0 30px 80px -15px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 50px rgba(168, 85, 247, 0.12);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: #030712;
-            color: #fff;
-            height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #050713;
+            color: #ffffff;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow-x: hidden;
+            position: relative;
+            padding: 24px;
         }
 
-        /* === Background Layers === */
+        /* === Dynamic Spatial Background === */
         .video-background {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: -2%;
+            left: -2%;
+            width: 104%;
+            height: 104%;
             object-fit: cover;
             z-index: -3;
-            opacity: 0.5;
-            filter: brightness(0.4) saturate(1.4) blur(3px);
+            opacity: 0.42;
+            filter: brightness(0.35) saturate(1.3) blur(2px);
+            pointer-events: none;
         }
 
         .video-overlay {
             position: fixed;
             inset: 0;
             background:
-                radial-gradient(ellipse 80% 60% at 50% 40%, transparent 0%, rgba(3, 7, 18, 0.7) 60%, rgba(3, 7, 18, 0.95) 100%),
-                linear-gradient(180deg, transparent 0%, rgba(3, 7, 18, 0.4) 100%);
+                radial-gradient(ellipse 75% 65% at 50% 45%, transparent 0%, rgba(5, 7, 19, 0.75) 60%, rgba(5, 7, 19, 0.98) 100%),
+                linear-gradient(180deg, rgba(5, 7, 19, 0.3) 0%, rgba(5, 7, 19, 0.85) 100%);
             z-index: -2;
+            pointer-events: none;
         }
 
-        /* Animated grid pattern */
         .grid-pattern {
             position: fixed;
             inset: 0;
             z-index: -1;
             background-image:
-                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
+                linear-gradient(rgba(168, 85, 247, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
+            background-size: 50px 50px;
             animation: gridPulse 8s ease-in-out infinite;
-        }
-
-        @keyframes gridPulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 0.8; }
-        }
-
-        /* Floating orbs */
-        .orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: -1;
-            animation: orbDrift 12s ease-in-out infinite;
-        }
-
-        .orb-1 {
-            width: 400px; height: 400px;
-            background: rgba(59, 130, 246, 0.12);
-            top: -100px; right: -100px;
-            animation-delay: 0s;
-        }
-
-        .orb-2 {
-            width: 300px; height: 300px;
-            background: rgba(139, 92, 246, 0.08);
-            bottom: -80px; left: -80px;
-            animation-delay: -4s;
-        }
-
-        .orb-3 {
-            width: 200px; height: 200px;
-            background: rgba(59, 130, 246, 0.06);
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            animation-delay: -8s;
-        }
-
-        @keyframes orbDrift {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(30px, -20px) scale(1.05); }
-            50% { transform: translate(-20px, 30px) scale(0.95); }
-            75% { transform: translate(10px, 10px) scale(1.02); }
-        }
-
-        /* === Main Content === */
-        .scene {
-            text-align: center;
-            animation: sceneReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
-            max-width: 560px;
-            width: 90%;
-            padding: 20px;
-        }
-
-        @keyframes sceneReveal {
-            from { opacity: 0; transform: translateY(60px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        /* Glitch icon */
-        .icon-ring {
-            width: 100px; height: 100px;
-            border-radius: 28px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 40px;
-            position: relative;
-            animation: iconFloat 5s ease-in-out infinite;
-        }
-
-        .icon-ring::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 30px;
-            background: conic-gradient(
-                from 0deg,
-                transparent 0%,
-                var(--accent) 25%,
-                transparent 50%,
-                rgba(139, 92, 246, 0.6) 75%,
-                transparent 100%
-            );
-            z-index: -1;
-            animation: borderSpin 6s linear infinite;
-            opacity: 0.5;
-        }
-
-        .icon-ring::after {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: 29px;
-            background: #030712;
-            z-index: -1;
-        }
-
-        .icon-ring i {
-            font-size: 2.2rem;
-            background: linear-gradient(135deg, var(--accent), #8b5cf6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px var(--accent-glow));
-        }
-
-        @keyframes iconFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-12px) rotate(2deg); }
-        }
-
-        @keyframes borderSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Error code */
-        .error-code {
-            font-size: clamp(7rem, 18vw, 10rem);
-            font-weight: 900;
-            line-height: 1;
-            letter-spacing: -6px;
-            position: relative;
-            margin-bottom: 10px;
-            background: linear-gradient(
-                180deg,
-                #fff 0%,
-                rgba(255, 255, 255, 0.6) 40%,
-                rgba(255, 255, 255, 0.15) 100%
-            );
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: codeGlitch 8s ease-in-out infinite;
-        }
-
-        .error-code::before {
-            content: '404';
-            position: absolute;
-            left: 50%; top: 50%;
-            transform: translate(-50%, -50%);
-            font-size: inherit;
-            font-weight: inherit;
-            letter-spacing: inherit;
-            background: linear-gradient(135deg, var(--accent), #8b5cf6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            opacity: 0.15;
-            filter: blur(30px);
-            z-index: -1;
-        }
-
-        @keyframes codeGlitch {
-            0%, 90%, 100% { transform: translate(0, 0); }
-            92% { transform: translate(-3px, 1px); }
-            94% { transform: translate(2px, -1px); }
-            96% { transform: translate(-1px, 2px); }
-            98% { transform: translate(3px, 0); }
-        }
-
-        /* Status indicator */
-        .status-line {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            padding: 8px 18px;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #f87171;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 24px;
-            animation: statusPulse 3s ease-in-out infinite;
-        }
-
-        .status-dot {
-            width: 6px; height: 6px;
-            background: #ef4444;
-            border-radius: 50%;
-            animation: dotBlink 2s ease-in-out infinite;
-        }
-
-        @keyframes statusPulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.1); }
-            50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
-        }
-
-        @keyframes dotBlink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        h2 {
-            font-size: 1.6rem;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .desc {
-            font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.45);
-            line-height: 1.7;
-            margin-bottom: 40px;
-            max-width: 380px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Buttons */
-        .btn-group {
-            display: flex;
-            gap: 14px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, var(--accent), #2563eb);
-            color: #fff;
-            padding: 14px 30px;
-            border-radius: 16px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.3);
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 16px 40px rgba(59, 130, 246, 0.45);
-        }
-
-        .btn-ghost {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            color: rgba(255, 255, 255, 0.7);
-            padding: 14px 28px;
-            border-radius: 16px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border: 1px solid var(--glass-border);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-
-        .btn-ghost:hover {
-            transform: translateY(-3px);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
-            color: #fff;
-        }
-
-        /* Floating particles */
-        .particles {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            overflow: hidden;
             pointer-events: none;
         }
 
-        .particle {
-            position: absolute;
-            width: 2px; height: 2px;
-            background: rgba(59, 130, 246, 0.5);
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.35; }
+            50% { opacity: 0.75; }
+        }
+
+        /* Ambient Glowing Orbs */
+        .orb {
+            position: fixed;
             border-radius: 50%;
-            animation: particleFloat linear infinite;
+            filter: blur(90px);
+            z-index: -1;
+            pointer-events: none;
+            animation: orbDrift 14s ease-in-out infinite alternate;
         }
 
-        @keyframes particleFloat {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        .orb-1 {
+            width: 450px;
+            height: 450px;
+            background: rgba(168, 85, 247, 0.16);
+            top: -120px;
+            right: -100px;
         }
 
-        /* Scanline effect */
+        .orb-2 {
+            width: 380px;
+            height: 380px;
+            background: rgba(59, 130, 246, 0.14);
+            bottom: -100px;
+            left: -100px;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 280px;
+            height: 280px;
+            background: rgba(255, 51, 102, 0.09);
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -9s;
+        }
+
+        @keyframes orbDrift {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(25px, -25px) scale(1.06); }
+            100% { transform: translate(-20px, 20px) scale(0.96); }
+        }
+
+        .particles-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Scanlines Overlay */
         .scanlines {
             position: fixed;
             inset: 0;
-            z-index: 1;
+            z-index: 2;
             pointer-events: none;
             background: repeating-linear-gradient(
                 0deg,
                 transparent,
                 transparent 2px,
-                rgba(0, 0, 0, 0.03) 2px,
-                rgba(0, 0, 0, 0.03) 4px
+                rgba(0, 0, 0, 0.04) 2px,
+                rgba(0, 0, 0, 0.04) 4px
             );
         }
 
-        /* Footer info */
-        .footer-meta {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
+        /* === Master Spatial Glass Pane === */
+        .spatial-card-container {
+            width: 100%;
+            max-width: 680px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            backdrop-filter: blur(35px) saturate(190%);
+            -webkit-backdrop-filter: blur(35px) saturate(190%);
+            box-shadow: var(--shadow-spatial);
+            position: relative;
+            overflow: hidden;
+            animation: cardReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        @keyframes cardReveal {
+            from { opacity: 0; transform: translateY(35px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* macOS Window Header */
+        .card-header-bar {
             display: flex;
             align-items: center;
-            gap: 20px;
+            justify-content: space-between;
+            padding: 16px 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 7px;
+        }
+
+        .window-dots span {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        }
+
+        .dot-red { background: #ff5f56; border: 1px solid rgba(224, 68, 62, 0.8); }
+        .dot-yellow { background: #ffbd2e; border: 1px solid rgba(222, 161, 35, 0.8); }
+        .dot-green { background: #27c93f; border: 1px solid rgba(40, 170, 58, 0.8); }
+
+        .header-title-chip {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.72rem;
-            color: rgba(255, 255, 255, 0.2);
-            letter-spacing: 1px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.55);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-status-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+            animation: pulseGlow 1.8s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.3); }
+        }
+
+        .card-body {
+            padding: 36px 32px 30px 32px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Spatial Radar HUD */
+        .radar-hud-wrapper {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 24px auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .radar-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.08);
+        }
+
+        .radar-c1 { width: 100%; height: 100%; border-style: dashed; animation: radarSpinReverse 20s linear infinite; }
+        .radar-c2 { width: 72%; height: 72%; border-color: rgba(59, 130, 246, 0.35); }
+        .radar-c3 { width: 44%; height: 44%; border-color: rgba(6, 182, 212, 0.45); }
+
+        .radar-sweep-beam {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0%, transparent 60%, rgba(168, 85, 247, 0.35) 95%, #ff3366 100%);
+            animation: radarSweep 4s linear infinite;
+        }
+
+        @keyframes radarSweep {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes radarSpinReverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        .radar-core-icon {
+            position: relative;
+            z-index: 5;
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(22, 28, 52, 0.9) 0%, rgba(10, 13, 26, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.45rem;
+            color: #ff3366;
+            box-shadow: 0 8px 24px rgba(255, 51, 102, 0.35);
+        }
+
+        /* 404 Display Typography */
+        .error-code {
+            font-size: clamp(5.5rem, 14vw, 7.8rem);
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -4px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ffffff 15%, #cbd5e1 55%, #c084fc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 4px 20px rgba(168, 85, 247, 0.25));
+            position: relative;
+            display: inline-block;
+        }
+
+        .error-code::after {
+            content: '404';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #3b82f6, #ff3366);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0.25;
+            filter: blur(14px);
+            z-index: -1;
+        }
+
+        /* Status Badge Pill */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 100px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.28);
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #f87171;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.12);
+        }
+
+        .status-pill .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+            animation: pulseGlow 1.8s infinite;
+        }
+
+        h2 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .desc {
+            font-size: 0.92rem;
+            color: rgba(255, 255, 255, 0.58);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            max-width: 440px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Missing Endpoint Terminal Chip */
+        .missing-path-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 12px;
+            padding: 8px 16px;
+            margin-bottom: 26px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .missing-path-box i {
+            color: #f59e0b;
+        }
+
+        .missing-path-text {
+            color: #38bdf8;
             font-weight: 600;
         }
 
-        .footer-meta span { opacity: 0.4; }
+        /* Action Buttons Suite */
+        .action-group {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
 
-        /* Responsive */
-        @media (max-width: 480px) {
-            .scene { padding: 10px; }
-            .icon-ring { width: 80px; height: 80px; margin-bottom: 30px; }
-            .icon-ring i { font-size: 1.8rem; }
-            h2 { font-size: 1.3rem; }
-            .desc { font-size: 0.85rem; }
-            .btn-group { flex-direction: column; align-items: center; }
-            .footer-meta { display: none; }
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 26px;
+            border-radius: 14px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-portal-primary {
+            background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.38);
+        }
+
+        .btn-portal-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 14px 35px rgba(168, 85, 247, 0.55);
+            filter: brightness(1.1);
+        }
+
+        .btn-portal-ghost {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+        }
+
+        .btn-portal-ghost:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 255, 255, 0.22);
+            color: #ffffff;
+        }
+
+        /* Quick Destination Chips */
+        .quick-nav-pills {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .quick-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .quick-chip:hover {
+            background: rgba(168, 85, 247, 0.12);
+            border-color: rgba(168, 85, 247, 0.35);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .quick-chip i {
+            font-size: 0.78rem;
+            color: #c084fc;
+        }
+
+        /* Auto-Respring Countdown */
+        .countdown-strip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.74rem;
+            color: rgba(255, 255, 255, 0.45);
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 5px 14px;
+            border-radius: 100px;
+        }
+
+        .countdown-btn-cancel {
+            background: transparent;
+            border: none;
+            color: #38bdf8;
+            font-family: inherit;
+            font-size: inherit;
+            cursor: pointer;
+            text-decoration: underline;
+            padding-left: 4px;
+        }
+
+        .countdown-btn-cancel:hover {
+            color: #fff;
+        }
+
+        /* Card Footer Meta */
+        .card-footer-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            background: rgba(0, 0, 0, 0.25);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            color: rgba(255, 255, 255, 0.38);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-secure {
+            color: #10b981;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @media (max-width: 540px) {
+            body { padding: 12px; }
+            .card-body { padding: 26px 18px 20px 18px; }
+            .error-code { font-size: 5rem; }
+            h2 { font-size: 1.35rem; }
+            .action-group { flex-direction: column; width: 100%; }
+            .btn-action { width: 100%; justify-content: center; }
+            .card-footer-meta { flex-direction: column; gap: 8px; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-    <video class="video-background" autoplay muted loop playsinline>
+    <!-- Video Background & Atmospherics -->
+    <video class="video-background" autoplay muted loop playsinline poster="https://grainy-gradients.vercel.app/noise.svg">
         <source src="https://r2.guns.lol/66f828e9-e90a-48ff-b46b-4f064893c5b7.mp4" type="video/mp4">
     </video>
     <div class="video-overlay"></div>
     <div class="grid-pattern"></div>
     <div class="scanlines"></div>
 
-    <!-- Ambient orbs -->
+    <!-- Glowing Ambient Orbs -->
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
 
-    <!-- Floating particles -->
-    <div class="particles" id="particles"></div>
+    <!-- Particle Background Canvas -->
+    <canvas class="particles-canvas" id="particles-canvas"></canvas>
 
-    <!-- Main content -->
-    <div class="scene">
-        <div class="icon-ring">
-            <i class="fas fa-satellite-dish"></i>
+    <!-- Master VisionOS Spatial Card -->
+    <main class="spatial-card-container" id="spatial-card">
+        <!-- macOS Style Header -->
+        <header class="card-header-bar">
+            <div class="window-dots">
+                <span class="dot-red"></span>
+                <span class="dot-yellow"></span>
+                <span class="dot-green"></span>
+            </div>
+            <div class="header-title-chip">
+                <span class="header-status-indicator"></span>
+                <span>DESYNC // NODE_404</span>
+            </div>
+            <div style="width: 45px;"></div>
+        </header>
+
+        <div class="card-body">
+            <!-- Radar HUD Core -->
+            <div class="radar-hud-wrapper">
+                <div class="radar-circle radar-c1"></div>
+                <div class="radar-circle radar-c2"></div>
+                <div class="radar-circle radar-c3"></div>
+                <div class="radar-sweep-beam"></div>
+                <div class="radar-core-icon">
+                    <i class="fas fa-satellite-dish"></i>
+                </div>
+            </div>
+
+            <!-- Error 404 Heading -->
+            <h1 class="error-code">404</h1>
+
+            <!-- Status Indicator Badge -->
+            <div>
+                <div class="status-pill">
+                    <span class="pulse-dot"></span>
+                    <span>Spatial Coordinate Void</span>
+                </div>
+            </div>
+
+            <h2>Spatial Link Lost</h2>
+            <p class="desc">The target vector or package link does not exist in the Cydia Elite spatial registry database.</p>
+
+            <!-- Detected Missing Route -->
+            <div class="missing-path-box">
+                <i class="fas fa-terminal"></i>
+                <span>GET:</span>
+                <span class="missing-path-text" id="detected-route">/undefined</span>
+            </div>
+
+            <!-- Action Buttons Suite -->
+            <div class="action-group">
+                <a href="/" class="btn-action btn-portal-primary" id="btn-return">
+                    <i class="fas fa-compass"></i>
+                    <span>Return to Portal</span>
+                </a>
+                <a href="javascript:history.back()" class="btn-action btn-portal-ghost" id="btn-back">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Go Back</span>
+                </a>
+            </div>
+
+            <!-- Quick Jump Shortcuts -->
+            <nav class="quick-nav-pills" aria-label="Quick Navigation">
+                <a href="/#home" class="quick-chip"><i class="fas fa-home"></i> Home</a>
+                <a href="/#categories-hub" class="quick-chip"><i class="fas fa-th-large"></i> Categories</a>
+                <a href="/#search" class="quick-chip"><i class="fas fa-search"></i> Search</a>
+                <a href="/#google" class="quick-chip"><i class="fas fa-robot"></i> AI Search</a>
+                <a href="/#api-hub" class="quick-chip"><i class="fas fa-code"></i> API Hub</a>
+            </nav>
+
+            <!-- Auto-Respring Countdown -->
+            <div class="countdown-strip" id="countdown-wrap">
+                <i class="fas fa-clock"></i>
+                <span>Auto-respring in <strong id="countdown-num">15</strong>s</span>
+                <button type="button" class="countdown-btn-cancel" onclick="cancelCountdown()">Cancel</button>
+            </div>
         </div>
 
-        <h1 class="error-code">404</h1>
-
-        <div class="status-line">
-            <div class="status-dot"></div>
-            Signal Not Found
-        </div>
-
-        <h2>Spatial Link Lost</h2>
-        <p class="desc">The coordinate you're attempting to reach does not exist in the Cydia Elite spatial registry.</p>
-
-        <div class="btn-group">
-            <a href="index.html" class="btn-primary" id="btn-return">
-                <i class="fas fa-arrow-left"></i>
-                Return to Portal
-            </a>
-            <a href="javascript:history.back()" class="btn-ghost" id="btn-back">
-                <i class="fas fa-rotate-left"></i>
-                Go Back
-            </a>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer-meta">
-        <span>Cydia Elite</span>
-        <span>·</span>
-        <span>Spatial OS v4.0</span>
-        <span>·</span>
-        <span id="error-ts"></span>
-    </div>
+        <!-- System Diagnostics Footer -->
+        <footer class="card-footer-meta">
+            <div class="footer-left">
+                <span>Cydia Elite v5.0</span>
+                <span>•</span>
+                <span class="footer-secure"><i class="fas fa-shield-alt"></i> Sandboxed</span>
+            </div>
+            <div id="utc-clock">2026-10-30 00:00:00 UTC</div>
+        </footer>
+    </main>
 
     <script>
         // Disable context menu
         document.addEventListener('contextmenu', e => e.preventDefault());
 
-        // Generate floating particles
-        const container = document.getElementById('particles');
-        for (let i = 0; i < 30; i++) {
-            const p = document.createElement('div');
-            p.className = 'particle';
-            p.style.left = Math.random() * 100 + '%';
-            p.style.animationDuration = (8 + Math.random() * 16) + 's';
-            p.style.animationDelay = -(Math.random() * 20) + 's';
-            p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
-            p.style.opacity = 0.2 + Math.random() * 0.5;
-            container.appendChild(p);
+        // Detected route display
+        const path = window.location.pathname || '/';
+        const search = window.location.search || '';
+        const fullRoute = path + search;
+        const routeEl = document.getElementById('detected-route');
+        if (routeEl) routeEl.textContent = fullRoute.length > 36 ? fullRoute.substring(0, 34) + '...' : fullRoute;
+
+        // Auto Countdown Redirect
+        let countdownSecs = 15;
+        let countdownActive = true;
+        const countdownNum = document.getElementById('countdown-num');
+        const countdownWrap = document.getElementById('countdown-wrap');
+
+        const timer = setInterval(() => {
+            if (!countdownActive) {
+                clearInterval(timer);
+                return;
+            }
+            countdownSecs--;
+            if (countdownNum) countdownNum.textContent = countdownSecs;
+            if (countdownSecs <= 0) {
+                clearInterval(timer);
+                window.location.href = '/';
+            }
+        }, 1000);
+
+        function cancelCountdown() {
+            countdownActive = false;
+            clearInterval(timer);
+            if (countdownWrap) {
+                countdownWrap.innerHTML = '<i class="fas fa-pause-circle" style="color:#f59e0b;"></i> Auto-redirect paused';
+            }
         }
 
-        // Error timestamp
-        document.getElementById('error-ts').textContent =
-            new Date().toISOString().replace('T', ' ').split('.')[0] + ' UTC';
+        // Live UTC clock
+        function updateUtcClock() {
+            const clockEl = document.getElementById('utc-clock');
+            if (clockEl) {
+                const now = new Date();
+                clockEl.textContent = now.toISOString().replace('T', ' ').split('.')[0] + ' UTC';
+            }
+        }
+        updateUtcClock();
+        setInterval(updateUtcClock, 1000);
+
+        // Particle System
+        const canvas = document.getElementById('particles-canvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const particles = [];
+            const numParticles = Math.min(45, Math.floor(window.innerWidth / 25));
+
+            for (let i = 0; i < numParticles; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: Math.random() * 1.5 + 0.5,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    alpha: Math.random() * 0.5 + 0.2
+                });
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = '#a855f7';
+
+                for (let p of particles) {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
+
+                    ctx.globalAlpha = p.alpha;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+        }
+
+        // Card 3D Parallax Tilt
+        const card = document.getElementById('spatial-card');
+        if (card && window.matchMedia('(hover: hover)').matches) {
+            document.addEventListener('mousemove', (e) => {
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 45;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 45;
+                card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            });
+            document.addEventListener('mouseleave', () => {
+                card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+                card.style.transition = 'transform 0.5s ease';
+            });
+            document.addEventListener('mouseenter', () => {
+                card.style.transition = 'none';
+            });
+        }
     </script>
 </body>
 </html>
